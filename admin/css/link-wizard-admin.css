@@ -1,0 +1,105 @@
+/* =============================================================================
+   WordPress Admin Color Scheme
+   ============================================================================= */
+
+/* 
+ * These are fallbacks for the CSS custom properties that are dynamically
+ * injected by WordPress core based on the user's selected admin color scheme.
+ * Using these variables ensures the plugin's UI matches the rest of the admin.
+ *
+ * @see https://developer.wordpress.org/block-editor/how-to-guides/stylesheets/admin-stylesheet-color-schemes/
+ */
+:root {
+	/* Core Colors (Fallback values are from the "Fresh" theme) */
+	--wp-admin-theme-color: #2271b1;
+	--wp-admin-background-color: #f0f0f1;
+	--wp-admin-text-color: #1d2327;
+	--wp-admin-secondary-text-color: #50575e;
+	--wp-admin-border-color: #c3c4c7;
+	--wp-admin-border-color-darker: #8c8f94;
+	--wp-admin-notification-color: #d63638;
+	--wp-admin-link: #2271b1;
+	--wp-admin-link-hover: #135e96;
+
+	/* Derived Colors */
+	--wp-admin-theme-color-darker-10: #1f66a0;
+	--wp-admin-theme-color-darker-20: #1b5a8d;
+
+	/* Component Specific Colors */
+	--wp-admin-card-background: #fff;
+	--wp-admin-card-border: #c3c4c7;
+	--wp-admin-card-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Main form container */
+#link-wizard-form {
+	max-width: 800px;
+}
+
+/* Card styles for each step */
+.form-step {
+	background: var(--wp-admin-card-background, #fff);
+	border: 1px solid var(--wp-admin-card-border, #c3c4c7);
+	box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+	padding: 20px;
+	margin-bottom: 20px;
+	border-radius: 4px;
+}
+
+/* Heading inside each card */
+.form-step-heading {
+	font-size: 1.3em;
+	margin: 0 0 1.2em;
+	padding: 0 0 0.8em;
+	border-bottom: 1px solid var(--wp-admin-border-color, #c3c4c7);
+	color: var(--wp-admin-text-color, #1d2327);
+}
+
+.form-step-radio-option {
+	margin-bottom: 1.5em;
+}
+
+.form-step-radio-option label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.form-step-radio-option label span {
+	font-weight: 600;
+	font-size: 1.1em;
+	color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* Description text for radio options and inputs */
+.form-step-radio-option .description,
+#cl-options .description {
+	margin-top: 0.5em;
+	margin-left: 28px; /* Align with text, assuming radio button width */
+	color: var(--wp-admin-secondary-text-color, #50575e);
+}
+
+/* Specific styles for the options in Step 3 */
+#atc-options label,
+#cl-options label {
+	display: block;
+	margin-bottom: 0.5em;
+}
+
+#cl-options .description {
+	margin-left: 0; /* Reset alignment for this specific case */
+}
+
+/* Navigation buttons at the bottom of each step */
+.form-step-navigation {
+    margin-top: 2em;
+    padding-top: 1.5em;
+    border-top: 1px solid var(--wp-admin-border-color, #c3c4c7);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Make the primary button float right if it's the only one */
+.form-step-navigation .button-primary:first-child:last-child {
+    margin-left: auto;
+}
