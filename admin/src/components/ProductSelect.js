@@ -22,13 +22,13 @@ const ProductSelect = () => {
             setError(null);
 
             apiFetch({
-                path: `/link-wizard/v1/products/search=${encodedURIComponent(
+                path: `/link-wizard/v1/products?search=${encodeURIComponent(
                     searchTerm
                 )}&limit=20`,
             })
-                .then((product) => {
+                .then((products) => {
                     // Filter out products that are already selected
-                    const newResults = product.filter(
+                    const newResults = products.filter(
                         (product) => 
                             !selectedProducts.some(
                                 selected => selected.id === product.id
@@ -38,10 +38,7 @@ const ProductSelect = () => {
                     setIsLoading(false);
                 })
                 .catch((err) => {
-                    setError(
-                    err.message || 
-                        'An error occurred while fetching products.'
-                    );
+                    setError(err.message || 'An error occurred while fetching products.');
                     setIsLoading(false);
                     setResults([]);
                 });
@@ -77,7 +74,7 @@ const ProductSelect = () => {
                     className="regular-text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search by product name or SKU"
+                    placeholder="Search by name or SKU"
                     autoComplete="off"
                 />
             </div>
