@@ -41,8 +41,8 @@ class Link_Wizard_loader {
     /**
      * Add a new action to the collection
      * @since  1.0.0
-        * @param  string  $hook        The name of the WordPress action being registered.
-        * @param  object  $component   A reference to the instance of the object on which the action is defined.
+     * @param  string  $hook            The name of the WordPress action being registered.
+     * @param  object  $component       Reference to the instance of the object on which the action is defined.
      * @param  string  $callback        The name of the function definition on the object to be called when the action is fired.
      * @param  int     $priority        The priority at which the function should be fired.
      * @param  int     $accepted_args   The number of arguments that should be passed to the $callback.
@@ -66,8 +66,8 @@ class Link_Wizard_loader {
     /**
      * Add a new filter to the collection
      * @since  1.0.0
-     * @param  string  $hook        The name of the WordPress filter being registered.
-     * @param  object  $component   A reference to the instance of the object on which the filter is defined.
+     * @param  string  $hook            The name of the WordPress filter being registered.
+     * @param  object  $component       Reference to the instance of the object on which the filter is defined.
      * @param  string  $callback        The name of the function definition on the object to be called when the filter is fired.
      * @param  int     $priority        The priority at which the function should be fired.
      * @param  int     $accepted_args   The number of arguments that should be passed to the $callback.

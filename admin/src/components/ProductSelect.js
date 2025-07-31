@@ -2,6 +2,12 @@ import React, {useState, useEffect } from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
 
+// Set up API authentication with nonce if available
+if (typeof wpApiSettings !== 'undefined') {
+    apiFetch.use(apiFetch.createNonceMiddleware(wpApiSettings.nonce));
+    apiFetch.use(apiFetch.createRootURLMiddleware(wpApiSettings.root));
+}
+
 const ProductSelect = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
@@ -22,10 +28,8 @@ const ProductSelect = () => {
             setError(null);
 
             apiFetch({
-                path: `/link-wizard/v1/products?search=${encodeURIComponent(
-                    searchTerm
-                )}&limit=20`,
-            })
+                path: `/link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=13`,
+                })
                 .then((products) => {
                     // Filter out products that are already selected
                     const newResults = products.filter(
@@ -42,7 +46,7 @@ const ProductSelect = () => {
                     setIsLoading(false);
                     setResults([]);
                 });
-        }, 500); //500ms debounce time (delay before making the API call).
+        }, 1000); //1000ms debounce time (delay before making the API call).
 
         // Cleanup function to cancel the timeout if the user types again.
         return () => {

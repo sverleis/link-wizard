@@ -77,6 +77,11 @@ class Link_Wizard {
          */
         require_once LINK_WIZARD_PATH . 'admin/class-link-wizard-admin.php';
 
+        /**
+         * The class responsible for the product search REST endpoint.
+         */
+        require_once LINK_WIZARD_PATH . 'includes/class-link-wizard-search.php';
+
         $this->loader = new Link_Wizard_Loader();
 
     }

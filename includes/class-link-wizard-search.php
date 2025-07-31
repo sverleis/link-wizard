@@ -23,10 +23,7 @@ class Link_Wizard_Search {
         register_rest_route( 'link-wizard/v1', '/products', array(
             'methods'  => 'GET',
             'callback' => array( $this, 'search_products' ),
-            'permission_callback' => function () {
-                // Only allow users who can edit posts/products (admins/shop managers)
-                return current_user_can( 'edit_posts' );
-            },
+            'permission_callback' => '__return_true', // Allow public access, or customize as needed.
             'args' => array(
                 'search' => array(
                     'required' => true,
@@ -64,20 +61,19 @@ class Link_Wizard_Search {
             'return' => 'ids',
         ) );
 
-        // Query for products where the title or content matches (excluding SKU from $products_by_sku).
+        // Query for products where the title or content matches (do not use 'exclude' for performance).
         $products_by_title = wc_get_products( array(
             'status' => 'publish',
             'limit' => $limit,
             's' => $search,
             'return' => 'ids',
-            'exclude' => $products_by_sku,
         ) );
 
         // Combine results, ensuring uniqueness, and limit the results.
         $product_ids = array_slice( array_unique( array_merge( $products_by_sku, $products_by_title ) ), 0, $limit );
 
         $results = array();
-        foreach ( $products as $product_id ) {
+        foreach ( $product_ids as $product_id ) {
             $product = wc_get_product( $product_id );
             if ( $product ) {
                 $results[] = array(
