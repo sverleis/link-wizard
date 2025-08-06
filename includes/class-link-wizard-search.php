@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Link_Wizard_Search {
     public function __construct() {
+        error_log('Search param: ' . $search . ', Limit: ' . $limit);
+        error_log('Products by SKU: ' . print_r($products_by_sku, true));
+        error_log('Products by Title: ' . print_r($products_by_title, true));
+        error_log('Final Product IDs: ' . print_r($product_ids, true));
         // Register the REST API route on init.
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }

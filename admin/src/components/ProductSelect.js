@@ -28,8 +28,13 @@ const ProductSelect = () => {
             setError(null);
 
             apiFetch({
+<<<<<<< HEAD
                 path: `/link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=13`,
                 })
+=======
+                path: `link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=20`
+              })
+>>>>>>> 7f753d9d (Fix REST API product search: ensure endpoint always registered, correct permission callback, JS root/nonce setup, and PHP search logic. Now returns results as expected. See session summary for details.)
                 .then((products) => {
                     // Filter out products that are already selected
                     const newResults = products.filter(

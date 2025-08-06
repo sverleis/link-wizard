@@ -12,3 +12,10 @@ document.addEventListener(
         }
     }
 );
+
+import apiFetch from '@wordpress/api-fetch';
+
+if (typeof window.wpApiSettings !== 'undefined') {
+    apiFetch.use(apiFetch.createRootURLMiddleware(window.wpApiSettings.root));
+    apiFetch.use(apiFetch.createNonceMiddleware(window.wpApiSettings.nonce));
+}
