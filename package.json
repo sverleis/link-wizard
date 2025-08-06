@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "build": "wp-scripts build src/index.js --output-path=build --output-filename=link-wizard-admin.js",
+        "build": "wp-scripts build adminsrc/index.js --output-path=admin/build --output-filename=link-wizard-admin.js",
         "dev": "webpack --mode development --watch"
     },
     "devDependencies": {

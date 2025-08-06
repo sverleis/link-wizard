@@ -78,11 +78,7 @@ class Link_Wizard {
         require_once LINK_WIZARD_PATH . 'admin/class-link-wizard-admin.php';
 
         /**
-<<<<<<< HEAD
-         * The class responsible for the product search REST endpoint.
-=======
          *  The class responsible for handling the search functionality.
->>>>>>> 7f753d9d (Fix REST API product search: ensure endpoint always registered, correct permission callback, JS root/nonce setup, and PHP search logic. Now returns results as expected. See session summary for details.)
          */
         require_once LINK_WIZARD_PATH . 'includes/class-link-wizard-search.php';
 

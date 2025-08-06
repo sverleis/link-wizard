@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The admin-specific functionality of the plugin.
  * 
@@ -64,27 +65,6 @@ class Link_Wizard_Admin {
      * @since 1.0.0
      */
     public function enqueue_scripts() {
-<<<<<<< HEAD
-        $asset_file = include( plugin_dir_path( __FILE__ ) . 'build/link-wizard-admin.asset.php' );
-
-        wp_enqueue_script(
-            $this->plugin_name,
-            plugins_url( 'build/link-wizard-admin.js', __FILE__ ),
-            $asset_file['dependencies'],
-            $asset_file['version'],
-            true
-        );
-
-        // Pass the REST API settings to the script.
-        wp_localize_script(
-            $this->plugin_name,
-            'wpApiSettings',
-            array(
-                'root'  => esc_url_raw( rest_url() ),
-                'nonce' => wp_create_nonce( 'wp_rest' ),
-            )
-        );
-=======
         wp_enqueue_script( 
             $this->plugin_name, 
             plugin_dir_url( __FILE__ ) . 'build/link-wizard-admin.js', 
@@ -94,11 +74,14 @@ class Link_Wizard_Admin {
         );
         
         // Pass REST API root and nonce to JS
-    wp_localize_script( $this->plugin_name, 'wpApiSettings', array(
-        'root'  => esc_url_raw( rest_url() ),
-        'nonce' => wp_create_nonce( 'wp_rest' ),
-    ));
->>>>>>> 7f753d9d (Fix REST API product search: ensure endpoint always registered, correct permission callback, JS root/nonce setup, and PHP search logic. Now returns results as expected. See session summary for details.)
+        wp_localize_script(
+            $this->plugin_name,
+            'wpApiSettings',
+            array(
+                'root' => esc_url_raw( rest_url() ),
+                'nonce' => wp_create_nonce( 'wp_rest' ),
+            )
+        );
     }
 
     /**
@@ -123,4 +106,5 @@ class Link_Wizard_Admin {
     public function display_link_wizard_page() {
         require_once 'partials/link-wizard-admin-display.php';
     }
+
 }
