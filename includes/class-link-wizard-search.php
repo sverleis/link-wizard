@@ -11,11 +11,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Link_Wizard_Search {
+    /**
+     * Product handler manager instance.
+     *
+     * @var Product_Handler_Manager
+     */
+    private $handler_manager;
+
+    /**
+     * Constructor.
+     */
     public function __construct() {
-        error_log('Search param: ' . $search . ', Limit: ' . $limit);
-        error_log('Products by SKU: ' . print_r($products_by_sku, true));
-        error_log('Products by Title: ' . print_r($products_by_title, true));
-        error_log('Final Product IDs: ' . print_r($product_ids, true));
+        // Initialize the product handler manager
+        $this->handler_manager = new Product_Handler_Manager();
+        
         // Register the REST API route on init.
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }
@@ -80,15 +89,15 @@ class Link_Wizard_Search {
         foreach ( $product_ids as $product_id ) {
             $product = wc_get_product( $product_id );
             if ( $product ) {
-                $results[] = array(
-                    'id'    => $product->get_id(),
-                    'name'  => $product->get_name(),
-                    'sku'   => $product->get_sku(),
-                    'price' => $product->get_price(),
-                    'image' => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
-                );
+                // Use the product handler manager to get results
+                $product_results = $this->handler_manager->get_search_results( $product );
+                $results = array_merge( $results, $product_results );
             }
         }
+        
+        // Limit results to requested limit
+        $results = array_slice( $results, 0, $limit );
+        
         return rest_ensure_response( $results );
     }
 }

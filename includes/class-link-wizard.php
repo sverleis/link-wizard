@@ -78,6 +78,14 @@ class Link_Wizard {
         require_once LINK_WIZARD_PATH . 'admin/class-link-wizard-admin.php';
 
         /**
+         * Product handler interface and classes.
+         */
+        require_once LINK_WIZARD_PATH . 'includes/product-handlers/class-product-handler-interface.php';
+        require_once LINK_WIZARD_PATH . 'includes/product-handlers/class-product-handler-manager.php';
+        require_once LINK_WIZARD_PATH . 'includes/product-handlers/class-simple-product-handler.php';
+        require_once LINK_WIZARD_PATH . 'includes/product-handlers/class-variable-product-handler.php';
+
+        /**
          *  The class responsible for handling the search functionality.
          */
         require_once LINK_WIZARD_PATH . 'includes/class-link-wizard-search.php';
