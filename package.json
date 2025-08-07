@@ -2,10 +2,10 @@
     "name": "link-wizard-for-woocommerce",
     "version": "1.0.0",
     "private": true,
-    "scripts": {
-        "build": "wp-scripts build adminsrc/index.js --output-path=admin/build --output-filename=link-wizard-admin.js",
-        "dev": "webpack --mode development --watch"
-    },
+"scripts": {
+    "build": "wp-scripts build adminsrc/index.js --output-path=admin/build --output-filename=link-wizard-admin.js",
+    "dev": "wp-scripts start admin/src/index.js --output-path=admin/build --output-filename=link-wizard-admin.js"
+},
     "devDependencies": {
         "@babel/core": "^7.24.1",
         "@babel/preset-env": "^7.27.1",

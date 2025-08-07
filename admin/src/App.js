@@ -8,7 +8,7 @@ import GenerateLink from './components/GenerateLink';
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
     const [linkType, setLinkType] = useState('addToCart');
-    // More to come as we build out the extension.
+    // More to come as we build out the extension further.
 
     const nextStep = () => {
         setCurrentStep((prevStep) => prevStep + 1);
