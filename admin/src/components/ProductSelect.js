@@ -170,11 +170,26 @@ const ProductSelect = ({ linkType }) => {
 
         setError(null);
 
-        // Convert attributes object to JSON string for API
-        const attributesJson = Object.keys(attributes).length > 0 ? JSON.stringify(attributes) : '';
+        // Filter out any empty or falsy attribute values
+        const validAttributes = {};
+        Object.keys(attributes).forEach(key => {
+            if (attributes[key] && attributes[key].trim() !== '') {
+                validAttributes[key] = attributes[key];
+            }
+        });
+
+        // If no valid attributes, clear variations and return early
+        if (Object.keys(validAttributes).length === 0) {
+            setFilteredVariations(prev => ({ ...prev, [product.id]: [] }));
+            setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
+            return;
+        }
+
+        // Convert valid attributes object to JSON string for API
+        const attributesJson = JSON.stringify(validAttributes);
 
         apiFetch({
-            path: `link-wizard/v1/products/${product.id}/filtered-variations${attributesJson ? `?attributes=${encodeURIComponent(attributesJson)}` : ''}`
+            path: `link-wizard/v1/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`
         })
             .then((variationData) => {
                 setFilteredVariations(prev => ({ ...prev, [product.id]: variationData }));
@@ -300,15 +315,15 @@ const ProductSelect = ({ linkType }) => {
                     {/* Reset Filters CTA */}
                     <button
                         onClick={() => {
-                            // Reset all attributes for this product
-                            const resetAttributes = {};
+                            // Reset all attributes for this product by removing them completely
+                            const newAttributes = { ...selectedAttributes };
                             product.attributes.forEach(attr => {
-                                resetAttributes[attr.slug] = '';
+                                delete newAttributes[attr.slug];
                             });
-                            setSelectedAttributes(prev => ({
-                                ...prev,
-                                ...resetAttributes
-                            }));
+                            setSelectedAttributes(newAttributes);
+                            
+                            // Clear filtered variations for this product since no filters are active
+                            setFilteredVariations(prev => ({ ...prev, [product.id]: [] }));
                         }}
                         style={{
                             padding: '4px 12px',
