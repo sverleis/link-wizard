@@ -100,9 +100,21 @@ class Link_Wizard {
 
         $this->loader = new Link_Wizard_Loader();
         
-        // Initialize the search functionality
-        $this->search = new Link_Wizard_Search();
+        // Don't instantiate the search functionality here - wait until it's needed
+        $this->search = null;
 
+    }
+
+    /**
+     * Get the search instance, creating it if needed.
+     *
+     * @return Link_Wizard_Search
+     */
+    private function get_search() {
+        if ( $this->search === null ) {
+            $this->search = new Link_Wizard_Search();
+        }
+        return $this->search;
     }
 
     /**
@@ -120,7 +132,7 @@ class Link_Wizard {
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
         // Hook the search functionality to register REST API routes
-        $this->loader->add_action( 'rest_api_init', $this->search, 'register_routes' );
+        $this->loader->add_action( 'rest_api_init', $this->get_search(), 'register_routes' );
 
     }
 
