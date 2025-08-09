@@ -14,18 +14,20 @@ const ProductSelect = ({ linkType }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    // Remove the local linkType state since it's now passed as a prop
-    const [modalImage, setModalImage] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     const [showingVariations, setShowingVariations] = useState(false);
     const [currentVariableProduct, setCurrentVariableProduct] = useState(null);
     const [variations, setVariations] = useState([]);
     const [isLoadingVariations, setIsLoadingVariations] = useState(false);
+    const [filteredVariations, setFilteredVariations] = useState({});
+    const [showingAllVariations, setShowingAllVariations] = useState({});
+    const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({});
     const [selectedAttributes, setSelectedAttributes] = useState({});
-    const [filteredVariations, setFilteredVariations] = useState({}); // Changed to object to track per product
-    const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({}); // Track loading per product
-    const [showingAllVariations, setShowingAllVariations] = useState({}); // Track which products are showing all variations
-    const [replaceProduct, setReplaceProduct] = useState(null); // State for replace confirmation
+    const [replaceProduct, setReplaceProduct] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    // New state for fade-out animation
+    const [removingProducts, setRemovingProducts] = useState(new Set());
+    const [addingProducts, setAddingProducts] = useState(new Set());
 
     // Get i18n translations from PHP
     const i18n = window.linkWizardI18n || {};
@@ -69,43 +71,33 @@ const ProductSelect = ({ linkType }) => {
         };
     }, [searchTerm, selectedProducts]); // Rerun effect if searchTerm or selectedProducts change.
 
-    // Add to selected products and remove from results.
+    // Handle product selection
     const handleSelectProduct = (product) => {
-        if (linkType === 'addToCart') {
-            // Add-to-Cart: Only allow 1 product, but can have multiple quantities
-            if (selectedProducts.length === 0) {
-                // First product - add it
-                setSelectedProducts([{ ...product, quantity: 1 }]);
-            } else if (selectedProducts[0].id === product.id) {
-                // Same product - increase quantity
-                setSelectedProducts(selectedProducts.map(p =>
-                    p.id === product.id
-                        ? { ...p, quantity: p.quantity + 1 }
-                        : p
-                ));
+        // Add product to adding state for animation
+        setAddingProducts(prev => new Set(prev).add(product.id));
+        
+        // After a brief delay to show the "Added" message, complete the selection
+        setTimeout(() => {
+            if (linkType === 'addToCart') {
+                if (selectedProducts.length > 0 && selectedProducts[0].id !== product.id) {
+                    setReplaceProduct({ old: selectedProducts[0], new: product });
+                } else {
+                    setSelectedProducts([{ ...product, quantity: 1 }]);
+                }
             } else {
-                // Different product - show replace option
-                setReplaceProduct({
-                    current: selectedProducts[0],
-                    new: product,
-                    show: true
-                });
-            }
-        } else {
-            // Checkout-Link: Allow multiple products, each with their own quantity
-            const existingProduct = selectedProducts.find(p => p.id === product.id);
-            if (existingProduct) {
-                // Product already selected, update quantity
-                setSelectedProducts(selectedProducts.map(p =>
-                    p.id === product.id
-                        ? { ...p, quantity: p.quantity + 1 }
-                        : p
-                ));
-            } else {
-                // Add new product
                 setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
             }
-        }
+            
+            // Remove from search results
+            setResults(prev => prev.filter(p => p.id !== product.id));
+            
+            // Clear the adding state
+            setAddingProducts(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(product.id);
+                return newSet;
+            });
+        }, 800); // 800ms delay for the animation
     };
 
     const handleRemoveProduct = (productToRemove) => {
@@ -130,13 +122,13 @@ const ProductSelect = ({ linkType }) => {
 
     // Handling of the image modal
     const handleImageClick = (imageUrl) => {
-        setModalImage(imageUrl);
-        setShowModal(true);
+        setSelectedImage(imageUrl);
+        setIsImageModalOpen(true);
     };
 
     const closeModal = () => {
-        setShowModal(false);
-        setModalImage(null);
+        setIsImageModalOpen(false);
+        setSelectedImage(null);
     };
 
     // Load variations for a variable product
@@ -528,35 +520,59 @@ const ProductSelect = ({ linkType }) => {
                                         borderRadius: '4px',
                                         marginBottom: '8px',
                                         backgroundColor: '#fff',
-                                        transition: 'background-color 0.2s'
+                                        transition: 'all 0.3s ease-in-out',
+                                        opacity: addingProducts.has(product.id) ? 0.6 : 1,
+                                        transform: addingProducts.has(product.id) ? 'scale(0.98)' : 'scale(1)'
                                     }}
                                 >
-                                    {/* Product Header - Clickable */}
-                                    <div
-                                        onClick={() => {
-                                            if (product.type === 'variable') {
-                                                // For variable products, we'll handle selection differently
-                                                // Don't do anything on click - let user use filters
-                                            } else {
-                                                handleSelectProduct(product);
-                                            }
-                                        }}
-                                        style={{
+                                    {/* Show "Added" message when product is being added */}
+                                    {addingProducts.has(product.id) ? (
+                                        <div style={{
                                             display: 'flex',
                                             alignItems: 'center',
-                                            cursor: product.type === 'variable' ? 'default' : 'pointer',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (product.type !== 'variable') {
-                                                e.target.style.backgroundColor = '#f5f5f5';
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (product.type !== 'variable') {
-                                                e.target.style.backgroundColor = '#fff';
-                                            }
-                                        }}
-                                    >
+                                            justifyContent: 'center',
+                                            padding: '20px',
+                                            color: '#28a745',
+                                            fontSize: '16px',
+                                            fontWeight: 'bold',
+                                            backgroundColor: '#d4edda',
+                                            border: '1px solid #c3e6cb',
+                                            borderRadius: '4px'
+                                        }}>
+                                            <span className="dashicons dashicons-yes-alt" style={{ 
+                                                marginRight: '8px',
+                                                fontSize: '20px'
+                                            }} />
+                                            {i18n.added || 'Added!'}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {/* Product Header - Clickable */}
+                                            <div
+                                                onClick={() => {
+                                                    if (product.type === 'variable') {
+                                                        // For variable products, we'll handle selection differently
+                                                        // Don't do anything on click - let user use filters
+                                                    } else {
+                                                        handleSelectProduct(product);
+                                                    }
+                                                }}
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    cursor: product.type === 'variable' ? 'default' : 'pointer',
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (product.type !== 'variable') {
+                                                        e.target.style.backgroundColor = '#f5f5f5';
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (product.type !== 'variable') {
+                                                        e.target.style.backgroundColor = '#fff';
+                                                    }
+                                                }}
+                                            >
                                         <div style={{
                                             display: 'flex',
                                             alignItems: 'center',
@@ -778,6 +794,8 @@ const ProductSelect = ({ linkType }) => {
                                      !isLoadingFilteredVariations[product.id] && (
                                         <NoVariationsNotice product={product} />
                                     )}
+                                        </>
+                                    )}
                                 </li>
                             ))}
                         </ul>
@@ -906,7 +924,7 @@ const ProductSelect = ({ linkType }) => {
                 )}
 
                 {/* Image Modal */}
-                {showModal && modalImage && (
+                {isImageModalOpen && selectedImage && (
                     <div style={{
                         position: 'fixed',
                         top: 0,
@@ -946,7 +964,7 @@ const ProductSelect = ({ linkType }) => {
                                 ×
                             </button>
                             <img 
-                                src={modalImage} 
+                                src={selectedImage} 
                                 alt={i18n.productImageAlt || 'Product'} 
                                 style={{
                                     maxWidth: '100%',
