@@ -45,6 +45,9 @@ class Link_Wizard_Admin {
     public function __construct( $plugin_name, $version ) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        
+        // Hook up AJAX handlers
+        add_action( 'wp_ajax_link_wizard_search_coupons', array( $this, 'ajax_search_coupons' ) );
     }
 
     /**
@@ -79,6 +82,16 @@ class Link_Wizard_Admin {
             array(
                 'root' => esc_url_raw( rest_url() ),
                 'nonce' => wp_create_nonce( 'wp_rest' ),
+            )
+        );
+
+        // Pass AJAX settings to JS
+        wp_localize_script(
+            $this->plugin_name,
+            'linkWizardAjax',
+            array(
+                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+                'nonce' => wp_create_nonce( 'link_wizard_ajax_nonce' ),
             )
         );
 
@@ -150,4 +163,13 @@ class Link_Wizard_Admin {
         require_once 'partials/link-wizard-admin-display.php';
     }
 
+    /**
+     * AJAX handler for searching coupons
+     * 
+     * @deprecated Use REST API endpoint /wp-json/link-wizard/v1/coupons instead
+     */
+    public function ajax_search_coupons() {
+        // This method is deprecated - use the REST API endpoint instead
+        wp_die('This endpoint is deprecated. Use the REST API endpoint /wp-json/link-wizard/v1/coupons instead.');
+    }
 }

@@ -11,6 +11,10 @@ function App() {
     // Add redirect state management
     const [redirectOption, setRedirectOption] = useState('cart');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
+    // Add coupon state management - now handles coupon objects
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
+    // Add product selection state management
+    const [selectedProducts, setSelectedProducts] = useState([]);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -25,6 +29,10 @@ function App() {
         setCurrentStep(1);
         // Reset other state to here, too.
         setLinkType('checkoutLink');
+        setRedirectOption('cart');
+        setSelectedRedirectPage(null);
+        setSelectedCoupon(null);
+        setSelectedProducts([]);
     };
 
     const renderStep = () => {
@@ -32,7 +40,11 @@ function App() {
             case 1: 
                 return <LinkType linkType={linkType} setLinkType={setLinkType} />;
             case 2:
-                return <ProductSelect linkType={linkType} />;
+                return <ProductSelect 
+                    linkType={linkType} 
+                    selectedProducts={selectedProducts}
+                    setSelectedProducts={setSelectedProducts}
+                />;
             case 3:
                 if (linkType === 'addToCart') {
                     return <Redirect 
@@ -43,7 +55,10 @@ function App() {
                     />;
                 } 
                 if (linkType === 'checkoutLink') {
-                    return <Coupon />;
+                    return <Coupon 
+                        selectedCoupon={selectedCoupon}
+                        setSelectedCoupon={setSelectedCoupon}
+                    />;
                 }
             case 4:
                 // In the real implementation, the Next step from Options would trigger the link generation.

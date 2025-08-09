@@ -8,10 +8,9 @@ if (typeof wpApiSettings !== 'undefined') {
     apiFetch.use(apiFetch.createRootURLMiddleware(wpApiSettings.root));
 }
 
-const ProductSelect = ({ linkType }) => {
+const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
-    const [selectedProducts, setSelectedProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showingVariations, setShowingVariations] = useState(false);
@@ -31,6 +30,12 @@ const ProductSelect = ({ linkType }) => {
 
     // Get i18n translations from PHP
     const i18n = window.linkWizardI18n || {};
+
+    // Initialize component with passed selected products
+    useEffect(() => {
+        // This effect runs when selectedProducts prop changes
+        // This ensures the component shows previously selected products when navigating back
+    }, [selectedProducts]);
 
     // Debounce search term to avoid excessive API calls
     useEffect(() => {
