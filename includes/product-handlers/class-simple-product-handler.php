@@ -82,3 +82,4 @@ class Simple_Product_Handler implements Product_Handler_Interface {
         return $product->is_purchasable() && $product->is_in_stock();
     }
 }
+

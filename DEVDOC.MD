@@ -59,21 +59,41 @@ Link Wizard for WooCommerce is a plugin that allows administrators to generate d
 
 ### 4. Variable Product Support
 **Files Modified:**
-- `includes/class-link-wizard-search.php` (original implementation)
-- `includes/product-handlers/class-variable-product-handler.php` (refactored)
+- `includes/class-link-wizard-search.php` (new variations and filtered variations endpoints)
+- `includes/product-handlers/class-variable-product-handler.php` (refactored with attribute support)
+- `admin/src/components/ProductSelect.js` (enhanced UI with attribute filtering)
 
 **Features Implemented:**
+- Shows parent variable products in search results with variation count
+- **Attribute-based filtering**: Dropdown menus for each attribute (color, size, etc.)
+- **Dynamic variation loading**: Real-time filtering as attributes are selected
+- **Inline variation selection**: Select specific variations without leaving search results
+- **Smart UI**: Expandable product cards with attribute filters
 - Automatic variation detection for variable products
 - Filtering of variations with "Any" attributes (invalid variations)
 - Variation-specific data (SKU, price, attributes, images)
 - Descriptive variation names (e.g., "T-Shirt - Red, Large")
 - Parent product context preservation
+- Price range display for variable products
 
 **Technical Details:**
+- New REST endpoints: 
+  - `/link-wizard/v1/products/{id}/variations` (all variations)
+  - `/link-wizard/v1/products/{id}/filtered-variations` (filtered by attributes)
+- `get_attributes()` method to get available attributes and values
+- `get_filtered_variations()` method for attribute-based filtering
 - Uses `get_available_variations()` to get all valid variations
 - Filters out variations with empty/null attributes
 - Returns variation-specific images or falls back to parent image
 - Includes parent product ID and name for context
+- React state management for attribute selections and filtered variations per product
+- JSON-based attribute filtering with URL encoding
+- Enhanced error handling with helpful messages and edit links
+- Per-product loading states and variation tracking
+- **Fixed REST API registration** through proper WordPress hooks
+- **"Show All Variations" button** for better UX
+- **Toggle functionality** to show/hide all variations
+- **Improved variation selection** with proper state management
 
 ### 5. Extensible Product Handler Architecture
 **Files Created:**
@@ -112,7 +132,70 @@ Link Wizard for WooCommerce is a plugin that allows administrators to generate d
 - `npm run build`: Production build
 - `npm run dev`: Development build with watching (currently manual rebuilds)
 
-### 7. Authentication & Security
+### 7. UI/UX Improvements and Styling Strategy
+**Files Modified:**
+- `admin/src/components/ProductSelect.js`
+
+**Features Implemented:**
+- **Resource-Efficient Design**: Replaced product images with WordPress dashicons
+- **Modal Image Viewer**: Click-to-view full-size images in modal overlay
+- **Enhanced Styling**: Improved layout, spacing, and visual hierarchy
+- **Performance Optimization**: Eliminated image loading in search results
+
+**Technical Implementation:**
+- **State Management**: Added `modalImage` and `showModal` state variables
+- **Event Handlers**: `handleImageClick()` and `closeModal()` functions
+- **Conditional Rendering**: Different icons for products with/without images
+- **Responsive Modal**: Full-screen overlay with close functionality
+
+**Styling Strategy:**
+- **Current Approach**: Inline styles for rapid development and learning
+- **Future Approach**: Dedicated CSS files following WordPress/WooCommerce standards
+- **Learning Benefits**: Understanding CSS properties before moving to external files
+
+**WordPress Admin Integration:**
+- **Dashicons**: `dashicons-products` for search results, `dashicons-format-image` for image products
+- **Color Scheme**: WordPress admin colors (`#0073aa`, `#666`, `#ddd`, `#f9f9f9`)
+- **Spacing Standards**: WordPress admin spacing patterns (8px, 12px, 16px, 24px)
+- **Typography**: WordPress admin font stack and sizing
+
+**Performance Benefits:**
+- **Reduced Bandwidth**: No image loading in search results
+- **Faster Initial Load**: Dashicons load instantly
+- **Lazy Loading**: Images only load when modal is opened
+- **Memory Efficiency**: No image caching in DOM
+
+### 8. Internationalization (i18n) System
+**Files Modified:**
+- `includes/class-link-wizard-i18n.php` (new file)
+- `admin/class-link-wizard-admin.php` (updated)
+- `includes/class-link-wizard-search.php` (updated)
+- `admin/src/components/ProductSelect.js` (updated)
+
+**Features Implemented:**
+- **Complete i18n setup** with textdomain loading
+- **Centralized text management** in `Link_Wizard_i18n` class
+- **PHP-to-JavaScript translation passing** via `wp_localize_script`
+- **Organized text categories**: UI elements, error messages, API responses
+- **Fallback text** for missing translations
+- **Formatted text support** with sprintf-style placeholders
+
+**Technical Implementation:**
+- `load_plugin_textdomain()` for translation file loading
+- `get_admin_text()` for simple translations
+- `get_admin_text_formatted()` for formatted translations with variables
+- `get_api_text()` for API-specific translations
+- `wp_localize_script()` to pass translations to React components
+- Fallback text in React components for missing translations
+
+**Translation Categories:**
+- **Product Search Interface**: Labels, placeholders, buttons
+- **Error Messages**: User-facing and API error messages
+- **UI Elements**: Navigation, loading states, badges
+- **Link Types**: Add-to-cart and checkout link labels
+- **Price Formatting**: Locale-aware currency display (handled by WooCommerce)
+
+### 9. Authentication & Security
 **Files Modified:**
 - `includes/class-link-wizard-search.php`
 - `admin/class-link-wizard-admin.php`
@@ -130,10 +213,12 @@ Link Wizard for WooCommerce is a plugin that allows administrators to generate d
 ### ✅ Completed Features
 1. **Product Search**: Fully functional with real-time search
 2. **Product Selection**: UI for selecting products with quantity controls
-3. **Variable Product Support**: Handles variations correctly
+3. **Variable Product Support**: Shows parent products with variation selection
 4. **Extensible Architecture**: Plugin-based product handler system
 5. **Authentication**: Secure admin-only access
 6. **Build System**: Working webpack configuration
+7. **UI/UX Improvements**: Resource-efficient design with dashicons and modal system
+8. **Internationalization**: Complete i18n system for easy translation
 
 ### 🔄 In Progress
 1. **Auto-rebuild**: Development mode needs fixing (currently using manual builds)
@@ -144,6 +229,8 @@ Link Wizard for WooCommerce is a plugin that allows administrators to generate d
 2. **Link Type Selection**: Add UI for choosing between add-to-cart and checkout links
 3. **Link Preview**: Show generated links with copy functionality
 4. **Additional Product Types**: Support for grouped, external, and other product types
+5. **CSS Migration**: Move inline styles to dedicated CSS files following WordPress standards
+6. **Facebook Commerce Integration**: Implement checkout URL endpoint for Meta/Facebook shops
 
 ## Technical Architecture
 
@@ -216,6 +303,9 @@ link-wizard-for-woocommerce/
 3. **Bulk Operations**: Select multiple products at once
 4. **Link History**: Save and manage generated links
 5. **Export Options**: Export links in various formats
+6. **CSS Architecture**: Dedicated CSS files with WordPress/WooCommerce standards
+7. **Theme Integration**: Full compatibility with WordPress admin themes
+8. **Facebook Commerce Platform**: Meta checkout URL endpoint with product/coupon handling
 
 ### Potential Product Types
 1. **Grouped Products**: Handle product groups
@@ -228,6 +318,36 @@ link-wizard-for-woocommerce/
 2. **Pagination**: Handle large product catalogs
 3. **Lazy Loading**: Load product images on demand
 4. **Search Indexing**: Optimize search performance
+5. **CSS Optimization**: Minified CSS files with proper caching
+6. **Image Optimization**: WebP support and responsive images
+
+### Facebook Commerce Platform Integration
+**Reference**: [Meta Commerce Platform - Set Up Checkout URL](https://developers.facebook.com/docs/commerce-platform/setup-checkout-url)
+
+**Requirements**:
+1. **Checkout URL Endpoint**: Create dedicated endpoint for Meta/Facebook shops
+2. **Product Parameter Handling**: Parse comma-separated products with quantities (format: `products=12345:3,23456:1`)
+3. **Coupon Integration**: Handle optional coupon codes from URL parameters
+4. **Cart Management**: Clear existing cart and add new products from Meta
+5. **URL Decoding**: Handle RFC 3986 escaped characters (%2C for comma, %3A for colon)
+6. **Error Handling**: Manage out-of-stock products and invalid coupons
+7. **Mobile Optimization**: Ensure checkout experience works on mobile devices
+8. **Tracking Parameters**: Handle UTM parameters and Facebook Click ID (fbclid)
+
+**URL Parameters to Support**:
+- `products`: Comma-separated product IDs with quantities
+- `coupon`: Optional coupon code
+- `fbclid`: Facebook Click ID for tracking
+- `cart_origin`: Source app (facebook, instagram, meta_shops)
+- `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`: UTM tracking parameters
+
+**Implementation Notes**:
+- Must clear cart before adding new products
+- Validate product availability and stock levels
+- Apply coupon codes automatically
+- Ensure guest checkout is enabled
+- Support express payment methods (PayPal, Apple Pay)
+- Handle mobile-optimized checkout experience
 
 ---
 

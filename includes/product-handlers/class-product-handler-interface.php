@@ -50,3 +50,4 @@ interface Product_Handler_Interface {
      */
     public function is_valid_for_links( $product );
 }
+

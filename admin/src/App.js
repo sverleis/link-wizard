@@ -7,7 +7,7 @@ import GenerateLink from './components/GenerateLink';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
-    const [linkType, setLinkType] = useState('addToCart');
+    const [linkType, setLinkType] = useState('checkoutLink');
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -21,7 +21,7 @@ function App() {
     const startOver = () => {
         setCurrentStep(1);
         // Reset other state to here, too.
-        setLinkType('addToCart');
+        setLinkType('checkoutLink');
     };
 
     const renderStep = () => {
@@ -29,7 +29,7 @@ function App() {
             case 1: 
                 return <LinkType linkType={linkType} setLinkType={setLinkType} />;
             case 2:
-                return <ProductSelect />;
+                return <ProductSelect linkType={linkType} />;
             case 3:
                 if (linkType === 'addToCart') {
                     return <Redirect />;

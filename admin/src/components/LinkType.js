@@ -11,16 +11,16 @@ const LinkType = ({ linkType, setLinkType }) => {
                         <input
                             type="radio"
                             name="link_type"
-                            value="addToCart"
-                            checked={linkType === 'addToCart'}
+                            value="checkoutLink"
+                            checked={linkType === 'checkoutLink'}
                             onChange={(e) => setLinkType(e.target.value)}
                         />
-                        <span>Add-To-Cart Link</span>
+                        <span>Checkout-Link URL</span>
                     </label>
 
                     <p className="description">
-                        Creates a link that adds product(s) to the cart. Multiple quantities available, and can be 
-                        customized to redirect to a specific page or post.
+                        Creates a link that takes the customer directly to the checkout page with prefilled product(s) 
+                        and an optional coupon.
                     </p>
                 </div>
 
@@ -29,15 +29,16 @@ const LinkType = ({ linkType, setLinkType }) => {
                         <input
                             type="radio"
                             name="link_type"
-                            value="checkoutLink"
-                            checked={linkType === 'checkoutLink'}
+                            value="addToCart"
+                            checked={linkType === 'addToCart'}
                             onChange={(e) => setLinkType(e.target.value)}
                         />
-                        <span>Direct Checkout Link</span>
+                        <span>Add-to-Cart URL</span>
                     </label>
+
                     <p className="description">
-                        Creates a link that takes the customer directly to the checkout page with prefilled product(s) 
-                        and an optional coupon.
+                        Creates a link that adds product(s) to the cart. Multiple quantities available, and can be 
+                        customized to redirect to a specific page or post.
                     </p>
                 </div>
             </fieldset>
