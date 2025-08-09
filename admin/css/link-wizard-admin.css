@@ -103,3 +103,467 @@
 .form-step-navigation .button-primary:first-child:last-child {
     margin-left: auto;
 }
+
+/* =============================================================================
+   Reusable Search Component System
+   ============================================================================= */
+
+/* Search results container - can be used for products, coupons, pages, etc. */
+.lw-search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual search result item */
+.lw-search-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: var(--wp-admin-card-background, #fff);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* Hover state for search items */
+.lw-search-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+    box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+}
+
+/* Search item when being added/selected (loading state) */
+.lw-search-item.adding {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
+/* Search item when selected */
+.lw-search-item.selected {
+    border-color: #28a745;
+    box-shadow: 0 0 0 1px #28a745;
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Main content area of search item */
+.lw-search-item-content {
+    display: flex;
+    align-items: center;
+}
+
+/* Icon/image placeholder for search items */
+.lw-search-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #f0f0f0;
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 3px;
+    margin-right: 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Main icon in the placeholder */
+.lw-search-item-icon .dashicons {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Image icon styling */
+.lw-search-item-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+/* Small overlay icon (like magnifying glass) */
+.lw-search-item-icon .lw-overlay-icon {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: 10px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Details section of search item */
+.lw-search-item-details {
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+/* Primary title/name */
+.lw-search-item-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    word-wrap: break-word;
+}
+
+/* Secondary info (like SKU) */
+.lw-search-item-meta {
+    color: var(--wp-admin-secondary-text-color, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+/* Tertiary info (like price) */
+.lw-search-item-price {
+    color: var(--wp-admin-theme-color, #0073aa);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Badge/tag styling (like "Variable Product") */
+.lw-search-item-badge {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/* Success/confirmation state */
+.lw-search-item-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #28a745;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+}
+
+.lw-search-item-success .dashicons {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* Action area (right side of search item) */
+.lw-search-item-actions {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lw-search-item-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .lw-search-item-icon {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+    
+    .lw-search-item-details {
+        width: 100%;
+    }
+}
+
+/* =============================================================================
+   Selected Items Component System
+   ============================================================================= */
+
+/* Container for selected items section */
+.lw-selected-items {
+    margin-top: 20px;
+}
+
+.lw-selected-items h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* List container for selected items */
+.lw-selected-items-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual selected item */
+.lw-selected-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.lw-selected-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+/* Main content area of selected item */
+.lw-selected-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Left side - product info */
+.lw-selected-item-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icon/image area for selected items (larger than search results) */
+.lw-selected-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.lw-selected-item-icon .dashicons {
+    font-size: 20px;
+    color: #666;
+}
+
+.lw-selected-item-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+/* Overlay icon for selected items */
+.lw-selected-item-icon .lw-overlay-icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 12px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Text content for selected items */
+.lw-selected-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.lw-selected-item-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    word-wrap: break-word;
+}
+
+.lw-selected-item-price {
+    color: var(--wp-admin-secondary-text-color, #666);
+    font-size: 14px;
+}
+
+/* Right side - controls */
+.lw-selected-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* Quantity label */
+.lw-selected-item-qty-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* Quantity input */
+.lw-selected-item-qty-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.lw-selected-item-qty-input:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+/* Remove button */
+.lw-selected-item-remove {
+    padding: 6px 12px;
+    background: var(--wp-admin-notification-color, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.lw-selected-item-remove:hover {
+    background: #c82333;
+}
+
+.lw-selected-item-remove:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+/* Responsive adjustments for selected items */
+@media (max-width: 768px) {
+    .lw-selected-item-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .lw-selected-item-info {
+        gap: 12px;
+    }
+    
+    .lw-selected-item-controls {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .lw-selected-item-qty-input {
+        width: 80px;
+    }
+}
+
+/* =============================================================================
+   Dropdown Search Results (for PageSearch and similar components)
+   ============================================================================= */
+
+/* No results message */
+.lw-search-no-results {
+    color: var(--wp-admin-secondary-text-color, #666);
+    font-style: italic;
+    padding: 15px;
+    text-align: center;
+    background: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* =============================================================================
+   Confirmation Modal Styles
+   ============================================================================= */
+
+/* Modal overlay */
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+/* Modal content container */
+.modal-content {
+    position: relative;
+    max-width: 450px;
+    width: 100%;
+    background-color: var(--wp-admin-card-background, #fff);
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Modal title */
+.modal-content h3 {
+    margin-bottom: 15px;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-size: 18px;
+}
+
+/* Modal text */
+.modal-content p {
+    margin-bottom: 25px;
+    color: var(--wp-admin-secondary-text-color, #50575e);
+    line-height: 1.5;
+}
+
+/* Button container */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Modal buttons */
+.modal-buttons .button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 100px;
+    transition: background-color 0.2s ease;
+}
+
+.modal-buttons .button-primary {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+}
+
+.modal-buttons .button-primary:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #135e96);
+}
+
+.modal-buttons .button:not(.button-primary) {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal-buttons .button:not(.button-primary):hover {
+    background-color: #c82333;
+}
