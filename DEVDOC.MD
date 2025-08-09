@@ -306,6 +306,7 @@ link-wizard-for-woocommerce/
 6. **CSS Architecture**: Dedicated CSS files with WordPress/WooCommerce standards
 7. **Theme Integration**: Full compatibility with WordPress admin themes
 8. **Facebook Commerce Platform**: Meta checkout URL endpoint with product/coupon handling
+9. **Link Reverse Engineering**: Parse existing links to populate the workflow for quick edits
 
 ### Potential Product Types
 1. **Grouped Products**: Handle product groups
@@ -349,7 +350,40 @@ link-wizard-for-woocommerce/
 - Support express payment methods (PayPal, Apple Pay)
 - Handle mobile-optimized checkout experience
 
+### Link Reverse Engineering Feature
+
+**Overview**: Allow users to paste an existing WooCommerce link and automatically populate the workflow for quick edits and modifications.
+
+**User Experience**:
+1. **Step 1 Enhancement**: Add third option alongside "Checkout-Link URL" and "Add-to-Cart URL"
+2. **New Option**: "Edit Existing Link" with text input field
+3. **Workflow**: Parse link → Populate components → Allow modifications → Generate new link
+
+**Technical Implementation**:
+- **Link Parser**: Extract product IDs, quantities, and attributes from WooCommerce URLs
+- **State Population**: Automatically fill product selection, quantities, and link type
+- **Validation**: Verify products still exist and are available
+- **Error Handling**: Graceful fallback for invalid or expired links
+
+**Supported Link Formats**:
+- **Add-to-Cart**: `/cart/?add-to-cart=12345&quantity=2`
+- **Checkout**: `/checkout/?add-to-cart=12345:2,67890:1`
+- **Variable Products**: `/cart/?add-to-cart=12345&variation_id=67890&attribute_color=red&attribute_size=large`
+- **Facebook Commerce**: Custom checkout URLs with product parameters
+
+**Benefits**:
+- **Quick Edits**: Modify existing links without rebuilding from scratch
+- **Template Reuse**: Use successful links as starting points
+- **Bulk Modifications**: Change multiple products at once
+- **User Efficiency**: Reduce time spent on link creation
+
+**Future Considerations**:
+- **Link Templates**: Save and reuse common link configurations
+- **Version History**: Track changes made to existing links
+- **Bulk Link Processing**: Import multiple links for batch editing
+- **Link Validation**: Check if links are still functional and products are in stock
+
 ---
 
-*Last Updated: August 7, 2025*
+*Last Updated: August 9, 2025*
 *Version: 1.0.0*
