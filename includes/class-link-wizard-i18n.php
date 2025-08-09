@@ -97,6 +97,7 @@ class Link_Wizard_i18n {
             'no_variations_available' => __( 'No variations available', 'link-wizard-for-woocommerce' ),
             'no_variations_description' => __( 'This product has no purchasable variations. Please check the product configuration.', 'link-wizard-for-woocommerce' ),
             'added' => __( 'Added!', 'link-wizard-for-woocommerce' ),
+        'resetFilters' => __( 'Reset Filters', 'link-wizard-for-woocommerce' ),
         );
 
         return isset( $texts[ $key ] ) ? $texts[ $key ] : $key;

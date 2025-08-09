@@ -266,7 +266,7 @@ const ProductSelect = ({ linkType }) => {
                 }}>
                     {i18n.filterByAttributes || 'Filter by Attributes:'}
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'flex-end' }}>
                     {product.attributes.map((attribute) => (
                         <div key={attribute.slug} style={{ display: 'flex', flexDirection: 'column', minWidth: '120px' }}>
                             <label style={{ 
@@ -297,6 +297,42 @@ const ProductSelect = ({ linkType }) => {
                             </select>
                         </div>
                     ))}
+                    {/* Reset Filters CTA */}
+                    <button
+                        onClick={() => {
+                            // Reset all attributes for this product
+                            const resetAttributes = {};
+                            product.attributes.forEach(attr => {
+                                resetAttributes[attr.slug] = '';
+                            });
+                            setSelectedAttributes(prev => ({
+                                ...prev,
+                                ...resetAttributes
+                            }));
+                        }}
+                        style={{
+                            padding: '4px 12px',
+                            border: '1px solid #dc3545',
+                            borderRadius: '3px',
+                            fontSize: '12px',
+                            backgroundColor: '#fff',
+                            color: '#dc3545',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            height: 'fit-content',
+                            marginTop: '20px'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = '#dc3545';
+                            e.target.style.color = '#fff';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = '#fff';
+                            e.target.style.color = '#dc3545';
+                        }}
+                    >
+                        {i18n.resetFilters || 'Reset Filters'}
+                    </button>
                 </div>
                 {isLoadingFilteredVariations[product.id] && (
                     <div style={{ marginTop: '8px' }}>
@@ -448,58 +484,85 @@ const ProductSelect = ({ linkType }) => {
                                             marginBottom: '8px',
                                             cursor: 'pointer',
                                             backgroundColor: '#fff',
-                                            transition: 'background-color 0.2s'
+                                            transition: 'all 0.3s ease-in-out',
+                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
+                                            transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                         }}
                                         onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
                                         onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
                                     >
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            width: '32px',
-                                            height: '32px',
-                                            backgroundColor: '#f0f0f0',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '3px',
-                                            marginRight: '12px'
-                                        }}>
-                                            {variation.image ? (
-                                                <span 
-                                                    className="dashicons dashicons-format-image"
-                                                    style={{ 
-                                                        fontSize: '16px', 
-                                                        color: '#0073aa',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleImageClick(variation.image);
-                                                    }}
-                                                />
-                                            ) : (
-                                                <span 
-                                                    className="dashicons dashicons-products"
-                                                    style={{ 
-                                                        fontSize: '16px', 
-                                                        color: '#666'
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="product-details" style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>
-                                                {variation.name}
+                                        {/* Show "Added" message when variation is being added */}
+                                        {addingProducts.has(variation.id) ? (
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                padding: '20px',
+                                                color: '#28a745',
+                                                fontSize: '16px',
+                                                fontWeight: 'bold',
+                                                backgroundColor: '#d4edda',
+                                                border: '1px solid #c3e6cb',
+                                                borderRadius: '4px',
+                                                width: '100%'
+                                            }}>
+                                                <span className="dashicons dashicons-yes-alt" style={{ 
+                                                    marginRight: '8px',
+                                                    fontSize: '20px'
+                                                }} />
+                                                {i18n.added || 'Added!'}
                                             </div>
-                                            {variation.sku && (
-                                                <div style={{ color: '#666', fontSize: '12px' }}>
-                                                    {i18n.sku || 'SKU'}: {variation.sku}
+                                        ) : (
+                                            <>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    backgroundColor: '#f0f0f0',
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: '3px',
+                                                    marginRight: '12px'
+                                                }}>
+                                                    {variation.image ? (
+                                                        <span 
+                                                            className="dashicons dashicons-format-image"
+                                                            style={{ 
+                                                                fontSize: '16px', 
+                                                                color: '#0073aa',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleImageClick(variation.image);
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <span 
+                                                            className="dashicons dashicons-products"
+                                                            style={{ 
+                                                                fontSize: '16px', 
+                                                                color: '#666'
+                                                            }}
+                                                        />
+                                                    )}
                                                 </div>
-                                            )}
-                                            <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
-                                                                                                    {variation.price}
-                                            </div>
-                                        </div>
+                                                <div className="product-details" style={{ flex: 1 }}>
+                                                    <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+                                                        {variation.name}
+                                                    </div>
+                                                    {variation.sku && (
+                                                        <div style={{ color: '#666', fontSize: '12px' }}>
+                                                            {i18n.sku || 'SKU'}: {variation.sku}
+                                                        </div>
+                                                    )}
+                                                    <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
+                                                        {variation.price}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -741,47 +804,74 @@ const ProductSelect = ({ linkType }) => {
                                                             backgroundColor: '#fff',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
-                                                            transition: 'background-color 0.2s'
+                                                            transition: 'all 0.3s ease-in-out',
+                                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
+                                                            transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                                         }}
                                                         onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
                                                         onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
                                                     >
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            width: '24px',
-                                                            height: '24px',
-                                                            backgroundColor: '#f0f0f0',
-                                                            border: '1px solid #ddd',
-                                                            borderRadius: '3px',
-                                                            marginRight: '10px'
-                                                        }}>
-                                                            <span 
-                                                                className="dashicons dashicons-products"
-                                                                style={{ 
-                                                                    fontSize: '12px', 
-                                                                    color: '#666'
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <div style={{ flex: 1 }}>
-                                                            <div style={{ fontWeight: '500', marginBottom: '2px' }}>
-                                                                {variation.name}
+                                                        {/* Show "Added" message when variation is being added */}
+                                                        {addingProducts.has(variation.id) ? (
+                                                            <div style={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                padding: '15px',
+                                                                color: '#28a745',
+                                                                fontSize: '14px',
+                                                                fontWeight: 'bold',
+                                                                backgroundColor: '#d4edda',
+                                                                border: '1px solid #c3e6cb',
+                                                                borderRadius: '4px',
+                                                                width: '100%'
+                                                            }}>
+                                                                <span className="dashicons dashicons-yes-alt" style={{ 
+                                                                    marginRight: '8px',
+                                                                    fontSize: '16px'
+                                                                }} />
+                                                                {i18n.added || 'Added!'}
                                                             </div>
-                                                            {variation.sku && (
-                                                                <div style={{ color: '#666', fontSize: '11px' }}>
-                                                                    {i18n.sku || 'SKU'}: {variation.sku}
+                                                        ) : (
+                                                            <>
+                                                                <div style={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    width: '24px',
+                                                                    height: '24px',
+                                                                    backgroundColor: '#f0f0f0',
+                                                                    border: '1px solid #ddd',
+                                                                    borderRadius: '3px',
+                                                                    marginRight: '10px'
+                                                                }}>
+                                                                    <span 
+                                                                        className="dashicons dashicons-products"
+                                                                        style={{ 
+                                                                            fontSize: '12px', 
+                                                                            color: '#666'
+                                                                        }}
+                                                                    />
                                                                 </div>
-                                                            )}
-                                                        </div>
-                                                        <div style={{ 
-                                                            color: '#0073aa', 
-                                                            fontWeight: '500',
-                                                            fontSize: '14px'
-                                                        }}>
-                                                            {variation.price}
-                                                        </div>
+                                                                <div style={{ flex: 1 }}>
+                                                                    <div style={{ fontWeight: '500', marginBottom: '2px' }}>
+                                                                        {variation.name}
+                                                                    </div>
+                                                                    {variation.sku && (
+                                                                        <div style={{ color: '#666', fontSize: '11px' }}>
+                                                                            {i18n.sku || 'SKU'}: {variation.sku}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                <div style={{ 
+                                                                    color: '#0073aa', 
+                                                                    fontWeight: '500',
+                                                                    fontSize: '14px'
+                                                                }}>
+                                                                    {variation.price}
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
