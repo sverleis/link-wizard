@@ -8,6 +8,10 @@ import GenerateLink from './components/GenerateLink';
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
     const [linkType, setLinkType] = useState('checkoutLink');
+    // Add redirect state management
+    const [redirectOption, setRedirectOption] = useState('cart');
+    const [customRedirectUrl, setCustomRedirectUrl] = useState('');
+    const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -32,7 +36,14 @@ function App() {
                 return <ProductSelect linkType={linkType} />;
             case 3:
                 if (linkType === 'addToCart') {
-                    return <Redirect />;
+                    return <Redirect 
+                        redirectOption={redirectOption}
+                        setRedirectOption={setRedirectOption}
+                        customRedirectUrl={customRedirectUrl}
+                        setCustomRedirectUrl={setCustomRedirectUrl}
+                        selectedRedirectPage={selectedRedirectPage}
+                        setSelectedRedirectPage={setSelectedRedirectPage}
+                    />;
                 } 
                 if (linkType === 'checkoutLink') {
                     return <Coupon />;
