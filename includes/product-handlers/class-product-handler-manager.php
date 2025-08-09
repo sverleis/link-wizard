@@ -22,27 +22,31 @@ class Product_Handler_Manager {
      * Constructor.
      */
     public function __construct() {
-        $this->register_default_handlers();
+        // Don't register handlers immediately - use lazy loading
     }
 
     /**
      * Register the default product handlers.
      */
-    private function register_default_handlers() {
-        $this->register_handler( new Simple_Product_Handler() );
-        $this->register_handler( new Variable_Product_Handler() );
+    public function register_default_handlers() {
+        // Only register if not already registered
+        if ( empty( $this->handlers ) ) {
+            $this->register_handler( new Simple_Product_Handler() );
+            $this->register_handler( new Variable_Product_Handler() );
+        }
     }
 
     /**
-     * Register a new product handler.
+     * Register a product handler.
      *
      * @param Product_Handler_Interface $handler
      */
     public function register_handler( $handler ) {
-        if ( $handler instanceof Product_Handler_Interface ) {
+        if ( $handler && method_exists( $handler, 'get_product_type' ) ) {
             $this->handlers[ $handler->get_product_type() ] = $handler;
         }
     }
+
 
     /**
      * Get a handler for a specific product type.
@@ -140,3 +144,4 @@ class Product_Handler_Manager {
         return $this->handlers;
     }
 }
+

@@ -22,7 +22,22 @@ class Link_Wizard_Search {
      * Constructor.
      */
     public function __construct() {
-        $this->handler_manager = new Product_Handler_Manager();
+        // Don't instantiate the handler manager here - wait until it's needed
+        $this->handler_manager = null;
+    }
+
+    /**
+     * Get the handler manager instance, creating it if needed.
+     *
+     * @return Product_Handler_Manager
+     */
+    private function get_handler_manager() {
+        if ( $this->handler_manager === null ) {
+            $this->handler_manager = new Product_Handler_Manager();
+            // Ensure default handlers are registered
+            $this->handler_manager->register_default_handlers();
+        }
+        return $this->handler_manager;
     }
 
     /**
@@ -119,7 +134,7 @@ class Link_Wizard_Search {
             $product = wc_get_product( $product_id );
             if ( $product ) {
                 // Use the product handler manager to get results
-                $product_results = $this->handler_manager->get_search_results( $product );
+                $product_results = $this->get_handler_manager()->get_search_results( $product );
                 $results = array_merge( $results, $product_results );
             }
         }
@@ -149,7 +164,7 @@ class Link_Wizard_Search {
         }
 
         // Get the appropriate handler for this product
-        $handler = $this->handler_manager->get_handler_for_product( $product );
+        $handler = $this->get_handler_manager()->get_handler_for_product( $product );
         if ( ! $handler ) {
             return new WP_Error( 'no_handler', 'No handler found for this product type', array( 'status' => 400 ) );
         }
@@ -196,7 +211,7 @@ class Link_Wizard_Search {
         }
 
         // Get the appropriate handler for this product
-        $handler = $this->handler_manager->get_handler_for_product( $product );
+        $handler = $this->get_handler_manager()->get_handler_for_product( $product );
         if ( ! $handler ) {
             $message = Link_Wizard_i18n::get_admin_text_formatted( 'no_handler_message', $product->get_type() );
             $message .= ' <a href="' . get_edit_post_link( $product_id ) . '" target="_blank">' . 
