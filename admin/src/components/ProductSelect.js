@@ -73,6 +73,12 @@ const ProductSelect = ({ linkType }) => {
 
     // Handle product selection
     const handleSelectProduct = (product) => {
+        // Check if this product/variation is already selected (for checkout links)
+        if (linkType === 'checkoutLink' && selectedProducts.some(p => p.id === product.id)) {
+            // Product already selected, don't add again
+            return;
+        }
+        
         // Add product to adding state for animation
         setAddingProducts(prev => new Set(prev).add(product.id));
         
@@ -85,11 +91,26 @@ const ProductSelect = ({ linkType }) => {
                     setSelectedProducts([{ ...product, quantity: 1 }]);
                 }
             } else {
+                // For checkout links, add the product
                 setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
             }
             
-            // Remove from search results
+            // Remove from search results (both main products and variations)
             setResults(prev => prev.filter(p => p.id !== product.id));
+            
+            // Remove from filtered variations if it's a variation
+            if (product.parent_id) {
+                // This is a variation, remove it from all filtered variations
+                setFilteredVariations(prev => {
+                    const newFiltered = { ...prev };
+                    Object.keys(newFiltered).forEach(productId => {
+                        if (newFiltered[productId]) {
+                            newFiltered[productId] = newFiltered[productId].filter(v => v.id !== product.id);
+                        }
+                    });
+                    return newFiltered;
+                });
+            }
             
             // Clear the adding state
             setAddingProducts(prev => {
@@ -104,12 +125,71 @@ const ProductSelect = ({ linkType }) => {
         setSelectedProducts(prev =>
             prev.filter(product => product.id !== productToRemove.id)
         );
+        
+        // Add the product back to search results if it was removed
+        if (linkType === 'checkoutLink') {
+            // Check if this was a variation (has parent_id)
+            if (productToRemove.parent_id) {
+                // This is a variation, add it back to the appropriate product's filtered variations
+                setFilteredVariations(prev => {
+                    const newFiltered = { ...prev };
+                    if (newFiltered[productToRemove.parent_id]) {
+                        // Check if variation is not already in the list
+                        const variationExists = newFiltered[productToRemove.parent_id].some(v => v.id === productToRemove.id);
+                        if (!variationExists) {
+                            newFiltered[productToRemove.parent_id] = [...newFiltered[productToRemove.parent_id], productToRemove];
+                        }
+                    }
+                    return newFiltered;
+                });
+            } else {
+                // This is a main product, add it back to search results
+                setResults(prev => {
+                    // Check if product is not already in the list
+                    const productExists = prev.some(p => p.id === productToRemove.id);
+                    if (!productExists) {
+                        return [...prev, productToRemove];
+                    }
+                    return prev;
+                });
+            }
+        }
     }
 
     const handleQuantityChange = (productId, newQuantity) => {
         if (newQuantity <= 0) {
             // Remove the product if the quantity is 0 or negative
+            const productToRemove = selectedProducts.find(p => p.id === productId);
             setSelectedProducts(prev => prev.filter(p => p.id !== productId));
+            
+            // Add the product back to search results if it was removed (for checkout links)
+            if (linkType === 'checkoutLink' && productToRemove) {
+                // Check if this was a variation (has parent_id)
+                if (productToRemove.parent_id) {
+                    // This is a variation, add it back to the appropriate product's filtered variations
+                    setFilteredVariations(prev => {
+                        const newFiltered = { ...prev };
+                        if (newFiltered[productToRemove.parent_id]) {
+                            // Check if variation is not already in the list
+                            const variationExists = newFiltered[productToRemove.parent_id].some(v => v.id === productToRemove.id);
+                            if (!variationExists) {
+                                newFiltered[productToRemove.parent_id] = [...newFiltered[productToRemove.parent_id], productToRemove];
+                            }
+                        }
+                        return newFiltered;
+                    });
+                } else {
+                    // This is a main product, add it back to search results
+                    setResults(prev => {
+                        // Check if product is not already in the list
+                        const productExists = prev.some(p => p.id === productToRemove.id);
+                        if (!productExists) {
+                            return [...prev, productToRemove];
+                        }
+                        return prev;
+                    });
+                }
+            }
         } else {
             // Update the quantity for the product
             setSelectedProducts(prev => prev.map(p =>
