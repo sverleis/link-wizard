@@ -18,11 +18,14 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
             setIsSearching(true);
             try {
                 // Use WordPress REST API to search pages and posts
-                const response = await fetch(`/wp-json/wp/v2/search?search=${encodeURIComponent(searchTerm)}&type=post&type=page&per_page=10`);
+                // Fixed: Use the correct endpoint format for search
+                const response = await fetch(`/wp-json/wp/v2/search?search=${encodeURIComponent(searchTerm)}&subtype=post&subtype=page&per_page=10`);
                 if (response.ok) {
                     const data = await response.json();
                     setSearchResults(data);
                     setShowResults(true);
+                } else {
+                    console.error('Search API error:', response.status, response.statusText);
                 }
             } catch (error) {
                 console.error('Error searching pages:', error);
@@ -131,7 +134,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
                 <input
                     type="text"
                     className="regular-text"
-                    placeholder="Search for pages or posts..."
+                    placeholder={window.linkWizardI18n ? window.linkWizardI18n.searchPagesPlaceholder || "Search for pages or posts..." : "Search for pages or posts..."}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => {
@@ -145,7 +148,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
                         onClick={clearSelection}
                         style={{ marginLeft: '8px' }}
                     >
-                        Clear
+                        {window.linkWizardI18n ? window.linkWizardI18n.clear || "Clear" : "Clear"}
                     </button>
                 )}
             </div>
@@ -153,7 +156,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
             {isSearching && (
                 <div style={styles.loading}>
                     <span className="spinner is-active" style={{ float: 'none', marginTop: '0' }}></span>
-                    Searching...
+                    {window.linkWizardI18n ? window.linkWizardI18n.searching || "Searching..." : "Searching..."}
                 </div>
             )}
 
@@ -179,15 +182,22 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
 
             {showResults && searchResults.length === 0 && searchTerm.length >= 2 && !isSearching && (
                 <div style={styles.noResults}>
-                    No pages or posts found matching "{searchTerm}"
+                    {window.linkWizardI18n ? 
+                        (window.linkWizardI18n.noPagesFound || "No pages or posts found matching").replace('%s', `"${searchTerm}"`) :
+                        `No pages or posts found matching "${searchTerm}"`
+                    }
                 </div>
             )}
 
             {selectedPage && (
                 <div style={styles.selectedInfo}>
-                    <strong style={styles.selectedInfoStrong}>Selected:</strong> {selectedPage.title} ({selectedPage.subtype})
+                    <strong style={styles.selectedInfoStrong}>
+                        {window.linkWizardI18n ? window.linkWizardI18n.selected || "Selected:" : "Selected:"}
+                    </strong> {selectedPage.title} ({selectedPage.subtype})
                     <br />
-                    <small style={styles.selectedInfoSmall}>URL: {selectedPage.url}</small>
+                    <small style={styles.selectedInfoSmall}>
+                        {window.linkWizardI18n ? window.linkWizardI18n.url || "URL:" : "URL:"} {selectedPage.url}
+                    </small>
                 </div>
             )}
         </div>

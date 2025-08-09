@@ -10,7 +10,6 @@ function App() {
     const [linkType, setLinkType] = useState('checkoutLink');
     // Add redirect state management
     const [redirectOption, setRedirectOption] = useState('cart');
-    const [customRedirectUrl, setCustomRedirectUrl] = useState('');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
     // More to come as we build out the extension further.
 
@@ -39,8 +38,6 @@ function App() {
                     return <Redirect 
                         redirectOption={redirectOption}
                         setRedirectOption={setRedirectOption}
-                        customRedirectUrl={customRedirectUrl}
-                        setCustomRedirectUrl={setCustomRedirectUrl}
                         selectedRedirectPage={selectedRedirectPage}
                         setSelectedRedirectPage={setSelectedRedirectPage}
                     />;

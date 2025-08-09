@@ -4,18 +4,13 @@ import PageSearch from './PageSearch';
 const Redirect = ({ 
     redirectOption, 
     setRedirectOption, 
-    customRedirectUrl, 
-    setCustomRedirectUrl,
     selectedRedirectPage,
     setSelectedRedirectPage
 }) => {
     
     const handleRedirectChange = (value) => {
         setRedirectOption(value);
-        // Clear other redirect options when switching
-        if (value !== 'custom') {
-            setCustomRedirectUrl('');
-        }
+        // Clear page selection when switching away from page redirect
         if (value !== 'page') {
             setSelectedRedirectPage(null);
         }
@@ -23,10 +18,16 @@ const Redirect = ({
 
     return (
         <div className="form-step">
-            <h2 className="form-step-heading">Configure Redirects</h2>
+            <h2 className="form-step-heading">
+                {window.linkWizardI18n ? window.linkWizardI18n.configureRedirects || "Configure Redirects" : "Configure Redirects"}
+            </h2>
             <fieldset>
-                <legend className="screen-reader-text">Redirect Options</legend>
-                <p>After adding products to the cart, where should the user go?</p>
+                <legend className="screen-reader-text">
+                    {window.linkWizardI18n ? window.linkWizardI18n.redirectOptions || "Redirect Options" : "Redirect Options"}
+                </legend>
+                <p>
+                    {window.linkWizardI18n ? window.linkWizardI18n.redirectAfterAdd || "After adding products to the cart, where should the user go?" : "After adding products to the cart, where should the user go?"}
+                </p>
                 
                 <div className="form-step-radio-option">
                     <label>
@@ -36,7 +37,9 @@ const Redirect = ({
                             value="none"
                             checked={redirectOption === 'none'}
                             onChange={() => handleRedirectChange('none')} />
-                        <span>Stay on the current page.</span>
+                        <span>
+                            {window.linkWizardI18n ? window.linkWizardI18n.stayOnCurrentPage || "Stay on the current page." : "Stay on the current page."}
+                        </span>
                     </label>
                 </div>
                 
@@ -48,7 +51,9 @@ const Redirect = ({
                             value="cart" 
                             checked={redirectOption === 'cart'}
                             onChange={() => handleRedirectChange('cart')} />
-                        <span>Redirect to cart.</span>
+                        <span>
+                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToCart || "Redirect to cart." : "Redirect to cart."}
+                        </span>
                     </label>
                 </div>
 
@@ -60,7 +65,9 @@ const Redirect = ({
                             value="checkout"
                             checked={redirectOption === 'checkout'}
                             onChange={() => handleRedirectChange('checkout')} />
-                        <span>Redirect to checkout.</span>
+                        <span>
+                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToCheckout || "Redirect to checkout." : "Redirect to checkout."}
+                        </span>
                     </label>
                 </div>
 
@@ -72,7 +79,9 @@ const Redirect = ({
                             value="product"
                             checked={redirectOption === 'product'}
                             onChange={() => handleRedirectChange('product')} />
-                        <span>Redirect to the selected product page.</span>
+                        <span>
+                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToProduct || "Redirect to the selected product page." : "Redirect to the selected product page."}
+                        </span>
                     </label>
                 </div>
 
@@ -84,38 +93,15 @@ const Redirect = ({
                             value="page"
                             checked={redirectOption === 'page'}
                             onChange={() => handleRedirectChange('page')} />
-                        <span>Redirect to a specific page or post.</span>
+                        <span>
+                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToPage || "Redirect to a specific page or post." : "Redirect to a specific page or post."}
+                        </span>
                     </label>
                     {redirectOption === 'page' && (
                         <div className="page-search-wrapper" style={{ marginTop: '10px', marginLeft: '20px' }}>
                             <PageSearch 
                                 selectedPage={selectedRedirectPage}
                                 setSelectedPage={setSelectedRedirectPage}
-                            />
-                        </div>
-                    )}
-                </div>
-
-                <div className="form-step-radio-option">
-                    <label>
-                        <input 
-                            type="radio" 
-                            name="redirect_after_add" 
-                            value="custom"
-                            checked={redirectOption === 'custom'}
-                            onChange={() => handleRedirectChange('custom')} />
-                        <span>Redirect to a custom URL.</span>
-                    </label>
-                    {redirectOption === 'custom' && (
-                        <div style={{ marginTop: '10px', marginLeft: '20px' }}>
-                            <input 
-                                className="regular-text" 
-                                type="text" 
-                                id="custom_redirect_url" 
-                                name="custom_redirect_url" 
-                                placeholder="Enter custom URL here (e.g., https://example.com/page)"
-                                value={customRedirectUrl}
-                                onChange={(e) => setCustomRedirectUrl(e.target.value)}
                             />
                         </div>
                     )}
