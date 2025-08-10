@@ -37,6 +37,7 @@ class Link_Wizard_i18n {
             'available_variations' => __( 'Available Variations:', 'link-wizard-for-woocommerce' ),
             'filter_by_attributes' => __( 'Filter by Attributes:', 'link-wizard-for-woocommerce' ),
             'any_attribute' => __( 'Any', 'link-wizard-for-woocommerce' ),
+            // translators: %d: Number of variations
             'variable_product_badge' => __( 'Variable (%d variations)', 'link-wizard-for-woocommerce' ),
             // translators: %s: Product SKU
             'sku_label' => __( 'SKU: %s', 'link-wizard-for-woocommerce' ),
