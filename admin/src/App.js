@@ -15,6 +15,9 @@ function App() {
     const [selectedCoupon, setSelectedCoupon] = useState(null);
     // Add product selection state management
     const [selectedProducts, setSelectedProducts] = useState([]);
+    // Add state for product selection modal
+    const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
+    const [pendingLinkType, setPendingLinkType] = useState(null);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -35,10 +38,36 @@ function App() {
         setSelectedRedirectPage(null);
     };
 
+    const handleLinkTypeChange = (newLinkType) => {
+        // If switching to addToCart and there are multiple products, show modal
+        if (newLinkType === 'addToCart' && selectedProducts.length > 1) {
+            setPendingLinkType(newLinkType);
+            setShowProductSelectionModal(true);
+        } else {
+            setLinkType(newLinkType);
+        }
+    };
+
+    const handleProductSelection = (action, selectedProduct = null) => {
+        if (action === 'keep-one' && selectedProduct) {
+            setSelectedProducts([selectedProduct]);
+        } else if (action === 'remove-all') {
+            setSelectedProducts([]);
+        }
+        
+        // Set the pending link type and close modal
+        setLinkType(pendingLinkType);
+        setShowProductSelectionModal(false);
+        setPendingLinkType(null);
+        
+        // Keep user on the product selection page (step 2)
+        setCurrentStep(2);
+    };
+
     const renderStep = () => {
         switch (currentStep) {
             case 1: 
-                return <LinkType linkType={linkType} setLinkType={setLinkType} />;
+                return <LinkType linkType={linkType} setLinkType={handleLinkTypeChange} />;
             case 2:
                 return <ProductSelect 
                     linkType={linkType} 
@@ -104,6 +133,61 @@ function App() {
                 {renderStep()}
                 {renderNavigation()}
             </div>
+
+            {/* Product Selection Modal */}
+            {showProductSelectionModal && (
+                <div className="product-selection-modal-overlay">
+                    <div className="product-selection-modal">
+                        <h3>Multiple Products Detected</h3>
+                        <p>
+                            You're switching to "Add-to-Cart" mode, but you currently have {selectedProducts.length} products selected. 
+                            Add-to-Cart links can only handle one product at a time.
+                        </p>
+                        
+                        <div className="modal-options">
+                            <h4>Choose an option:</h4>
+                            
+                            <div className="option-group">
+                                <h5>Keep One Product:</h5>
+                                <div className="product-list">
+                                    {selectedProducts.map(product => (
+                                        <label key={product.id} className="product-option">
+                                            <input
+                                                type="radio"
+                                                name="selected_product"
+                                                value={product.id}
+                                            />
+                                            <span>{product.name}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="modal-buttons">
+                                <button 
+                                    className="button button-primary"
+                                    onClick={() => {
+                                        const selectedId = document.querySelector('input[name="selected_product"]:checked')?.value;
+                                        if (selectedId) {
+                                            const selectedProduct = selectedProducts.find(p => p.id === parseInt(selectedId));
+                                            handleProductSelection('keep-one', selectedProduct);
+                                        }
+                                    }}
+                                >
+                                    Keep Selected Product
+                                </button>
+                                
+                                <button 
+                                    className="button button-destructive"
+                                    onClick={() => handleProductSelection('remove-all')}
+                                >
+                                    Remove All Products
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>    
     );
 };
