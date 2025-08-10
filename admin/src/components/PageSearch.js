@@ -1,203 +1,200 @@
 import React, { useState, useEffect } from 'react';
+import apiFetch from '@wordpress/api-fetch';
 
 const PageSearch = ({ selectedPage, setSelectedPage }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [addingPage, setAddingPage] = useState(null);
+    const [replacePage, setReplacePage] = useState(null);
+    const [error, setError] = useState(null);
+
+    const i18n = window.linkWizardI18n || {};
 
     // Search for pages and posts when search term changes
     useEffect(() => {
         if (searchTerm.length < 2) {
             setSearchResults([]);
             setShowResults(false);
+            setError(null);
             return;
         }
 
-        const searchPages = async () => {
+        const handler = setTimeout(() => {
             setIsSearching(true);
-            try {
-                // Use WordPress REST API to search pages and posts
-                // Fixed: Use the correct endpoint format for search
-                const response = await fetch(`/wp-json/wp/v2/search?search=${encodeURIComponent(searchTerm)}&subtype=post&subtype=page&per_page=10`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setSearchResults(data);
-                    setShowResults(true);
-                } else {
-                    console.error('Search API error:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error searching pages:', error);
-            } finally {
-                setIsSearching(false);
-            }
-        };
+            setError(null);
 
-        // Debounce search to avoid too many API calls
-        const timeoutId = setTimeout(searchPages, 300);
-        return () => clearTimeout(timeoutId);
+            apiFetch({
+                path: `link-wizard/v1/pages?search=${encodeURIComponent(searchTerm)}&limit=10`
+            })
+            .then((pages) => {
+                setSearchResults(pages || []);
+                setShowResults(true);
+            })
+            .catch((err) => {
+                console.error('Error searching pages:', err);
+                setError(err.message || i18n.errorFetchingPages || 'Failed to search pages.');
+                setSearchResults([]);
+            })
+            .finally(() => {
+                setIsSearching(false);
+            });
+        }, 500);
+
+        return () => clearTimeout(handler);
     }, [searchTerm]);
 
     const handlePageSelect = (page) => {
-        setSelectedPage(page);
-        setSearchTerm(page.title);
-        setShowResults(false);
+        if (selectedPage && selectedPage.id !== page.id) {
+            setReplacePage({ old: selectedPage, new: page });
+            return;
+        }
+        
+        setAddingPage(page.id);
+        
+        setTimeout(() => {
+            setSelectedPage(page);
+            setAddingPage(null);
+            setSearchResults([]);
+            setShowResults(false);
+            setSearchTerm('');
+        }, 800);
     };
 
     const clearSelection = () => {
         setSelectedPage(null);
-        setSearchTerm('');
-        setSearchResults([]);
-        setShowResults(false);
-    };
-
-    // Inline styles for the component
-    const styles = {
-        container: {
-            position: 'relative',
-            width: '100%'
-        },
-        inputWrapper: {
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '10px'
-        },
-        results: {
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            background: 'white',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-            zIndex: 1000,
-            maxHeight: '300px',
-            overflowY: 'auto'
-        },
-        list: {
-            margin: 0,
-            padding: 0,
-            listStyle: 'none'
-        },
-        item: {
-            padding: '10px 15px',
-            borderBottom: '1px solid #f0f0f0',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease'
-        },
-        itemHover: {
-            backgroundColor: '#f8f9fa'
-        },
-        type: {
-            color: '#666',
-            fontSize: '0.9em',
-            marginLeft: '8px'
-        },
-        url: {
-            display: 'block',
-            color: '#0073aa',
-            fontSize: '0.8em',
-            marginTop: '4px',
-            wordBreak: 'break-all'
-        },
-        loading: {
-            color: '#666',
-            fontStyle: 'italic',
-            margin: '10px 0'
-        },
-        noResults: {
-            color: '#666',
-            fontStyle: 'italic',
-            padding: '15px',
-            textAlign: 'center'
-        },
-        selectedInfo: {
-            background: '#f0f8ff',
-            border: '1px solid #b3d9ff',
-            borderRadius: '4px',
-            padding: '10px',
-            marginTop: '10px'
-        },
-        selectedInfoStrong: {
-            color: '#0073aa'
-        },
-        selectedInfoSmall: {
-            color: '#666'
-        }
     };
 
     return (
-        <div style={styles.container}>
-            <div style={styles.inputWrapper}>
-                <input
-                    type="text"
-                    className="regular-text"
-                    placeholder={window.linkWizardI18n ? window.linkWizardI18n.searchPagesPlaceholder || "Search for pages or posts..." : "Search for pages or posts..."}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onFocus={() => {
-                        if (searchResults.length > 0) setShowResults(true);
-                    }}
-                />
-                {selectedPage && (
-                    <button 
-                        type="button" 
-                        className="button button-small"
-                        onClick={clearSelection}
-                        style={{ marginLeft: '8px' }}
-                    >
-                        {window.linkWizardI18n ? window.linkWizardI18n.clear || "Clear" : "Clear"}
-                    </button>
-                )}
+        <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ flex: 1, position: 'relative' }}>
+                    <input
+                        type="search"
+                        className="regular-text"
+                        placeholder={i18n.searchPagesPlaceholder || "Search for pages or posts..."}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onFocus={() => {
+                            if (searchResults.length > 0) setShowResults(true);
+                        }}
+                        style={{ width: '100%' }}
+                    />
+                    {isSearching && (
+                        <span className="spinner is-active" style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}></span>
+                    )}
+                </div>
             </div>
-            
-            {isSearching && (
-                <div style={styles.loading}>
-                    <span className="spinner is-active" style={{ float: 'none', marginTop: '0' }}></span>
-                    {window.linkWizardI18n ? window.linkWizardI18n.searching || "Searching..." : "Searching..."}
-                </div>
+
+            {error && <div className="notice notice-error inline" style={{ marginTop: '10px' }}><p>{error}</p></div>}
+
+            {(showResults || searchResults.length > 0) && searchResults.length > 0 && (
+                <ul className="lw-search-results" onClick={() => setShowResults(false)}>
+                    {searchResults.map((page) => (
+                        <li 
+                            key={page.id} 
+                            className={`lw-search-item ${addingPage === page.id ? 'adding' : ''}`}
+                            onClick={() => handlePageSelect(page)}
+                        >
+                            {addingPage === page.id ? (
+                                <div className="lw-search-item-success">
+                                    <span className="dashicons dashicons-yes-alt" />
+                                    {i18n.added || 'Added!'}
+                                </div>
+                            ) : (
+                                <div className="lw-search-item-content">
+                                    <div className="lw-search-item-icon">
+                                        <span className={`dashicons ${page.type === 'Page' ? 'dashicons-admin-page' : 'dashicons-admin-post'}`}></span>
+                                    </div>
+                                    <div className="lw-search-item-details">
+                                        <div className="lw-search-item-title">
+                                            {page.title}
+                                            <span className="lw-search-item-badge">{page.type}</span>
+                                        </div>
+                                        <div className="lw-search-item-meta">{page.url}</div>
+                                    </div>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
             )}
 
-            {showResults && searchResults.length > 0 && (
-                <div style={styles.results}>
-                    <ul style={styles.list}>
-                        {searchResults.map((page) => (
-                            <li 
-                                key={page.id} 
-                                style={styles.item}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = styles.itemHover.backgroundColor}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = styles.item.backgroundColor}
-                                onClick={() => handlePageSelect(page)}
-                            >
-                                <strong>{page.title}</strong>
-                                <span style={styles.type}>({page.subtype})</span>
-                                <span style={styles.url}>{page.url}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            {showResults && searchResults.length === 0 && searchTerm.length >= 2 && !isSearching && (
-                <div style={styles.noResults}>
-                    {window.linkWizardI18n ? 
-                        (window.linkWizardI18n.noPagesFound || "No pages or posts found matching").replace('%s', `"${searchTerm}"`) :
-                        `No pages or posts found matching "${searchTerm}"`
-                    }
+            {(showResults || searchResults.length === 0) && searchResults.length === 0 && searchTerm.length >= 2 && !isSearching && (
+                <div className="lw-search-no-results" style={{ marginTop: '10px' }}>
+                    {i18n.noPagesFound 
+                        ? i18n.noPagesFound.replace('%s', `"${searchTerm}"`) 
+                        : `No pages or posts found matching "${searchTerm}"`}
                 </div>
             )}
 
             {selectedPage && (
-                <div style={styles.selectedInfo}>
-                    <strong style={styles.selectedInfoStrong}>
-                        {window.linkWizardI18n ? window.linkWizardI18n.selected || "Selected:" : "Selected:"}
-                    </strong> {selectedPage.title} ({selectedPage.subtype})
-                    <br />
-                    <small style={styles.selectedInfoSmall}>
-                        {window.linkWizardI18n ? window.linkWizardI18n.url || "URL:" : "URL:"} {selectedPage.url}
-                    </small>
+                <div className="lw-selected-items">
+                    <ul className="lw-selected-items-list">
+                        <li className="lw-selected-item">
+                            <div className="lw-selected-item-content">
+                                <div className="lw-selected-item-info">
+                                    <div className="lw-selected-item-icon">
+                                        <span className={`dashicons ${selectedPage.type === 'Page' ? 'dashicons-admin-page' : 'dashicons-admin-post'}`}></span>
+                                    </div>
+                                    <div className="lw-selected-item-details">
+                                        <div className="lw-selected-item-name">{selectedPage.title}</div>
+                                        <div className="lw-selected-item-price">{selectedPage.url}</div>
+                                    </div>
+                                </div>
+                                <div className="lw-selected-item-controls">
+                                    <button 
+                                        type="button" 
+                                        className="lw-selected-item-remove"
+                                        onClick={clearSelection}
+                                    >
+                                        {i18n.remove || "Remove"}
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            )}
+
+            {/* Replace Page Confirmation Modal */}
+            {replacePage && (
+                <div className="confirmation-modal" onClick={() => setReplacePage(null)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>{i18n.replacePageTitle || 'Replace Selected Page?'}</h3>
+                        <p dangerouslySetInnerHTML={{ __html: i18n.replacePageMessage 
+                            ? i18n.replacePageMessage.replace('%1$s', `<strong>${replacePage.old.title}</strong>`).replace('%2$s', `<strong>${replacePage.new.title}</strong>`)
+                            : `You have already selected "<strong>${replacePage.old.title}</strong>". Do you want to replace it with "<strong>${replacePage.new.title}</strong>"?`
+                        }} />
+                        <div className="modal-buttons">
+                            <button 
+                                type="button"
+                                className="button button-primary" 
+                                onClick={() => {
+                                    const newPage = replacePage.new;
+                                    setReplacePage(null);
+                                    setAddingPage(newPage.id);
+                                    setTimeout(() => {
+                                        setSelectedPage(newPage);
+                                        setAddingPage(null);
+                                        setSearchResults([]);
+                                        setShowResults(false);
+                                        setSearchTerm('');
+                                    }, 800);
+                                }}
+                            >
+                                {i18n.replaceConfirm || 'Yes, Replace'}
+                            </button>
+                            <button 
+                                type="button"
+                                className="button" 
+                                onClick={() => setReplacePage(null)}
+                            >
+                                {i18n.cancelReplace || 'Cancel'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

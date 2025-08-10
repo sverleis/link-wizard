@@ -7,6 +7,8 @@ const Redirect = ({
     selectedRedirectPage,
     setSelectedRedirectPage
 }) => {
+    // Get i18n translations from PHP
+    const i18n = window.linkWizardI18n || {};
     
     const handleRedirectChange = (value) => {
         setRedirectOption(value);
@@ -19,14 +21,14 @@ const Redirect = ({
     return (
         <div className="form-step">
             <h2 className="form-step-heading">
-                {window.linkWizardI18n ? window.linkWizardI18n.configureRedirects || "Configure Redirects" : "Configure Redirects"}
+                {i18n.configureRedirects || "Configure Redirects"}
             </h2>
             <fieldset>
                 <legend className="screen-reader-text">
-                    {window.linkWizardI18n ? window.linkWizardI18n.redirectOptions || "Redirect Options" : "Redirect Options"}
+                    {i18n.redirectOptions || "Redirect Options"}
                 </legend>
                 <p>
-                    {window.linkWizardI18n ? window.linkWizardI18n.redirectAfterAdd || "After adding products to the cart, where should the user go?" : "After adding products to the cart, where should the user go?"}
+                    {i18n.redirectAfterAdd || "After adding products to the cart, where should the user go?"}
                 </p>
                 
                 <div className="form-step-radio-option">
@@ -38,7 +40,7 @@ const Redirect = ({
                             checked={redirectOption === 'none'}
                             onChange={() => handleRedirectChange('none')} />
                         <span>
-                            {window.linkWizardI18n ? window.linkWizardI18n.stayOnCurrentPage || "Stay on the current page." : "Stay on the current page."}
+                            {i18n.stayOnCurrentPage || "Stay on the current page."}
                         </span>
                     </label>
                 </div>
@@ -52,7 +54,7 @@ const Redirect = ({
                             checked={redirectOption === 'cart'}
                             onChange={() => handleRedirectChange('cart')} />
                         <span>
-                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToCart || "Redirect to cart." : "Redirect to cart."}
+                            {i18n.redirectToCart || "Redirect to cart."}
                         </span>
                     </label>
                 </div>
@@ -66,7 +68,7 @@ const Redirect = ({
                             checked={redirectOption === 'checkout'}
                             onChange={() => handleRedirectChange('checkout')} />
                         <span>
-                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToCheckout || "Redirect to checkout." : "Redirect to checkout."}
+                            {i18n.redirectToCheckout || "Redirect to checkout."}
                         </span>
                     </label>
                 </div>
@@ -80,7 +82,7 @@ const Redirect = ({
                             checked={redirectOption === 'product'}
                             onChange={() => handleRedirectChange('product')} />
                         <span>
-                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToProduct || "Redirect to the selected product page." : "Redirect to the selected product page."}
+                            {i18n.redirectToProduct || "Redirect to the selected product page."}
                         </span>
                     </label>
                 </div>
@@ -94,7 +96,7 @@ const Redirect = ({
                             checked={redirectOption === 'page'}
                             onChange={() => handleRedirectChange('page')} />
                         <span>
-                            {window.linkWizardI18n ? window.linkWizardI18n.redirectToPage || "Redirect to a specific page or post." : "Redirect to a specific page or post."}
+                            {i18n.redirectToPage || "Redirect to a specific page or post."}
                         </span>
                     </label>
                     {redirectOption === 'page' && (

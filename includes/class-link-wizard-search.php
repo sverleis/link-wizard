@@ -41,63 +41,56 @@ class Link_Wizard_Search {
     }
 
     /**
+     * Check if the current user has permissions to use the search endpoints.
+     *
+     * @return bool
+     */
+    public function check_permission() {
+        // Only users who can manage WooCommerce should be able to use these endpoints.
+        return current_user_can( 'manage_woocommerce' );
+    }
+
+    /**
      * Registers the /link-wizard/v1/products endpoint.
      */
     public function register_routes() {
-        register_rest_route(
-            'link-wizard/v1',
-            '/products',
-            array(
-                'methods' => 'GET',
-                'callback' => array($this, 'search_products'),
-                'permission_callback' => array($this, 'check_permissions'),
-                'args' => array(
-                    'search' => array(
-                        'required' => false,
-                        'type' => 'string',
-                        'sanitize_callback' => 'sanitize_text_field',
-                    ),
-                    'exclude' => array(
-                        'required' => false,
-                        'type' => 'array',
-                        'items' => array(
-                            'type' => 'integer',
-                        ),
-                    ),
+        register_rest_route( 'link-wizard/v1', '/products', array(
+            'methods'  => 'GET',
+            'callback' => array( $this, 'search_products' ),
+            'permission_callback' => array( $this, 'check_permission' ),
+            'args' => array(
+                'search' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'Search term for products',
                 ),
             )
         );
 
-        register_rest_route(
-            'link-wizard/v1',
-            '/coupons',
-            array(
-                'methods' => 'GET',
-                'callback' => array($this, 'search_coupons'),
-                'permission_callback' => array($this, 'check_permissions'),
-                'args' => array(
-                    'search' => array(
-                        'required' => false,
-                        'type' => 'string',
-                        'sanitize_callback' => 'sanitize_text_field',
-                    ),
+        // Add endpoint to get variations for a variable product
+        register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/variations', array(
+            'methods'  => 'GET',
+            'callback' => array( $this, 'get_product_variations' ),
+            'permission_callback' => array( $this, 'check_permission' ),
+            'args' => array(
+                'id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Product ID to get variations for',
                 ),
             )
         );
 
-        register_rest_route(
-            'link-wizard/v1',
-            '/products/(?P<id>\d+)/variations',
-            array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_product_variations'),
-                'permission_callback' => array($this, 'check_permissions'),
-                'args' => array(
-                    'id' => array(
-                        'validate_callback' => function($param) {
-                            return is_numeric($param);
-                        }
-                    ),
+        // Add endpoint to get filtered variations based on attributes
+        register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/filtered-variations', array(
+            'methods'  => 'GET',
+            'callback' => array( $this, 'get_filtered_variations' ),
+            'permission_callback' => array( $this, 'check_permission' ),
+            'args' => array(
+                'id' => array(
+                    'required' => true,
+                    'type' => 'integer',
+                    'description' => 'Product ID to get variations for',
                 ),
             )
         );
@@ -121,20 +114,48 @@ class Link_Wizard_Search {
                         'sanitize_callback' => 'sanitize_text_field',
                     ),
                 ),
-            )
-        );
-    }
+            ),
+        ) );
 
-    /**
-     * Check if user has permission to access the API
-     *
-     * @return bool
-     */
-    public function check_permissions() {
-        // For now, allow access to anyone who can access the admin
-        // This is a temporary solution to get the endpoint working
-        // In production, you might want to add nonce verification
-        return true;
+        // Add endpoint to search for coupons
+        register_rest_route( 'link-wizard/v1', '/coupons', array(
+            'methods'  => 'GET',
+            'callback' => array( $this, 'search_coupons' ),
+            'permission_callback' => array( $this, 'check_permission' ),
+            'args' => array(
+                'search' => array(
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'Search term for coupons',
+                ),
+                'limit' => array(
+                    'required' => false,
+                    'type' => 'integer',
+                    'default' => 10,
+                    'description' => 'Number of coupons to return',
+                ),
+            ),
+        ) );
+
+        // Add endpoint to search for pages and posts
+        register_rest_route( 'link-wizard/v1', '/pages', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'search_pages' ),
+            'permission_callback' => array( $this, 'check_permission' ),
+            'args'                => array(
+                'search' => array(
+                    'required'          => true,
+                    'type'              => 'string',
+                    'description'       => 'Search term for pages/posts',
+                ),
+                'limit' => array(
+                    'required'          => false,
+                    'type'              => 'integer',
+                    'default'           => 10,
+                    'description'       => 'Number of items to return',
+                ),
+            ),
+        ) );
     }
 
     /**
@@ -318,9 +339,14 @@ class Link_Wizard_Search {
      */
     public function search_coupons($request) {
         $search_term = $request->get_param('search');
+        $limit = intval($request->get_param('limit'));
         
         if (empty($search_term) || strlen($search_term) < 2) {
             return new WP_REST_Response(array(), 200);
+        }
+        
+        if ($limit < 1) {
+            $limit = 10;
         }
 
         $coupons = array();
@@ -329,12 +355,12 @@ class Link_Wizard_Search {
         $args = array(
             'post_type' => 'shop_coupon',
             'post_status' => 'publish',
-            'posts_per_page' => 20,
+            'posts_per_page' => $limit,
             's' => $search_term,
             'orderby' => 'title',
             'order' => 'ASC'
         );
-
+        
         $query = new WP_Query($args);
         
         if ($query->have_posts()) {
@@ -380,5 +406,43 @@ class Link_Wizard_Search {
         }
 
         return new WP_REST_Response($coupons, 200);
+    }
+
+    /**
+     * Search for pages and posts.
+     *
+     * @param WP_REST_Request $request The request object.
+     * @return WP_REST_Response The response object.
+     */
+    public function search_pages( $request ) {
+        $search_term = sanitize_text_field( $request->get_param( 'search' ) );
+        $limit       = intval( $request->get_param( 'limit' ) );
+
+        $args = array(
+            'post_type'      => array( 'post', 'page' ),
+            'post_status'    => 'publish',
+            'posts_per_page' => $limit,
+            's'              => $search_term,
+        );
+
+        $query   = new WP_Query( $args );
+        $results = array();
+
+        if ( $query->have_posts() ) {
+            while ( $query->have_posts() ) {
+                $query->the_post();
+                $post          = get_post();
+                $post_type_obj = get_post_type_object( get_post_type( $post->ID ) );
+                $results[]     = array(
+                    'id'    => $post->ID,
+                    'title' => get_the_title(),
+                    'url'   => get_permalink(),
+                    'type'  => is_a( $post_type_obj, 'WP_Post_Type' ) ? $post_type_obj->labels->singular_name : 'Post',
+                );
+            }
+        }
+        wp_reset_postdata();
+
+        return new WP_REST_Response( $results, 200 );
     }
 }

@@ -84,17 +84,22 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
             return;
         }
         
+        // For add-to-cart, check if we need to show replacement modal FIRST - NO animations until confirmed
+        if (linkType === 'addToCart' && selectedProducts.length > 0 && selectedProducts[0].id !== product.id) {
+            // Show replacement modal immediately, no animation or changes yet
+            setReplaceProduct({ old: selectedProducts[0], new: product });
+            return;
+        }
+        
+        // Only start animation if no replacement modal is needed
         // Add product to adding state for animation
         setAddingProducts(prev => new Set(prev).add(product.id));
         
         // After a brief delay to show the "Added" message, complete the selection
         setTimeout(() => {
             if (linkType === 'addToCart') {
-                if (selectedProducts.length > 0 && selectedProducts[0].id !== product.id) {
-                    setReplaceProduct({ old: selectedProducts[0], new: product });
-                } else {
-                    setSelectedProducts([{ ...product, quantity: 1 }]);
-                }
+                // No replacement needed, just set the product
+                setSelectedProducts([{ ...product, quantity: 1 }]);
             } else {
                 // For checkout links, add the product
                 setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
@@ -521,18 +526,34 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     <label htmlFor="product-search" className="screen-reader-text">
                         {i18n.searchProducts || 'Search for products'}
                     </label>
-                    <input
-                        type="search"
-                        id="product-search"
-                        className="regular-text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder={i18n.searchPlaceholder || 'Search by name or SKU'}
-                        autoComplete="off"
-                    />
+                    <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '10px' 
+                    }}>
+                        <input
+                            type="search"
+                            id="product-search"
+                            className="regular-text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder={i18n.searchPlaceholder || 'Search by name or SKU'}
+                            autoComplete="off"
+                            style={{ flex: 1 }}
+                        />
+                        {isLoading && (
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center',
+                                minWidth: '24px',
+                                minHeight: '24px'
+                            }}>
+                                <Spinner />
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {isLoading && <Spinner />}
                 {error && <div className="notice notice-error inline"><p>{error}</p></div>}
 
                 {showingVariations ? (
@@ -1171,63 +1192,43 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
                 {/* Replace Confirmation Modal */}
                 {replaceProduct && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9999,
-                        padding: '20px'
-                    }} onClick={() => setReplaceProduct(null)}>
-                        <div style={{
-                            position: 'relative',
-                            maxWidth: '400px',
-                            maxHeight: '200px',
-                            backgroundColor: '#fff',
-                            borderRadius: '8px',
-                            padding: '20px',
-                            textAlign: 'center'
-                        }} onClick={(e) => e.stopPropagation()}>
-                            <h3 style={{ marginBottom: '15px' }}>{i18n.replaceConfirmationTitle || 'Replace Confirmation'}</h3>
-                            <p style={{ marginBottom: '20px' }}>
+                    <div className="confirmation-modal" onClick={() => setReplaceProduct(null)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h3>{i18n.replaceConfirmationTitle || 'Replace Confirmation'}</h3>
+                            <p>
                                 {i18n.replaceConfirmationMessage || 'You are about to replace the current product with a different one. This action cannot be undone.'}
                             </p>
-                            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div className="modal-buttons">
                                 <button
                                     onClick={() => {
-                                        setSelectedProducts([{ ...replaceProduct.new, quantity: 1 }]);
+                                        // Now perform the replacement with animation
+                                        setAddingProducts(prev => new Set(prev).add(replaceProduct.new.id));
                                         setReplaceProduct(null);
+                                        
+                                        setTimeout(() => {
+                                            setSelectedProducts([{ ...replaceProduct.new, quantity: 1 }]);
+                                            
+                                            // Remove new product from search results
+                                            setResults(prev => prev.filter(p => p.id !== replaceProduct.new.id));
+                                            
+                                            // Add old product back to search results
+                                            setResults(prev => [...prev, replaceProduct.old]);
+                                            
+                                            // Clear adding state
+                                            setAddingProducts(prev => {
+                                                const newSet = new Set(prev);
+                                                newSet.delete(replaceProduct.new.id);
+                                                return newSet;
+                                            });
+                                        }, 800);
                                     }}
-                                    style={{
-                                        padding: '10px 20px',
-                                        backgroundColor: '#0073aa',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px',
-                                        fontWeight: '500'
-                                    }}
+                                    className="button button-primary"
                                 >
                                     {i18n.replaceConfirm || 'Replace'}
                                 </button>
                                 <button
                                     onClick={() => setReplaceProduct(null)}
-                                    style={{
-                                        padding: '10px 20px',
-                                        backgroundColor: '#dc3545',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '5px',
-                                        cursor: 'pointer',
-                                        fontSize: '14px',
-                                        fontWeight: '500'
-                                    }}
+                                    className="button"
                                 >
                                     {i18n.cancelReplace || 'Cancel'}
                                 </button>

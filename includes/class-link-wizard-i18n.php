@@ -97,7 +97,42 @@ class Link_Wizard_i18n {
             'no_variations_available' => __( 'No variations available', 'link-wizard-for-woocommerce' ),
             'no_variations_description' => __( 'This product has no purchasable variations. Please check the product configuration.', 'link-wizard-for-woocommerce' ),
             'added' => __( 'Added!', 'link-wizard-for-woocommerce' ),
-        'resetFilters' => __( 'Reset Filters', 'link-wizard-for-woocommerce' ),
+            'resetFilters' => __( 'Reset Filters', 'link-wizard-for-woocommerce' ),
+
+            // Coupon Section
+            'applyCoupon' => __( 'Apply a Coupon (Optional)', 'link-wizard-for-woocommerce' ),
+            'couponRulesTitle' => __( 'Coupon Rules:', 'link-wizard-for-woocommerce' ),
+            'couponRulesDescription' => __( 'Search and select from your existing WooCommerce coupons. Only one coupon can be applied per link.', 'link-wizard-for-woocommerce' ),
+            'searchCoupons' => __( 'Search for coupons', 'link-wizard-for-woocommerce' ),
+            'searchCouponsPlaceholder' => __( 'Search existing coupons...', 'link-wizard-for-woocommerce' ),
+            'noCouponsFound' => __( 'No coupons found matching "%s"', 'link-wizard-for-woocommerce' ),
+            'errorFetchingCoupons' => __( 'An error occurred while fetching coupons.', 'link-wizard-for-woocommerce' ),
+            'couponAdded' => __( 'Coupon Added:', 'link-wizard-for-woocommerce' ),
+            'replaceCouponTitle' => __( 'Replace Selected Coupon?', 'link-wizard-for-woocommerce' ),
+            'replaceCouponMessage' => __( 'You have already selected coupon %1$s. Do you want to replace it with %2$s?', 'link-wizard-for-woocommerce' ),
+            'percentOff' => __( '%s%% off', 'link-wizard-for-woocommerce' ),
+            'fixedCartOff' => __( '$%s off cart', 'link-wizard-for-woocommerce' ),
+            'fixedProductOff' => __( '$%s off product', 'link-wizard-for-woocommerce' ),
+            'expires' => __( 'Expires: %s', 'link-wizard-for-woocommerce' ),
+            'minSpend' => __( 'Min: $%s', 'link-wizard-for-woocommerce' ),
+            'usageLimit' => __( 'Limit: %s', 'link-wizard-for-woocommerce' ),
+
+            // Page Search
+            'searchPagesPlaceholder' => __( 'Search for pages or posts...', 'link-wizard-for-woocommerce' ),
+            'noPagesFound' => __( 'No pages or posts found matching "%s"', 'link-wizard-for-woocommerce' ),
+            'errorFetchingPages' => __( 'An error occurred while fetching pages.', 'link-wizard-for-woocommerce' ),
+            'replacePageTitle' => __( 'Replace Selected Page?', 'link-wizard-for-woocommerce' ),
+            'replacePageMessage' => __( 'You have already selected "%1$s". Do you want to replace it with "%2$s"?', 'link-wizard-for-woocommerce' ),
+
+            // Redirect Section
+            'configureRedirects' => __( 'Configure Redirects', 'link-wizard-for-woocommerce' ),
+            'redirectOptions' => __( 'Redirect Options', 'link-wizard-for-woocommerce' ),
+            'redirectAfterAdd' => __( 'After adding products to the cart, where should the user go?', 'link-wizard-for-woocommerce' ),
+            'stayOnCurrentPage' => __( 'Stay on the current page.', 'link-wizard-for-woocommerce' ),
+            'redirectToCart' => __( 'Redirect to cart.', 'link-wizard-for-woocommerce' ),
+            'redirectToCheckout' => __( 'Redirect to checkout.', 'link-wizard-for-woocommerce' ),
+            'redirectToProduct' => __( 'Redirect to the selected product page.', 'link-wizard-for-woocommerce' ),
+            'redirectToPage' => __( 'Redirect to a specific page or post.', 'link-wizard-for-woocommerce' ),
         );
 
         return isset( $texts[ $key ] ) ? $texts[ $key ] : $key;

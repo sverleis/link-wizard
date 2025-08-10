@@ -11,10 +11,8 @@ function App() {
     // Add redirect state management
     const [redirectOption, setRedirectOption] = useState('cart');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
-    // Add coupon state management - now handles coupon objects
+    // Add coupon state management
     const [selectedCoupon, setSelectedCoupon] = useState(null);
-    // Add product selection state management
-    const [selectedProducts, setSelectedProducts] = useState([]);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -29,10 +27,9 @@ function App() {
         setCurrentStep(1);
         // Reset other state to here, too.
         setLinkType('checkoutLink');
+        setSelectedCoupon(null);
         setRedirectOption('cart');
         setSelectedRedirectPage(null);
-        setSelectedCoupon(null);
-        setSelectedProducts([]);
     };
 
     const renderStep = () => {
