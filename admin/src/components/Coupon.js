@@ -117,6 +117,13 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
         setError(null);
     };
 
+    const resetSearchState = () => {
+        setSearchTerm('');
+        setSearchResults([]);
+        setShowResults(false);
+        setError(null);
+    };
+
     const formatCouponAmount = (coupon) => {
         if (coupon.discount_type === 'percent') {
             return `${coupon.amount}% off`;
@@ -351,6 +358,9 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
                                     
                                     // Clear the modal first
                                     setReplaceCoupon(null);
+                                    
+                                    // Reset search state immediately to allow new searches
+                                    resetSearchState();
                                     
                                     // Show "Adding" animation for new coupon
                                     setAddingCoupon(newCoupon.id);
