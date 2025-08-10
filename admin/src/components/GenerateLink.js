@@ -221,7 +221,18 @@ const GenerateLink = ({
                         >
                             Copy Link
                         </button>
-                        
+ 
+                        {generatedLink && (
+                            <a
+                                href={generatedLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="button button-secondary"
+                            >
+                                Preview Link
+                            </a>
+                        )}
+ 
                         {linkType === 'checkoutLink' && (
                             <label className="encoding-option">
                                 <input
@@ -235,24 +246,27 @@ const GenerateLink = ({
                     </div>
                 </div>
             </div>
-
-            {/* Link Preview */}
-            {generatedLink && (
-                <div className="link-preview">
-                    <h3>Link Preview</h3>
-                    <p>Test your generated link:</p>
-                    <a 
-                        href={generatedLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="button button-secondary"
-                    >
-                        Open Link in New Tab
-                    </a>
-                </div>
-            )}
-        </div>
-    );
+ 
+             {/* Form Step Navigation */}
+             <div className="form-step-navigation">
+                 <button
+                     type="button"
+                     className="button"
+                     onClick={() => goToStep(currentStep - 1)}
+                     disabled={currentStep <= 1}
+                 >
+                     ← Back
+                 </button>
+                 <button
+                     type="button"
+                     className="button button-destructive"
+                     onClick={() => window.location.reload()}
+                 >
+                     Start Over
+                 </button>
+             </div>
+         </div>
+     );
 };
 
 export default GenerateLink;

@@ -859,13 +859,19 @@
     align-items: center;
     justify-content: space-between;
     margin-top: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.link-actions .button {
+    margin-right: 10px;
 }
 
 .encoding-option {
+    margin-left: auto;
     display: flex;
     align-items: center;
-    font-size: 14px;
-    color: #6c757d;
+    gap: 8px;
 }
 
 .encoding-option input[type="checkbox"] {
@@ -900,4 +906,24 @@
 .link-preview .button:hover {
     background: #004085;
     border-color: #004085;
+}
+
+.form-step-navigation .button:not(.button-primary):hover {
+    background-color: #f0f0f1;
+    border-color: #8c8f94;
+}
+
+.button-destructive {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.button-destructive:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
+
+.button-destructive:focus {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #dc3545 !important;
 }
