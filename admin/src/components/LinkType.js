@@ -3,7 +3,7 @@ import React from 'react';
 const LinkType = ({ linkType, setLinkType }) => {
     return (
         <div className="form-step">
-            <h2 className="form-step-heading">Step 1: Choose your link type</h2>
+            <h2 className="form-step-heading">1. Choose your link type</h2>
             <fieldset>
                 <legend className="screen-reader-text">Select Link Type</legend>
                 <div className="form-step-radio-option">

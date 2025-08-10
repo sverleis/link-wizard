@@ -496,7 +496,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         <div>
             <div className="form-step">
                 <h2 className="form-step-heading">
-                    {linkType === 'addToCart' 
+                    2. {linkType === 'addToCart' 
                         ? (i18n.selectProduct || 'Select your product') 
                         : (i18n.selectProducts || 'Select your products')
                     }

@@ -152,7 +152,7 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
     return (
         <div className="form-step">
             <h2 className="form-step-heading">
-                {i18n.applyCoupon || 'Apply a Coupon'}
+                3. {i18n.applyCoupon || 'Apply a Coupon'}
             </h2>
             
             <div style={{ 

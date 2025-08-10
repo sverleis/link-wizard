@@ -21,7 +21,7 @@ const Redirect = ({
     return (
         <div className="form-step">
             <h2 className="form-step-heading">
-                {i18n.configureRedirects || "Configure Redirects"}
+                3. {i18n.configureRedirects || "Configure Redirects"}
             </h2>
             <fieldset>
                 <legend className="screen-reader-text">

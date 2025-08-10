@@ -65,6 +65,7 @@ class Simple_Product_Handler implements Product_Handler_Interface {
             'parent_name' => null,
             'attributes'  => null,
             'type'        => 'simple',
+            'slug'        => $product->get_slug(),
         );
     }
 

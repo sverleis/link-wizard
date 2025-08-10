@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LinkType from './components/LinkType';
 import ProductSelect from './components/ProductSelect';
 import Redirect from './components/Redirect';
 import Coupon from './components/Coupon';
 import GenerateLink from './components/GenerateLink';
+import DynamicLink from './components/DynamicLink';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -18,9 +19,85 @@ function App() {
     // Add state for product selection modal
     const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
     const [pendingLinkType, setPendingLinkType] = useState(null);
+    // Add validation state for step navigation
+    const [showValidationModal, setShowValidationModal] = useState(false);
+    // Add state to track attempted navigation
+    const [attemptedStep, setAttemptedStep] = useState(null);
     // More to come as we build out the extension further.
 
+    // Initialize browser history and handle navigation
+    useEffect(() => {
+        // Set initial URL if not already set
+        if (!window.location.hash) {
+            window.history.replaceState({ step: 1 }, '', '#step-1');
+        }
+
+        // Handle browser back/forward buttons
+        const handlePopState = (event) => {
+            if (event.state && event.state.step) {
+                const step = event.state.step;
+                // Validate the step before setting it
+                if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
+                    // Show validation modal and don't change step
+                    setAttemptedStep(step);
+                    setShowValidationModal(true);
+                    // Revert the URL to the current step
+                    window.history.replaceState({ step: currentStep }, '', `#step-${currentStep}`);
+                } else {
+                    setCurrentStep(step);
+                }
+            }
+        };
+
+        // Handle hash changes (for direct URL access)
+        const handleHashChange = () => {
+            const hash = window.location.hash;
+            const stepMatch = hash.match(/#step-(\d+)/);
+            if (stepMatch) {
+                const step = parseInt(stepMatch[1], 10);
+                if (step >= 1 && step <= 3) {
+                    // Validate the step before setting it
+                    if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
+                        // Show validation modal and don't change step
+                        setAttemptedStep(step);
+                        setShowValidationModal(true);
+                        // Revert the URL to the current step
+                        window.history.replaceState({ step: currentStep }, '', `#step-${currentStep}`);
+                    } else {
+                        setCurrentStep(step);
+                    }
+                }
+            }
+        };
+
+        // Set up event listeners
+        window.addEventListener('popstate', handlePopState);
+        window.addEventListener('hashchange', handleHashChange);
+
+        // Initial hash check
+        handleHashChange();
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, []);
+
+    // Update browser history when step changes
+    useEffect(() => {
+        const newHash = `#step-${currentStep}`;
+        if (window.location.hash !== newHash) {
+            window.history.pushState({ step: currentStep }, '', newHash);
+        }
+    }, [currentStep]);
+
     const nextStep = () => {
+        // Validate that products are selected before allowing navigation to steps 3+
+        if (currentStep >= 2 && (!selectedProducts || selectedProducts.length === 0)) {
+            setShowValidationModal(true);
+            return; // Don't proceed
+        }
         setCurrentStep((prevStep) => prevStep + 1);
     };
 
@@ -36,6 +113,39 @@ function App() {
         setSelectedProducts([]);
         setRedirectOption('cart');
         setSelectedRedirectPage(null);
+    };
+
+    // Function to navigate to a specific step with validation
+    const goToStep = (step) => {
+        // Validate that we can go to the requested step
+        if (step < 1 || step > 3) {
+            return false;
+        }
+
+        // If trying to go to step 3 without products, show validation modal
+        if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
+            setAttemptedStep(step);
+            setShowValidationModal(true);
+            // Don't update the URL if validation fails
+            return false;
+        }
+
+        setCurrentStep(step);
+        return true;
+    };
+
+    // Handle validation modal close and navigation
+    const handleValidationModalClose = () => {
+        setShowValidationModal(false);
+        setAttemptedStep(null);
+    };
+
+    // Handle validation modal confirm (user acknowledges they need to select products)
+    const handleValidationModalConfirm = () => {
+        setShowValidationModal(false);
+        setAttemptedStep(null);
+        // Navigate to product selection step
+        setCurrentStep(2);
     };
 
     const handleLinkTypeChange = (newLinkType) => {
@@ -66,42 +176,150 @@ function App() {
 
     const renderStep = () => {
         switch (currentStep) {
-            case 1: 
-                return <LinkType linkType={linkType} setLinkType={handleLinkTypeChange} />;
+                        case 1:
+                return (
+                    <>
+                        <LinkType linkType={linkType} setLinkType={handleLinkTypeChange} />
+                        {/* Duplicate navigation below each step for better UX */}
+                        <div className="form-step-navigation form-step-navigation-bottom">
+                            {renderNavigation()}
+                        </div>
+                        <DynamicLink 
+                            linkType={linkType}
+                            selectedProducts={selectedProducts}
+                            selectedCoupon={selectedCoupon}
+                            redirectOption={redirectOption}
+                            selectedRedirectPage={selectedRedirectPage}
+                            currentStep={currentStep}
+                            showValidationModal={showValidationModal}
+                            setShowValidationModal={setShowValidationModal}
+                            onValidationModalClose={handleValidationModalClose}
+                            onValidationModalConfirm={handleValidationModalConfirm}
+                            onNavigateToStep={goToStep}
+                        />
+                    </>
+                );
             case 2:
-                return <ProductSelect 
-                    linkType={linkType} 
-                    selectedProducts={selectedProducts}
-                    setSelectedProducts={setSelectedProducts}
-                />;
+                return (
+                    <>
+                        <ProductSelect 
+                            linkType={linkType} 
+                            selectedProducts={selectedProducts}
+                            setSelectedProducts={setSelectedProducts}
+                        />
+                        {/* Duplicate navigation below each step for better UX */}
+                        <div className="form-step-navigation form-step-navigation-bottom">
+                            {renderNavigation()}
+                        </div>
+                        <DynamicLink 
+                            linkType={linkType}
+                            selectedProducts={selectedProducts}
+                            selectedCoupon={selectedCoupon}
+                            redirectOption={redirectOption}
+                            selectedRedirectPage={selectedRedirectPage}
+                            currentStep={currentStep}
+                            showValidationModal={showValidationModal}
+                            setShowValidationModal={setShowValidationModal}
+                            onValidationModalClose={handleValidationModalClose}
+                            onValidationModalConfirm={handleValidationModalConfirm}
+                            onNavigateToStep={goToStep}
+                        />
+                    </>
+                );
             case 3:
                 if (linkType === 'addToCart') {
-                    return <Redirect 
-                        redirectOption={redirectOption}
-                        setRedirectOption={setRedirectOption}
-                        selectedRedirectPage={selectedRedirectPage}
-                        setSelectedRedirectPage={setSelectedRedirectPage}
-                    />;
+                    return (
+                        <>
+                            <Redirect 
+                                redirectOption={redirectOption}
+                                setRedirectOption={setRedirectOption}
+                                selectedRedirectPage={selectedRedirectPage}
+                                setSelectedRedirectPage={setSelectedRedirectPage}
+                            />
+                            {/* Duplicate navigation below each step for better UX */}
+                            <div className="form-step-navigation form-step-navigation-bottom">
+                                {renderNavigation()}
+                            </div>
+                            <DynamicLink 
+                                linkType={linkType}
+                                selectedProducts={selectedProducts}
+                                selectedCoupon={selectedCoupon}
+                                redirectOption={redirectOption}
+                                selectedRedirectPage={selectedRedirectPage}
+                                currentStep={currentStep}
+                                showValidationModal={showValidationModal}
+                                setShowValidationModal={setShowValidationModal}
+                                onValidationModalClose={handleValidationModalClose}
+                                onValidationModalConfirm={handleValidationModalConfirm}
+                                onNavigateToStep={goToStep}
+                            />
+                        </>
+                    );
                 } 
                 if (linkType === 'checkoutLink') {
-                    return <Coupon 
-                        selectedCoupon={selectedCoupon}
-                        setSelectedCoupon={setSelectedCoupon}
-                    />;
+                    return (
+                        <>
+                            <Coupon 
+                                selectedCoupon={selectedCoupon}
+                                setSelectedCoupon={setSelectedCoupon}
+                            />
+                            {/* Duplicate navigation below each step for better UX */}
+                            <div className="form-step-navigation form-step-navigation-bottom">
+                                {renderNavigation()}
+                            </div>
+                            <DynamicLink 
+                                linkType={linkType}
+                                selectedProducts={selectedProducts}
+                                selectedCoupon={selectedCoupon}
+                                redirectOption={redirectOption}
+                                selectedRedirectPage={selectedRedirectPage}
+                                currentStep={currentStep}
+                                showValidationModal={showValidationModal}
+                                setShowValidationModal={setShowValidationModal}
+                                onValidationModalClose={handleValidationModalClose}
+                                onValidationModalConfirm={handleValidationModalConfirm}
+                                onNavigateToStep={goToStep}
+                            />
+                        </>
+                    );
                 }
             case 4:
-                // In the real implementation, the Next step from Options would trigger the link generation.
-                return <GenerateLink />;
+                // This step is no longer needed since DynamicLink shows everything
+                return null;
 
             default:
-                return <LinkType linkType={linkType} setLinkType={setLinkType} />;
+                return (
+                    <>
+                        <LinkType linkType={linkType} setLinkType={setLinkType} />
+                        {/* Duplicate navigation below each step for better UX */}
+                        <div className="form-step-navigation form-step-navigation-bottom">
+                            {renderNavigation()}
+                        </div>
+                        <DynamicLink 
+                            linkType={linkType}
+                            selectedProducts={selectedProducts}
+                            selectedCoupon={selectedCoupon}
+                            redirectOption={redirectOption}
+                            selectedRedirectPage={selectedRedirectPage}
+                            currentStep={currentStep}
+                            showValidationModal={showValidationModal}
+                            setShowValidationModal={setShowValidationModal}
+                            onValidationModalClose={handleValidationModalClose}
+                            onValidationModalConfirm={handleValidationModalConfirm}
+                            onNavigateToStep={goToStep}
+                        />
+                    </>
+                );
         }
     };
 
     const renderNavigation = () => {
-        if (currentStep === 4) {
+        if (currentStep === 3) {
             return (
                 <div className="form-step-navigation">
+                    <button className="button" onClick={prevStep}>
+                        ← Back
+                    </button>
                     <button className="button button-primary" onClick={startOver}>
                         Start Over
                     </button>
@@ -117,7 +335,7 @@ function App() {
                     </button>
                 )}
                 <button className="button button-primary" onClick={nextStep}>
-                    {currentStep === 3 ? 'Generate Link' : 'Next →'}
+                    Next →
                 </button>
             </div>
         );
@@ -127,7 +345,6 @@ function App() {
         <div className="wrap">
             <h1 className="wp-heading-inline">Link Wizard for WooCommerce</h1>
             <p>Create custom Add-To-Cart or direct Checkout-Link URLs for your products.</p>
-            <hr className="wp-header-end" />
 
             <div id="link-wizard-form">
                 {renderStep()}

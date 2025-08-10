@@ -2,6 +2,65 @@
    WordPress Admin Color Scheme
    ============================================================================= */
 
+/* =============================================================================
+   Dynamic Link Component Styles
+   ============================================================================= */
+
+.dynamic-link-container {
+    animation: fadeInUp 0.3s ease-out;
+    margin-bottom: 20px;
+}
+
+.dynamic-link-container input[type="text"] {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.dynamic-link-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dynamic-link-container button:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for the dynamic link container */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .dynamic-link-container {
+        padding: 15px;
+    }
+    
+    .dynamic-link-container input[type="text"] {
+        min-width: 100% !important;
+        margin-bottom: 10px;
+    }
+    
+    .dynamic-link-container > div:first-of-type {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dynamic-link-container button {
+        min-width: 100% !important;
+        margin-bottom: 8px;
+    }
+}
+
 /* 
  * These are fallbacks for the CSS custom properties that are dynamically
  * injected by WordPress core based on the user's selected admin color scheme.
@@ -42,7 +101,7 @@
 	border: 1px solid var(--wp-admin-card-border, #c3c4c7);
 	box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
 	padding: 20px;
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 	border-radius: 4px;
 }
 
@@ -92,17 +151,17 @@
 
 /* Navigation buttons at the bottom of each step */
 .form-step-navigation {
-    margin-top: 2em;
-    padding-top: 1.5em;
-    border-top: 1px solid var(--wp-admin-border-color, #c3c4c7);
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Make the primary button float right if it's the only one */
 .form-step-navigation .button-primary:first-child:last-child {
     margin-left: auto;
 }
+
 
 /* =============================================================================
    Reusable Search Component System
@@ -706,3 +765,4 @@
 .product-selection-modal .button-destructive:hover {
     background-color: #c82333;
 }
+

@@ -201,6 +201,7 @@ class Variable_Product_Handler implements Product_Handler_Interface {
             'has_variations' => true,
             'variation_count' => count( $product->get_available_variations() ),
             'attributes'  => $this->get_attributes( $product ), // Add available attributes
+            'slug'        => $product->get_slug(),
         );
     }
 
