@@ -38,6 +38,7 @@ class Link_Wizard_i18n {
             'filter_by_attributes' => __( 'Filter by Attributes:', 'link-wizard-for-woocommerce' ),
             'any_attribute' => __( 'Any', 'link-wizard-for-woocommerce' ),
             'variable_product_badge' => __( 'Variable (%d variations)', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Product SKU
             'sku_label' => __( 'SKU: %s', 'link-wizard-for-woocommerce' ),
             'click_to_view_image' => __( 'Click to view image', 'link-wizard-for-woocommerce' ),
             'view_full_size' => __( 'View full size', 'link-wizard-for-woocommerce' ),
@@ -62,8 +63,10 @@ class Link_Wizard_i18n {
             
             // API Error Messages
             'invalid_product_id_message' => __( 'Invalid product ID provided. Please provide a valid product ID.', 'link-wizard-for-woocommerce' ),
+            // translators: %d: Product ID number
             'product_not_found_message' => __( 'Product with ID %d not found. It may have been deleted or you may not have permission to access it.', 'link-wizard-for-woocommerce' ),
             'view_all_products_link' => __( 'View all products', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Product type name
             'no_handler_message' => __( 'No handler found for product type "%s". This product type is not supported by the Link Wizard.', 'link-wizard-for-woocommerce' ),
             'edit_product_link' => __( 'Edit this product', 'link-wizard-for-woocommerce' ),
             'invalid_attributes_message' => __( 'Invalid attributes format provided. Please check your attribute selection.', 'link-wizard-for-woocommerce' ),
@@ -80,6 +83,7 @@ class Link_Wizard_i18n {
             
             // UI Elements
             'back_to_search' => __( '← Back to Search', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Product name
             'variations_for' => __( 'Variations for: %s', 'link-wizard-for-woocommerce' ),
             'loading' => __( 'Loading...', 'link-wizard-for-woocommerce' ),
             'no_results' => __( 'No results found', 'link-wizard-for-woocommerce' ),
@@ -97,23 +101,33 @@ class Link_Wizard_i18n {
             'couponRulesDescription' => __( 'Search and select from your existing WooCommerce coupons. Only one coupon can be applied per link.', 'link-wizard-for-woocommerce' ),
             'searchCoupons' => __( 'Search for coupons', 'link-wizard-for-woocommerce' ),
             'searchCouponsPlaceholder' => __( 'Search existing coupons...', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Search term
             'noCouponsFound' => __( 'No coupons found matching "%s"', 'link-wizard-for-woocommerce' ),
             'errorFetchingCoupons' => __( 'An error occurred while fetching coupons.', 'link-wizard-for-woocommerce' ),
             'couponAdded' => __( 'Coupon Added:', 'link-wizard-for-woocommerce' ),
             'replaceCouponTitle' => __( 'Replace Selected Coupon?', 'link-wizard-for-woocommerce' ),
+            // translators: %1$s: Current coupon code, %2$s: New coupon code
             'replaceCouponMessage' => __( 'You have already selected coupon %1$s. Do you want to replace it with %2$s?', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Percentage amount
             'percentOff' => __( '%s%% off', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Dollar amount
             'fixedCartOff' => __( '$%s off cart', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Dollar amount
             'fixedProductOff' => __( '$%s off product', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Expiration date
             'expires' => __( 'Expires: %s', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Minimum spend amount
             'minSpend' => __( 'Min: $%s', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Usage limit number
             'usageLimit' => __( 'Limit: %s', 'link-wizard-for-woocommerce' ),
 
             // Page Search
             'searchPagesPlaceholder' => __( 'Search for pages or posts...', 'link-wizard-for-woocommerce' ),
+            // translators: %s: Search term
             'noPagesFound' => __( 'No pages or posts found matching "%s"', 'link-wizard-for-woocommerce' ),
             'errorFetchingPages' => __( 'An error occurred while fetching pages.', 'link-wizard-for-woocommerce' ),
             'replacePageTitle' => __( 'Replace Selected Page?', 'link-wizard-for-woocommerce' ),
+            // translators: %1$s: Current page title, %2$s: New page title
             'replacePageMessage' => __( 'You have already selected "%1$s". Do you want to replace it with "%2$s"?', 'link-wizard-for-woocommerce' ),
 
             // Redirect Section
