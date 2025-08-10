@@ -108,11 +108,38 @@ const GenerateLink = ({
             }
         } else if (linkType === 'checkoutLink' && selectedCoupon) {
             // Add coupon parameter
-            const separator = currentLink.includes('?') ? '&' : '?';
-            currentLink += `${separator}coupon=${selectedCoupon.code}`;
+            const couponParam = `coupon=${selectedCoupon.code}`;
+            currentLink = currentLink.includes('?') ? `${currentLink}&${couponParam}` : `${currentLink}?${couponParam}`;
+            
+            // Apply encoding based on user preference
+            if (useEncoding) {
+                // URL encode the parameters
+                const urlParts = currentLink.split('?');
+                if (urlParts.length > 1) {
+                    const baseUrl = urlParts[0];
+                    const params = urlParts[1];
+                    
+                    // Parse and encode individual parameters
+                    const paramPairs = params.split('&');
+                    const encodedPairs = paramPairs.map(pair => {
+                        const [key, value] = pair.split('=');
+                        if (key === 'products') {
+                            // Encode the products parameter (contains colons and commas)
+                            return `${key}=${encodeURIComponent(value)}`;
+                        } else if (key === 'coupon') {
+                            // Encode the coupon parameter
+                            return `${key}=${encodeURIComponent(value)}`;
+                        }
+                        return pair;
+                    });
+                    
+                    currentLink = `${baseUrl}?${encodedPairs.join('&')}`;
+                }
+            }
+            
             segments.push({
                 step: 3,
-                description: 'Coupon applied',
+                description: `Apply coupon: ${selectedCoupon.code}`,
                 url: currentLink
             });
         }
@@ -194,6 +221,17 @@ const GenerateLink = ({
             {/* Final Generated Link */}
             <div className="final-link-section">
                 <h3>Final Generated Link</h3>
+                {linkType === 'checkoutLink' && (
+                    <div className="encoding-status">
+                        <small>
+                            {useEncoding ? '🔒 Encoded' : '🔓 Raw format'} - 
+                            {useEncoding 
+                                ? ' Special characters are URL-encoded for compatibility'
+                                : ' Special characters are shown as-is for readability'
+                            }
+                        </small>
+                    </div>
+                )}
                 <div className="link-display">
                     <textarea 
                         readOnly 
@@ -228,7 +266,7 @@ const GenerateLink = ({
                                     checked={useEncoding}
                                     onChange={(e) => setUseEncoding(e.target.checked)}
                                 />
-                                Use URL encoding (recommended)
+                                Use URL encoding (encode special characters like : and ,)
                             </label>
                         )}
                     </div>

@@ -927,3 +927,17 @@
 .button-destructive:focus {
     box-shadow: 0 0 0 1px #fff, 0 0 0 3px #dc3545 !important;
 }
+
+.encoding-status {
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background-color: #f0f6fc;
+    border: 1px solid #c3d4e6;
+    border-radius: 4px;
+    color: #1d2327;
+}
+
+.encoding-status small {
+    font-size: 13px;
+    line-height: 1.4;
+}
