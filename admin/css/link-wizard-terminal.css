@@ -1,0 +1,202 @@
+/* Link Wizard Terminal Styles */
+
+.link-wizard-terminal {
+    background: var(--wp-admin-theme-color, #007cba);
+    border-radius: 8px;
+    margin: 20px 0;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+/* Terminal Header */
+.terminal-header {
+    background: var(--wp-admin-theme-color-darker-10, #005a87);
+    color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--wp-admin-theme-color-darker-20, #004a73);
+}
+
+.terminal-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.terminal-status {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Terminal Body */
+.terminal-body {
+    background: var(--wp-admin-theme-color-darker-20, #004a73);
+    color: #fff;
+    padding: 16px;
+    min-height: 120px;
+}
+
+/* Terminal Lines */
+.terminal-line {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+}
+
+.terminal-line:last-child {
+    margin-bottom: 0;
+}
+
+.terminal-prompt {
+    color: var(--wp-admin-theme-color, #007cba);
+    font-weight: 600;
+    margin-right: 8px;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.terminal-text {
+    color: #e1e1e1;
+    flex: 1;
+}
+
+.terminal-url {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    word-break: break-all;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.terminal-cursor {
+    color: #4ade80;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Terminal Actions */
+.terminal-actions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Terminal Encoding Toggle */
+.terminal-encoding-toggle {
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.encoding-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #e1e1e1;
+    font-size: 13px;
+}
+
+.encoding-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--wp-admin-theme-color, #007cba);
+}
+
+.encoding-checkbox span {
+    user-select: none;
+}
+
+.terminal-actions .button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.terminal-actions .button-primary {
+    background: var(--wp-admin-theme-color, #007cba);
+    color: #fff;
+}
+
+.terminal-actions .button-primary:hover {
+    background: var(--wp-admin-theme-color-darker-10, #005a87);
+    transform: translateY(-1px);
+}
+
+.terminal-actions .button-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.terminal-actions .button-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .terminal-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .terminal-actions {
+        flex-direction: column;
+    }
+    
+    .terminal-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .link-wizard-terminal {
+        background: var(--wp-admin-theme-color, #007cba);
+    }
+    
+    .terminal-header {
+        background: var(--wp-admin-theme-color-darker-10, #005a87);
+    }
+    
+    .terminal-body {
+        background: var(--wp-admin-theme-color-darker-20, #004a73);
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .link-wizard-terminal {
+        border: 2px solid var(--wp-admin-theme-color, #007cba);
+    }
+    
+    .terminal-url {
+        border: 2px solid #4ade80;
+    }
+}

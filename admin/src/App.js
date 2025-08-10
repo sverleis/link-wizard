@@ -4,6 +4,7 @@ import ProductSelect from './components/ProductSelect';
 import Redirect from './components/Redirect';
 import Coupon from './components/Coupon';
 import GenerateLink from './components/GenerateLink';
+import Terminal from './components/Terminal';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -18,6 +19,8 @@ function App() {
     // Add state for product selection modal
     const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
     const [pendingLinkType, setPendingLinkType] = useState(null);
+    // Add encoding state for checkout links
+    const [useEncoding, setUseEncoding] = useState(false);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -49,6 +52,7 @@ function App() {
         setSelectedProducts([]);
         setRedirectOption('cart');
         setSelectedRedirectPage(null);
+        setUseEncoding(false); // Reset encoding state
     };
 
     const handleLinkTypeChange = (newLinkType) => {
@@ -151,6 +155,18 @@ function App() {
             <h1 className="wp-heading-inline">Link Wizard for WooCommerce</h1>
             <p>Create custom Add-To-Cart or direct Checkout-Link URLs for your products.</p>
             <hr className="wp-header-end" />
+
+            {/* Terminal Interface */}
+            <Terminal 
+                currentStep={currentStep}
+                linkType={linkType}
+                selectedProducts={selectedProducts}
+                redirectOption={redirectOption}
+                selectedRedirectPage={selectedRedirectPage}
+                selectedCoupon={selectedCoupon}
+                useEncoding={useEncoding}
+                setUseEncoding={setUseEncoding}
+            />
 
             <div id="link-wizard-form">
                 {renderStep()}

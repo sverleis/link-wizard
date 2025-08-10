@@ -98,6 +98,11 @@ class Link_Wizard {
          */
         require_once LINK_WIZARD_PATH . 'includes/class-link-wizard-search.php';
 
+        /**
+         * The class responsible for handling the terminal interface.
+         */
+        require_once LINK_WIZARD_PATH . 'includes/class-link-wizard-terminal.php';
+
         $this->loader = new Link_Wizard_Loader();
         
         // Don't instantiate the search functionality here - wait until it's needed
