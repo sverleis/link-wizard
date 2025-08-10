@@ -81,13 +81,20 @@ const GenerateLink = ({
         }
 
         // Step 3: Additional Configuration
-        if (linkType === 'addToCart' && (redirectOption === 'checkout' || selectedRedirectPage)) {
+        if (linkType === 'addToCart' && (redirectOption === 'checkout' || redirectOption === 'cart' || selectedRedirectPage)) {
             // Add redirect parameter
             if (redirectOption === 'checkout') {
                 currentLink = currentLink.replace('/?', '/checkout/?');
                 segments.push({
                     step: 3,
                     description: 'Redirect to checkout page',
+                    url: currentLink
+                });
+            } else if (redirectOption === 'cart') {
+                // For cart option, keep the current URL as is (default behavior)
+                segments.push({
+                    step: 3,
+                    description: 'Redirect to cart page (default behavior)',
                     url: currentLink
                 });
             } else if (selectedRedirectPage) {
@@ -190,7 +197,7 @@ const GenerateLink = ({
                             <span className="step-number">Step {currentStep + 1}</span>
                             <span className="step-description">
                                 {linkType === 'addToCart' 
-                                    ? 'Configure redirect options' 
+                                    ? 'Configure redirect options (checkout, cart, or custom page)' 
                                     : 'Apply coupon code'
                                 }
                             </span>

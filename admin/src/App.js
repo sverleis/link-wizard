@@ -9,7 +9,7 @@ function App() {
     const [currentStep, setCurrentStep] = useState(1);
     const [linkType, setLinkType] = useState('checkoutLink');
     // Add redirect state management
-    const [redirectOption, setRedirectOption] = useState('cart');
+    const [redirectOption, setRedirectOption] = useState('checkout');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
     // Add coupon state management
     const [selectedCoupon, setSelectedCoupon] = useState(null);
@@ -21,6 +21,12 @@ function App() {
     // More to come as we build out the extension further.
 
     const nextStep = () => {
+        // Validate product selection before proceeding
+        if (currentStep === 2 && selectedProducts.length === 0) {
+            alert('Please select at least one product before continuing.');
+            return;
+        }
+        
         setCurrentStep((prevStep) => prevStep + 1);
     };
 
@@ -111,13 +117,7 @@ function App() {
 
     const renderNavigation = () => {
         if (currentStep === 4) {
-            return (
-                <div className="form-step-navigation">
-                    <button className="button button-primary" onClick={startOver}>
-                        Start Over
-                    </button>
-                </div>
-            );
+            return null; // GenerateLink component has its own navigation
         };
 
         return (
