@@ -706,3 +706,169 @@
 .product-selection-modal .button-destructive:hover {
     background-color: #c82333;
 }
+
+/* =============================================================================
+   Progressive Link Building Styles
+   ============================================================================= */
+
+.link-type-display {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.link-type-display h3 {
+    margin: 0 0 10px 0;
+    color: #495057;
+    font-size: 18px;
+}
+
+.link-type-display p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.link-progression {
+    margin-bottom: 30px;
+}
+
+.link-progression h3 {
+    margin-bottom: 20px;
+    color: #495057;
+    font-size: 18px;
+}
+
+.link-segment {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.link-segment:hover {
+    border-color: #007cba;
+    box-shadow: 0 2px 4px rgba(0, 124, 186, 0.1);
+}
+
+.link-segment.complete {
+    border-left: 4px solid #28a745;
+}
+
+.link-segment.incomplete {
+    border-left: 4px solid #ffc107;
+    background: #fffbf0;
+}
+
+.segment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.step-number {
+    background: #007cba;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.link-segment.incomplete .step-number {
+    background: #ffc107;
+    color: #212529;
+}
+
+.step-description {
+    color: #495057;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.segment-url {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.segment-url code {
+    color: #e83e8c;
+    font-size: 13px;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.final-link-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.final-link-section h3 {
+    margin: 0 0 15px 0;
+    color: #495057;
+    font-size: 18px;
+}
+
+.link-display {
+    margin-bottom: 15px;
+}
+
+.link-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.encoding-option {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.encoding-option input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.link-preview {
+    background: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+}
+
+.link-preview h3 {
+    margin: 0 0 10px 0;
+    color: #0056b3;
+    font-size: 18px;
+}
+
+.link-preview p {
+    margin: 0 0 15px 0;
+    color: #0056b3;
+}
+
+.link-preview .button {
+    background: #0056b3;
+    border-color: #0056b3;
+    color: white;
+}
+
+.link-preview .button:hover {
+    background: #004085;
+    border-color: #004085;
+}

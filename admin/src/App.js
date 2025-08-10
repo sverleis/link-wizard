@@ -91,7 +91,13 @@ function App() {
                 }
             case 4:
                 // In the real implementation, the Next step from Options would trigger the link generation.
-                return <GenerateLink />;
+                return <GenerateLink 
+                    linkType={linkType}
+                    selectedProducts={selectedProducts}
+                    redirectOption={redirectOption}
+                    selectedRedirectPage={selectedRedirectPage}
+                    selectedCoupon={selectedCoupon}
+                />;
 
             default:
                 return <LinkType linkType={linkType} setLinkType={setLinkType} />;
