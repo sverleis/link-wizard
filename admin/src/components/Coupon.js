@@ -26,11 +26,13 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
     // Handle pending coupon selection with useEffect instead of setTimeout
     useEffect(() => {
         if (pendingCoupon) {
+            // Immediately clear search results and hide results to prevent "No coupons found" message
+            setSearchResults([]);
+            setShowResults(false);
+            
             const timer = setTimeout(() => {
                 setSelectedCoupon(pendingCoupon);
                 setAddingCoupon(null);
-                setSearchResults([]);
-                setShowResults(false);
                 setSearchTerm('');
                 setPendingCoupon(null);
             }, 800);
@@ -42,10 +44,13 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
     // Handle pending replacement with useEffect instead of setTimeout
     useEffect(() => {
         if (pendingReplacement) {
+            // Immediately clear search results and hide results to prevent "No coupons found" message
+            setSearchResults([]);
+            setShowResults(false);
+            
             const timer = setTimeout(() => {
                 setSelectedCoupon(pendingReplacement);
                 setAddingCoupon(null);
-                setSearchResults([]);
                 setPendingReplacement(null);
             }, 800);
             
