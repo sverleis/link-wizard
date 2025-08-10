@@ -99,8 +99,8 @@ The system uses the `lw-` prefix (Link Wizard) to avoid conflicts with other plu
                     SAVE20
                     <span class="lw-search-item-badge">20% Off</span>
                 </div>
-                <div class="lw-search-item-meta">Expires: 2025-12-31</div>
-                <div class="lw-search-item-price">Minimum: $50</div>
+                <div class="lw-search-item-meta">Expires: 2025-12-31 • Min: $50</div>
+                <div class="lw-search-item-price">Summer Sale Discount</div>
             </div>
         </div>
     </li>

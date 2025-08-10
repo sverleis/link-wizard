@@ -99,11 +99,6 @@ class Link_Wizard_Admin {
                 'anyAttribute' => Link_Wizard_i18n::get_admin_text( 'any_attribute' ),
                 'variableProductBadge' => Link_Wizard_i18n::get_admin_text( 'variable_product_badge' ),
                 'skuLabel' => Link_Wizard_i18n::get_admin_text( 'sku_label' ),
-                'clickToViewImage' => Link_Wizard_i18n::get_admin_text( 'click_to_view_image' ),
-                
-                // Additional UI Elements
-                'sku' => Link_Wizard_i18n::get_admin_text( 'sku' ),
-                'price' => Link_Wizard_i18n::get_admin_text( 'price' ),
                 'qty' => Link_Wizard_i18n::get_admin_text( 'qty' ),
                 'remove' => Link_Wizard_i18n::get_admin_text( 'remove' ),
                 'variableProduct' => Link_Wizard_i18n::get_admin_text( 'variable_product' ),
@@ -123,6 +118,49 @@ class Link_Wizard_Admin {
                 'showAllVariations' => Link_Wizard_i18n::get_admin_text( 'show_all_variations' ),
                 'hideAllVariations' => Link_Wizard_i18n::get_admin_text( 'hide_all_variations' ),
                 'allVariations' => Link_Wizard_i18n::get_admin_text( 'all_variations' ),
+                'added' => Link_Wizard_i18n::get_admin_text( 'added' ),
+                'resetFilters' => Link_Wizard_i18n::get_admin_text( 'resetFilters' ),
+                'replaceConfirm' => Link_Wizard_i18n::get_admin_text( 'replace_confirm' ),
+                'cancelReplace' => Link_Wizard_i18n::get_admin_text( 'cancel_replace' ),
+                'clickToViewImage' => Link_Wizard_i18n::get_admin_text( 'click_to_view_image' ),
+                'viewFullSize' => Link_Wizard_i18n::get_admin_text( 'view_full_size' ),
+                'replaceConfirmationTitle' => Link_Wizard_i18n::get_admin_text( 'replace_confirmation_title' ),
+                'replaceConfirmationMessage' => Link_Wizard_i18n::get_admin_text( 'replace_confirmation_message' ),
+                'sku' => Link_Wizard_i18n::get_admin_text( 'sku' ),
+
+                // Coupon Section
+                'applyCoupon' => Link_Wizard_i18n::get_admin_text( 'applyCoupon' ),
+                'couponRulesTitle' => Link_Wizard_i18n::get_admin_text( 'couponRulesTitle' ),
+                'couponRulesDescription' => Link_Wizard_i18n::get_admin_text( 'couponRulesDescription' ),
+                'searchCoupons' => Link_Wizard_i18n::get_admin_text( 'searchCoupons' ),
+                'searchCouponsPlaceholder' => Link_Wizard_i18n::get_admin_text( 'searchCouponsPlaceholder' ),
+                'noCouponsFound' => Link_Wizard_i18n::get_admin_text( 'noCouponsFound' ),
+                'couponAdded' => Link_Wizard_i18n::get_admin_text( 'couponAdded' ),
+                'replaceCouponTitle' => Link_Wizard_i18n::get_admin_text( 'replaceCouponTitle' ),
+                'replaceCouponMessage' => Link_Wizard_i18n::get_admin_text( 'replaceCouponMessage' ),
+                'percentOff' => Link_Wizard_i18n::get_admin_text( 'percentOff' ),
+                'fixedCartOff' => Link_Wizard_i18n::get_admin_text( 'fixedCartOff' ),
+                'fixedProductOff' => Link_Wizard_i18n::get_admin_text( 'fixedProductOff' ),
+                'expires' => Link_Wizard_i18n::get_admin_text( 'expires' ),
+                'minSpend' => Link_Wizard_i18n::get_admin_text( 'minSpend' ),
+                'usageLimit' => Link_Wizard_i18n::get_admin_text( 'usageLimit' ),
+
+                // Page Search
+                'searchPagesPlaceholder' => Link_Wizard_i18n::get_admin_text( 'searchPagesPlaceholder' ),
+                'noPagesFound' => Link_Wizard_i18n::get_admin_text( 'noPagesFound' ),
+                'errorFetchingPages' => Link_Wizard_i18n::get_admin_text( 'errorFetchingPages' ),
+                'replacePageTitle' => Link_Wizard_i18n::get_admin_text( 'replacePageTitle' ),
+                'replacePageMessage' => Link_Wizard_i18n::get_admin_text( 'replacePageMessage' ),
+
+                // Redirect Section
+                'configureRedirects' => Link_Wizard_i18n::get_admin_text( 'configureRedirects' ),
+                'redirectOptions' => Link_Wizard_i18n::get_admin_text( 'redirectOptions' ),
+                'redirectAfterAdd' => Link_Wizard_i18n::get_admin_text( 'redirectAfterAdd' ),
+                'stayOnCurrentPage' => Link_Wizard_i18n::get_admin_text( 'stayOnCurrentPage' ),
+                'redirectToCart' => Link_Wizard_i18n::get_admin_text( 'redirectToCart' ),
+                'redirectToCheckout' => Link_Wizard_i18n::get_admin_text( 'redirectToCheckout' ),
+                'redirectToProduct' => Link_Wizard_i18n::get_admin_text( 'redirectToProduct' ),
+                'redirectToPage' => Link_Wizard_i18n::get_admin_text( 'redirectToPage' ),
             )
         );
     }
