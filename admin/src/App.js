@@ -11,6 +11,8 @@ function App() {
     // Add redirect state management
     const [redirectOption, setRedirectOption] = useState('cart');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
+    // Add coupon state management
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
     // More to come as we build out the extension further.
 
     const nextStep = () => {
@@ -25,6 +27,9 @@ function App() {
         setCurrentStep(1);
         // Reset other state to here, too.
         setLinkType('checkoutLink');
+        setSelectedCoupon(null);
+        setRedirectOption('cart');
+        setSelectedRedirectPage(null);
     };
 
     const renderStep = () => {
@@ -43,7 +48,10 @@ function App() {
                     />;
                 } 
                 if (linkType === 'checkoutLink') {
-                    return <Coupon />;
+                    return <Coupon 
+                        selectedCoupon={selectedCoupon}
+                        setSelectedCoupon={setSelectedCoupon}
+                    />;
                 }
             case 4:
                 // In the real implementation, the Next step from Options would trigger the link generation.
