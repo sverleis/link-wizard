@@ -65,7 +65,7 @@ class Link_Wizard_Search {
                     'description' => 'Search term for products',
                 ),
             )
-        );
+        ) );
 
         // Add endpoint to get variations for a variable product
         register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/variations', array(
@@ -79,7 +79,7 @@ class Link_Wizard_Search {
                     'description' => 'Product ID to get variations for',
                 ),
             )
-        );
+        ) );
 
         // Add endpoint to get filtered variations based on attributes
         register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/filtered-variations', array(
@@ -91,28 +91,6 @@ class Link_Wizard_Search {
                     'required' => true,
                     'type' => 'integer',
                     'description' => 'Product ID to get variations for',
-                ),
-            )
-        );
-
-        register_rest_route(
-            'link-wizard/v1',
-            '/products/(?P<id>\d+)/filtered-variations',
-            array(
-                'methods' => 'GET',
-                'callback' => array($this, 'get_filtered_variations'),
-                'permission_callback' => array($this, 'check_permissions'),
-                'args' => array(
-                    'id' => array(
-                        'validate_callback' => function($param) {
-                            return is_numeric($param);
-                        }
-                    ),
-                    'attributes' => array(
-                        'required' => false,
-                        'type' => 'string',
-                        'sanitize_callback' => 'sanitize_text_field',
-                    ),
                 ),
             ),
         ) );
