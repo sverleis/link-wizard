@@ -91,10 +91,11 @@ const GenerateLink = ({
                     url: currentLink
                 });
             } else if (redirectOption === 'cart') {
-                // For cart option, keep the current URL as is (default behavior)
+                // For cart option, add redirect parameter to cart
+                currentLink = currentLink.replace('/?', '/cart/?');
                 segments.push({
                     step: 3,
-                    description: 'Redirect to cart page (default behavior)',
+                    description: 'Redirect to cart page',
                     url: currentLink
                 });
             } else if (selectedRedirectPage) {
@@ -187,27 +188,7 @@ const GenerateLink = ({
                     </div>
                 ))}
                 
-                {currentStep < 3 && (
-                    <div 
-                        className="link-segment incomplete clickable"
-                        onClick={() => goToStep(currentStep + 1)}
-                        title={`Click to go to Step ${currentStep + 1}`}
-                    >
-                        <div className="segment-header">
-                            <span className="step-number">Step {currentStep + 1}</span>
-                            <span className="step-description">
-                                {linkType === 'addToCart' 
-                                    ? 'Configure redirect options (checkout, cart, or custom page)' 
-                                    : 'Apply coupon code'
-                                }
-                            </span>
-                            <span className="click-hint">← Click to complete</span>
-                        </div>
-                        <div className="segment-url">
-                            <code>Pending...</code>
-                        </div>
-                    </div>
-                )}
+                {/* Remove the incomplete step display since we're on the final page */}
             </div>
 
             {/* Final Generated Link */}
@@ -253,27 +234,8 @@ const GenerateLink = ({
                     </div>
                 </div>
             </div>
- 
-             {/* Form Step Navigation */}
-             <div className="form-step-navigation">
-                 <button
-                     type="button"
-                     className="button"
-                     onClick={() => goToStep(currentStep - 1)}
-                     disabled={currentStep <= 1}
-                 >
-                     ← Back
-                 </button>
-                 <button
-                     type="button"
-                     className="button button-destructive"
-                     onClick={() => window.location.reload()}
-                 >
-                     Start Over
-                 </button>
-             </div>
-         </div>
-     );
+        </div>
+    );
 };
 
 export default GenerateLink;

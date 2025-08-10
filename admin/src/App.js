@@ -35,7 +35,10 @@ function App() {
     };
 
     const goToStep = (stepNumber) => {
-        setCurrentStep(stepNumber);
+        // Validate step number
+        if (stepNumber >= 1 && stepNumber <= 4) {
+            setCurrentStep(stepNumber);
+        }
     };
 
     const startOver = () => {
@@ -117,7 +120,16 @@ function App() {
 
     const renderNavigation = () => {
         if (currentStep === 4) {
-            return null; // GenerateLink component has its own navigation
+            return (
+                <div className="form-step-navigation">
+                    <button className="button" onClick={prevStep}>
+                        ← Back
+                    </button>
+                    <button className="button button-destructive" onClick={startOver}>
+                        Start Over
+                    </button>
+                </div>
+            );
         };
 
         return (
