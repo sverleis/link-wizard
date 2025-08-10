@@ -5,7 +5,8 @@ const GenerateLink = ({
     selectedProducts, 
     redirectOption, 
     selectedRedirectPage, 
-    selectedCoupon 
+    selectedCoupon,
+    goToStep
 }) => {
     const [siteUrl, setSiteUrl] = useState('');
     const [generatedLink, setGeneratedLink] = useState('');
@@ -162,10 +163,16 @@ const GenerateLink = ({
             <div className="link-progression">
                 <h3>Link Building Progress</h3>
                 {linkSegments.map((segment, index) => (
-                    <div key={index} className="link-segment">
+                    <div 
+                        key={index} 
+                        className="link-segment clickable"
+                        onClick={() => goToStep(segment.step)}
+                        title={`Click to go back to Step ${segment.step}`}
+                    >
                         <div className="segment-header">
                             <span className="step-number">Step {segment.step}</span>
                             <span className="step-description">{segment.description}</span>
+                            <span className="click-hint">← Click to edit</span>
                         </div>
                         <div className="segment-url">
                             <code>{segment.url}</code>
@@ -174,7 +181,11 @@ const GenerateLink = ({
                 ))}
                 
                 {currentStep < 3 && (
-                    <div className="link-segment incomplete">
+                    <div 
+                        className="link-segment incomplete clickable"
+                        onClick={() => goToStep(currentStep + 1)}
+                        title={`Click to go to Step ${currentStep + 1}`}
+                    >
                         <div className="segment-header">
                             <span className="step-number">Step {currentStep + 1}</span>
                             <span className="step-description">
@@ -183,6 +194,7 @@ const GenerateLink = ({
                                     : 'Apply coupon code'
                                 }
                             </span>
+                            <span className="click-hint">← Click to complete</span>
                         </div>
                         <div className="segment-url">
                             <code>Pending...</code>

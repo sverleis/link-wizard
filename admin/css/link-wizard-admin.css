@@ -750,6 +750,22 @@
     transition: all 0.3s ease;
 }
 
+.link-segment.clickable {
+    cursor: pointer;
+    position: relative;
+}
+
+.link-segment.clickable:hover {
+    border-color: #007cba;
+    box-shadow: 0 4px 8px rgba(0, 124, 186, 0.15);
+    transform: translateY(-1px);
+}
+
+.link-segment.clickable:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 124, 186, 0.1);
+}
+
 .link-segment:hover {
     border-color: #007cba;
     box-shadow: 0 2px 4px rgba(0, 124, 186, 0.1);
@@ -791,6 +807,19 @@
     color: #495057;
     font-weight: 500;
     font-size: 14px;
+}
+
+.click-hint {
+    color: #007cba;
+    font-size: 12px;
+    font-style: italic;
+    margin-left: auto;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.link-segment.clickable:hover .click-hint {
+    opacity: 1;
 }
 
 .segment-url {

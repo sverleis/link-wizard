@@ -28,6 +28,10 @@ function App() {
         setCurrentStep((prev) => prev - 1);
     };
 
+    const goToStep = (stepNumber) => {
+        setCurrentStep(stepNumber);
+    };
+
     const startOver = () => {
         setCurrentStep(1);
         // Reset other state to here, too.
@@ -97,6 +101,7 @@ function App() {
                     redirectOption={redirectOption}
                     selectedRedirectPage={selectedRedirectPage}
                     selectedCoupon={selectedCoupon}
+                    goToStep={goToStep}
                 />;
 
             default:
