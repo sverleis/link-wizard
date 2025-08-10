@@ -1,13 +1,20 @@
 <?php
 /**
  * Plugin Name: Link Wizard for WooCommerce
+ * Plugin URI: https://github.com/sverleis/link-wizard
  * Description: A plugin to generate add-to-cart and checkout links for WooCommerce products.
  * Version: 1.0.0
+ * Requires at least: 5.0
+ * Tested up to: 6.4
+ * Requires PHP: 7.4
  * Author: Mags Industries
  * Author URI: https://magsindustries.wordpress.com
- * License: GPL2
- * Requires Plugins:  woocommerce
-
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: link-wizard-for-woocommerce
+ * Domain Path: /languages
+ * Requires Plugins: woocommerce
+ * Network: false
  */
 
 // If this file is called directly, abort.

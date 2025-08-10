@@ -10,20 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Load plugin textdomain for translations.
+ * Internationalization (i18n) for Link Wizard for WooCommerce
+ * 
+ * Note: WordPress 4.6+ automatically loads plugin textdomains for plugins
+ * hosted on WordPress.org, so manual loading is no longer required.
  */
 class Link_Wizard_i18n {
-
-    /**
-     * Load the plugin textdomain for translations.
-     */
-    public function load_plugin_textdomain() {
-        load_plugin_textdomain(
-            'link-wizard-for-woocommerce',
-            false,
-            dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
-        );
-    }
 
     /**
      * Get translated text for admin interface.
