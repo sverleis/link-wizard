@@ -1,0 +1,77 @@
+name: Asset Release Workflow
+ 
+on:
+  release:
+    types: [created]
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # 1. Checkout the repository code
+      - name: 👉 Checkout code
+        uses: actions/checkout@v4
+ 
+      # 2. Setup Node.js
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      # 3. Install dependencies and build
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      - name: 🔨 Build project
+        run: npm run build
+      
+      # 4. Install necessary packages: zip and rsync
+      - name: 🗄 Install zip and rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip rsync
+ 
+      # 5. Create the required directory structure
+      - name: 📂 Create required directory structure
+        run: |
+          mkdir link-wizard-for-woocommerce
+          rsync -av \
+            --exclude="link-wizard-for-woocommerce" \
+            --exclude="assets" \
+            --exclude="src" \
+            --exclude=".github" \
+            --exclude=".git" \
+            --exclude=".gitignore" \
+            --exclude=".distignore" \
+            --exclude=".DS_Store" \
+            --exclude=".babelrc" \
+            --exclude="webpack.config.js" \
+            --exclude="*.md" \
+            --exclude="DEVDOC.MD" \
+            --exclude="node_modules" \
+            --exclude="package.json" \
+            --exclude="package-lock.json" \
+            --exclude="admin/src" \
+            --exclude="admin/node_modules" \
+            ./* link-wizard-for-woocommerce/
+ 
+      # 6. Zip the project
+      - name: 📦 Zip the project
+        run: zip -r link-wizard-for-woocommerce.zip link-wizard-for-woocommerce/
+ 
+      # 7. Upload the zipped project as a release asset
+      - name: 📤 Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./link-wizard-for-woocommerce.zip
+          asset_name: link-wizard-for-woocommerce.zip
+          asset_content_type: application/zip
+ 
+      # 8. All good
+      - name: 🎉 All good
+        run: echo "All good!"
