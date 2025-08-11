@@ -29,6 +29,7 @@ class Link_Wizard_i18n {
             'select_products' => __( 'Select your product(s)', 'link-wizard-for-woocommerce' ),
             'select_product' => __( 'Select your product', 'link-wizard-for-woocommerce' ),
             'search_products' => __( 'Search for products', 'link-wizard-for-woocommerce' ),
+            'products_link_wizard' => __( 'Products > Link Wizard', 'link-wizard-for-woocommerce' ),
             'search_placeholder' => __( 'Search by name or SKU', 'link-wizard-for-woocommerce' ),
             'selected_products' => __( 'Selected Products:', 'link-wizard-for-woocommerce' ),
             'selected_product' => __( 'Selected Product:', 'link-wizard-for-woocommerce' ),

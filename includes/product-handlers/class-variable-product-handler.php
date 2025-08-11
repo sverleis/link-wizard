@@ -132,7 +132,7 @@ class Variable_Product_Handler implements Product_Handler_Interface {
             'id'          => $variation['variation_id'],
             'name'        => $this->get_variation_name( $parent_product, $variation ),
             'sku'         => $variation_product->get_sku(),
-            'price'       => $variation_product->get_price(),
+            'price'       => $variation_product->get_price_html(), // Use formatted price with currency
             'image'       => $this->get_variation_image( $variation, $parent_product ),
             'parent_id'   => $parent_product->get_id(),
             'parent_name' => $parent_product->get_name(),
@@ -150,21 +150,152 @@ class Variable_Product_Handler implements Product_Handler_Interface {
      */
     private function get_variation_name( $parent_product, $variation ) {
         $parent_name = $parent_product->get_name();
-        $attribute_names = array();
+        $attribute_parts = array();
         
         if ( isset( $variation['attributes'] ) ) {
             foreach ( $variation['attributes'] as $attribute_name => $attribute_value ) {
                 if ( $attribute_value !== '' && $attribute_value !== null ) {
-                    $attribute_names[] = $attribute_value;
+                    // Remove the 'attribute_' prefix to get the clean attribute name
+                    $clean_attribute_name = str_replace( 'attribute_', '', $attribute_name );
+                    
+                    // Get the proper attribute label - handle both taxonomy and custom attributes
+                    $attribute_label = $this->get_attribute_label( $clean_attribute_name, $parent_product );
+                    
+                    // Properly capitalize the attribute value
+                    $formatted_value = $this->format_attribute_value( $attribute_value, $clean_attribute_name, $parent_product );
+                    
+                    // Format as "Attribute: value"
+                    $attribute_parts[] = $attribute_label . ': ' . $formatted_value;
                 }
             }
         }
         
-        if ( ! empty( $attribute_names ) ) {
-            return $parent_name . ' - ' . implode( ', ', $attribute_names );
+        if ( ! empty( $attribute_parts ) ) {
+            return $parent_name . ' - ' . implode( ', ', $attribute_parts );
         }
         
         return $parent_name;
+    }
+
+    /**
+     * Format attribute value with proper capitalization.
+     *
+     * @param string $attribute_value
+     * @param string $attribute_name
+     * @param WC_Product $parent_product
+     * @return string
+     */
+    private function format_attribute_value( $attribute_value, $attribute_name, $parent_product ) {
+        // Check if this is a taxonomy-based attribute
+        $taxonomy = wc_attribute_taxonomy_name( $attribute_name );
+        
+        if ( taxonomy_exists( $taxonomy ) ) {
+            // For taxonomy attributes, get the term name which should have proper capitalization
+            $term = get_term_by( 'slug', $attribute_value, $taxonomy );
+            if ( $term && ! is_wp_error( $term ) ) {
+                return $term->name;
+            }
+        }
+        
+        // For custom attributes or if term not found, apply proper capitalization
+        // Convert to title case (first letter of each word capitalized)
+        return ucwords( strtolower( $attribute_value ) );
+    }
+
+    /**
+     * Get the proper attribute label for both taxonomy and custom attributes.
+     *
+     * @param string $attribute_name
+     * @param WC_Product $parent_product
+     * @return string
+     */
+    private function get_attribute_label( $attribute_name, $parent_product ) {
+        // First, check if the attribute name already has the 'pa_' prefix
+        $is_taxonomy = false;
+        $clean_attr_name = $attribute_name;
+        
+        if ( strpos( $attribute_name, 'pa_' ) === 0 ) {
+            // This is already a taxonomy attribute name
+            $is_taxonomy = true;
+            $clean_attr_name = str_replace( 'pa_', '', $attribute_name );
+        } else {
+            // Check if this would be a taxonomy attribute
+            $taxonomy = wc_attribute_taxonomy_name( $attribute_name );
+            if ( taxonomy_exists( $taxonomy ) ) {
+                $is_taxonomy = true;
+            }
+        }
+        
+        if ( $is_taxonomy ) {
+            // For taxonomy attributes, use wc_attribute_label with the clean name
+            $label = wc_attribute_label( $clean_attr_name );
+            
+            // Ensure proper capitalization for common taxonomy attributes
+            $common_taxonomy_attributes = array(
+                'color' => 'Color',
+                'size' => 'Size',
+                'material' => 'Material',
+                'style' => 'Style',
+                'brand' => 'Brand',
+                'pattern' => 'Pattern',
+                'fit' => 'Fit',
+                'length' => 'Length',
+                'width' => 'Width',
+                'height' => 'Height',
+                'weight' => 'Weight',
+                'type' => 'Type',
+                'category' => 'Category',
+                'tag' => 'Tag'
+            );
+            
+            $lower_clean_name = strtolower( $clean_attr_name );
+            if ( isset( $common_taxonomy_attributes[ $lower_clean_name ] ) ) {
+                return $common_taxonomy_attributes[ $lower_clean_name ];
+            }
+            
+            return $label;
+        } else {
+            // For custom attributes, get the original attribute name from the product
+            $product_attributes = $parent_product->get_attributes();
+            
+            // Look for the attribute by its sanitized name (case-insensitive)
+            foreach ( $product_attributes as $attr_name => $attribute ) {
+                if ( sanitize_title( $attr_name ) === $attribute_name || 
+                     sanitize_title( $attr_name ) === sanitize_title( $attribute_name ) ) {
+                    return $attribute->get_name(); // Return the original name with proper capitalization
+                }
+            }
+            
+            // Fallback: apply proper capitalization to the attribute name
+            // Handle common cases like "logo" -> "Logo", "color" -> "Color"
+            $formatted_name = ucwords( str_replace( array( '-', '_' ), ' ', $attribute_name ) );
+            
+            // Special handling for common attribute names
+            $common_attributes = array(
+                'logo' => 'Logo',
+                'color' => 'Color',
+                'size' => 'Size',
+                'material' => 'Material',
+                'style' => 'Style',
+                'brand' => 'Brand',
+                'pattern' => 'Pattern',
+                'fit' => 'Fit',
+                'length' => 'Length',
+                'width' => 'Width',
+                'height' => 'Height',
+                'weight' => 'Weight',
+                'type' => 'Type',
+                'category' => 'Category',
+                'tag' => 'Tag'
+            );
+            
+            $lower_name = strtolower( $attribute_name );
+            if ( isset( $common_attributes[ $lower_name ] ) ) {
+                return $common_attributes[ $lower_name ];
+            }
+            
+            return $formatted_name;
+        }
     }
 
     /**

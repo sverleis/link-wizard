@@ -48,6 +48,26 @@ class Link_Wizard_Admin {
         
         // Hook up AJAX handlers
         add_action( 'wp_ajax_link_wizard_search_coupons', array( $this, 'ajax_search_coupons' ) );
+        
+        // Add plugin description links
+        add_filter( 'plugin_row_meta', array( $this, 'add_plugin_description_links' ), 10, 2 );
+    }
+
+    /**
+     * Add description links to the plugin page.
+     * @since 1.0.0
+     */
+    public function add_plugin_description_links( $links, $file ) {
+        // Only add links for our plugin
+        if ( plugin_basename( LINK_WIZARD_PATH . 'link-wizard-for-woocommerce.php' ) === $file ) {
+            $wizard_link = sprintf(
+                '<a href="%s">%s</a>',
+                admin_url( 'edit.php?post_type=product&page=' . $this->plugin_name ),
+                Link_Wizard_i18n::get_admin_text( 'products_link_wizard' )
+            );
+            $links[] = $wizard_link;
+        }
+        return $links;
     }
 
     /**

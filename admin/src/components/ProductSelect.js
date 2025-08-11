@@ -679,7 +679,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         </div>
                                                     )}
                                                     <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
-                                                        {variation.price}
+                                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                     </div>
                                                 </div>
                                             </>
@@ -846,11 +846,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 </div>
                                             )}
                                             <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
-                                                {product.type === 'variable' ? (
-                                                    <span dangerouslySetInnerHTML={{ __html: product.price }} />
-                                                ) : (
-                                                    `${product.price}`
-                                                )}
+                                                <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                             </div>
                                         </div>
                                         {product.type === 'variable' && (
@@ -989,7 +985,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                     fontWeight: '500',
                                                                     fontSize: '14px'
                                                                 }}>
-                                                                    {variation.price}
+                                                                    <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                                 </div>
                                                             </>
                                                         )}
@@ -1093,7 +1089,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     {product.name}
                                                 </div>
                                                 <div style={{ color: '#666', fontSize: '14px' }}>
-                                                    {product.price}
+                                                    <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                                 </div>
                                             </div>
                                         </div>
