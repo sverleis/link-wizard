@@ -484,7 +484,7 @@
 }
 
 .lw-selected-item-icon .dashicons-format-image {
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     cursor: pointer;
 }
 
@@ -494,7 +494,7 @@
     top: 2px;
     right: 2px;
     font-size: 12px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
     border-radius: 50%;
     width: 16px;
@@ -548,9 +548,9 @@
 }
 
 .lw-selected-item-qty-input:focus {
-    border-color: var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
 }
 
 /* Remove button */
@@ -701,7 +701,7 @@
 
 /* Base URL styling */
 .dynamic-link-base-url {
-    color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: var(--wp-admin-secondary-text-color, #666);
 }
 
 /* Highlight styling for placeholders and redirects */
@@ -724,31 +724,31 @@
 
 /* Separator styling */
 .dynamic-link-separator {
-    color: var(--wp-admin-secondary-text-color, #495057);
+    color: var(--wp-admin-secondary-text-color, #1d2327);
 }
 
 /* Container styling */
 .dynamic-link-container {
     border-radius: 6px;
     padding: 20px;
-    background-color: var(--wp-admin-background-color, #f8f9fa);
-    border: 1px solid var(--wp-admin-border-color-light, #dee2e6);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
     margin-bottom: 20px;
 }
 
 .dynamic-link-container.disabled {
-    background-color: var(--wp-admin-background-color, #f8f9fa);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
 }
 
 /* Title styling */
 .dynamic-link-title {
     margin: 0 0 15px 0;
     font-size: 18px;
-    color: var(--wp-admin-text-color, #495057);
+    color: var(--wp-admin-text-color, #1d2327);
 }
 
 .dynamic-link-title.disabled {
-    color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: var(--wp-admin-secondary-text-color, #666);
 }
 
 /* Icon styling */
@@ -757,12 +757,12 @@
 }
 
 .dynamic-link-icon.disabled {
-    color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: var(--wp-admin-secondary-text-color, #666);
 }
 
 /* Status badge styling */
 .dynamic-link-status-badge {
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     color: white;
     padding: 2px 8px;
     border-radius: 3px;
@@ -771,24 +771,24 @@
 }
 
 .dynamic-link-status-badge.active {
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
 }
 
 /* Description styling */
 .dynamic-link-description {
     margin: 0 0 15px 0;
-    color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: var(--wp-admin-secondary-text-color, #666);
     line-height: 1.4;
 }
 
 /* Link display styling */
 .dynamic-link-display {
     padding: 10px 12px;
-    border: 1px solid var(--wp-admin-border-color-light, #ced4da);
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
     border-radius: 4px;
     background-color: var(--wp-admin-card-background, #fff);
-    color: var(--wp-admin-text-color, #495057);
+    color: var(--wp-admin-text-color, #1d2327);
     min-height: 42px;
     font-family: monospace;
     font-size: 14px;
@@ -797,14 +797,14 @@
 }
 
 .dynamic-link-display.disabled {
-    background-color: var(--wp-admin-background-color, #e9ecef);
-    color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-background-color, #f0f0f0);
+    color: var(--wp-admin-secondary-text-color, #666);
 }
 
 /* Button styling */
 .dynamic-link-button {
     padding: 10px 16px;
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     border: none;
     border-radius: 4px;
@@ -816,11 +816,11 @@
 }
 
 .dynamic-link-button:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
 }
 
 .dynamic-link-button:disabled {
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     cursor: not-allowed;
 }
 
@@ -846,7 +846,7 @@
     padding: 15px;
     border: 1px solid var(--wp-admin-border-color-light, #ddd);
     border-radius: 6px;
-    background-color: var(--wp-admin-background-color, #f8f9fa);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
 }
 
 .attribute-filter-header {
@@ -882,15 +882,15 @@
 }
 
 .attribute-filter-select:focus {
-    border-color: var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
 }
 
 .attribute-filter-reset {
     margin-top: 8px;
     padding: 4px 8px;
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     color: white;
     border: none;
     border-radius: 3px;
@@ -924,8 +924,8 @@
 }
 
 .product-card.selected {
-    border-color: var(--wp-admin-theme-color, #2271b1);
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
     background-color: var(--wp-admin-theme-color-light, rgba(34, 113, 177, 0.05));
 }
 
@@ -961,13 +961,13 @@
 }
 
 .product-card-price {
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     font-size: 14px;
     font-weight: 500;
 }
 
 .product-card-type-badge {
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     padding: 2px 6px;
     border-radius: 3px;
@@ -984,7 +984,7 @@
 
 .product-card-add-button {
     padding: 6px 12px;
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     border: none;
     border-radius: 3px;
@@ -994,11 +994,11 @@
 }
 
 .product-card-add-button:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
 }
 
 .product-card-add-button:disabled {
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     cursor: not-allowed;
 }
 
@@ -1025,7 +1025,7 @@
     padding: 15px;
     border: 1px solid var(--wp-admin-border-color-light, #ddd);
     border-radius: 6px;
-    background-color: var(--wp-admin-background-color, #f8f9fa);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
     margin-bottom: 10px;
     transition: all 0.2s ease;
 }
@@ -1062,7 +1062,7 @@
 }
 
 .selected-product-icon .dashicons-format-image {
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     cursor: pointer;
 }
 
@@ -1106,9 +1106,9 @@
 }
 
 .selected-product-qty-input:focus {
-    border-color: var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
 }
 
 .selected-product-remove {
@@ -1263,7 +1263,7 @@
 
 .product-image-icon {
     font-size: 16px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     cursor: pointer;
 }
 
@@ -1272,7 +1272,7 @@
     top: 1px;
     right: 1px;
     font-size: 10px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
     border-radius: 50%;
     width: 14px;
@@ -1302,7 +1302,7 @@
 }
 
 .product-type-badge {
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     font-size: 10px;
     padding: 2px 6px;
@@ -1317,7 +1317,7 @@
 }
 
 .product-price {
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     font-size: 14px;
     font-weight: 500;
 }
@@ -1328,7 +1328,7 @@
 
 .product-filter-icon .dashicons {
     font-size: 16px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
 }
 
 /* Variations header */
@@ -1347,7 +1347,7 @@
     cursor: pointer;
     margin-right: 10px;
     font-size: 16px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
 }
 
 .variations-back-button:hover {
@@ -1383,7 +1383,7 @@
     padding: 15px;
     border: 1px solid var(--wp-admin-border-color-light, #ddd);
     border-radius: 6px;
-    background-color: var(--wp-admin-background-color, #f8f9fa);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
 }
 
 .coupon-search-header {
@@ -1407,14 +1407,14 @@
 }
 
 .coupon-search-input:focus {
-    border-color: var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
 }
 
 .coupon-search-button {
     padding: 8px 16px;
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     border: none;
     border-radius: 4px;
@@ -1424,11 +1424,11 @@
 }
 
 .coupon-search-button:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
 }
 
 .coupon-search-button:disabled {
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     cursor: not-allowed;
 }
 
@@ -1475,7 +1475,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     border-radius: 50%;
     flex-shrink: 0;
 }
@@ -1503,7 +1503,7 @@
 }
 
 .coupon-result-amount {
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--wp-admin-theme-color, #0073aa);
     font-size: 14px;
     font-weight: 500;
 }
@@ -1517,7 +1517,7 @@
 
 .coupon-result-add-button {
     padding: 6px 12px;
-    background-color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color, #0073aa);
     color: white;
     border: none;
     border-radius: 3px;
@@ -1527,11 +1527,11 @@
 }
 
 .coupon-result-add-button:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
 }
 
 .coupon-result-add-button:disabled {
-    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    background-color: var(--wp-admin-secondary-text-color, #666);
     cursor: not-allowed;
 }
 
@@ -1584,7 +1584,7 @@
     padding: 15px;
     border: 1px solid var(--wp-admin-border-color-light, #ddd);
     border-radius: 6px;
-    background-color: var(--wp-admin-background-color, #f8f9fa);
+    background-color: var(--wp-admin-background-color, #f0f0f1);
 }
 
 .page-search-header {
@@ -1614,9 +1614,9 @@
 }
 
 .page-search-input:focus {
-    border-color: var(--wp-admin-theme-color, #2271b1);
+    border-color: var(--wp-admin-theme-color, #0073aa);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
 }
 
 .page-search-spinner {
