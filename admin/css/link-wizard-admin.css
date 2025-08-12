@@ -1332,6 +1332,15 @@
    Coupon Component Styles
    ============================================================================= */
 
+/* Coupon rules container */
+.coupon-rules-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--wp-admin-info-background, #f0f6ff);
+    border: 1px solid var(--wp-admin-info-border, #c3d4e6);
+    border-radius: 4px;
+}
+
 /* Coupon search container */
 .coupon-search-container {
     margin-top: 15px;
@@ -1501,6 +1510,37 @@
 /* =============================================================================
    Page Search Component Styles
    ============================================================================= */
+
+/* Page search input container */
+.page-search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.page-search-input {
+    width: 100%;
+}
+
+.page-search-spinner {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.page-search-error {
+    margin-top: 10px;
+}
+
+.page-search-no-results {
+    margin-top: 10px;
+}
 
 /* Page search container */
 .page-search-container {

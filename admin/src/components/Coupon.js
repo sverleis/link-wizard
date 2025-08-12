@@ -155,13 +155,7 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
                 3. {i18n.applyCoupon || 'Apply a Coupon'}
             </h2>
             
-            <div style={{ 
-                marginBottom: '20px', 
-                padding: '15px', 
-                backgroundColor: '#f0f6ff', 
-                border: '1px solid #c3d4e6', 
-                borderRadius: '4px' 
-            }}>
+            <div className="coupon-rules-container">
                 <strong>Coupon Rules:</strong> Search and select from your existing WooCommerce coupons. 
                 Only one coupon can be applied per checkout link.
             </div>
@@ -170,15 +164,11 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
                 <label htmlFor="coupon-search" className="screen-reader-text">
                     {i18n.searchCoupons || 'Search for coupons'}
                 </label>
-                <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '10px' 
-                }}>
+                <div className="coupon-search-input-container">
                     <input
                         type="search"
                         id="coupon-search"
-                        className="regular-text"
+                        className="regular-text coupon-search-input"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder={i18n.searchCouponsPlaceholder || 'Search existing coupons...'}
@@ -186,16 +176,10 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
                         onFocus={() => {
                             if (searchResults.length > 0) setShowResults(true);
                         }}
-                        style={{ flex: 1 }}
                     />
                     {isSearching && (
-                        <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center',
-                            minWidth: '24px',
-                            minHeight: '24px'
-                        }}>
-                            <span className="spinner is-active" style={{ float: 'none', marginTop: '0' }}></span>
+                        <div className="coupon-search-spinner">
+                            <span className="spinner is-active"></span>
                         </div>
                     )}
                 </div>
