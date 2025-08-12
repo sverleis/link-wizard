@@ -88,11 +88,42 @@
 	--wp-admin-card-background: #fff;
 	--wp-admin-card-border: #c3c4c7;
 	--wp-admin-card-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	
+	/* Success Colors */
+	--wp-admin-success-color: #28a745;
+	--wp-admin-success-background: #d4edda;
+	--wp-admin-success-border: #c3e6cb;
+	
+	/* Notification Colors */
+	--wp-admin-notification-color-darker: #c82333;
+	--wp-admin-notification-color-focus: rgba(220, 53, 69, 0.25);
+	
+	/* Additional Border and Background Colors */
+	--wp-admin-border-color-light: #ddd;
+	--wp-admin-background-color-light: #f0f0f0;
+	--wp-admin-background-color-lighter: #f9f9f9;
+	--wp-admin-background-color-lightest: #f6f7f7;
+	--wp-admin-secondary-text-color-light: #666;
+	
+	/* Additional Theme Colors */
+	--wp-admin-warning-background: #fff3cd;
+	--wp-admin-warning-color: #856404;
+	--wp-admin-info-background: #d1ecf1;
+	--wp-admin-info-color: #0c5460;
+	
+	/* Additional Success Colors */
+	--wp-admin-success-color-darker: #218838;
+	
+	/* Additional Secondary Colors */
+	--wp-admin-secondary-text-color-darker: #5a6268;
+	
+	/* Additional Theme Colors */
+	--wp-admin-theme-color-light: rgba(34, 113, 177, 0.05);
 }
 
 /* Main form container */
 #link-wizard-form {
-	max-width: 800px;
+	max-width: 100%;
 }
 
 /* Card styles for each step */
@@ -179,7 +210,7 @@
     display: flex;
     flex-direction: column;
     padding: 10px;
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 4px;
     margin-bottom: 8px;
     background-color: var(--wp-admin-card-background, #fff);
@@ -201,9 +232,9 @@
 
 /* Search item when selected */
 .lw-search-item.selected {
-    border-color: #28a745;
-    box-shadow: 0 0 0 1px #28a745;
-    background-color: rgba(40, 167, 69, 0.05);
+    border-color: var(--wp-admin-success-color, #28a745);
+    box-shadow: 0 0 0 1px var(--wp-admin-success-color, #28a745);
+    background-color: var(--wp-admin-success-background, rgba(40, 167, 69, 0.05));
 }
 
 /* Main content area of search item */
@@ -219,8 +250,8 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background-color: #f0f0f0;
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-light));
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 3px;
     margin-right: 12px;
     position: relative;
@@ -230,12 +261,12 @@
 /* Main icon in the placeholder */
 .lw-search-item-icon .dashicons {
     font-size: 16px;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
 }
 
 /* Image icon styling */
 .lw-search-item-icon .dashicons-format-image {
-    color: var(--wp-admin-theme-color, #0073aa);
+    color: var(--wp-admin-theme-color, #2271b1);
     cursor: pointer;
 }
 
@@ -245,8 +276,8 @@
     top: 1px;
     right: 1px;
     font-size: 10px;
-    color: var(--wp-admin-theme-color, #0073aa);
-    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
     border-radius: 50%;
     width: 14px;
     height: 14px;
@@ -281,14 +312,14 @@
 
 /* Tertiary info (like price) */
 .lw-search-item-price {
-    color: var(--wp-admin-theme-color, #0073aa);
+    color: var(--wp-admin-theme-color, #2271b1);
     font-size: 14px;
     font-weight: 500;
 }
 
 /* Badge/tag styling (like "Variable Product") */
 .lw-search-item-badge {
-    background-color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-theme-color, #2271b1);
     color: white;
     font-size: 10px;
     padding: 2px 6px;
@@ -303,11 +334,11 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    color: #28a745;
+    color: var(--wp-admin-success-color, #28a745);
     font-size: 16px;
     font-weight: bold;
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
+    background-color: var(--wp-admin-success-background, #d4edda);
+    border: 1px solid var(--wp-admin-success-border, #c3e6cb);
     border-radius: 4px;
 }
 
@@ -368,9 +399,9 @@
 .lw-selected-item {
     margin-bottom: 10px;
     padding: 15px;
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 6px;
-    background-color: #f9f9f9;
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lighter));
     transition: all 0.2s ease;
 }
 
@@ -403,7 +434,7 @@
     width: 40px;
     height: 40px;
     background-color: var(--wp-admin-card-background, #fff);
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 4px;
     cursor: pointer;
     position: relative;
@@ -412,11 +443,11 @@
 
 .lw-selected-item-icon .dashicons {
     font-size: 20px;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
 }
 
 .lw-selected-item-icon .dashicons-format-image {
-    color: var(--wp-admin-theme-color, #0073aa);
+    color: var(--wp-admin-theme-color, #2271b1);
     cursor: pointer;
 }
 
@@ -426,8 +457,8 @@
     top: 2px;
     right: 2px;
     font-size: 12px;
-    color: var(--wp-admin-theme-color, #0073aa);
-    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
     border-radius: 50%;
     width: 16px;
     height: 16px;
@@ -450,7 +481,7 @@
 }
 
 .lw-selected-item-price {
-    color: var(--wp-admin-secondary-text-color, #666);
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
     font-size: 14px;
 }
 
@@ -473,16 +504,16 @@
 .lw-selected-item-qty-input {
     width: 60px;
     padding: 6px 8px;
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 3px;
     font-size: 14px;
     text-align: center;
 }
 
 .lw-selected-item-qty-input:focus {
-    border-color: var(--wp-admin-theme-color, #0073aa);
+    border-color: var(--wp-admin-theme-color, #2271b1);
     outline: none;
-    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
 }
 
 /* Remove button */
@@ -498,12 +529,12 @@
 }
 
 .lw-selected-item-remove:hover {
-    background: #c82333;
+    background: var(--wp-admin-notification-color-darker, #c82333);
 }
 
 .lw-selected-item-remove:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+    box-shadow: 0 0 0 2px var(--wp-admin-notification-color-focus, rgba(220, 53, 69, 0.25));
 }
 
 /* Responsive adjustments for selected items */
@@ -534,12 +565,12 @@
 
 /* No results message */
 .lw-search-no-results {
-    color: var(--wp-admin-secondary-text-color, #666);
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
     font-style: italic;
     padding: 15px;
     text-align: center;
     background: var(--wp-admin-card-background, #fff);
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 4px;
     margin-top: 5px;
 }
@@ -610,21 +641,709 @@
 }
 
 .modal-buttons .button-primary {
-    background-color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-theme-color, #2271b1);
     color: white;
 }
 
 .modal-buttons .button-primary:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #135e96);
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
 }
 
 .modal-buttons .button:not(.button-primary) {
-    background-color: #dc3545;
+    background-color: var(--wp-admin-notification-color, #dc3545);
     color: white;
 }
 
 .modal-buttons .button:not(.button-primary):hover {
-    background-color: #c82333;
+    background-color: var(--wp-admin-notification-color-darker, #c82333);
+}
+
+/* =============================================================================
+   Dynamic Link Component Styles
+   ============================================================================= */
+
+/* Base URL styling */
+.dynamic-link-base-url {
+    color: var(--wp-admin-secondary-text-color, #6c757d);
+}
+
+/* Highlight styling for placeholders and redirects */
+.dynamic-link-highlight {
+    background-color: var(--wp-admin-warning-background, #fff3cd);
+    color: var(--wp-admin-warning-color, #856404);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Product parameter styling */
+.dynamic-link-product-param {
+    background-color: var(--wp-admin-info-background, #d1ecf1);
+    color: var(--wp-admin-info-color, #0c5460);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Separator styling */
+.dynamic-link-separator {
+    color: var(--wp-admin-secondary-text-color, #495057);
+}
+
+/* Container styling */
+.dynamic-link-container {
+    border-radius: 6px;
+    padding: 20px;
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+    border: 1px solid var(--wp-admin-border-color-light, #dee2e6);
+    margin-bottom: 20px;
+}
+
+.dynamic-link-container.disabled {
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+}
+
+/* Title styling */
+.dynamic-link-title {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: var(--wp-admin-text-color, #495057);
+}
+
+.dynamic-link-title.disabled {
+    color: var(--wp-admin-secondary-text-color, #6c757d);
+}
+
+/* Icon styling */
+.dynamic-link-icon {
+    color: var(--wp-admin-theme-color, #2271b1);
+}
+
+.dynamic-link-icon.disabled {
+    color: var(--wp-admin-secondary-text-color, #6c757d);
+}
+
+/* Status badge styling */
+.dynamic-link-status-badge {
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.dynamic-link-status-badge.active {
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+}
+
+/* Description styling */
+.dynamic-link-description {
+    margin: 0 0 15px 0;
+    color: var(--wp-admin-secondary-text-color, #6c757d);
+    line-height: 1.4;
+}
+
+/* Link display styling */
+.dynamic-link-display {
+    padding: 10px 12px;
+    border: 1px solid var(--wp-admin-border-color-light, #ced4da);
+    border-radius: 4px;
+    background-color: var(--wp-admin-card-background, #fff);
+    color: var(--wp-admin-text-color, #495057);
+    min-height: 42px;
+    font-family: monospace;
+    font-size: 14px;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+.dynamic-link-display.disabled {
+    background-color: var(--wp-admin-background-color, #e9ecef);
+    color: var(--wp-admin-secondary-text-color, #6c757d);
+}
+
+/* Button styling */
+.dynamic-link-button {
+    padding: 10px 16px;
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    min-width: 100px;
+}
+
+.dynamic-link-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+}
+
+.dynamic-link-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    cursor: not-allowed;
+}
+
+.dynamic-link-button.success {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.dynamic-link-button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* =============================================================================
+   Product Select Component Styles
+   ============================================================================= */
+
+/* Attribute filter container */
+.attribute-filter-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+}
+
+.attribute-filter-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.attribute-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.attribute-filter-option {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+}
+
+.attribute-filter-label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.attribute-filter-select {
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.attribute-filter-select:focus {
+    border-color: var(--wp-admin-theme-color, #2271b1);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.attribute-filter-reset {
+    margin-top: 8px;
+    padding: 4px 8px;
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.attribute-filter-reset:hover {
+    background-color: var(--wp-admin-secondary-text-color-darker, #5a6268);
+}
+
+/* Product grid layout */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product-card {
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    padding: 15px;
+    background-color: var(--wp-admin-card-background, #fff);
+    transition: all 0.2s ease;
+}
+
+.product-card:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+    box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+}
+
+.product-card.selected {
+    border-color: var(--wp-admin-theme-color, #2271b1);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+    background-color: var(--wp-admin-theme-color-light, rgba(34, 113, 177, 0.05));
+}
+
+.product-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.product-card-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+}
+
+.product-card-details {
+    flex: 1;
+}
+
+.product-card-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.product-card-sku {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.product-card-price {
+    color: var(--wp-admin-theme-color, #2271b1);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-card-type-badge {
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.product-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-add-button {
+    padding: 6px 12px;
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.product-card-add-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+}
+
+.product-card-add-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    cursor: not-allowed;
+}
+
+.product-card-add-button.added {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.product-card-add-button.added:hover {
+    background-color: var(--wp-admin-success-color-darker, #218838);
+}
+
+/* Selected products list */
+.selected-products-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.selected-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.selected-product-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+.selected-product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+.selected-product-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.selected-product-icon .dashicons {
+    font-size: 20px;
+    color: var(--wp-admin-secondary-text-color-light, #666);
+}
+
+.selected-product-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #2271b1);
+    cursor: pointer;
+}
+
+.selected-product-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.selected-product-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    word-wrap: break-word;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.selected-product-price {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 14px;
+}
+
+.selected-product-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.selected-product-qty-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.selected-product-qty-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.selected-product-qty-input:focus {
+    border-color: var(--wp-admin-theme-color, #2271b1);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.selected-product-remove {
+    padding: 6px 12px;
+    background: var(--wp-admin-notification-color, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.selected-product-remove:hover {
+    background: var(--wp-admin-notification-color-darker, #c82333);
+}
+
+.selected-product-remove:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--wp-admin-notification-color-focus, rgba(220, 53, 69, 0.25));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .selected-product-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .selected-product-info {
+        gap: 12px;
+    }
+    
+    .selected-product-controls {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .selected-product-qty-input {
+        width: 80px;
+    }
+}
+
+/* =============================================================================
+   Coupon Component Styles
+   ============================================================================= */
+
+/* Coupon search container */
+.coupon-search-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+}
+
+.coupon-search-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.coupon-search-input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.coupon-search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.coupon-search-input:focus {
+    border-color: var(--wp-admin-theme-color, #2271b1);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.coupon-search-button {
+    padding: 8px 16px;
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.coupon-search-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+}
+
+.coupon-search-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    cursor: not-allowed;
+}
+
+.coupon-search-spinner {
+    float: none;
+    margin-top: 0;
+}
+
+/* Coupon results list */
+.coupon-results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.coupon-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-card-background, #fff);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.coupon-result-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+.coupon-result-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+.coupon-result-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.coupon-result-icon .dashicons {
+    font-size: 20px;
+    color: white;
+}
+
+.coupon-result-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.coupon-result-code {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.coupon-result-description {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.coupon-result-amount {
+    color: var(--wp-admin-theme-color, #2271b1);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.coupon-result-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.coupon-result-add-button {
+    padding: 6px 12px;
+    background-color: var(--wp-admin-theme-color, #2271b1);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.coupon-result-add-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
+}
+
+.coupon-result-add-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #6c757d);
+    cursor: not-allowed;
+}
+
+.coupon-result-add-button.added {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.coupon-result-add-button.added:hover {
+    background-color: var(--wp-admin-success-color-darker, #218838);
+}
+
+/* =============================================================================
+   Page Search Component Styles
+   ============================================================================= */
+
+/* Page search container */
+.page-search-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f8f9fa);
+}
+
+.page-search-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.page-search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.page-search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.page-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.page-search-input:focus {
+    border-color: var(--wp-admin-theme-color, #2271b1);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.page-search-spinner {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.page-search-error {
+    margin-top: 10px;
+}
+
+.page-search-no-results {
+    margin-top: 10px;
 }
 
 /* =============================================================================
@@ -685,9 +1404,9 @@
 .option-group {
     margin-bottom: 30px;
     padding: 20px;
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 6px;
-    background-color: var(--wp-admin-background-color, #f6f7f7);
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lightest));
 }
 
 .option-group h5 {
@@ -708,14 +1427,14 @@
     padding: 10px;
     margin-bottom: 8px;
     background-color: var(--wp-admin-card-background, #fff);
-    border: 1px solid var(--wp-admin-border-color, #ddd);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .product-option:hover {
-    background-color: var(--wp-admin-background-color, #f6f7f7);
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lightest));
 }
 
 .product-option input[type="radio"] {
@@ -749,20 +1468,20 @@
 }
 
 .product-selection-modal .button-primary {
-    background-color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-theme-color, #2271b1);
     color: white;
 }
 
 .product-selection-modal .button-primary:hover {
-    background-color: var(--wp-admin-theme-color-darker-10, #135e96);
+    background-color: var(--wp-admin-theme-color-darker-10, #1f66a0);
 }
 
 .product-selection-modal .button-destructive {
-    background-color: #dc3545;
+    background-color: var(--wp-admin-notification-color, #dc3545);
     color: white;
 }
 
 .product-selection-modal .button-destructive:hover {
-    background-color: #c82333;
+    background-color: var(--wp-admin-notification-color-darker, #c82333);
 }
 
