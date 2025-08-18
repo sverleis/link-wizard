@@ -357,41 +357,20 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         }
 
         return (
-            <div style={{
-                marginTop: '10px',
-                padding: '10px',
-                backgroundColor: '#f9f9f9',
-                borderRadius: '4px',
-                border: '1px solid #ddd'
-            }}>
-                <div style={{ 
-                    fontWeight: 'bold', 
-                    marginBottom: '8px',
-                    fontSize: '14px'
-                }}>
+            <div className="attribute-filter-container">
+                <div className="attribute-filter-header">
                     {i18n.filterByAttributes || 'Filter by Attributes:'}
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'flex-end' }}>
+                <div className="attribute-filter-options">
                     {product.attributes.map((attribute) => (
-                        <div key={attribute.slug} style={{ display: 'flex', flexDirection: 'column', minWidth: '120px' }}>
-                            <label style={{ 
-                                fontSize: '12px', 
-                                fontWeight: '500', 
-                                marginBottom: '4px',
-                                color: '#666'
-                            }}>
+                        <div key={attribute.slug} className="attribute-filter-option">
+                            <label className="attribute-filter-label">
                                 {attribute.name}:
                             </label>
                             <select
                                 value={selectedAttributes[attribute.slug] || ''}
                                 onChange={(e) => handleAttributeChange(product, attribute.slug, e.target.value)}
-                                style={{
-                                    padding: '4px 8px',
-                                    border: '1px solid #ddd',
-                                    borderRadius: '3px',
-                                    fontSize: '12px',
-                                    backgroundColor: '#fff'
-                                }}
+                                className="attribute-filter-select"
                             >
                                 <option value="">{(i18n.anyAttribute || 'Any') + ' ' + attribute.name}</option>
                                 {attribute.values.map((value) => (
@@ -415,32 +394,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                             // Clear filtered variations for this product since no filters are active
                             setFilteredVariations(prev => ({ ...prev, [product.id]: [] }));
                         }}
-                        style={{
-                            padding: '4px 12px',
-                            border: '1px solid #dc3545',
-                            borderRadius: '3px',
-                            fontSize: '12px',
-                            backgroundColor: '#fff',
-                            color: '#dc3545',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            height: 'fit-content',
-                            marginTop: '20px'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#dc3545';
-                            e.target.style.color = '#fff';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#fff';
-                            e.target.style.color = '#dc3545';
-                        }}
+                        className="attribute-filter-reset"
                     >
                         {i18n.resetFilters || 'Reset Filters'}
                     </button>
                 </div>
                 {isLoadingFilteredVariations[product.id] && (
-                    <div style={{ marginTop: '8px' }}>
+                    <div className="attribute-filter-spinner">
                         <Spinner />
                     </div>
                 )}
@@ -503,13 +463,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 </h2>
                 
                 {/* Show different rules based on link type */}
-                <div style={{ 
-                    marginBottom: '20px', 
-                    padding: '15px', 
-                    backgroundColor: '#f0f6ff', 
-                    border: '1px solid #c3d4e6', 
-                    borderRadius: '4px' 
-                }}>
+                <div className="product-rules-container">
                     {linkType === 'addToCart' ? (
                         <div>
                             <strong>Add-to-Cart Rules:</strong> Select 1 product with multiple quantities. 
@@ -526,28 +480,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     <label htmlFor="product-search" className="screen-reader-text">
                         {i18n.searchProducts || 'Search for products'}
                     </label>
-                    <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '10px' 
-                    }}>
+                    <div className="product-search-input-container">
                         <input
                             type="search"
                             id="product-search"
-                            className="regular-text"
+                            className="regular-text product-search-input"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder={i18n.searchPlaceholder || 'Search by name or SKU'}
                             autoComplete="off"
-                            style={{ flex: 1 }}
                         />
                         {isLoading && (
-                            <div style={{ 
-                                display: 'flex', 
-                                alignItems: 'center',
-                                minWidth: '24px',
-                                minHeight: '24px'
-                            }}>
+                            <div className="product-search-spinner">
                                 <Spinner />
                             </div>
                         )}
@@ -559,27 +503,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 {showingVariations ? (
                     // Show variations for a variable product
                     <div>
-                        <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            marginBottom: '20px',
-                            padding: '10px',
-                            backgroundColor: '#f9f9f9',
-                            borderRadius: '4px'
-                        }}>
+                        <div className="variations-header">
                             <button 
                                 onClick={goBackToSearch}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    marginRight: '10px',
-                                    fontSize: '16px'
-                                }}
+                                className="variations-back-button"
                             >
                                 {i18n.backToSearch || '← Back to Search'}
                             </button>
-                            <span style={{ fontWeight: 'bold' }}>
+                            <span className="variations-title">
                                 {i18n.variationsFor || 'Variations for:'} {currentVariableProduct?.name}
                             </span>
                         </div>
@@ -696,37 +627,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                             {results.map(product => (
                                 <li
                                     key={product.id}
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        padding: '10px',
-                                        border: '1px solid #ddd',
-                                        borderRadius: '4px',
-                                        marginBottom: '8px',
-                                        backgroundColor: '#fff',
-                                        transition: 'all 0.3s ease-in-out',
-                                        opacity: addingProducts.has(product.id) ? 0.6 : 1,
-                                        transform: addingProducts.has(product.id) ? 'scale(0.98)' : 'scale(1)'
-                                    }}
+                                    className={`product-search-result ${addingProducts.has(product.id) ? 'adding' : ''}`}
                                 >
                                     {/* Show "Added" message when product is being added */}
                                     {addingProducts.has(product.id) ? (
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            padding: '20px',
-                                            color: '#28a745',
-                                            fontSize: '16px',
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#d4edda',
-                                            border: '1px solid #c3e6cb',
-                                            borderRadius: '4px'
-                                        }}>
-                                            <span className="dashicons dashicons-yes-alt" style={{ 
-                                                marginRight: '8px',
-                                                fontSize: '20px'
-                                            }} />
+                                        <div className="product-added-message">
+                                            <span className="dashicons dashicons-yes-alt" />
                                             {i18n.added || 'Added!'}
                                         </div>
                                     ) : (
@@ -741,43 +647,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         handleSelectProduct(product);
                                                     }
                                                 }}
-                                                style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    cursor: product.type === 'variable' ? 'default' : 'pointer',
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    if (product.type !== 'variable') {
-                                                        e.target.style.backgroundColor = '#f5f5f5';
-                                                    }
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    if (product.type !== 'variable') {
-                                                        e.target.style.backgroundColor = '#fff';
-                                                    }
-                                                }}
+                                                className={`product-header ${product.type === 'variable' ? 'variable' : 'clickable'}`}
                                             >
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            width: '32px',
-                                            height: '32px',
-                                            backgroundColor: '#f0f0f0',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '3px',
-                                            marginRight: '12px',
-                                            position: 'relative' // Add position relative for absolute positioning
-                                        }}>
+                                        <div className="product-icon">
                                             {product.image ? (
                                                 <>
                                                     <span 
-                                                        className="dashicons dashicons-format-image"
-                                                        style={{ 
-                                                            fontSize: '16px', 
-                                                            color: '#0073aa',
-                                                            cursor: 'pointer'
-                                                        }}
+                                                        className="dashicons dashicons-format-image product-image-icon"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleImageClick(product.image);
@@ -785,22 +661,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     />
                                                     {/* Magnifying glass icon for search results */}
                                                     <span 
-                                                        className="dashicons dashicons-search"
-                                                        style={{ 
-                                                            position: 'absolute',
-                                                            top: '1px',
-                                                            right: '1px',
-                                                            fontSize: '10px',
-                                                            color: '#0073aa',
-                                                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                                            borderRadius: '50%',
-                                                            width: '14px',
-                                                            height: '14px',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            cursor: 'pointer'
-                                                        }}
+                                                        className="dashicons dashicons-search product-zoom-icon"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleImageClick(product.image);
@@ -810,53 +671,32 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 </>
                                             ) : (
                                                 <span 
-                                                    className="dashicons dashicons-products"
-                                                    style={{ 
-                                                        fontSize: '16px', 
-                                                        color: '#666'
-                                                    }}
+                                                    className="dashicons dashicons-products product-default-icon"
                                                 />
                                             )}
                                         </div>
-                                        <div className="product-details" style={{ flex: 1 }}>
-                                            <div style={{ 
-                                                fontWeight: 'bold', 
-                                                marginBottom: '2px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '8px'
-                                            }}>
+                                        <div className="product-details">
+                                            <div className="product-name">
                                                 {product.name}
                                                 {product.type === 'variable' && (
-                                                    <span style={{
-                                                        backgroundColor: '#0073aa',
-                                                        color: 'white',
-                                                        fontSize: '10px',
-                                                        padding: '2px 6px',
-                                                        borderRadius: '3px',
-                                                        fontWeight: 'normal'
-                                                    }}>
+                                                    <span className="product-type-badge">
                                                         {i18n.variableProduct} ({product.variation_count} {i18n.variations})
                                                     </span>
                                                 )}
                                             </div>
                                             {product.sku && (
-                                                <div style={{ color: '#666', fontSize: '12px' }}>
+                                                <div className="product-sku">
                                                     {i18n.sku || 'SKU'}: {product.sku}
                                                 </div>
                                             )}
-                                            <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
+                                            <div className="product-price">
                                                 <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                             </div>
                                         </div>
                                         {product.type === 'variable' && (
-                                            <div style={{ marginLeft: '10px' }}>
+                                            <div className="product-filter-icon">
                                                 <span 
                                                     className="dashicons dashicons-filter"
-                                                    style={{ 
-                                                        fontSize: '16px', 
-                                                        color: '#0073aa'
-                                                    }}
                                                 />
                                             </div>
                                         )}

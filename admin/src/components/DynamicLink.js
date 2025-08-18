@@ -160,19 +160,13 @@ const DynamicLink = ({
                     if (linkType === 'addToCart') {
                 // Always show base URL
                 parts.push(
-                    <span key="base" style={{ color: '#6c757d' }}>{baseUrl}</span>
+                    <span key="base" className="dynamic-link-base-url">{baseUrl}</span>
                 );
                 
                 if (currentStep === 1) {
                     // Step 1: Show placeholder with highlighting
                     parts.push(
-                        <span key="highlight" style={{ 
-                            backgroundColor: '#fff3cd', 
-                            color: '#856404',
-                            padding: '2px 4px',
-                            borderRadius: '3px',
-                            fontWeight: 'bold'
-                        }}>/?add-to-cart=PRODUCT_ID&quantity=1</span>
+                        <span key="highlight" className="dynamic-link-highlight">/?add-to-cart=PRODUCT_ID&quantity=1</span>
                     );
                 } else if (selectedProducts && selectedProducts.length > 0) {
                     // Step 2+: Show actual parameters with individual highlighting
@@ -180,85 +174,49 @@ const DynamicLink = ({
                     // Show redirect path if selected
                     if (redirectOption === 'cart') {
                         parts.push(
-                            <span key="redirect-cart" style={{ 
-                                backgroundColor: '#fff3cd', 
-                                color: '#856404',
-                                padding: '2px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 'bold'
-                            }}>/cart/</span>
+                            <span key="redirect-cart" className="dynamic-link-highlight">/cart/</span>
                         );
                     } else if (redirectOption === 'checkout') {
                         parts.push(
-                            <span key="redirect-checkout" style={{ 
-                                backgroundColor: '#fff3cd', 
-                                color: '#856404',
-                                padding: '2px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 'bold'
-                            }}>/checkout/</span>
+                            <span key="redirect-checkout" className="dynamic-link-highlight">/checkout/</span>
                         );
                     } else if (redirectOption === 'product' && selectedProducts.length > 0) {
                         const product = selectedProducts[0];
                         const productPath = product.slug ? `/product/${product.slug}/` : `/product/${product.id}/`;
                         parts.push(
-                            <span key="redirect-product" style={{ 
-                                backgroundColor: '#fff3cd', 
-                                color: '#856404',
-                                padding: '2px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 'bold'
-                            }}>{productPath}</span>
+                            <span key="redirect-product" className="dynamic-link-highlight">{productPath}</span>
                         );
                     } else if (redirectOption === 'page' && selectedRedirectPage) {
                         // Extract slug from URL for display
                         const urlParts = selectedRedirectPage.url.split('/');
                         const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash)
                         parts.push(
-                            <span key="redirect-page" style={{ 
-                                backgroundColor: '#fff3cd', 
-                                color: '#856404',
-                                padding: '2px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 'bold'
-                            }}>/{slug}/</span>
+                            <span key="redirect-page" className="dynamic-link-highlight">/{slug}/</span>
                         );
                     } else {
                         // Default home page
                         parts.push(
-                            <span key="home" style={{ color: '#495057' }}>/</span>
+                            <span key="home" className="dynamic-link-separator">/</span>
                         );
                     }
                     
                     // Add query parameters
                     parts.push(
-                        <span key="question" style={{ color: '#495057' }}>?</span>
+                        <span key="question" className="dynamic-link-separator">?</span>
                     );
                     
                     // Add products with individual highlighting
                     selectedProducts.forEach((product, index) => {
                         if (index > 0) {
-                            parts.push(<span key={`amp-${index}`} style={{ color: '#495057' }}>&</span>);
+                            parts.push(<span key={`amp-${index}`} className="dynamic-link-separator">&</span>);
                         }
                         parts.push(
-                            <span key={`add-to-cart-${product.id}`} style={{ 
-                                backgroundColor: '#d1ecf1', 
-                                color: '#0c5460',
-                                padding: '2px 4px',
-                                borderRadius: '3px',
-                                fontWeight: 'bold'
-                            }}>add-to-cart={product.id}</span>
+                            <span key={`add-to-cart-${product.id}`} className="dynamic-link-product-param">add-to-cart={product.id}</span>
                         );
                         if (product.quantity > 1) {
                             parts.push(
-                                <span key={`amp-qty-${product.id}`} style={{ color: '#495057' }}>&</span>,
-                                <span key={`quantity-${product.id}`} style={{ 
-                                    backgroundColor: '#d1ecf1', 
-                                    color: '#0c5460',
-                                    padding: '2px 4px',
-                                    borderRadius: '3px',
-                                    fontWeight: 'bold'
-                                }}>quantity={product.quantity}</span>
+                                <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
+                                <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
                             );
                         }
                     });
@@ -278,7 +236,7 @@ const DynamicLink = ({
             // Checkout link format
             // Always show base URL
             parts.push(
-                <span key="base" style={{ color: '#6c757d' }}>{baseUrl}/</span>
+                <span key="base" className="dynamic-link-base-url">{baseUrl}/</span>
             );
             
             if (currentStep === 1) {
@@ -350,59 +308,28 @@ const DynamicLink = ({
     const canOpenLink = currentStep > 1 && generatedLink && !isGenerating && selectedProducts && selectedProducts.length > 0;
 
     return (
-        <div className="dynamic-link-container" style={{
-            marginTop: '20px',
-            padding: '20px',
-            backgroundColor: isDisabled ? '#f8f9fa' : '#f8f9fa',
-            border: '1px solid #dee2e6',
-            borderRadius: '6px',
-            borderLeft: `4px solid ${isDisabled ? '#6c757d' : '#0073aa'}`,
-            opacity: isDisabled ? 0.7 : 1
-        }}>
-            <h3 style={{
-                margin: '0 0 15px 0',
-                fontSize: '16px',
-                color: isDisabled ? '#6c757d' : '#495057',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-            }}>
-                <span className="dashicons dashicons-admin-links" style={{ 
-                    color: isDisabled ? '#6c757d' : '#0073aa' 
-                }} />
+        <div className={`dynamic-link-container ${isDisabled ? 'disabled' : ''}`}>
+            <h3 className={`dynamic-link-title ${isDisabled ? 'disabled' : ''}`}>
+                <span className={`dashicons dashicons-admin-links dynamic-link-icon ${isDisabled ? 'disabled' : ''}`} />
                                     {i18n.dynamicLinkTitle || 'Dynamic Link Generator'}
                 {isDisabled && (
-                    <span style={{
-                        fontSize: '12px',
-                        backgroundColor: '#6c757d',
-                        color: 'white',
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        marginLeft: 'auto'
-                    }}>
+                    <span className="dynamic-link-status-badge">
                         Step {currentStep} - {currentStep === 1 ? 'Select Link Type' : 'Configure Products'}
                     </span>
                 )}
                 {!isDisabled && currentStep === 2 && (
-                    <span style={{
-                        fontSize: '12px',
-                        backgroundColor: '#0073aa',
-                        color: 'white',
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        marginLeft: 'auto'
-                    }}>
+                    <span className="dynamic-link-status-badge active">
                         Step 2 - Configure Products
+                    </span>
+                )}
+                {!isDisabled && currentStep === 3 && (
+                    <span className="dynamic-link-status-badge active">
+                        Step 3 - Review & Copy
                     </span>
                 )}
             </h3>
             
-            <p style={{
-                margin: '0 0 15px 0',
-                fontSize: '14px',
-                color: isDisabled ? '#6c757d' : '#6c757d',
-                lineHeight: '1.4'
-            }}>
+            <p className="dynamic-link-description">
                 {isDisabled 
                     ? (i18n.step1Description || 'Your link will appear here once you start configuring products. Select a link type to begin.')
                     : (i18n.dynamicLinkDescription || 'Your link updates automatically as you configure your products. The base URL is always visible, and parameters update as you add products.')
@@ -410,59 +337,16 @@ const DynamicLink = ({
             </p>
 
             {/* URL Input Field */}
-            <div style={{
-                padding: '10px 12px',
-                border: `1px solid ${isDisabled ? '#ced4da' : '#ced4da'}`,
-                borderRadius: '4px',
-                fontSize: '14px',
-                backgroundColor: isDisabled ? '#e9ecef' : '#fff',
-                fontFamily: 'monospace',
-                color: isDisabled ? '#6c757d' : '#495057',
-                minHeight: '42px',
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '15px'
-            }}>
+            <div className={`dynamic-link-display ${isDisabled ? 'disabled' : ''}`}>
                 {renderHighlightedUrl()}
             </div>
 
             {/* Copy and Open Buttons - Now below the input field */}
-            <div style={{
-                display: 'flex',
-                gap: '10px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                marginBottom: '15px'
-            }}>
+            <div className="dynamic-link-button-container">
                 <button
                     onClick={copyToClipboard}
                     disabled={!generatedLink || isGenerating || isDisabled}
-                    style={{
-                        padding: '10px 16px',
-                        backgroundColor: copySuccess ? '#28a745' : (isDisabled ? '#6c757d' : '#0073aa'),
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: (generatedLink && !isGenerating && !isDisabled) ? 'pointer' : 'not-allowed',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        minWidth: '100px',
-                        justifyContent: 'center'
-                    }}
-                    onMouseEnter={(e) => {
-                        if (generatedLink && !isGenerating && !isDisabled) {
-                            e.target.style.backgroundColor = copySuccess ? '#28a745' : '#005a87';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (generatedLink && !isGenerating && !isDisabled) {
-                            e.target.style.backgroundColor = copySuccess ? '#28a745' : (isDisabled ? '#6c757d' : '#0073aa');
-                        }
-                    }}
+                    className={`dynamic-link-button ${copySuccess ? 'success' : ''} ${isDisabled ? 'disabled' : ''}`}
                 >
                     {copySuccess ? (
                         <>

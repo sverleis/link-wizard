@@ -68,26 +68,25 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
 
     return (
         <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ flex: 1, position: 'relative' }}>
+            <div className="page-search-input-container">
+                <div className="page-search-input-wrapper">
                     <input
                         type="search"
-                        className="regular-text"
+                        className="regular-text page-search-input"
                         placeholder={i18n.searchPagesPlaceholder || "Search for pages or posts..."}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onFocus={() => {
                             if (searchResults.length > 0) setShowResults(true);
                         }}
-                        style={{ width: '100%' }}
                     />
                     {isSearching && (
-                        <span className="spinner is-active" style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}></span>
+                        <span className="spinner is-active page-search-spinner"></span>
                     )}
                 </div>
             </div>
 
-            {error && <div className="notice notice-error inline" style={{ marginTop: '10px' }}><p>{error}</p></div>}
+            {error && <div className="notice notice-error inline page-search-error"><p>{error}</p></div>}
 
             {(showResults || searchResults.length > 0) && searchResults.length > 0 && (
                 <ul className="lw-search-results" onClick={() => setShowResults(false)}>
@@ -122,7 +121,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
             )}
 
             {(showResults || searchResults.length === 0) && searchResults.length === 0 && searchTerm.length >= 2 && !isSearching && (
-                <div className="lw-search-no-results" style={{ marginTop: '10px' }}>
+                <div className="lw-search-no-results page-search-no-results">
                     {i18n.noPagesFound 
                         ? i18n.noPagesFound.replace('%s', `"${searchTerm}"`) 
                         : `No pages or posts found matching "${searchTerm}"`}
