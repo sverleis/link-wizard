@@ -488,7 +488,7 @@ const DynamicLink = ({
                         <strong>{i18n.products || 'Products'}:</strong> {selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}
                     </button>
                     
-                    {linkType === 'checkoutLink' ? (
+                    {linkType === 'checkoutLink' && (
                         <button
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
                             style={{
@@ -524,44 +524,6 @@ const DynamicLink = ({
                             }}>3</span>
                             <strong>{i18n.coupon || 'Coupon'}:</strong> {selectedCoupon ? selectedCoupon.code : 'None'}
                         </button>
-                    ) : (
-                        selectedCoupon && (
-                            <button
-                                onClick={() => onNavigateToStep && onNavigateToStep(3)}
-                                style={{
-                                    background: currentStep === 3 ? '#e7f3ff' : 'none',
-                                    border: currentStep === 3 ? '2px solid #0073aa' : 'none',
-                                    padding: '4px 8px',
-                                    cursor: 'pointer',
-                                    borderRadius: '4px',
-                                    transition: 'all 0.2s ease',
-                                    color: currentStep === 3 ? '#0073aa' : '#333',
-                                    textDecoration: currentStep === 3 ? 'none' : 'underline',
-                                    fontWeight: currentStep === 3 ? '600' : 'normal'
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (currentStep !== 3) {
-                                        e.target.style.backgroundColor = '#f8f9fa';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (currentStep !== 3) {
-                                        e.target.style.backgroundColor = 'transparent';
-                                    }
-                                }}
-                                title="Click to edit Coupon"
-                            >
-                                <span style={{ 
-                                    display: 'inline-block', 
-                                    width: '20px', 
-                                    textAlign: 'center', 
-                                    marginRight: '8px',
-                                    fontWeight: 'bold',
-                                    color: currentStep === 3 ? '#0073aa' : '#666'
-                                }}>3</span>
-                                <strong>{i18n.coupon || 'Coupon'}:</strong> {selectedCoupon.code}
-                            </button>
-                        )
                     )}
                     
                     {linkType === 'addToCart' && redirectOption && (
