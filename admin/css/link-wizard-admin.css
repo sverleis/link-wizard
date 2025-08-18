@@ -1,3 +1,4 @@
+
 /* =============================================================================
    WordPress Admin Color Scheme
    ============================================================================= */
@@ -78,6 +79,9 @@
 	--lwwc-theme-notification-bg: rgba(213, 78, 33, 0.1);
 	--lwwc-theme-link: #0073aa;         /* link color (consistent across schemes) */
 	--lwwc-theme-link-bg: rgba(0, 115, 170, 0.1);
+
+
+    
 	
 	/* Darker variants for primary and admin theme-color */
 	--lwwc-theme-primary-darker-10: #006b96; /* 10% darker than primary */
@@ -156,6 +160,51 @@
 	--lwwc-focus-color-light: var(--lwwc-theme-primary-bg);
 	--lwwc-selection-color: var(--lwwc-theme-primary-bg);
 	--lwwc-selection-text: var(--wp-admin-text-color);
+}
+
+/* Link Wizard header icon placement */
+.lwwc-wrap {
+	position: relative;
+}
+
+.lwwc-header-icon-container {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	opacity: 0.12;
+	pointer-events: none; /* decorative */
+	line-height: 0;
+}
+
+/* Theme-aware coloring (uses currentColor from the SVG) */
+.lwwc-theme-colored {
+	/* Use the actual admin theme primary color if available */
+	color: var(--wp-admin-theme-color, #2271b1);
+}
+
+/* Header layout for icon next to title/description */
+.lwwc-header-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 12px;
+}
+
+.lwwc-header-text h1 {
+	margin-bottom: 4px;
+}
+
+.lwwc-header-icon-slot {
+	flex: 0 0 auto;
+	line-height: 0;
+}
+
+.lwwc-header-icon {
+	display: block;
+	/* Match approx combined title + description height */
+	width: 72px;
+	height: 72px;
 }
 
 /* Main form container */
@@ -729,11 +778,12 @@
 
 /* Container styling */
 .dynamic-link-container {
-    border-radius: 6px;
-    padding: 20px;
-    background-color: var(--wp-admin-background-color, #f0f0f1);
-    border: 1px solid var(--wp-admin-border-color-light, #ddd);
-    margin-bottom: 20px;
+	border-radius: 6px;
+	padding: 20px;
+	background-color: var(--wp-admin-card-background, #fff);
+	border: 1px solid var(--wp-admin-card-border, #c3c4c7);
+	box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+	margin: 20px 0;
 }
 
 .dynamic-link-container.disabled {
@@ -754,7 +804,9 @@
 /* Icon styling */
 .dynamic-link-icon {
     color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+    padding-right:.25em;
 }
+    
 
 .dynamic-link-icon.disabled {
     color: var(--wp-admin-secondary-text-color, #666);
@@ -768,6 +820,7 @@
     border-radius: 3px;
     font-size: 12px;
     font-weight: 500;
+    margin-left: 1em;
 }
 
 .dynamic-link-status-badge.active {
@@ -777,23 +830,24 @@
 
 /* Description styling */
 .dynamic-link-description {
-    margin: 0 0 15px 0;
-    color: var(--wp-admin-secondary-text-color, #666);
-    line-height: 1.4;
+	margin: 0.25em 0 1em 0;
+	color: var(--wp-admin-secondary-text-color, #666);
+	line-height: 1.5;
 }
 
 /* Link display styling */
 .dynamic-link-display {
-    padding: 10px 12px;
-    border: 1px solid var(--wp-admin-border-color-light, #ddd);
-    border-radius: 4px;
-    background-color: var(--wp-admin-card-background, #fff);
-    color: var(--wp-admin-text-color, #1d2327);
-    min-height: 42px;
-    font-family: monospace;
-    font-size: 14px;
-    word-break: break-all;
-    line-height: 1.4;
+	padding: 10px 12px;
+	border: 1px solid var(--wp-admin-border-color-light, #ddd);
+	border-radius: 4px;
+	background-color: var(--wp-admin-card-background, #fff);
+	color: var(--wp-admin-text-color, #1d2327);
+	min-height: 22px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 16px;
+	word-break: break-word;
+	line-height: 1.5;
+    margin-bottom: 1em;
 }
 
 .dynamic-link-display.disabled {
@@ -813,13 +867,17 @@
     font-weight: 500;
     transition: background-color 0.2s ease;
     min-width: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .dynamic-link-button:hover {
     background-color: var(--wp-admin-theme-color-darker-10, #006b96);
 }
 
-.dynamic-link-button:disabled {
+.dynamic-link-button:disabled,
+.dynamic-link-button.disabled {
     background-color: var(--wp-admin-secondary-text-color, #666);
     cursor: not-allowed;
 }

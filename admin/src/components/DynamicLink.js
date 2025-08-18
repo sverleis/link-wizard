@@ -322,6 +322,11 @@ const DynamicLink = ({
                         Step 2 - Configure Products
                     </span>
                 )}
+                {!isDisabled && currentStep === 3 && (
+                    <span className="dynamic-link-status-badge active">
+                        Step 3 - Review & Copy
+                    </span>
+                )}
             </h3>
             
             <p className="dynamic-link-description">
