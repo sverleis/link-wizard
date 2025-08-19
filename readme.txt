@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
