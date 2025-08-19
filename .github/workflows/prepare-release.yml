@@ -1,0 +1,108 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g. 1.0.2)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 👉 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 🔧 Set version env
+        run: |
+          echo "REL_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          echo "TAG=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
+
+      - name: ✍️ Bump version in plugin files
+        run: |
+          set -e
+          PHP_FILE="link-wizard-for-woocommerce.php"
+          README_FILE="readme.txt"
+          VERSION="${REL_VERSION}"
+          # Update header Version: in main plugin file
+          sed -i -E "s/^(\s*\*\s*Version:\s*).*/\1${VERSION}/" "$PHP_FILE"
+          # Update LINK_WIZARD_VERSION constant
+          sed -i -E "s/(define\( 'LINK_WIZARD_VERSION', ')(([0-9]+\.)*[0-9]+)('\s*\);)/\1${VERSION}\4/" "$PHP_FILE"
+          # Update readme Stable tag
+          sed -i -E "s/^(Stable tag:\s*).*/\1${VERSION}/" "$README_FILE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$PHP_FILE" "$README_FILE"
+          git diff --cached --quiet || git commit -m "Release: bump version to ${VERSION}"
+          git pull --rebase origin trunk
+          git push origin HEAD:trunk
+
+      - name: 🏷️ Create and push tag
+        run: |
+          git tag -f "${TAG}"
+          git push -f origin "${TAG}"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔨 Build project
+        run: npm run build
+
+      - name: 🗄 Install zip and rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip rsync
+
+      - name: 📂 Stage plugin files
+        run: |
+          mkdir link-wizard-for-woocommerce
+          rm -rf node_modules admin/node_modules || true
+          rsync -a \
+            --exclude="link-wizard-for-woocommerce/" \
+            --exclude=".git/" \
+            --exclude=".github/" \
+            --exclude=".gitignore" \
+            --exclude=".distignore" \
+            --exclude="languages/.gitkeep" \
+            --exclude="**/node_modules/**" \
+            --exclude="admin/src/" \
+            --exclude="**/*.map" \
+            --exclude=".DS_Store" \
+            --exclude="*.config.js" \
+            --exclude="webpack.config.js" \
+            --exclude="package.json" \
+            --exclude="package-lock.json" \
+            --exclude="yarn.lock" \
+            --exclude=".babelrc*" \
+            --exclude=".eslintrc*" \
+            --exclude=".prettier*" \
+            --exclude="DEVDOC.MD" \
+            --exclude="*.md" \
+            ./ link-wizard-for-woocommerce/
+
+      - name: 📦 Zip the project
+        run: zip -r "link-wizard-for-woocommerce_${REL_VERSION}.zip" link-wizard-for-woocommerce/
+
+      - name: 🚀 Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Link Wizard for WooCommerce ${{ env.REL_VERSION }}
+          files: link-wizard-for-woocommerce_${{ env.REL_VERSION }}.zip
+          draft: false
+          prerelease: false
+
+
