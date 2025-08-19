@@ -1,15 +1,16 @@
 # Link Wizard for WooCommerce
 Contributors: magsindustries
+
 Tags: woocommerce, products
 
 
-Requires at least: 6.5
-Tested up to: 6.8
-WC tested up to: 10.1
-Stable tag: 1.0.0
-License: GPL-2.0+
-License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-Generate add-to-cart or checkout-links within the WP Admin interface.
+- Requires at least: 6.5
+- Tested up to: 6.8
+- WC tested up to: 10.1
+- Stable tag: 1.0.0
+- License: GPL-2.0+
+- License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+- Generate add-to-cart or checkout-links within the WP Admin interface.
 
 ## Description
 This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links. 
