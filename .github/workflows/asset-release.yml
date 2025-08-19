@@ -33,29 +33,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y zip rsync
  
-      # 5. Create the required directory structure
-      - name: 📂 Create required directory structure
+      # 5. Stage plugin files (exclude dev artifacts; keep built assets)
+      - name: 📂 Stage plugin files
         run: |
           mkdir link-wizard-for-woocommerce
-          rsync -av \
-            --exclude="link-wizard-for-woocommerce" \
-            --exclude="assets" \
-            --exclude="src" \
-            --exclude=".github" \
-            --exclude=".git" \
-            --exclude=".gitignore" \
-            --exclude=".distignore" \
+          # Remove dev dependency folders if present (safety)
+          rm -rf node_modules admin/node_modules || true
+          rsync -a \
+            --exclude="link-wizard-for-woocommerce/" \
+            --exclude=".git/" \
+            --exclude=".github/" \
+            --exclude="**/node_modules/**" \
+            --exclude="admin/src/" \
+            --exclude="**/*.map" \
             --exclude=".DS_Store" \
-            --exclude=".babelrc" \
+            --exclude="*.config.js" \
             --exclude="webpack.config.js" \
-            --exclude="*.md" \
-            --exclude="DEVDOC.MD" \
-            --exclude="node_modules" \
             --exclude="package.json" \
             --exclude="package-lock.json" \
-            --exclude="admin/src" \
-            --exclude="admin/node_modules" \
-            ./* link-wizard-for-woocommerce/
+            --exclude="yarn.lock" \
+            --exclude=".babelrc*" \
+            --exclude=".eslintrc*" \
+            --exclude=".prettier*" \
+            --exclude="DEVDOC.MD" \
+            --exclude="*.md" \
+            ./ link-wizard-for-woocommerce/
  
       # 6. Zip the project
       - name: 📦 Zip the project
