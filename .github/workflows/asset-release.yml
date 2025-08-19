@@ -65,19 +65,26 @@ jobs:
             --exclude="DEVDOC.MD" \
             --exclude="*.md" \
             ./ link-wizard-for-woocommerce/
+
+      # 6. Derive version from the release tag (strip a leading 'v' if present)
+      - name: 🔖 Set release version env
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          CLEAN="${VERSION#v}"
+          echo "REL_VERSION=$CLEAN" >> $GITHUB_ENV
  
-      # 6. Zip the project
+      # 7. Zip the project (include version in filename)
       - name: 📦 Zip the project
-        run: zip -r link-wizard-for-woocommerce.zip link-wizard-for-woocommerce/
+        run: zip -r "link-wizard-for-woocommerce_${REL_VERSION}.zip" link-wizard-for-woocommerce/
  
-      # 7. Upload the zipped project as a release asset
+      # 8. Upload the zipped project as a release asset
       - name: 📤 Upload Release Asset
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: link-wizard-for-woocommerce.zip
+          files: link-wizard-for-woocommerce_${{ env.REL_VERSION }}.zip
  
-      # 8. All good
+      # 9. All good
       - name: 🎉 All good
         run: echo "All good!"
