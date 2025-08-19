@@ -3,6 +3,10 @@ name: Asset Release Workflow
 on:
   release:
     types: [created]
+
+# Required for uploading assets to the release using GITHUB_TOKEN
+permissions:
+  contents: write
  
 jobs:
   build:
@@ -65,14 +69,11 @@ jobs:
  
       # 7. Upload the zipped project as a release asset
       - name: 📤 Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./link-wizard-for-woocommerce.zip
-          asset_name: link-wizard-for-woocommerce.zip
-          asset_content_type: application/zip
+          files: link-wizard-for-woocommerce.zip
  
       # 8. All good
       - name: 🎉 All good
