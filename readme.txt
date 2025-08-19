@@ -13,6 +13,10 @@ Generate add-to-cart or checkout-links within the WP Admin interface.
 
 This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links.
 
+Project links:
+- Website: https://magsindustries.wordpress.com/2025/06/24/link-wizard/
+- GitHub: https://github.com/sverleis/link-wizard
+
 == Installation ==
 1. Upload the plugin files to the `/wp-content/plugins/link-wizard-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
