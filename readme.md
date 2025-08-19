@@ -20,8 +20,8 @@ Useful if you need to set up a Checkout URL for Facebook.
 ## Installation 
 1. Upload the plugin files to the `/wp-content/plugins/link-wizard-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to WP Admin > Products > Link Wizard to generate your link(s).
+3. Go to **WP Admin > Products > Link Wizard** to generate your link(s).
 
 ## Changelog 
 = 1.0.0 =
-* Initial release.
+- Initial release.
