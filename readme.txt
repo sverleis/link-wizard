@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -23,7 +23,22 @@ Project links:
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 1.0.3 =
+* **WordPress.org Review Compliance Fixes:**
+  * Fixed generic class names to prevent conflicts with other plugins
+  * Fixed JavaScript variable naming conflicts
+  * Configured asset exclusion for WordPress.org directory compliance
+  * Fixed class name capitalization consistency
+* **Code Quality Improvements:**
+  * All classes now use unique `LinkWizard_` prefix
+  * Improved plugin compatibility and security
+  * Better adherence to WordPress coding standards
+
+= 1.0.2 =
+* WordPress.org Submission candidate.
+
+= 1.0.1 =
+* Internal updates.
+
 = 1.0.0 =
 * Initial release.
-
-

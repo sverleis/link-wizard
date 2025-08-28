@@ -14,7 +14,7 @@ class Link_Wizard_Search {
     /**
      * Product handler manager instance.
      *
-     * @var Product_Handler_Manager
+     * @var LinkWizard_Product_Handler_Manager
      */
     private $handler_manager;
 
@@ -29,11 +29,11 @@ class Link_Wizard_Search {
     /**
      * Get the handler manager instance, creating it if needed.
      *
-     * @return Product_Handler_Manager
+     * @return LinkWizard_Product_Handler_Manager
      */
     private function get_handler_manager() {
         if ( $this->handler_manager === null ) {
-            $this->handler_manager = new Product_Handler_Manager();
+            $this->handler_manager = new LinkWizard_Product_Handler_Manager();
             // Ensure default handlers are registered
             $this->handler_manager->register_default_handlers();
         }

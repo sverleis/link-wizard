@@ -13,7 +13,7 @@
  *
  */
 
-class Link_Wizard_loader {
+class Link_Wizard_Loader {
     /**
      * The arraay of actions registered with WordPress.
      * @since   1.0.0

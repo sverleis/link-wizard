@@ -4,9 +4,9 @@ import { __ } from '@wordpress/i18n';
 const { apiFetch } = wp;
 
 // Set up API authentication with nonce if available
-if (typeof wpApiSettings !== 'undefined') {
-    apiFetch.use(apiFetch.createNonceMiddleware(wpApiSettings.nonce));
-    apiFetch.use(apiFetch.createRootURLMiddleware(wpApiSettings.root));
+if (typeof linkWizardApiSettings !== 'undefined') {
+    apiFetch.use(apiFetch.createNonceMiddleware(linkWizardApiSettings.nonce));
+    apiFetch.use(apiFetch.createRootURLMiddleware(linkWizardApiSettings.root));
 }
 
 const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {

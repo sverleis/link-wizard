@@ -1,6 +1,6 @@
 {
     "name": "link-wizard-for-woocommerce",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "private": true,
 "scripts": {
     "build": "wp-scripts build adminsrc/index.js --output-path=admin/build --output-filename=link-wizard-admin.js",

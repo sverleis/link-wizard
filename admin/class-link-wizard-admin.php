@@ -98,7 +98,7 @@ class Link_Wizard_Admin {
         // Pass REST API root and nonce to JS
         wp_localize_script(
             $this->plugin_name,
-            'wpApiSettings',
+            'linkWizardApiSettings',
             array(
                 'root' => esc_url_raw( rest_url() ),
                 'nonce' => wp_create_nonce( 'wp_rest' ),
