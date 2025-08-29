@@ -71,8 +71,8 @@ class Link_Wizard {
 		// Load dependencies immediately
 		$this->load_dependencies();
 
-		// Initialize plugin after WooCommerce is loaded
-		add_action( 'woocommerce_loaded', array( $this, 'init' ) );
+		// Initialize plugin early to ensure admin hooks are set up before admin_menu fires
+		add_action( 'plugins_loaded', array( $this, 'init' ), 5 );
 	}
 
 	/**

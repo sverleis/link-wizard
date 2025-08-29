@@ -89,5 +89,5 @@ function run_link_wizard_for_woocommerce() {
 	new Link_Wizard();
 }
 
-// Wait until plugins are loaded to ensure WooCommerce is active.
-add_action( 'plugins_loaded', 'run_link_wizard_for_woocommerce' );
+// Initialize the plugin immediately - the class will handle WooCommerce dependency checking
+run_link_wizard_for_woocommerce();
