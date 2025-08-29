@@ -65,6 +65,9 @@ class Link_Wizard {
 		}
 		$this->plugin_name = 'link-wizard-for-woocommerce';
 
+		// HPOS Compatibility
+		add_action( 'before_woocommerce_init', array( $this, 'declare_woocommerce_feature_compatibility' ) );
+
 		$this->load_dependencies();
 		$this->define_admin_hooks();
 	}
@@ -124,6 +127,28 @@ class Link_Wizard {
 			$this->search = new Link_Wizard_Search();
 		}
 		return $this->search;
+	}
+
+	/**
+	 * Declare WooCommerce feature compatibility
+	 */
+	public function declare_woocommerce_feature_compatibility() {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			// HPOS (High-Performance Order Storage) compatibility
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			
+			// Cart and checkout blocks compatibility
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+			
+			// Cost of Goods compatibility
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cost_of_goods', __FILE__, true );
+			
+			// Product blocks compatibility
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'product_block_editor', __FILE__, true );
+			
+			// Product variation form compatibility
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'product_variation_form', __FILE__, true );
+		}
 	}
 
 	/**
