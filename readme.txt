@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -23,6 +23,19 @@ Project links:
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 1.0.5 =
+* **Critical Admin Menu Fix:**
+  * Fixed admin menu not displaying due to hook timing issues
+  * Changed initialization from `woocommerce_loaded` to `plugins_loaded` with high priority
+  * Ensures admin hooks are set up before `admin_menu` fires
+  * Resolves the issue where the Link Wizard menu item was not visible in WordPress admin
+* **Repository Management:**
+  * Updated .gitignore to exclude release zip files
+  * Improved development workflow and repository cleanliness
+* **Code Quality:**
+  * Better hook timing and initialization sequence
+  * More reliable plugin activation and menu display
+
 = 1.0.4 =
 * **WooCommerce Dependency & Feature Compatibility:**
   * Implemented superior WooCommerce dependency checking using `class_exists()` method

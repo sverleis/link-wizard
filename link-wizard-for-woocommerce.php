@@ -10,7 +10,7 @@
  * Plugin Name:       Link Wizard for WooCommerce
  * Plugin URI:        https://github.com/sverleis/link-wizard-for-woocommerce
  * Description:       A powerful link management tool for WooCommerce products.
- * Version:           1.0.4
+ * Version:           1.0.5
  * Requires at least: 6.5
  * Tested up to:      6.8
  * Requires PHP:      7.4
@@ -33,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version.
  */
-define( 'LINK_WIZARD_VERSION', '1.0.4' );
+define( 'LINK_WIZARD_VERSION', '1.0.5' );
 
 /**
  * The absolute path to the plugin directory.
