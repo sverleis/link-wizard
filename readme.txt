@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -23,6 +23,16 @@ Project links:
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 1.0.4 =
+* **WooCommerce Dependency & Feature Compatibility:**
+  * Implemented superior WooCommerce dependency checking using `class_exists()` method
+  * Added proper WooCommerce plugin requirements in header (`Requires Plugins: woocommerce`)
+  * Enhanced plugin header with `WC tested up to: 10.0.4`
+  * Implemented WooCommerce feature compatibility declarations (HPOS, blocks, etc.)
+  * Improved initialization pattern using `plugins_loaded` and `woocommerce_loaded` hooks
+  * Better architecture with separation of dependency checking and initialization
+  * Follows WordPress.org plugin standards and best practices
+
 = 1.0.3 =
 * **WordPress.org Review Compliance Fixes:**
   * Fixed generic class names to prevent conflicts with other plugins
