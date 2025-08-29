@@ -85,7 +85,7 @@ function run_link_wizard_for_woocommerce() {
 		return;
 	}
 
-	// Create the plugin instance - this will set up hooks but not run them yet
+	// Create the plugin instance - this will set up hooks but not run them yet.
 	new Link_Wizard();
 }
 

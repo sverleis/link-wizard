@@ -11,7 +11,7 @@ Generate add-to-cart or checkout-links within the WP Admin interface.
 
 == Description ==
 
-This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links.
+This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links. It allows for the creation of checkout URLs for Facebook and Instagram.
 
 Project links:
 - Website: https://magsindustries.wordpress.com/2025/06/24/link-wizard/
@@ -27,7 +27,6 @@ Project links:
 * **WooCommerce Dependency & Feature Compatibility:**
   * Implemented superior WooCommerce dependency checking using `class_exists()` method
   * Added proper WooCommerce plugin requirements in header (`Requires Plugins: woocommerce`)
-  * Enhanced plugin header with `WC tested up to: 10.0.4`
   * Implemented WooCommerce feature compatibility declarations (HPOS, blocks, etc.)
   * Improved initialization pattern using `plugins_loaded` and `woocommerce_loaded` hooks
   * Better architecture with separation of dependency checking and initialization
