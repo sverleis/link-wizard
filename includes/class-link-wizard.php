@@ -68,6 +68,9 @@ class Link_Wizard {
 		// HPOS Compatibility
 		add_action( 'before_woocommerce_init', array( $this, 'declare_woocommerce_feature_compatibility' ) );
 
+		// Load dependencies immediately
+		$this->load_dependencies();
+
 		// Initialize plugin after WooCommerce is loaded
 		add_action( 'woocommerce_loaded', array( $this, 'init' ) );
 	}
@@ -140,7 +143,6 @@ class Link_Wizard {
 			return;
 		}
 
-		$this->load_dependencies();
 		$this->define_admin_hooks();
 	}
 
