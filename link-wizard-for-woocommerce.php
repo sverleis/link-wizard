@@ -85,8 +85,8 @@ function run_link_wizard_for_woocommerce() {
 		return;
 	}
 
-	$plugin = new Link_Wizard();
-	$plugin->run();
+	// Create the plugin instance - this will set up hooks but not run them yet
+	new Link_Wizard();
 }
 
 // Wait until plugins are loaded to ensure WooCommerce is active.

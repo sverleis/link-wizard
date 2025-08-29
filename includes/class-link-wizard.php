@@ -144,6 +144,9 @@ class Link_Wizard {
 		}
 
 		$this->define_admin_hooks();
+		
+		// Now that hooks are set up, run the loader
+		$this->run();
 	}
 
 	/**
