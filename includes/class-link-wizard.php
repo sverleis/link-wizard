@@ -68,8 +68,8 @@ class Link_Wizard {
 		// HPOS Compatibility
 		add_action( 'before_woocommerce_init', array( $this, 'declare_woocommerce_feature_compatibility' ) );
 
-		$this->load_dependencies();
-		$this->define_admin_hooks();
+		// Initialize plugin after WooCommerce is loaded
+		add_action( 'woocommerce_loaded', array( $this, 'init' ) );
 	}
 
 	/**
@@ -127,6 +127,21 @@ class Link_Wizard {
 			$this->search = new Link_Wizard_Search();
 		}
 		return $this->search;
+	}
+
+	/**
+	 * Initialize the plugin.
+	 *
+	 * Checks if WooCommerce is active, then sets up hooks.
+	 */
+	public function init() {
+		// Don't run anything if WooCommerce is not active.
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+
+		$this->load_dependencies();
+		$this->define_admin_hooks();
 	}
 
 	/**
