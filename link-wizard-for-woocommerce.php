@@ -11,8 +11,8 @@
  * Plugin URI:        https://github.com/sverleis/link-wizard-for-woocommerce
  * Description:       A powerful link management tool for WooCommerce products.
  * Version:           1.0.3
- * Requires at least: 5.0
- * Tested up to:      6.4
+ * Requires at least: 6.5
+ * Tested up to:      6.8
  * Requires PHP:      7.4
  * Author:            sverleis
  * Author URI:        https://github.com/sverleis
@@ -20,7 +20,6 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       link-wizard-for-woocommerce
  * Domain Path:       /languages
- * Network:           false
  */
 
 // If this file is called directly, abort.
