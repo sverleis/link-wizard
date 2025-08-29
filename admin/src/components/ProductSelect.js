@@ -20,26 +20,27 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const [filteredVariations, setFilteredVariations] = useState({});
     const [showingAllVariations, setShowingAllVariations] = useState({});
     const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({});
+    const [ineligibleProducts, setIneligibleProducts] = useState({});
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [replaceProduct, setReplaceProduct] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-    // New state for fade-out animation
+    // New state for fade-out animation.
     const [removingProducts, setRemovingProducts] = useState(new Set());
     const [addingProducts, setAddingProducts] = useState(new Set());
 
     // Get i18n translations from PHP
     const i18n = window.linkWizardI18n || {};
 
-    // Initialize component with passed selected products
+    // Initialize component with passed selected products.
     useEffect(() => {
-        // This effect runs when selectedProducts prop changes
-        // This ensures the component shows previously selected products when navigating back
+        // This effect runs when selectedProducts prop changes.
+        // This ensures the component shows previously selected products when navigating back.
     }, [selectedProducts]);
 
-    // Debounce search term to avoid excessive API calls
+    // Debounce search term to avoid excessive API calls.
     useEffect(() => {
-        // If the search term is too short, clear results and do nothing
+        // If the search term is too short, clear results and do nothing.
         if (searchTerm.length < 2) {
             setResults([]);
             return;
@@ -53,7 +54,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 path: `link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=20`
             })
                 .then((products) => {
-                    // Filter out products that are already selected
+                    // Filter out products that are already selected.
                     const newResults = products.filter(
                         (product) =>
                             !selectedProducts.some(
@@ -78,39 +79,39 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
     // Handle product selection
     const handleSelectProduct = (product) => {
-        // Check if this product/variation is already selected (for checkout links)
+        // Check if this product/variation is already selected (for checkout links).
         if (linkType === 'checkoutLink' && selectedProducts.some(p => p.id === product.id)) {
             // Product already selected, don't add again
             return;
         }
         
-        // For add-to-cart, check if we need to show replacement modal FIRST - NO animations until confirmed
+        // For add-to-cart, check if we need to show replacement modal FIRST - NO animations until confirmed.
         if (linkType === 'addToCart' && selectedProducts.length > 0 && selectedProducts[0].id !== product.id) {
-            // Show replacement modal immediately, no animation or changes yet
+            // Show replacement modal immediately, no animation or changes yet.
             setReplaceProduct({ old: selectedProducts[0], new: product });
             return;
         }
         
-        // Only start animation if no replacement modal is needed
-        // Add product to adding state for animation
+        // Only start animation if no replacement modal is needed.
+        // Add product to adding state for animation.
         setAddingProducts(prev => new Set(prev).add(product.id));
         
-        // After a brief delay to show the "Added" message, complete the selection
+        // After a brief delay to show the "Added" message, complete the selection.
         setTimeout(() => {
             if (linkType === 'addToCart') {
-                // No replacement needed, just set the product
+                // No replacement needed, just set the product.
                 setSelectedProducts([{ ...product, quantity: 1 }]);
             } else {
-                // For checkout links, add the product
+                // For checkout links, add the product.
                 setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
             }
             
-            // Remove from search results (both main products and variations)
+            // Remove from search results (both main products and variations).
             setResults(prev => prev.filter(p => p.id !== product.id));
             
-            // Remove from filtered variations if it's a variation
+            // Remove from filtered variations if it's a variation.
             if (product.parent_id) {
-                // This is a variation, remove it from all filtered variations
+                // This is a variation, remove it from all filtered variations.
                 setFilteredVariations(prev => {
                     const newFiltered = { ...prev };
                     Object.keys(newFiltered).forEach(productId => {
@@ -122,13 +123,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 });
             }
             
-            // Clear the adding state
+            // Clear the adding state.
             setAddingProducts(prev => {
                 const newSet = new Set(prev);
                 newSet.delete(product.id);
                 return newSet;
             });
-        }, 800); // 800ms delay for the animation
+        }, 800); // 800ms delay for the animation.
     };
 
     const handleRemoveProduct = (productToRemove) => {
@@ -136,15 +137,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
             prev.filter(product => product.id !== productToRemove.id)
         );
         
-        // Add the product back to search results if it was removed
+        // Add the product back to search results if it was removed.
         if (linkType === 'checkoutLink') {
-            // Check if this was a variation (has parent_id)
+            // Check if this was a variation (has parent_id).
             if (productToRemove.parent_id) {
-                // This is a variation, add it back to the appropriate product's filtered variations
+                // This is a variation, add it back to the appropriate product's filtered variations.
                 setFilteredVariations(prev => {
                     const newFiltered = { ...prev };
                     if (newFiltered[productToRemove.parent_id]) {
-                        // Check if variation is not already in the list
+                        // Check if variation is not already in the list.
                         const variationExists = newFiltered[productToRemove.parent_id].some(v => v.id === productToRemove.id);
                         if (!variationExists) {
                             newFiltered[productToRemove.parent_id] = [...newFiltered[productToRemove.parent_id], productToRemove];
@@ -153,9 +154,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     return newFiltered;
                 });
             } else {
-                // This is a main product, add it back to search results
+                // This is a main product, add it back to search results.
                 setResults(prev => {
-                    // Check if product is not already in the list
+                    // Check if product is not already in the list.
                     const productExists = prev.some(p => p.id === productToRemove.id);
                     if (!productExists) {
                         return [...prev, productToRemove];
@@ -168,19 +169,19 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
     const handleQuantityChange = (productId, newQuantity) => {
         if (newQuantity <= 0) {
-            // Remove the product if the quantity is 0 or negative
+            // Remove the product if the quantity is 0 or negative.
             const productToRemove = selectedProducts.find(p => p.id === productId);
             setSelectedProducts(prev => prev.filter(p => p.id !== productId));
             
-            // Add the product back to search results if it was removed (for checkout links)
+            // Add the product back to search results if it was removed (for checkout links).
             if (linkType === 'checkoutLink' && productToRemove) {
-                // Check if this was a variation (has parent_id)
+                // Check if this was a variation (has parent_id).
                 if (productToRemove.parent_id) {
-                    // This is a variation, add it back to the appropriate product's filtered variations
+                    // This is a variation, add it back to the appropriate product's filtered variations.
                     setFilteredVariations(prev => {
                         const newFiltered = { ...prev };
                         if (newFiltered[productToRemove.parent_id]) {
-                            // Check if variation is not already in the list
+                            // Check if variation is not already in the list.
                             const variationExists = newFiltered[productToRemove.parent_id].some(v => v.id === productToRemove.id);
                             if (!variationExists) {
                                 newFiltered[productToRemove.parent_id] = [...newFiltered[productToRemove.parent_id], productToRemove];
@@ -189,9 +190,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                         return newFiltered;
                     });
                 } else {
-                    // This is a main product, add it back to search results
+                    // This is a main product, add it back to search results.
                     setResults(prev => {
-                        // Check if product is not already in the list
+                        // Check if product is not already in the list.
                         const productExists = prev.some(p => p.id === productToRemove.id);
                         if (!productExists) {
                             return [...prev, productToRemove];
@@ -201,7 +202,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 }
             }
         } else {
-            // Update the quantity for the product
+            // Update the quantity for the product.
             setSelectedProducts(prev => prev.map(p =>
                 p.id === productId
                     ? { ...p, quantity: newQuantity }
@@ -210,7 +211,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         }
     };
 
-    // Handling of the image modal
+    // Handling of the image modal.
     const handleImageClick = (imageUrl) => {
         setSelectedImage(imageUrl);
         setIsImageModalOpen(true);
@@ -221,7 +222,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         setSelectedImage(null);
     };
 
-    // Load variations for a variable product
+    // Load variations for a variable product.
     const loadVariations = (product) => {
         if (product.type !== 'variable') {
             return;
@@ -245,14 +246,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
             });
     };
 
-    // Go back to search results from variations view
+    // Go back to search results from variations view.
     const goBackToSearch = () => {
         setShowingVariations(false);
         setCurrentVariableProduct(null);
         setVariations([]);
     };
 
-    // Load filtered variations based on selected attributes
+    // Load filtered variations based on selected attributes.
     const loadFilteredVariations = (product, attributes) => {
         if (product.type !== 'variable') {
             return;
@@ -324,11 +325,19 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: true }));
         setError(null);
 
-        apiFetch({
-            path: `link-wizard/v1/products/${product.id}/variations`
-        })
-            .then((variationData) => {
+        // Fetch both valid variations and ineligible products.
+        Promise.all([
+            apiFetch({
+                path: `link-wizard/v1/products/${product.id}/variations`
+            }),
+            apiFetch({
+                path: `link-wizard/v1/products/${product.id}/ineligible`
+            })
+        ])
+            .then(([variationData, ineligibleData]) => {
                 setFilteredVariations(prev => ({ ...prev, [product.id]: variationData }));
+                // Store ineligible products in a new state variable.
+                setIneligibleProducts(prev => ({ ...prev, [product.id]: ineligibleData }));
                 setShowingAllVariations(prev => ({ ...prev, [product.id]: true }));
                 setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
             })
@@ -743,7 +752,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 color: '#666'
                                             }}>
                                                 {showingAllVariations[product.id] 
-                                                    ? (i18n.allVariations || 'All Variations:')
+                                                    ? (i18n.allValidVariations || 'All Valid Variations:')
                                                     : (i18n.availableVariations || 'Available Variations:')
                                                 }
                                             </div>
@@ -829,6 +838,83 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                 </div>
                                                             </>
                                                         )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Ineligible Variations Section */}
+                                    {showingAllVariations[product.id] && ineligibleProducts[product.id]?.length > 0 && (
+                                        <div style={{ marginTop: '15px' }}>
+                                            <div style={{
+                                                fontWeight: 'bold',
+                                                marginBottom: '8px',
+                                                fontSize: '14px',
+                                                color: '#d63384'
+                                            }}>
+                                                {i18n.ineligibleVariations || 'Ineligible Variations:'}
+                                            </div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                {ineligibleProducts[product.id].map(ineligibleVariation => (
+                                                    <div
+                                                        key={ineligibleVariation.id}
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            padding: '8px 10px',
+                                                            border: '1px solid #ffc0cb',
+                                                            borderRadius: '4px',
+                                                            backgroundColor: '#fff5f5',
+                                                            fontSize: '13px',
+                                                            opacity: 0.8
+                                                        }}
+                                                    >
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            width: '24px',
+                                                            height: '24px',
+                                                            backgroundColor: '#ffebee',
+                                                            border: '1px solid #ffc0cb',
+                                                            borderRadius: '3px',
+                                                            marginRight: '10px'
+                                                        }}>
+                                                            <span 
+                                                                className="dashicons dashicons-warning"
+                                                                style={{ 
+                                                                    fontSize: '12px', 
+                                                                    color: '#d63384'
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div style={{ flex: 1 }}>
+                                                            <div style={{ fontWeight: '500', marginBottom: '2px', color: '#d63384' }}>
+                                                                {ineligibleVariation.name}
+                                                            </div>
+                                                            <div style={{ color: '#d63384', fontSize: '11px' }}>
+                                                                {ineligibleVariation.issues.join(', ')}
+                                                            </div>
+                                                        </div>
+                                                        <a
+                                                            href={ineligibleVariation.edit_link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            style={{
+                                                                backgroundColor: '#d63384',
+                                                                color: 'white',
+                                                                padding: '4px 8px',
+                                                                borderRadius: '3px',
+                                                                textDecoration: 'none',
+                                                                fontSize: '11px',
+                                                                fontWeight: '500'
+                                                            }}
+                                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#b02a37'}
+                                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#d63384'}
+                                                        >
+                                                            {i18n.editProduct || 'Edit'}
+                                                        </a>
                                                     </div>
                                                 ))}
                                             </div>

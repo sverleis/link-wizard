@@ -1,0 +1,351 @@
+# Afrikaans translation for Link Wizard for WooCommerce
+# Copyright (C) 2025 sverleis
+# This file is distributed under the same license as the Link Wizard for WooCommerce package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Link Wizard for WooCommerce 1.0.3\n"
+"Report-Msgid-Bugs-To: https://github.com/sverleis/link-wizard-for-woocommerce\n"
+"POT-Creation-Date: 2025-01-27 12:00+0000\n"
+"PO-Revision-Date: 2025-01-27 12:00+0000\n"
+"Last-Translator: sverleis <sven@example.com>\n"
+"Language: af\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: includes/class-link-wizard-i18n.php:30
+msgid "Select your product(s)"
+msgstr "Kies jou produk(te)"
+
+#: includes/class-link-wizard-i18n.php:31
+msgid "Select your product"
+msgstr "Kies jou produk"
+
+#: includes/class-link-wizard-i18n.php:32
+msgid "Search for products"
+msgstr "Soek vir produkte"
+
+#: includes/class-link-wizard-i18n.php:33
+msgid "Products > Link Wizard"
+msgstr "Produkte > Skakel Towenaar"
+
+#: includes/class-link-wizard-i18n.php:34
+msgid "Search by name or SKU"
+msgstr "Soek volgens naam of SKU"
+
+#: includes/class-link-wizard-i18n.php:35
+msgid "Selected Products:"
+msgstr "Gekose Produkte:"
+
+#: includes/class-link-wizard-i18n.php:36
+msgid "Selected Product:"
+msgstr "Gekose Produk:"
+
+#: includes/class-link-wizard-i18n.php:37
+msgid "Qty:"
+msgstr "Hoev:"
+
+#: includes/class-link-wizard-i18n.php:38
+msgid "Remove"
+msgstr "Verwyder"
+
+#: includes/class-link-wizard-i18n.php:39
+msgid "Available Variations:"
+msgstr "Beskikbare Variasies:"
+
+#: includes/class-link-wizard-i18n.php:40
+msgid "Filter by Attributes:"
+msgstr "Filtreer volgens Eienskappe:"
+
+#: includes/class-link-wizard-i18n.php:41
+msgid "Any"
+msgstr "Enige"
+
+#: includes/class-link-wizard-i18n.php:42
+msgid "Variable (%d variations)"
+msgstr "Veranderlik (%d variasies)"
+
+#: includes/class-link-wizard-i18n.php:43
+msgid "SKU: %s"
+msgstr "SKU: %s"
+
+#: includes/class-link-wizard-i18n.php:44
+msgid "Click to view image"
+msgstr "Klik om prent te sien"
+
+#: includes/class-link-wizard-i18n.php:45
+msgid "View full size"
+msgstr "Sien volle grootte"
+
+#: includes/class-link-wizard-i18n.php:46
+msgid "Replace Confirmation"
+msgstr "Vervang Bevestiging"
+
+#: includes/class-link-wizard-i18n.php:47
+msgid "You are about to replace the current product with a different one. This action cannot be undone."
+msgstr "Jy is op die punt om die huidige produk met 'n ander een te vervang. Hierdie aksie kan nie ongedaan gemaak word nie."
+
+#: includes/class-link-wizard-i18n.php:48
+msgid "Replace"
+msgstr "Vervang"
+
+#: includes/class-link-wizard-i18n.php:49
+msgid "Cancel"
+msgstr "Kanselleer"
+
+#: includes/class-link-wizard-i18n.php:50
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/class-link-wizard-i18n.php:51
+msgid "Price"
+msgstr "Prys"
+
+#: includes/class-link-wizard-i18n.php:52
+msgid "Qty"
+msgstr "Hoev"
+
+#: includes/class-link-wizard-i18n.php:53
+msgid "Variable"
+msgstr "Veranderlik"
+
+#: includes/class-link-wizard-i18n.php:54
+msgid "variations"
+msgstr "variasies"
+
+#: includes/class-link-wizard-i18n.php:55
+msgid "Product"
+msgstr "Produk"
+
+#: includes/class-link-wizard-i18n.php:56
+msgid "An error occurred while fetching products."
+msgstr "'n Fout het voorgekom tydens die ophaal van produkte."
+
+#: includes/class-link-wizard-i18n.php:57
+msgid "An error occurred while fetching variations."
+msgstr "'n Fout het voorgekom tydens die ophaal van variasies."
+
+#: includes/class-link-wizard-i18n.php:58
+msgid "An error occurred while fetching filtered variations."
+msgstr "'n Fout het voorgekom tydens die ophaal van gefiltreerde variasies."
+
+#: includes/class-link-wizard-i18n.php:59
+msgid "← Back to Search"
+msgstr "← Terug na Soek"
+
+#: includes/class-link-wizard-i18n.php:60
+msgid "Variations for: %s"
+msgstr "Variasies vir: %s"
+
+#: includes/class-link-wizard-i18n.php:61
+msgid "Loading..."
+msgstr "Laai..."
+
+#: includes/class-link-wizard-i18n.php:62
+msgid "No results found"
+msgstr "Geen resultate gevind nie"
+
+#: includes/class-link-wizard-i18n.php:63
+msgid "Show All Variations"
+msgstr "Wys Alle Variasies"
+
+#: includes/class-link-wizard-i18n.php:64
+msgid "Hide All Variations"
+msgstr "Verberg Alle Variasies"
+
+#: includes/class-link-wizard-i18n.php:65
+msgid "All Variations:"
+msgstr "Alle Variasies:"
+
+#: includes/class-link-wizard-i18n.php:94
+msgid "All Valid Variations:"
+msgstr "Alle Geldige Variasies:"
+
+#: includes/class-link-wizard-i18n.php:95
+msgid "Ineligible Variations:"
+msgstr "Ongeskikte Variasies:"
+
+#: includes/class-link-wizard-i18n.php:96
+msgid "Edit"
+msgstr "Redigeer"
+
+#: includes/class-link-wizard-i18n.php:66
+msgid "Added!"
+msgstr "Bygevoeg!"
+
+#: includes/class-link-wizard-i18n.php:67
+msgid "Reset Filters"
+msgstr "Herstel Filtre"
+
+#: includes/class-link-wizard-i18n.php:68
+msgid "Apply a Coupon (Optional)"
+msgstr "Pas 'n Koepon toe (Opsioneel)"
+
+#: includes/class-link-wizard-i18n.php:69
+msgid "Coupon Rules:"
+msgstr "Koepon Reëls:"
+
+#: includes/class-link-wizard-i18n.php:70
+msgid "Search and select from your existing WooCommerce coupons. Only one coupon can be applied per link."
+msgstr "Soek en kies uit jou bestaande WooCommerce koeponne. Slegs een koepon kan per skakel toegepas word."
+
+#: includes/class-link-wizard-i18n.php:71
+msgid "Search for coupons"
+msgstr "Soek vir koeponne"
+
+#: includes/class-link-wizard-i18n.php:72
+msgid "Search existing coupons..."
+msgstr "Soek bestaande koeponne..."
+
+#: includes/class-link-wizard-i18n.php:73
+msgid "No coupons found matching \"%s\""
+msgstr "Geen koeponne gevind wat ooreenstem met \"%s\""
+
+#: includes/class-link-wizard-i18n.php:74
+msgid "An error occurred while fetching coupons."
+msgstr "'n Fout het voorgekom tydens die ophaal van koeponne."
+
+#: includes/class-link-wizard-i18n.php:75
+msgid "Coupon Added:"
+msgstr "Koepon Bygevoeg:"
+
+#: includes/class-link-wizard-i18n.php:76
+msgid "Replace Selected Coupon?"
+msgstr "Vervang Gekose Koepon?"
+
+#: includes/class-link-wizard-i18n.php:77
+msgid "You have already selected coupon %1$s. Do you want to replace it with %2$s?"
+msgstr "Jy het reeds koepon %1$s gekies. Wil jy dit vervang met %2$s?"
+
+#: includes/class-link-wizard-i18n.php:78
+msgid "%s%% off"
+msgstr "%s%% af"
+
+#: includes/class-link-wizard-i18n.php:79
+msgid "Fixed cart discount"
+msgstr "Vaste mandjie afslag"
+
+#: includes/class-link-wizard-i18n.php:80
+msgid "Fixed product discount"
+msgstr "Vaste produk afslag"
+
+#: includes/class-link-wizard-i18n.php:81
+msgid "Expires"
+msgstr "Verval"
+
+#: includes/class-link-wizard-i18n.php:82
+msgid "Min spend"
+msgstr "Min spandeer"
+
+#: includes/class-link-wizard-i18n.php:83
+msgid "Usage limit"
+msgstr "Gebruik limiet"
+
+#: includes/class-link-wizard-i18n.php:84
+msgid "Search pages and posts..."
+msgstr "Soek bladsye en plasings..."
+
+#: includes/class-link-wizard-i18n.php:85
+msgid "No pages found matching \"%s\""
+msgstr "Geen bladsye gevind wat ooreenstem met \"%s\""
+
+#: includes/class-link-wizard-i18n.php:86
+msgid "An error occurred while fetching pages."
+msgstr "'n Fout het voorgekom tydens die ophaal van bladsye."
+
+#: includes/class-link-wizard-i18n.php:87
+msgid "Replace Selected Page?"
+msgstr "Vervang Gekose Bladsy?"
+
+#: includes/class-link-wizard-i18n.php:88
+msgid "You have already selected page %1$s. Do you want to replace it with %2$s?"
+msgstr "Jy het reeds bladsy %1$s gekies. Wil jy dit vervang met %2$s?"
+
+#: includes/class-link-wizard-i18n.php:89
+msgid "Configure Redirects"
+msgstr "Konfigureer Herleidings"
+
+#: includes/class-link-wizard-i18n.php:90
+msgid "Redirect Options"
+msgstr "Herleiding Opsies"
+
+#: includes/class-link-wizard-i18n.php:91
+msgid "Redirect after add to cart"
+msgstr "Herlei na byvoeg tot mandjie"
+
+#: includes/class-link-wizard-i18n.php:92
+msgid "Stay on current page"
+msgstr "Bly op huidige bladsy"
+
+#: includes/class-link-wizard-i18n.php:93
+msgid "Redirect to cart"
+msgstr "Herlei na mandjie"
+
+#: includes/class-link-wizard-i18n.php:94
+msgid "Redirect to checkout"
+msgstr "Herlei na uitreken"
+
+#: includes/class-link-wizard-i18n.php:95
+msgid "Redirect to product page"
+msgstr "Herlei na produk bladsy"
+
+#: includes/class-link-wizard-i18n.php:96
+msgid "Redirect to custom page"
+msgstr "Herlei na aangepaste bladsy"
+
+#: includes/class-link-wizard-i18n.php:97
+msgid "Invalid product ID provided. Please provide a valid product ID."
+msgstr "Ongeldige produk ID verskaf. Verskaf asseblief 'n geldige produk ID."
+
+#: includes/class-link-wizard-i18n.php:98
+msgid "Product with ID %d not found. It may have been deleted or you may not have permission to access it."
+msgstr "Produk met ID %d nie gevind nie. Dit mag dalk verwyder gewees het of jy mag nie toestemming hê om dit te bekom nie."
+
+#: includes/class-link-wizard-i18n.php:99
+msgid "View all products"
+msgstr "Sien alle produkte"
+
+#: includes/class-link-wizard-i18n.php:100
+msgid "No handler found for product type \"%s\". This product type is not supported by the Link Wizard."
+msgstr "Geen hanteerder gevind vir produk tipe \"%s\". Hierdie produk tipe word nie ondersteun deur die Skakel Towenaar nie."
+
+#: includes/class-link-wizard-i18n.php:101
+msgid "Edit this product"
+msgstr "Redigeer hierdie produk"
+
+#: includes/class-link-wizard-i18n.php:102
+msgid "Invalid attributes format provided. Please check your attribute selection."
+msgstr "Ongeldige eienskappe formaat verskaf. Kontroleer asseblief jou eienskap keuse."
+
+#: includes/class-link-wizard-i18n.php:103
+msgid "No valid variations found for the selected attributes."
+msgstr "Geen geldige variasies gevind vir die gekose eienskappe nie."
+
+#: includes/class-link-wizard-i18n.php:104
+msgid "This variable product may not have any properly configured variations."
+msgstr "Hierdie veranderlike produk mag dalk nie enige behoorlik gekonfigureerde variasies hê nie."
+
+#: includes/class-link-wizard-i18n.php:105
+msgid "The selected attribute combination may not exist or may not be properly configured."
+msgstr "Die gekose eienskap kombinasie mag dalk nie bestaan nie of mag nie behoorlik gekonfigureer wees nie."
+
+#: includes/class-link-wizard-i18n.php:106
+msgid "Edit this product to configure variations properly."
+msgstr "Redigeer hierdie produk om variasies behoorlik te konfigureer."
+
+#: includes/class-link-wizard-i18n.php:107
+msgid "Add-to-cart Link"
+msgstr "Byvoeg-tot-mandjie Skakel"
+
+#: includes/class-link-wizard-i18n.php:108
+msgid "Checkout Link"
+msgstr "Uitreken Skakel"
+
+#: includes/class-link-wizard-i18n.php:109
+msgid "Single product selection only"
+msgstr "Slegs enkele produk keuse"
+
+#: includes/class-link-wizard-i18n.php:110
+msgid "Multiple products allowed"
+msgstr "Veelvuldige produkte toegelaat"
