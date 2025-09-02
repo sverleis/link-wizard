@@ -641,7 +641,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             <div
                                                 onClick={() => {
                                                     if (product.disabled) {
-                                                        // If product is disabled, open edit link in new tab
+                                                        // If product is disabled, open edit link in new tab.
                                                         if (product.edit_link) {
                                                             window.open(product.edit_link, '_blank');
                                                         }
@@ -703,11 +703,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 <div className="product-disabled-message" style={{
                                                     marginTop: '8px',
                                                     padding: '8px',
-                                                    backgroundColor: '#fff3cd',
-                                                    border: '1px solid #ffeaa7',
+                                                    backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
+                                                    border: '1px solid var(--wp-admin-theme-color, #0073aa)',
                                                     borderRadius: '4px',
                                                     fontSize: '12px',
-                                                    color: '#856404'
+                                                    color: 'var(--wp-admin-theme-color, #0073aa)'
                                                 }}>
                                                     <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
                                                         ⚠️ {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}

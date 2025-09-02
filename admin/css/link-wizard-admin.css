@@ -16,7 +16,7 @@
 
 .product-header.disabled:hover {
     opacity: 0.9;
-    background-color: #f8f9fa;
+    background-color: var(--wp-admin-theme-color-light, #f0f6fc);
 }
 
 .product-header.disabled::after {
@@ -33,8 +33,8 @@
 }
 
 .product-disabled-message:hover {
-    background-color: #fff8e1 !important;
-    border-color: #ffc107 !important;
+    background-color: var(--wp-admin-theme-color-light, #f0f6fc) !important;
+    border-color: var(--wp-admin-theme-color, #0073aa) !important;
 }
 
 .dynamic-link-container {
