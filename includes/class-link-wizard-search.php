@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Handles product search for Link Wizard for WooCommerce.
  *
@@ -6,11 +7,12 @@
  * This endpoint can be called from your React frontend to get product results as the user types.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class LWWC_Link_Wizard_Search {
+class LWWC_Link_Wizard_Search
+{
     /**
      * Product handler manager instance.
      *
@@ -21,8 +23,9 @@ class LWWC_Link_Wizard_Search {
     /**
      * Constructor.
      */
-    public function __construct() {
-        // Don't instantiate the handler manager here - wait until it's needed
+    public function __construct()
+    {
+        // Don't instantiate the handler manager here - wait until it's needed.
         $this->handler_manager = null;
     }
 
@@ -31,10 +34,11 @@ class LWWC_Link_Wizard_Search {
      *
      * @return LWWC_Product_Handler_Manager
      */
-    private function get_handler_manager() {
-        if ( $this->handler_manager === null ) {
+    private function get_handler_manager()
+    {
+        if ($this->handler_manager === null) {
             $this->handler_manager = new LWWC_Product_Handler_Manager();
-            // Ensure default handlers are registered
+            // Ensure default handlers are registered.
             $this->handler_manager->register_default_handlers();
         }
         return $this->handler_manager;
@@ -45,16 +49,18 @@ class LWWC_Link_Wizard_Search {
      *
      * @return bool
      */
-    public function check_permission() {
+    public function check_permission()
+    {
         // Only users who can manage WooCommerce should be able to use these endpoints.
-        return current_user_can( 'manage_woocommerce' );
+        return current_user_can('manage_woocommerce');
     }
 
     /**
      * Registers the /link-wizard/v1/products endpoint.
      */
-    public function register_routes() {
-        register_rest_route( 'link-wizard/v1', '/products', array(
+    public function register_routes()
+    {
+        register_rest_route('link-wizard/v1', '/products', array(
             'methods'  => 'GET',
             'callback' => array( $this, 'search_products' ),
             'permission_callback' => array( $this, 'check_permission' ),
@@ -65,10 +71,10 @@ class LWWC_Link_Wizard_Search {
                     'description' => 'Search term for products',
                 ),
             )
-        ) );
+        ));
 
-        // Add endpoint to get variations for a variable product
-        register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/variations', array(
+        // Add endpoint to get variations for a variable product.
+        register_rest_route('link-wizard/v1', '/products/(?P<id>\d+)/variations', array(
             'methods'  => 'GET',
             'callback' => array( $this, 'get_product_variations' ),
             'permission_callback' => array( $this, 'check_permission' ),
@@ -79,10 +85,10 @@ class LWWC_Link_Wizard_Search {
                     'description' => 'Product ID to get variations for',
                 ),
             )
-        ) );
+        ));
 
-        // Add endpoint to get filtered variations based on attributes
-        register_rest_route( 'link-wizard/v1', '/products/(?P<id>\d+)/filtered-variations', array(
+        // Add endpoint to get filtered variations based on attributes.
+        register_rest_route('link-wizard/v1', '/products/(?P<id>\d+)/filtered-variations', array(
             'methods'  => 'GET',
             'callback' => array( $this, 'get_filtered_variations' ),
             'permission_callback' => array( $this, 'check_permission' ),
@@ -93,10 +99,10 @@ class LWWC_Link_Wizard_Search {
                     'description' => 'Product ID to get variations for',
                 ),
             ),
-        ) );
+        ));
 
-        // Add endpoint to search for coupons
-        register_rest_route( 'link-wizard/v1', '/coupons', array(
+        // Add endpoint to search for coupons.
+        register_rest_route('link-wizard/v1', '/coupons', array(
             'methods'  => 'GET',
             'callback' => array( $this, 'search_coupons' ),
             'permission_callback' => array( $this, 'check_permission' ),
@@ -113,10 +119,10 @@ class LWWC_Link_Wizard_Search {
                     'description' => 'Number of coupons to return',
                 ),
             ),
-        ) );
+        ));
 
-        // Add endpoint to search for pages and posts
-        register_rest_route( 'link-wizard/v1', '/pages', array(
+        // Add endpoint to search for pages and posts.
+        register_rest_route('link-wizard/v1', '/pages', array(
             'methods'             => 'GET',
             'callback'            => array( $this, 'search_pages' ),
             'permission_callback' => array( $this, 'check_permission' ),
@@ -133,7 +139,7 @@ class LWWC_Link_Wizard_Search {
                     'description'       => 'Number of items to return',
                 ),
             ),
-        ) );
+        ));
     }
 
     /**
@@ -142,46 +148,47 @@ class LWWC_Link_Wizard_Search {
      * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function search_products( $request ) {
-        $search = sanitize_text_field( $request->get_param( 'search' ) );
-        $limit = intval( $request->get_param( 'limit' ) );
-        if ( $limit < 1 ) {
+    public function search_products($request)
+    {
+        $search = sanitize_text_field($request->get_param('search'));
+        $limit = intval($request->get_param('limit'));
+        if ($limit < 1) {
             $limit = 10;
         }
 
         // Query for products where the SKU matches the search term.
-        $products_by_sku = wc_get_products( array(
+        $products_by_sku = wc_get_products(array(
             'status' => 'publish',
             'limit' => $limit,
             'sku' => $search,
             'return' => 'ids',
-        ) );
+        ));
 
         // Query for products where the title or content matches (do not use 'exclude' for performance).
-        $products_by_title = wc_get_products( array(
+        $products_by_title = wc_get_products(array(
             'status' => 'publish',
             'limit' => $limit,
             's' => $search,
             'return' => 'ids',
-        ) );
+        ));
 
         // Combine results, ensuring uniqueness, and limit the results.
-        $product_ids = array_slice( array_unique( array_merge( $products_by_sku, $products_by_title ) ), 0, $limit );
+        $product_ids = array_slice(array_unique(array_merge($products_by_sku, $products_by_title)), 0, $limit);
 
         $results = array();
-        foreach ( $product_ids as $product_id ) {
-            $product = wc_get_product( $product_id );
-            if ( $product ) {
-                // Use the product handler manager to get results
-                $product_results = $this->get_handler_manager()->get_search_results( $product );
-                $results = array_merge( $results, $product_results );
+        foreach ($product_ids as $product_id) {
+            $product = wc_get_product($product_id);
+            if ($product) {
+                // Use the product handler manager to get results.
+                $product_results = $this->get_handler_manager()->get_search_results($product);
+                $results = array_merge($results, $product_results);
             }
         }
-        
-        // Limit results to requested limit
-        $results = array_slice( $results, 0, $limit );
-        
-        return rest_ensure_response( $results );
+
+        // Limit results to requested limit.
+        $results = array_slice($results, 0, $limit);
+
+        return rest_ensure_response($results);
     }
 
     /**
@@ -190,32 +197,33 @@ class LWWC_Link_Wizard_Search {
      * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function get_product_variations( $request ) {
-        $product_id = intval( $request->get_param( 'id' ) );
-        
-        if ( $product_id <= 0 ) {
-            return new WP_Error( 'invalid_product_id', 'Invalid product ID', array( 'status' => 400 ) );
+    public function get_product_variations($request)
+    {
+        $product_id = intval($request->get_param('id'));
+
+        if ($product_id <= 0) {
+            return new WP_Error('invalid_product_id', 'Invalid product ID', array( 'status' => 400 ));
         }
 
-        $product = wc_get_product( $product_id );
-        if ( ! $product ) {
-            return new WP_Error( 'product_not_found', 'Product not found', array( 'status' => 404 ) );
+        $product = wc_get_product($product_id);
+        if (! $product) {
+            return new WP_Error('product_not_found', 'Product not found', array( 'status' => 404 ));
         }
 
-        // Get the appropriate handler for this product
-        $handler = $this->get_handler_manager()->get_handler_for_product( $product );
-        if ( ! $handler ) {
-            return new WP_Error( 'no_handler', 'No handler found for this product type', array( 'status' => 400 ) );
+        // Get the appropriate handler for this product.
+        $handler = $this->get_handler_manager()->get_handler_for_product($product);
+        if (! $handler) {
+            return new WP_Error('no_handler', 'No handler found for this product type', array( 'status' => 400 ));
         }
 
-        // If it's a variable product, get its variations
-        if ( $product->is_type( 'variable' ) && method_exists( $handler, 'get_variations' ) ) {
-            $variations = $handler->get_variations( $product );
-            return rest_ensure_response( $variations );
+        // If it's a variable product, get its variations.
+        if ($product->is_type('variable') && method_exists($handler, 'get_variations')) {
+            $variations = $handler->get_variations($product);
+            return rest_ensure_response($variations);
         }
 
-        // For non-variable products, return empty array
-        return rest_ensure_response( array() );
+        // For non-variable products, return empty array.
+        return rest_ensure_response(array());
     }
 
     /**
@@ -224,89 +232,90 @@ class LWWC_Link_Wizard_Search {
      * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function get_filtered_variations( $request ) {
-        $product_id = intval( $request->get_param( 'id' ) );
-        $attributes_json = $request->get_param( 'attributes' );
-        
-        if ( $product_id <= 0 ) {
-            return new WP_Error( 
-                'invalid_product_id', 
-                LWWC_Link_Wizard_i18n::get_admin_text( 'invalid_product_id_message' ), 
-                array( 'status' => 400 ) 
+    public function get_filtered_variations($request)
+    {
+        $product_id = intval($request->get_param('id'));
+        $attributes_json = $request->get_param('attributes');
+
+        if ($product_id <= 0) {
+            return new WP_Error(
+                'invalid_product_id',
+                LWWC_Link_Wizard_i18n::get_admin_text('invalid_product_id_message'),
+                array( 'status' => 400 )
             );
         }
 
-        $product = wc_get_product( $product_id );
-        if ( ! $product ) {
-            $message = LWWC_Link_Wizard_i18n::get_admin_text_formatted( 'product_not_found_message', $product_id );
-            $message .= ' <a href="' . admin_url( 'edit.php?post_type=product' ) . '" target="_blank">' . 
-                       LWWC_Link_Wizard_i18n::get_admin_text( 'view_all_products_link' ) . '</a>';
-            
-            return new WP_Error( 
-                'product_not_found', 
-                $message, 
-                array( 'status' => 404 ) 
+        $product = wc_get_product($product_id);
+        if (! $product) {
+            $message = LWWC_Link_Wizard_i18n::get_admin_text_formatted('product_not_found_message', $product_id);
+            $message .= ' <a href="' . admin_url('edit.php?post_type=product') . '" target="_blank">' .
+                       LWWC_Link_Wizard_i18n::get_admin_text('view_all_products_link') . '</a>';
+
+            return new WP_Error(
+                'product_not_found',
+                $message,
+                array( 'status' => 404 )
             );
         }
 
-        // Get the appropriate handler for this product
-        $handler = $this->get_handler_manager()->get_handler_for_product( $product );
-        if ( ! $handler ) {
-            $message = LWWC_Link_Wizard_i18n::get_admin_text_formatted( 'no_handler_message', $product->get_type() );
-            $message .= ' <a href="' . get_edit_post_link( $product_id ) . '" target="_blank">' . 
-                       LWWC_Link_Wizard_i18n::get_admin_text( 'edit_product_link' ) . '</a>';
-            
-            return new WP_Error( 
-                'no_handler', 
-                $message, 
-                array( 'status' => 400 ) 
+        // Get the appropriate handler for this product.
+        $handler = $this->get_handler_manager()->get_handler_for_product($product);
+        if (! $handler) {
+            $message = LWWC_Link_Wizard_i18n::get_admin_text_formatted('no_handler_message', $product->get_type());
+            $message .= ' <a href="' . get_edit_post_link($product_id) . '" target="_blank">' .
+                       LWWC_Link_Wizard_i18n::get_admin_text('edit_product_link') . '</a>';
+
+            return new WP_Error(
+                'no_handler',
+                $message,
+                array( 'status' => 400 )
             );
         }
 
-        // If it's a variable product, get filtered variations
-        if ( $product->is_type( 'variable' ) && method_exists( $handler, 'get_filtered_variations' ) ) {
+        // If it's a variable product, get filtered variations.
+        if ($product->is_type('variable') && method_exists($handler, 'get_filtered_variations')) {
             $selected_attributes = array();
-            
-            // Parse the JSON attributes if provided
-            if ( $attributes_json ) {
-                $selected_attributes = json_decode( $attributes_json, true );
-                if ( json_last_error() !== JSON_ERROR_NONE ) {
-                    return new WP_Error( 
-                        'invalid_attributes', 
-                        LWWC_Link_Wizard_i18n::get_admin_text( 'invalid_attributes_message' ), 
-                        array( 'status' => 400 ) 
+
+            // Parse the JSON attributes if provided.
+            if ($attributes_json) {
+                $selected_attributes = json_decode($attributes_json, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    return new WP_Error(
+                        'invalid_attributes',
+                        LWWC_Link_Wizard_i18n::get_admin_text('invalid_attributes_message'),
+                        array( 'status' => 400 )
                     );
                 }
             }
-            
-            $variations = $handler->get_filtered_variations( $product, $selected_attributes );
-            
-            // If no variations found, provide helpful error
-            if ( empty( $variations ) ) {
-                $edit_link = get_edit_post_link( $product_id );
-                $message = LWWC_Link_Wizard_i18n::get_admin_text( 'no_valid_variations_message' ) . ' ';
-                
-                if ( empty( $selected_attributes ) ) {
-                    $message .= LWWC_Link_Wizard_i18n::get_admin_text( 'no_variations_configured' ) . ' ';
+
+            $variations = $handler->get_filtered_variations($product, $selected_attributes);
+
+            // If no variations found, provide helpful error.
+            if (empty($variations)) {
+                $edit_link = get_edit_post_link($product_id);
+                $message = LWWC_Link_Wizard_i18n::get_admin_text('no_valid_variations_message') . ' ';
+
+                if (empty($selected_attributes)) {
+                    $message .= LWWC_Link_Wizard_i18n::get_admin_text('no_variations_configured') . ' ';
                 } else {
-                    $message .= LWWC_Link_Wizard_i18n::get_admin_text( 'attribute_combination_invalid' ) . ' ';
+                    $message .= LWWC_Link_Wizard_i18n::get_admin_text('attribute_combination_invalid') . ' ';
                 }
-                
-                $message .= '<a href="' . $edit_link . '" target="_blank">' . 
-                           LWWC_Link_Wizard_i18n::get_admin_text( 'configure_variations_message' ) . '</a>';
-                
-                return new WP_Error( 
-                    'no_valid_variations', 
-                    $message, 
-                    array( 'status' => 404 ) 
+
+                $message .= '<a href="' . $edit_link . '" target="_blank">' .
+                           LWWC_Link_Wizard_i18n::get_admin_text('configure_variations_message') . '</a>';
+
+                return new WP_Error(
+                    'no_valid_variations',
+                    $message,
+                    array( 'status' => 404 )
                 );
             }
-            
-            return rest_ensure_response( $variations );
+
+            return rest_ensure_response($variations);
         }
 
-        // For non-variable products, return empty array
-        return rest_ensure_response( array() );
+        // For non-variable products, return empty array.
+        return rest_ensure_response(array());
     }
 
     /**
@@ -315,21 +324,22 @@ class LWWC_Link_Wizard_Search {
      * @param WP_REST_Request $request
      * @return WP_REST_Response
      */
-    public function search_coupons($request) {
+    public function search_coupons($request)
+    {
         $search_term = $request->get_param('search');
         $limit = intval($request->get_param('limit'));
-        
+
         if (empty($search_term) || strlen($search_term) < 2) {
             return new WP_REST_Response(array(), 200);
         }
-        
+
         if ($limit < 1) {
             $limit = 10;
         }
 
         $coupons = array();
-        
-        // Use WP_Query for coupon search
+
+        // Use WP_Query for coupon search.
         $args = array(
             'post_type' => 'shop_coupon',
             'post_status' => 'publish',
@@ -338,15 +348,15 @@ class LWWC_Link_Wizard_Search {
             'orderby' => 'title',
             'order' => 'ASC'
         );
-        
+
         $query = new WP_Query($args);
-        
+
         if ($query->have_posts()) {
             while ($query->have_posts()) {
                 $query->the_post();
                 $coupon_id = get_the_ID();
-                
-                // Get coupon data using WooCommerce functions if available
+
+                // Get coupon data using WooCommerce functions if available.
                 if (class_exists('WC_Coupon')) {
                     try {
                         $wc_coupon = new WC_Coupon($coupon_id);
@@ -355,21 +365,21 @@ class LWWC_Link_Wizard_Search {
                         $amount = $wc_coupon->get_amount();
                         $description = $wc_coupon->get_description();
                     } catch (Exception $e) {
-                        // Fallback to post meta if WC_Coupon fails
+                        // Fallback to post meta if WC_Coupon fails.
                         $coupon_code = get_the_title();
                         $discount_type = get_post_meta($coupon_id, 'discount_type', true);
                         $amount = get_post_meta($coupon_id, 'coupon_amount', true);
                         $description = get_the_excerpt();
                     }
                 } else {
-                    // Fallback to post meta if WooCommerce not available
+                    // Fallback to post meta if WooCommerce not available.
                     $coupon_code = get_the_title();
                     $discount_type = get_post_meta($coupon_id, 'discount_type', true);
                     $amount = get_post_meta($coupon_id, 'coupon_amount', true);
                     $description = get_the_excerpt();
                 }
-                
-                // Ensure we have valid data
+
+                // Ensure we have valid data.
                 if (!empty($coupon_code)) {
                     $coupons[] = array(
                         'id' => $coupon_id,
@@ -392,9 +402,10 @@ class LWWC_Link_Wizard_Search {
      * @param WP_REST_Request $request The request object.
      * @return WP_REST_Response The response object.
      */
-    public function search_pages( $request ) {
-        $search_term = sanitize_text_field( $request->get_param( 'search' ) );
-        $limit       = intval( $request->get_param( 'limit' ) );
+    public function search_pages($request)
+    {
+        $search_term = sanitize_text_field($request->get_param('search'));
+        $limit       = intval($request->get_param('limit'));
 
         $args = array(
             'post_type'      => array( 'post', 'page' ),
@@ -403,24 +414,24 @@ class LWWC_Link_Wizard_Search {
             's'              => $search_term,
         );
 
-        $query   = new WP_Query( $args );
+        $query   = new WP_Query($args);
         $results = array();
 
-        if ( $query->have_posts() ) {
-            while ( $query->have_posts() ) {
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
                 $query->the_post();
                 $post          = get_post();
-                $post_type_obj = get_post_type_object( get_post_type( $post->ID ) );
+                $post_type_obj = get_post_type_object(get_post_type($post->ID));
                 $results[]     = array(
                     'id'    => $post->ID,
                     'title' => get_the_title(),
                     'url'   => get_permalink(),
-                    'type'  => is_a( $post_type_obj, 'WP_Post_Type' ) ? $post_type_obj->labels->singular_name : 'Post',
+                    'type'  => is_a($post_type_obj, 'WP_Post_Type') ? $post_type_obj->labels->singular_name : 'Post',
                 );
             }
         }
         wp_reset_postdata();
 
-        return new WP_REST_Response( $results, 200 );
+        return new WP_REST_Response($results, 200);
     }
 }

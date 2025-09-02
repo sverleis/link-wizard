@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Link Wizard for WooCommerce
  * Plugin URI: https://github.com/sverleis/link-wizard
@@ -17,48 +18,47 @@
  */
 
 // If this file is called directly, abort.
-if( !defined( 'WPINC' ) ) {
+if (!defined('WPINC')) {
     die;
 }
 
-/**
- * Current plugin version.
- */
-define( 'LWWC_VERSION', '1.0.2.1' );
+/* Current plugin version. */
+define('LWWC_VERSION', '1.0.2.1');
 
-/**
- * The absolute path to the plugin directory.
- */
-define( 'LWWC_PATH', plugin_dir_path( __FILE__ ) );
+/* The absolute path to the plugin directory. */
+define('LWWC_PATH', plugin_dir_path(__FILE__));
 
 /**
  * Run during plugin activation.
  */
-function lwwc_activate_plugin() {
+function lwwc_activate_plugin()
+{
     // Activation code will go here.
 }
 /**
  * Run during plugin deactivation.
  */
-function lwwc_deactivate_plugin() {
+function lwwc_deactivate_plugin()
+{
     // Deactivation code will go here.
 }
 
-// Register activation and deactivation hooks
-register_activation_hook( __FILE__, 'lwwc_activate_plugin' );
-register_deactivation_hook( __FILE__, 'lwwc_deactivate_plugin' );
+// Register activation and deactivation hooks.
+register_activation_hook(__FILE__, 'lwwc_activate_plugin');
+register_deactivation_hook(__FILE__, 'lwwc_deactivate_plugin');
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
 
-require plugin_dir_path( __FILE__ ) . 'includes/class-link-wizard.php';
+require plugin_dir_path(__FILE__) . 'includes/class-link-wizard.php';
 
 /**
  * Begin execution of the plugin.
  */
-function lwwc_run_plugin() {
- 
+function lwwc_run_plugin()
+{
+
     $plugin = new LWWC_Link_Wizard();
     $plugin->run();
 }

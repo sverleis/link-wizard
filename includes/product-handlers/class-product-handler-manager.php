@@ -1,16 +1,17 @@
 <?php
+
 /**
  * Product Handler Manager
  *
  * Manages and coordinates all product handlers for the Link Wizard.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-class LWWC_Product_Handler_Manager {
-    
+class LWWC_Product_Handler_Manager
+{
     /**
      * Array of registered product handlers.
      *
@@ -21,18 +22,20 @@ class LWWC_Product_Handler_Manager {
     /**
      * Constructor.
      */
-    public function __construct() {
-        // Don't register handlers immediately - use lazy loading
+    public function __construct()
+    {
+        // Don't register handlers immediately - use lazy loading.
     }
 
     /**
      * Register the default product handlers.
      */
-    public function register_default_handlers() {
-        // Only register if not already registered
-        if ( empty( $this->handlers ) ) {
-            $this->register_handler( new LWWC_Simple_Product_Handler() );
-            $this->register_handler( new LWWC_Variable_Product_Handler() );
+    public function register_default_handlers()
+    {
+        // Only register if not already registered.
+        if (empty($this->handlers)) {
+            $this->register_handler(new LWWC_Simple_Product_Handler());
+            $this->register_handler(new LWWC_Variable_Product_Handler());
         }
     }
 
@@ -41,8 +44,9 @@ class LWWC_Product_Handler_Manager {
      *
      * @param LWWC_Product_Handler_Interface $handler
      */
-    public function register_handler( $handler ) {
-        if ( $handler && method_exists( $handler, 'get_product_type' ) ) {
+    public function register_handler($handler)
+    {
+        if ($handler && method_exists($handler, 'get_product_type')) {
             $this->handlers[ $handler->get_product_type() ] = $handler;
         }
     }
@@ -54,8 +58,9 @@ class LWWC_Product_Handler_Manager {
      * @param string $product_type
      * @return LWWC_Product_Handler_Interface|null
      */
-    public function get_handler( $product_type ) {
-        return isset( $this->handlers[ $product_type ] ) ? $this->handlers[ $product_type ] : null;
+    public function get_handler($product_type)
+    {
+        return isset($this->handlers[ $product_type ]) ? $this->handlers[ $product_type ] : null;
     }
 
     /**
@@ -64,13 +69,14 @@ class LWWC_Product_Handler_Manager {
      * @param WC_Product $product
      * @return LWWC_Product_Handler_Interface|null
      */
-    public function get_handler_for_product( $product ) {
-        if ( ! $product ) {
+    public function get_handler_for_product($product)
+    {
+        if (! $product) {
             return null;
         }
 
-        foreach ( $this->handlers as $handler ) {
-            if ( $handler->can_handle( $product ) ) {
+        foreach ($this->handlers as $handler) {
+            if ($handler->can_handle($product)) {
                 return $handler;
             }
         }
@@ -84,11 +90,12 @@ class LWWC_Product_Handler_Manager {
      * @param WC_Product $product
      * @return array
      */
-    public function get_search_results( $product ) {
-        $handler = $this->get_handler_for_product( $product );
-        
-        if ( $handler ) {
-            return $handler->get_search_results( $product );
+    public function get_search_results($product)
+    {
+        $handler = $this->get_handler_for_product($product);
+
+        if ($handler) {
+            return $handler->get_search_results($product);
         }
 
         return array();
@@ -100,11 +107,12 @@ class LWWC_Product_Handler_Manager {
      * @param WC_Product $product
      * @return array
      */
-    public function get_product_data( $product ) {
-        $handler = $this->get_handler_for_product( $product );
-        
-        if ( $handler ) {
-            return $handler->get_product_data( $product );
+    public function get_product_data($product)
+    {
+        $handler = $this->get_handler_for_product($product);
+
+        if ($handler) {
+            return $handler->get_product_data($product);
         }
 
         return array();
@@ -116,11 +124,12 @@ class LWWC_Product_Handler_Manager {
      * @param WC_Product $product
      * @return bool
      */
-    public function is_valid_for_links( $product ) {
-        $handler = $this->get_handler_for_product( $product );
-        
-        if ( $handler ) {
-            return $handler->is_valid_for_links( $product );
+    public function is_valid_for_links($product)
+    {
+        $handler = $this->get_handler_for_product($product);
+
+        if ($handler) {
+            return $handler->is_valid_for_links($product);
         }
 
         return false;
@@ -131,8 +140,9 @@ class LWWC_Product_Handler_Manager {
      *
      * @return array
      */
-    public function get_registered_types() {
-        return array_keys( $this->handlers );
+    public function get_registered_types()
+    {
+        return array_keys($this->handlers);
     }
 
     /**
@@ -140,8 +150,8 @@ class LWWC_Product_Handler_Manager {
      *
      * @return array
      */
-    public function get_handlers() {
+    public function get_handlers()
+    {
         return $this->handlers;
     }
 }
-

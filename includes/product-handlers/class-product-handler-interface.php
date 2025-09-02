@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Product Handler Interface
  *
@@ -6,11 +7,12 @@
  * This allows for extensible product type support.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-interface LWWC_Product_Handler_Interface {
+interface LWWC_Product_Handler_Interface
+{
     /**
      * Get the product type this handler supports.
      *
@@ -24,7 +26,7 @@ interface LWWC_Product_Handler_Interface {
      * @param WC_Product $product
      * @return bool
      */
-    public function can_handle( $product );
+    public function can_handle($product);
 
     /**
      * Get search results for this product type.
@@ -32,7 +34,7 @@ interface LWWC_Product_Handler_Interface {
      * @param WC_Product $product
      * @return array
      */
-    public function get_search_results( $product );
+    public function get_search_results($product);
 
     /**
      * Get product data for the frontend.
@@ -40,7 +42,7 @@ interface LWWC_Product_Handler_Interface {
      * @param WC_Product $product
      * @return array
      */
-    public function get_product_data( $product );
+    public function get_product_data($product);
 
     /**
      * Validate if the product can be used in links.
@@ -48,6 +50,5 @@ interface LWWC_Product_Handler_Interface {
      * @param WC_Product $product
      * @return bool
      */
-    public function is_valid_for_links( $product );
+    public function is_valid_for_links($product);
 }
-
