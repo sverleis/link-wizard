@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.2
+Stable tag: 1.0.2.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -19,6 +19,18 @@ This plugin adds a feature to the product menu, where an admin or store manager 
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 1.0.2.1 =
+* Incremental update for continued development
+* Improved .gitignore configuration
+* Ready for WordPress.org submission
+
+= 1.0.2 =
+* WordPress.org compliant version
+* Fixed all plugin review issues
+* Updated class/function names to use unique lwwc_ prefix
+* Removed WordPress.org directory assets
+* Updated JavaScript variable names to prevent conflicts
+
 = 1.0.0 =
 * Initial release.
 
