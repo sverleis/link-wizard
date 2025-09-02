@@ -87,10 +87,26 @@
         padding: 6px !important;
         font-size: 11px !important;
         line-height: 1.3 !important;
+        margin-top: 8px !important;
+        width: 100% !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
     }
     
     .product-disabled-message div {
         font-size: 10px !important;
+    }
+    
+    /* Make variation content stack vertically on mobile */
+    .product-search-results li {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    .product-search-results .product-details {
+        width: 100% !important;
+        margin-bottom: 8px !important;
     }
     
     .product-header.disabled::after {
@@ -123,6 +139,8 @@
     .filtered-variations .variation-item {
         padding: 6px 8px !important;
         font-size: 12px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
     
     .filtered-variations .variation-name {
@@ -132,6 +150,12 @@
     
     .filtered-variations .variation-sku {
         font-size: 10px !important;
+    }
+    
+    /* Ensure filtered variation messages also stack on mobile */
+    .filtered-variations .product-disabled-message {
+        margin-top: 4px !important;
+        width: 100% !important;
     }
     
     .dynamic-link-container > div:first-of-type {
