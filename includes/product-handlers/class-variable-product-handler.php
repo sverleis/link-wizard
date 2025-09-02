@@ -353,7 +353,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
 
         // If the product is not valid for links, add edit link and reason.
         if (! $is_valid) {
-            $product_data['edit_link'] = get_edit_post_link($product->get_id());
+            $product_data['edit_link'] = admin_url('post.php?post=' . $product->get_id() . '&action=edit');
             $product_data['disabled_reason'] = LWWC_Link_Wizard_i18n::get_admin_text('variable_product_has_any_attributes');
         }
 
@@ -538,7 +538,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
             'parent_id'   => $product->get_id(),
             'attributes'  => $variation['attributes'],
             'disabled'    => true,
-            'edit_link'   => get_edit_post_link($product->get_id()), // Link to product, not variation.
+            'edit_link'   => admin_url('post.php?post=' . $product->get_id() . '&action=edit'), // Link to product edit page.
             'disabled_reason' => LWWC_Link_Wizard_i18n::get_admin_text('variation_has_any_attributes'),
         );
     }
