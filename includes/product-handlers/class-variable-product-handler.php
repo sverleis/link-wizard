@@ -337,7 +337,8 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
      */
     private function get_parent_product_data($product)
     {
-        return array(
+        $is_valid = $this->is_valid_for_links($product);
+        $product_data = array(
             'id'          => $product->get_id(),
             'name'        => $product->get_name(),
             'sku'         => $product->get_sku(),
@@ -348,7 +349,16 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
             'variation_count' => count($product->get_available_variations()),
             'attributes'  => $this->get_attributes($product), // Add available attributes.
             'slug'        => $product->get_slug(),
+            'disabled'    => ! $is_valid,
         );
+
+        // If the product is not valid for links, add edit link and reason.
+        if (! $is_valid) {
+            $product_data['edit_link'] = get_edit_post_link($product->get_id());
+            $product_data['disabled_reason'] = LWWC_Link_Wizard_i18n::get_admin_text('variable_product_has_any_attributes');
+        }
+
+        return $product_data;
     }
 
     /**

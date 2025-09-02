@@ -640,6 +640,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             {/* Product Header - Clickable */}
                                             <div
                                                 onClick={() => {
+                                                    if (product.disabled) {
+                                                        // If product is disabled, open edit link in new tab
+                                                        if (product.edit_link) {
+                                                            window.open(product.edit_link, '_blank');
+                                                        }
+                                                        return;
+                                                    }
                                                     if (product.type === 'variable') {
                                                         // For variable products, we'll handle selection differently
                                                         // Don't do anything on click - let user use filters
@@ -647,7 +654,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         handleSelectProduct(product);
                                                     }
                                                 }}
-                                                className={`product-header ${product.type === 'variable' ? 'variable' : 'clickable'}`}
+                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' ? 'variable' : 'clickable')}`}
                                             >
                                         <div className="product-icon">
                                             {product.image ? (
@@ -692,6 +699,24 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             <div className="product-price">
                                                 <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                             </div>
+                                            {product.disabled && (
+                                                <div className="product-disabled-message" style={{
+                                                    marginTop: '8px',
+                                                    padding: '8px',
+                                                    backgroundColor: '#fff3cd',
+                                                    border: '1px solid #ffeaa7',
+                                                    borderRadius: '4px',
+                                                    fontSize: '12px',
+                                                    color: '#856404'
+                                                }}>
+                                                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                                                        ⚠️ {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
+                                                    </div>
+                                                    <div style={{ fontSize: '11px' }}>
+                                                        {product.disabled_reason || 'This product cannot be used in links. Click to edit.'}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                         {product.type === 'variable' && (
                                             <div className="product-filter-icon">

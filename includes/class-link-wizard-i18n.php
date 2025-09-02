@@ -78,6 +78,7 @@ class LWWC_Link_Wizard_i18n
             'no_variations_configured' => __('This variable product may not have any properly configured variations.', 'link-wizard-for-woocommerce'),
             'attribute_combination_invalid' => __('The selected attribute combination may not exist or may not be properly configured.', 'link-wizard-for-woocommerce'),
             'configure_variations_message' => __('Edit this product to configure variations properly.', 'link-wizard-for-woocommerce'),
+            'variable_product_has_any_attributes' => __('This variable product has variations with "Any" attributes that cannot be used in links. Please edit the product to configure all variations properly.', 'link-wizard-for-woocommerce'),
 
             // Link Type Labels.
             'add_to_cart_link' => __('Add-to-cart Link', 'link-wizard-for-woocommerce'),
