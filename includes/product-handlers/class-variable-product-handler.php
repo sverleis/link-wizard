@@ -105,7 +105,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
         }
 
         // In WooCommerce, "Any" attributes are represented as empty strings.
-        // But we need to check if ALL attributes are empty (which would mean the variation is not properly configured).
+        // We need to check if ANY attributes are empty (which means the variation has "Any" attributes).
         $has_any_empty_attributes = false;
         $total_attributes = 0;
 
@@ -117,13 +117,12 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
             }
         }
 
-        // Only consider it "Any" if ALL attributes are empty (meaning the variation is not configured).
-        // If some attributes have values, the variation is valid.
+        // If any attributes are empty, the variation has "Any" attributes and should be disabled.
         if ($has_any_empty_attributes && $total_attributes > 0) {
-            return false;
+            return true; // Has "Any" attributes
         }
 
-        return false;
+        return false; // No "Any" attributes
     }
 
     /**
@@ -531,13 +530,13 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
         
         return array(
             'id'          => $variation['variation_id'],
-            'name'        => $this->get_variation_name($variation, $product),
+            'name'        => $this->get_variation_name($product, $variation),
             'sku'         => $variation_product ? $variation_product->get_sku() : '',
             'price'       => $variation_product ? $variation_product->get_price_html() : '',
             'image'       => $this->get_variation_image($variation, $product),
             'type'        => 'variation',
             'parent_id'   => $product->get_id(),
-            'attributes'  => $this->get_variation_attributes($variation, $product),
+            'attributes'  => $variation['attributes'],
             'disabled'    => true,
             'edit_link'   => get_edit_post_link($variation['variation_id']),
             'disabled_reason' => LWWC_Link_Wizard_i18n::get_admin_text('variation_has_any_attributes'),
