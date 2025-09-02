@@ -166,6 +166,7 @@ class LWWC_Link_Wizard_Admin
                 'replaceConfirmationMessage' => LWWC_Link_Wizard_i18n::get_admin_text('replace_confirmation_message'),
                 'sku' => LWWC_Link_Wizard_i18n::get_admin_text('sku'),
                 'variableProductHasAnyAttributes' => LWWC_Link_Wizard_i18n::get_admin_text('variable_product_has_any_attributes'),
+                'variationHasAnyAttributes' => LWWC_Link_Wizard_i18n::get_admin_text('variation_has_any_attributes'),
 
                 // Coupon Section.
                 'applyCoupon' => LWWC_Link_Wizard_i18n::get_admin_text('applyCoupon'),

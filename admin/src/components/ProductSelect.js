@@ -522,11 +522,29 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                 {variations.map(variation => (
                                     <li
                                         key={variation.id}
-                                        onClick={() => handleSelectProduct(variation)}
+                                        onClick={() => {
+                                            if (variation.disabled) {
+                                                // If variation is disabled, open edit link in new tab.
+                                                if (variation.edit_link) {
+                                                    window.open(variation.edit_link, '_blank');
+                                                }
+                                                return;
+                                            }
+                                            handleSelectProduct(variation);
+                                        }}
                                         tabIndex="0"
-                                        onKeyDown={(e) =>
-                                            e.key === 'Enter' && handleSelectProduct(variation)
-                                        }
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                if (variation.disabled) {
+                                                    // If variation is disabled, open edit link in new tab.
+                                                    if (variation.edit_link) {
+                                                        window.open(variation.edit_link, '_blank');
+                                                    }
+                                                    return;
+                                                }
+                                                handleSelectProduct(variation);
+                                            }
+                                        }}
                                         style={{
                                             display: 'flex',
                                             alignItems: 'center',
@@ -534,14 +552,22 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             border: '1px solid #ddd',
                                             borderRadius: '4px',
                                             marginBottom: '8px',
-                                            cursor: 'pointer',
-                                            backgroundColor: '#fff',
+                                            cursor: variation.disabled ? 'pointer' : 'pointer',
+                                            backgroundColor: variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff',
                                             transition: 'all 0.3s ease-in-out',
-                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
+                                            opacity: variation.disabled ? 0.7 : (addingProducts.has(variation.id) ? 0.6 : 1),
                                             transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                         }}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
+                                        onMouseEnter={(e) => {
+                                            if (!variation.disabled) {
+                                                e.target.style.backgroundColor = '#f5f5f5';
+                                            } else {
+                                                e.target.style.backgroundColor = 'var(--wp-admin-theme-color-light, #f0f6fc)';
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.backgroundColor = variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff';
+                                        }}
                                     >
                                         {/* Show "Added" message when variation is being added */}
                                         {addingProducts.has(variation.id) ? (
@@ -612,6 +638,24 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
                                                         <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                     </div>
+                                                    {variation.disabled && (
+                                                        <div style={{
+                                                            marginTop: '8px',
+                                                            padding: '6px',
+                                                            backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
+                                                            border: '1px solid var(--wp-admin-theme-color, #0073aa)',
+                                                            borderRadius: '4px',
+                                                            fontSize: '11px',
+                                                            color: 'var(--wp-admin-theme-color, #0073aa)'
+                                                        }}>
+                                                            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+                                                                ⚠️ {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
+                                                            </div>
+                                                            <div style={{ fontSize: '10px' }}>
+                                                                {variation.disabled_reason || 'This variation cannot be used in links. Click to edit.'}
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </>
                                         )}
@@ -776,22 +820,39 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 {filteredVariations[product.id]?.map(variation => (
                                                     <div
                                                         key={variation.id}
-                                                        onClick={() => handleSelectProduct(variation)}
+                                                        onClick={() => {
+                                                            if (variation.disabled) {
+                                                                // If variation is disabled, open edit link in new tab.
+                                                                if (variation.edit_link) {
+                                                                    window.open(variation.edit_link, '_blank');
+                                                                }
+                                                                return;
+                                                            }
+                                                            handleSelectProduct(variation);
+                                                        }}
                                                         style={{
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             padding: '8px 10px',
                                                             border: '1px solid #ddd',
                                                             borderRadius: '4px',
-                                                            backgroundColor: '#fff',
+                                                            backgroundColor: variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
                                                             transition: 'all 0.3s ease-in-out',
-                                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
+                                                            opacity: variation.disabled ? 0.7 : (addingProducts.has(variation.id) ? 0.6 : 1),
                                                             transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                                         }}
-                                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
+                                                        onMouseEnter={(e) => {
+                                                            if (!variation.disabled) {
+                                                                e.target.style.backgroundColor = '#f5f5f5';
+                                                            } else {
+                                                                e.target.style.backgroundColor = 'var(--wp-admin-theme-color-light, #f0f6fc)';
+                                                            }
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.target.style.backgroundColor = variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff';
+                                                        }}
                                                     >
                                                         {/* Show "Added" message when variation is being added */}
                                                         {addingProducts.has(variation.id) ? (
@@ -852,6 +913,24 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                 }}>
                                                                     <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                                 </div>
+                                                                {variation.disabled && (
+                                                                    <div style={{
+                                                                        marginTop: '4px',
+                                                                        padding: '4px',
+                                                                        backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
+                                                                        border: '1px solid var(--wp-admin-theme-color, #0073aa)',
+                                                                        borderRadius: '3px',
+                                                                        fontSize: '10px',
+                                                                        color: 'var(--wp-admin-theme-color, #0073aa)'
+                                                                    }}>
+                                                                        <div style={{ fontWeight: 'bold', marginBottom: '1px' }}>
+                                                                            ⚠️ {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
+                                                                        </div>
+                                                                        <div style={{ fontSize: '9px' }}>
+                                                                            {variation.disabled_reason || 'Click to edit.'}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
                                                             </>
                                                         )}
                                                     </div>

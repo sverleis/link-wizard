@@ -378,8 +378,10 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
         $variations = $product->get_available_variations();
 
         foreach ($variations as $variation) {
-            // Skip variations with "Any" attributes (not fully configured).
+            // Check if variation has "Any" attributes (not fully configured).
             if ($this->has_any_attributes($variation)) {
+                // Include disabled variations instead of skipping them.
+                $results[] = $this->get_disabled_variation_data($variation, $product);
                 continue;
             }
 
@@ -514,5 +516,31 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
         }
 
         return $results;
+    }
+
+    /**
+     * Get data for a disabled variation (with "Any" attributes).
+     *
+     * @param array $variation
+     * @param WC_Product $product
+     * @return array
+     */
+    private function get_disabled_variation_data($variation, $product)
+    {
+        $variation_product = wc_get_product($variation['variation_id']);
+        
+        return array(
+            'id'          => $variation['variation_id'],
+            'name'        => $this->get_variation_name($variation, $product),
+            'sku'         => $variation_product ? $variation_product->get_sku() : '',
+            'price'       => $variation_product ? $variation_product->get_price_html() : '',
+            'image'       => $this->get_variation_image($variation, $product),
+            'type'        => 'variation',
+            'parent_id'   => $product->get_id(),
+            'attributes'  => $this->get_variation_attributes($variation, $product),
+            'disabled'    => true,
+            'edit_link'   => get_edit_post_link($variation['variation_id']),
+            'disabled_reason' => LWWC_Link_Wizard_i18n::get_admin_text('variation_has_any_attributes'),
+        );
     }
 }
