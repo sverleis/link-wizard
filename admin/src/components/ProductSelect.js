@@ -635,23 +635,33 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                             {i18n.sku || 'SKU'}: {variation.sku}
                                                         </div>
                                                     )}
-                                                    <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
-                                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
-                                                    </div>
+                                                    {!variation.disabled && (
+                                                        <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
+                                                            <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                                        </div>
+                                                    )}
                                                     {variation.disabled && (
                                                         <div style={{
                                                             marginTop: '8px',
-                                                            padding: '6px',
+                                                            padding: '8px',
                                                             backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
                                                             border: '1px solid var(--wp-admin-theme-color, #0073aa)',
                                                             borderRadius: '4px',
-                                                            fontSize: '11px',
-                                                            color: 'var(--wp-admin-theme-color, #0073aa)'
+                                                            fontSize: '12px',
+                                                            color: 'var(--wp-admin-theme-color, #0073aa)',
+                                                            lineHeight: '1.4'
                                                         }}>
-                                                            <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>
-                                                                ⚠️ {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
+                                                            <div style={{ 
+                                                                fontWeight: 'bold', 
+                                                                marginBottom: '4px',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '6px'
+                                                            }}>
+                                                                <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
+                                                                {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
                                                             </div>
-                                                            <div style={{ fontSize: '10px' }}>
+                                                            <div style={{ fontSize: '11px', opacity: 0.9 }}>
                                                                 {variation.disabled_reason || 'This variation cannot be used in links. Click to edit.'}
                                                             </div>
                                                         </div>
@@ -753,8 +763,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     fontSize: '12px',
                                                     color: 'var(--wp-admin-theme-color, #0073aa)'
                                                 }}>
-                                                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                                                        ⚠️ {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
+                                                    <div style={{ 
+                                                        fontWeight: 'bold', 
+                                                        marginBottom: '4px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '6px'
+                                                    }}>
+                                                        <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
+                                                        {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
                                                     </div>
                                                     <div style={{ fontSize: '11px' }}>
                                                         {product.disabled_reason || 'This product cannot be used in links. Click to edit.'}
@@ -906,27 +923,37 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                <div style={{ 
-                                                                    color: '#0073aa', 
-                                                                    fontWeight: '500',
-                                                                    fontSize: '14px'
-                                                                }}>
-                                                                    <span dangerouslySetInnerHTML={{ __html: variation.price }} />
-                                                                </div>
+                                                                {!variation.disabled && (
+                                                                    <div style={{ 
+                                                                        color: '#0073aa', 
+                                                                        fontWeight: '500',
+                                                                        fontSize: '14px'
+                                                                    }}>
+                                                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                                                    </div>
+                                                                )}
                                                                 {variation.disabled && (
                                                                     <div style={{
                                                                         marginTop: '4px',
-                                                                        padding: '4px',
+                                                                        padding: '6px',
                                                                         backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
                                                                         border: '1px solid var(--wp-admin-theme-color, #0073aa)',
                                                                         borderRadius: '3px',
-                                                                        fontSize: '10px',
-                                                                        color: 'var(--wp-admin-theme-color, #0073aa)'
+                                                                        fontSize: '11px',
+                                                                        color: 'var(--wp-admin-theme-color, #0073aa)',
+                                                                        lineHeight: '1.3'
                                                                     }}>
-                                                                        <div style={{ fontWeight: 'bold', marginBottom: '1px' }}>
-                                                                            ⚠️ {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
+                                                                        <div style={{ 
+                                                                            fontWeight: 'bold', 
+                                                                            marginBottom: '2px',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            gap: '4px'
+                                                                        }}>
+                                                                            <span className="dashicons dashicons-warning" style={{ fontSize: '12px' }}></span>
+                                                                            {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
                                                                         </div>
-                                                                        <div style={{ fontSize: '9px' }}>
+                                                                        <div style={{ fontSize: '10px', opacity: 0.9 }}>
                                                                             {variation.disabled_reason || 'Click to edit.'}
                                                                         </div>
                                                                     </div>

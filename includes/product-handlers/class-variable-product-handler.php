@@ -532,13 +532,13 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface
             'id'          => $variation['variation_id'],
             'name'        => $this->get_variation_name($product, $variation),
             'sku'         => $variation_product ? $variation_product->get_sku() : '',
-            'price'       => $variation_product ? $variation_product->get_price_html() : '',
+            'price'       => '', // Remove pricing for disabled items.
             'image'       => $this->get_variation_image($variation, $product),
             'type'        => 'variation',
             'parent_id'   => $product->get_id(),
             'attributes'  => $variation['attributes'],
             'disabled'    => true,
-            'edit_link'   => get_edit_post_link($variation['variation_id']),
+            'edit_link'   => get_edit_post_link($product->get_id()), // Link to product, not variation.
             'disabled_reason' => LWWC_Link_Wizard_i18n::get_admin_text('variation_has_any_attributes'),
         );
     }
