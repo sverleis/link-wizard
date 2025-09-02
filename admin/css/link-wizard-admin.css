@@ -1,0 +1,1833 @@
+
+/* =============================================================================
+   WordPress Admin Color Scheme
+   ============================================================================= */
+
+/* =============================================================================
+   Dynamic Link Component Styles
+   ============================================================================= */
+
+.dynamic-link-container {
+    animation: fadeInUp 0.3s ease-out;
+    margin-bottom: 20px;
+}
+
+.dynamic-link-container input[type="text"] {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.dynamic-link-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dynamic-link-container button:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for the dynamic link container */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .dynamic-link-container {
+        padding: 15px;
+    }
+    
+    .dynamic-link-container input[type="text"] {
+        min-width: 100% !important;
+        margin-bottom: 10px;
+    }
+    
+    .dynamic-link-container > div:first-of-type {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dynamic-link-container button {
+        min-width: 100% !important;
+        margin-bottom: 8px;
+    }
+}
+
+/* 
+ * These are fallbacks for the CSS custom properties that are dynamically
+ * injected by WordPress core based on the user's selected admin color scheme.
+ * Using these variables ensures the plugin's UI matches the rest of the admin.
+ *
+ * @see https://developer.wordpress.org/block-editor/how-to-guides/stylesheets/admin-stylesheet-color-schemes/
+ */
+:root {
+	/* WordPress Core Theme Colors - Dynamic Fallbacks */
+	--lwwc-theme-primary: #0073aa;      /* button-primary background (Fresh scheme default) */
+	--lwwc-theme-primary-bg: rgba(0, 115, 170, 0.1);
+	--lwwc-theme-ui: #2c5aa0;           /* adminmenu background (Fresh scheme default) */
+	--lwwc-theme-ui-bg: rgba(44, 90, 160, 0.1);
+	--lwwc-theme-notification: #d54e21; /* notification color (Fresh scheme default) */
+	--lwwc-theme-notification-bg: rgba(213, 78, 33, 0.1);
+	--lwwc-theme-link: #0073aa;         /* link color (consistent across schemes) */
+	--lwwc-theme-link-bg: rgba(0, 115, 170, 0.1);
+
+
+    
+	
+	/* Darker variants for primary and admin theme-color */
+	--lwwc-theme-primary-darker-10: #006b96; /* 10% darker than primary */
+	--lwwc-theme-primary-darker-20: #005782; /* 20% darker than primary */
+	
+	/* Expose as wp-admin theme-color shades */
+	--wp-admin-theme-color: var(--lwwc-theme-primary);
+	--wp-admin-theme-color-darker-10: var(--lwwc-theme-primary-darker-10);
+	--wp-admin-theme-color-darker-20: var(--lwwc-theme-primary-darker-20);
+	
+	/* Link hover state uses darker-10 by default */
+	--lwwc-theme-link-hover: var(--wp-admin-theme-color-darker-10);
+	
+	/* Core Colors (Fallback values are from the "Fresh" theme) */
+	--wp-admin-background-color: #f0f0f1;
+	--wp-admin-text-color: #1d2327;
+	--wp-admin-secondary-text-color: #50575e;
+	--wp-admin-border-color: #c3c4c7;
+	--wp-admin-border-color-darker: #8c8f94;
+	--wp-admin-notification-color: #d63638;
+	--wp-admin-link: var(--lwwc-theme-link);
+	--wp-admin-link-hover: var(--lwwc-theme-link-hover);
+
+	/* Component Specific Colors */
+	--wp-admin-card-background: #fff;
+	--wp-admin-card-border: #c3c4c7;
+	--wp-admin-card-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	
+	/* Success Colors */
+	--wp-admin-success-color: #28a745;
+	--wp-admin-success-background: #d4edda;
+	--wp-admin-success-border: #c3e6cb;
+	--wp-admin-success-color-darker: #218838;
+	
+	/* Notification Colors */
+	--wp-admin-notification-color-darker: #c82333;
+	--wp-admin-notification-color-focus: rgba(220, 53, 69, 0.25);
+	
+	/* Additional Border and Background Colors */
+	--wp-admin-border-color-light: #ddd;
+	--wp-admin-background-color-light: #f0f0f0;
+	--wp-admin-background-color-lighter: #f9f9f9;
+	--wp-admin-background-color-lightest: #f6f7f7;
+	--wp-admin-secondary-text-color-light: #666;
+	--wp-admin-secondary-text-color-darker: #5a6268;
+	
+	/* Additional Theme Colors */
+	--wp-admin-warning-background: #fff3cd;
+	--wp-admin-warning-color: #856404;
+	--wp-admin-info-background: #d1ecf1;
+	--wp-admin-info-color: #0c5460;
+	--wp-admin-info-border: #c3d4e6;
+	
+	/* Theme Color Variants */
+	--wp-admin-theme-color-light: var(--lwwc-theme-primary-bg);
+	
+	/* Utility Colors for Consistent Styling */
+	--lwwc-button-primary: var(--lwwc-theme-primary);
+	--lwwc-button-primary-hover: var(--lwwc-theme-primary-darker-10);
+	--lwwc-button-primary-active: var(--lwwc-theme-primary-darker-20);
+	--lwwc-button-primary-text: #fff;
+	--lwwc-button-primary-border: var(--lwwc-theme-primary);
+	
+	--lwwc-button-secondary: var(--wp-admin-background-color-light);
+	--lwwc-button-secondary-hover: var(--wp-admin-border-color);
+	--lwwc-button-secondary-text: var(--wp-admin-text-color);
+	--lwwc-button-secondary-border: var(--wp-admin-border-color-light);
+	
+	--lwwc-button-danger: var(--wp-admin-notification-color);
+	--lwwc-button-danger-hover: var(--wp-admin-notification-color-darker);
+	--lwwc-button-danger-text: #fff;
+	--lwwc-button-danger-border: var(--wp-admin-notification-color);
+	
+	/* Focus and Selection Colors */
+	--lwwc-focus-color: var(--lwwc-theme-primary);
+	--lwwc-focus-color-light: var(--lwwc-theme-primary-bg);
+	--lwwc-selection-color: var(--lwwc-theme-primary-bg);
+	--lwwc-selection-text: var(--wp-admin-text-color);
+}
+
+/* Link Wizard header icon placement */
+.lwwc-wrap {
+	position: relative;
+}
+
+.lwwc-header-icon-container {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	opacity: 0.12;
+	pointer-events: none; /* decorative */
+	line-height: 0;
+}
+
+/* Theme-aware coloring (uses currentColor from the SVG) */
+.lwwc-theme-colored {
+	/* Use the actual admin theme primary color if available */
+	color: var(--wp-admin-theme-color, #2271b1);
+}
+
+/* Header layout for icon next to title/description */
+.lwwc-header-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 12px;
+}
+
+.lwwc-header-text h1 {
+	margin-bottom: 4px;
+}
+
+.lwwc-header-icon-slot {
+	flex: 0 0 auto;
+	line-height: 0;
+}
+
+.lwwc-header-icon {
+	display: block;
+	/* Match approx combined title + description height */
+	width: 72px;
+	height: 72px;
+}
+
+/* Main form container */
+#link-wizard-form {
+	max-width: 100%;
+}
+
+/* Card styles for each step */
+.form-step {
+	background: var(--wp-admin-card-background, #fff);
+	border: 1px solid var(--wp-admin-card-border, #c3c4c7);
+	box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+	padding: 20px;
+    margin-bottom: 20px;
+	border-radius: 4px;
+}
+
+/* Heading inside each card */
+.form-step-heading {
+	font-size: 1.3em;
+	margin: 0 0 1.2em;
+	padding: 0 0 0.8em;
+	border-bottom: 1px solid var(--wp-admin-border-color, #c3c4c7);
+	color: var(--wp-admin-text-color, #1d2327);
+}
+
+.form-step-radio-option {
+	margin-bottom: 1.5em;
+}
+
+.form-step-radio-option label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.form-step-radio-option label span {
+	font-weight: 600;
+	font-size: 1.1em;
+	color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* Description text for radio options and inputs */
+.form-step-radio-option .description,
+#cl-options .description {
+	margin-top: 0.5em;
+	margin-left: 28px; /* Align with text, assuming radio button width */
+	color: var(--wp-admin-secondary-text-color, #50575e);
+}
+
+/* Specific styles for the options in Step 3 */
+#atc-options label,
+#cl-options label {
+	display: block;
+	margin-bottom: 0.5em;
+}
+
+#cl-options .description {
+	margin-left: 0; /* Reset alignment for this specific case */
+}
+
+/* Navigation buttons at the bottom of each step */
+.form-step-navigation {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Make the primary button float right if it's the only one */
+.form-step-navigation .button-primary:first-child:last-child {
+    margin-left: auto;
+}
+
+
+/* =============================================================================
+   Reusable Search Component System
+   ============================================================================= */
+
+/* Search results container - can be used for products, coupons, pages, etc. */
+.lw-search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual search result item */
+.lw-search-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: var(--wp-admin-card-background, #fff);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* Hover state for search items */
+.lw-search-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+    box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+}
+
+/* Search item when being added/selected (loading state) */
+.lw-search-item.adding {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
+/* Search item when selected */
+.lw-search-item.selected {
+    border-color: var(--wp-admin-success-color, #28a745);
+    box-shadow: 0 0 0 1px var(--wp-admin-success-color, #28a745);
+    background-color: var(--wp-admin-success-background, rgba(40, 167, 69, 0.05));
+}
+
+/* Main content area of search item */
+.lw-search-item-content {
+    display: flex;
+    align-items: center;
+}
+
+/* Icon/image placeholder for search items */
+.lw-search-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-light));
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 3px;
+    margin-right: 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Main icon in the placeholder */
+.lw-search-item-icon .dashicons {
+    font-size: 16px;
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
+}
+
+/* Image icon styling */
+.lw-search-item-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+/* Small overlay icon (like magnifying glass) */
+.lw-search-item-icon .lw-overlay-icon {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: 10px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Details section of search item */
+.lw-search-item-details {
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+/* Primary title/name */
+.lw-search-item-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    word-wrap: break-word;
+}
+
+/* Secondary info (like SKU) */
+.lw-search-item-meta {
+    color: var(--wp-admin-secondary-text-color, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+/* Tertiary info (like price) */
+.lw-search-item-price {
+    color: var(--wp-admin-theme-color, #0073aa);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Badge/tag styling (like "Variable Product") */
+.lw-search-item-badge {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/* Success/confirmation state */
+.lw-search-item-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--wp-admin-success-color, #28a745);
+    font-size: 16px;
+    font-weight: bold;
+    background-color: var(--wp-admin-success-background, #d4edda);
+    border: 1px solid var(--wp-admin-success-border, #c3e6cb);
+    border-radius: 4px;
+}
+
+.lw-search-item-success .dashicons {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* Action area (right side of search item) */
+.lw-search-item-actions {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lw-search-item-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .lw-search-item-icon {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+    
+    .lw-search-item-details {
+        width: 100%;
+    }
+}
+
+/* =============================================================================
+   Selected Items Component System
+   ============================================================================= */
+
+/* Container for selected items section */
+.lw-selected-items {
+    margin-top: 20px;
+}
+
+.lw-selected-items h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* List container for selected items */
+.lw-selected-items-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Individual selected item */
+.lw-selected-item {
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lighter));
+    transition: all 0.2s ease;
+}
+
+.lw-selected-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+/* Main content area of selected item */
+.lw-selected-item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Left side - product info */
+.lw-selected-item-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icon/image area for selected items (larger than search results) */
+.lw-selected-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.lw-selected-item-icon .dashicons {
+    font-size: 20px;
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
+}
+
+.lw-selected-item-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+/* Overlay icon for selected items */
+.lw-selected-item-icon .lw-overlay-icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 12px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Text content for selected items */
+.lw-selected-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.lw-selected-item-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    word-wrap: break-word;
+}
+
+.lw-selected-item-price {
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
+    font-size: 14px;
+}
+
+/* Right side - controls */
+.lw-selected-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* Quantity label */
+.lw-selected-item-qty-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* Quantity input */
+.lw-selected-item-qty-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.lw-selected-item-qty-input:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+/* Remove button */
+.lw-selected-item-remove {
+    padding: 6px 12px;
+    background: var(--wp-admin-notification-color, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.lw-selected-item-remove:hover {
+    background: var(--wp-admin-notification-color-darker, #c82333);
+}
+
+.lw-selected-item-remove:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--wp-admin-notification-color-focus, rgba(220, 53, 69, 0.25));
+}
+
+/* Responsive adjustments for selected items */
+@media (max-width: 768px) {
+    .lw-selected-item-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .lw-selected-item-info {
+        gap: 12px;
+    }
+    
+    .lw-selected-item-controls {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .lw-selected-item-qty-input {
+        width: 80px;
+    }
+}
+
+/* =============================================================================
+   Dropdown Search Results (for PageSearch and similar components)
+   ============================================================================= */
+
+/* No results message */
+.lw-search-no-results {
+    color: var(--wp-admin-secondary-text-color, var(--wp-admin-secondary-text-color-light));
+    font-style: italic;
+    padding: 15px;
+    text-align: center;
+    background: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* =============================================================================
+   Confirmation Modal Styles
+   ============================================================================= */
+
+/* Modal overlay */
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+/* Modal content container */
+.modal-content {
+    position: relative;
+    max-width: 450px;
+    width: 100%;
+    background-color: var(--wp-admin-card-background, #fff);
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Modal title */
+.modal-content h3 {
+    margin-bottom: 15px;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-size: 18px;
+}
+
+/* Modal text */
+.modal-content p {
+    margin-bottom: 25px;
+    color: var(--wp-admin-secondary-text-color, #50575e);
+    line-height: 1.5;
+}
+
+/* Button container */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Modal buttons */
+.modal-buttons .button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 100px;
+    transition: background-color 0.2s ease;
+}
+
+.modal-buttons .button-primary {
+    background-color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+    color: var(--lwwc-button-primary-text, white);
+}
+
+.modal-buttons .button-primary:hover {
+    background-color: var(--lwwc-button-primary-hover, var(--wp-admin-theme-color-darker-10, #006b96));
+}
+
+.modal-buttons .button:not(.button-primary) {
+    background-color: var(--lwwc-button-danger, var(--wp-admin-notification-color, #dc3545));
+    color: var(--lwwc-button-danger-text, white);
+}
+
+.modal-buttons .button:not(.button-primary):hover {
+    background-color: var(--lwwc-button-danger-hover, var(--wp-admin-notification-color-darker, #c82333));
+}
+
+/* =============================================================================
+   Dynamic Link Component Styles
+   ============================================================================= */
+
+/* Base URL styling */
+.dynamic-link-base-url {
+    color: var(--wp-admin-secondary-text-color, #666);
+}
+
+/* Highlight styling for placeholders and redirects */
+.dynamic-link-highlight {
+    background-color: var(--wp-admin-warning-background, #fff3cd);
+    color: var(--wp-admin-warning-color, #856404);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Product parameter styling */
+.dynamic-link-product-param {
+    background-color: var(--wp-admin-info-background, #d1ecf1);
+    color: var(--wp-admin-info-color, #0c5460);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Separator styling */
+.dynamic-link-separator {
+    color: var(--wp-admin-secondary-text-color, #1d2327);
+}
+
+/* Container styling */
+.dynamic-link-container {
+	border-radius: 6px;
+	padding: 20px;
+	background-color: var(--wp-admin-card-background, #fff);
+	border: 1px solid var(--wp-admin-card-border, #c3c4c7);
+	box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+	margin: 20px 0;
+}
+
+.dynamic-link-container.disabled {
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+}
+
+/* Title styling */
+.dynamic-link-title {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.dynamic-link-title.disabled {
+    color: var(--wp-admin-secondary-text-color, #666);
+}
+
+/* Icon styling */
+.dynamic-link-icon {
+    color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+    padding-right:.25em;
+}
+    
+
+.dynamic-link-icon.disabled {
+    color: var(--wp-admin-secondary-text-color, #666);
+}
+
+/* Status badge styling */
+.dynamic-link-status-badge {
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 1em;
+}
+
+.dynamic-link-status-badge.active {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+}
+
+/* Description styling */
+.dynamic-link-description {
+	margin: 0.25em 0 1em 0;
+	color: var(--wp-admin-secondary-text-color, #666);
+	line-height: 1.5;
+}
+
+/* Link display styling */
+.dynamic-link-display {
+	padding: 10px 12px;
+	border: 1px solid var(--wp-admin-border-color-light, #ddd);
+	border-radius: 4px;
+	background-color: var(--wp-admin-card-background, #fff);
+	color: var(--wp-admin-text-color, #1d2327);
+	min-height: 22px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 16px;
+	word-break: break-word;
+	line-height: 1.5;
+    margin-bottom: 1em;
+}
+
+.dynamic-link-display.disabled {
+    background-color: var(--wp-admin-background-color, #f0f0f0);
+    color: var(--wp-admin-secondary-text-color, #666);
+}
+
+/* Button styling */
+.dynamic-link-button {
+    padding: 10px 16px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    min-width: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dynamic-link-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
+}
+
+.dynamic-link-button:disabled,
+.dynamic-link-button.disabled {
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    cursor: not-allowed;
+}
+
+.dynamic-link-button.success {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.dynamic-link-button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* =============================================================================
+   Product Select Component Styles
+   ============================================================================= */
+
+/* Attribute filter container */
+.attribute-filter-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+}
+
+.attribute-filter-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.attribute-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.attribute-filter-option {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+}
+
+.attribute-filter-label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.attribute-filter-select {
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.attribute-filter-select:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+.attribute-filter-reset {
+    margin-top: 8px;
+    padding: 4px 8px;
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.attribute-filter-reset:hover {
+    background-color: var(--wp-admin-secondary-text-color-darker, #5a6268);
+}
+
+/* Product grid layout */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product-card {
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    padding: 15px;
+    background-color: var(--wp-admin-card-background, #fff);
+    transition: all 0.2s ease;
+}
+
+.product-card:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+    box-shadow: var(--wp-admin-card-box-shadow, 0 1px 1px rgba(0, 0, 0, 0.04));
+}
+
+.product-card.selected {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-theme-color-light, rgba(34, 113, 177, 0.05));
+}
+
+.product-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.product-card-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+}
+
+.product-card-details {
+    flex: 1;
+}
+
+.product-card-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.product-card-sku {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.product-card-price {
+    color: var(--wp-admin-theme-color, #0073aa);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-card-type-badge {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.product-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-card-add-button {
+    padding: 6px 12px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.product-card-add-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
+}
+
+.product-card-add-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    cursor: not-allowed;
+}
+
+.product-card-add-button.added {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.product-card-add-button.added:hover {
+    background-color: var(--wp-admin-success-color-darker, #218838);
+}
+
+/* Selected products list */
+.selected-products-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.selected-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.selected-product-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+.selected-product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+.selected-product-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.selected-product-icon .dashicons {
+    font-size: 20px;
+    color: var(--wp-admin-secondary-text-color-light, #666);
+}
+
+.selected-product-icon .dashicons-format-image {
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+.selected-product-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.selected-product-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    word-wrap: break-word;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.selected-product-price {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 14px;
+}
+
+.selected-product-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.selected-product-qty-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.selected-product-qty-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.selected-product-qty-input:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+.selected-product-remove {
+    padding: 6px 12px;
+    background: var(--wp-admin-notification-color, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.selected-product-remove:hover {
+    background: var(--wp-admin-notification-color-darker, #c82333);
+}
+
+.selected-product-remove:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--wp-admin-notification-color-focus, rgba(220, 53, 69, 0.25));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .selected-product-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .selected-product-info {
+        gap: 12px;
+    }
+    
+    .selected-product-controls {
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .selected-product-qty-input {
+        width: 80px;
+    }
+}
+
+/* =============================================================================
+   Product Search and Results Styles
+   ============================================================================= */
+
+/* Product rules container */
+.product-rules-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--wp-admin-info-background, #f0f6ff);
+    border: 1px solid var(--wp-admin-info-border, #c3d4e6);
+    border-radius: 4px;
+}
+
+/* Product search wrapper */
+.product-search-wrapper {
+    margin-bottom: 20px;
+}
+
+.product-search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-search-input {
+    flex: 1;
+}
+
+.product-search-spinner {
+    display: flex;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+/* Product search results */
+.product-search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.product-search-result {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: var(--wp-admin-card-background, #fff);
+    transition: all 0.3s ease-in-out;
+}
+
+.product-search-result.adding {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
+.product-added-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--wp-admin-success-color, #28a745);
+    font-size: 16px;
+    font-weight: bold;
+    background-color: var(--wp-admin-success-background, #d4edda);
+    border: 1px solid var(--wp-admin-success-border, #c3e6cb);
+    border-radius: 4px;
+}
+
+.product-added-message .dashicons {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* Product header */
+.product-header {
+    display: flex;
+    align-items: center;
+}
+
+.product-header.clickable {
+    cursor: pointer;
+}
+
+.product-header.clickable:hover {
+    background-color: var(--wp-admin-background-color-light, #f5f5f5);
+}
+
+.product-header.variable {
+    cursor: default;
+}
+
+/* Product icon */
+.product-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: var(--wp-admin-background-color-light, #f0f0f0);
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 3px;
+    margin-right: 12px;
+    position: relative;
+}
+
+.product-image-icon {
+    font-size: 16px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    cursor: pointer;
+}
+
+.product-zoom-icon {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: 10px;
+    color: var(--wp-admin-theme-color, #0073aa);
+    background-color: var(--wp-admin-card-background, rgba(255, 255, 255, 0.9));
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.product-default-icon {
+    font-size: 16px;
+    color: var(--wp-admin-secondary-text-color-light, #666);
+}
+
+/* Product details */
+.product-details {
+    flex: 1;
+}
+
+.product-name {
+    font-weight: bold;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.product-type-badge {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: normal;
+}
+
+.product-sku {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.product-price {
+    color: var(--wp-admin-theme-color, #0073aa);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-filter-icon {
+    margin-left: 10px;
+}
+
+.product-filter-icon .dashicons {
+    font-size: 16px;
+    color: var(--wp-admin-theme-color, #0073aa);
+}
+
+/* Variations header */
+.variations-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--wp-admin-background-color-lighter, #f9f9f9);
+    border-radius: 4px;
+}
+
+.variations-back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+    color: var(--wp-admin-theme-color, #0073aa);
+}
+
+.variations-back-button:hover {
+    text-decoration: underline;
+}
+
+.variations-title {
+    font-weight: bold;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+/* Attribute filter spinner */
+.attribute-filter-spinner {
+    margin-top: 8px;
+}
+
+/* =============================================================================
+   Coupon Component Styles
+   ============================================================================= */
+
+/* Coupon rules container */
+.coupon-rules-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--wp-admin-info-background, #f0f6ff);
+    border: 1px solid var(--wp-admin-info-border, #c3d4e6);
+    border-radius: 4px;
+}
+
+/* Coupon search container */
+.coupon-search-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+}
+
+.coupon-search-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.coupon-search-input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.coupon-search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.coupon-search-input:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+.coupon-search-button {
+    padding: 8px 16px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.coupon-search-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
+}
+
+.coupon-search-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    cursor: not-allowed;
+}
+
+.coupon-search-spinner {
+    float: none;
+    margin-top: 0;
+}
+
+/* Coupon results list */
+.coupon-results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.coupon-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-card-background, #fff);
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.coupon-result-item:hover {
+    border-color: var(--wp-admin-border-color-darker, #8c8f94);
+}
+
+.coupon-result-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 0;
+}
+
+.coupon-result-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.coupon-result-icon .dashicons {
+    font-size: 20px;
+    color: white;
+}
+
+.coupon-result-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.coupon-result-code {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.coupon-result-description {
+    color: var(--wp-admin-secondary-text-color-light, #666);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.coupon-result-amount {
+    color: var(--wp-admin-theme-color, #0073aa);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.coupon-result-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.coupon-result-add-button {
+    padding: 6px 12px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.coupon-result-add-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10, #006b96);
+}
+
+.coupon-result-add-button:disabled {
+    background-color: var(--wp-admin-secondary-text-color, #666);
+    cursor: not-allowed;
+}
+
+.coupon-result-add-button.added {
+    background-color: var(--wp-admin-success-color, #28a745);
+}
+
+.coupon-result-add-button.added:hover {
+    background-color: var(--wp-admin-success-color-darker, #218838);
+}
+
+/* =============================================================================
+   Page Search Component Styles
+   ============================================================================= */
+
+/* Page search input container */
+.page-search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.page-search-input {
+    width: 100%;
+}
+
+.page-search-spinner {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.page-search-error {
+    margin-top: 10px;
+}
+
+.page-search-no-results {
+    margin-top: 10px;
+}
+
+/* Page search container */
+.page-search-container {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, #f0f0f1);
+}
+
+.page-search-header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: var(--wp-admin-text-color, #1d2327);
+}
+
+.page-search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.page-search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.page-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--wp-admin-border-color-light, #ddd);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.page-search-input:focus {
+    border-color: var(--wp-admin-theme-color, #0073aa);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #0073aa);
+}
+
+.page-search-spinner {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.page-search-error {
+    margin-top: 10px;
+}
+
+.page-search-no-results {
+    margin-top: 10px;
+}
+
+/* =============================================================================
+   Product Selection Modal Styles
+   ============================================================================= */
+
+/* Product selection modal overlay */
+.product-selection-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+/* Product selection modal content */
+.product-selection-modal {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    background-color: var(--wp-admin-card-background, #fff);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Modal title */
+.product-selection-modal h3 {
+    margin-bottom: 15px;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Modal description */
+.product-selection-modal p {
+    margin-bottom: 25px;
+    color: var(--wp-admin-secondary-text-color, #50575e);
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Modal options section */
+.modal-options h4 {
+    margin-bottom: 20px;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Option groups */
+.option-group {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 6px;
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lightest));
+}
+
+.option-group h5 {
+    margin-bottom: 15px;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Product list */
+.product-list {
+    margin-bottom: 20px;
+}
+
+.product-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, var(--wp-admin-border-color-light));
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.product-option:hover {
+    background-color: var(--wp-admin-background-color, var(--wp-admin-background-color-lightest));
+}
+
+.product-option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.product-option span {
+    color: var(--wp-admin-text-color, #1d2327);
+    font-weight: 500;
+}
+
+/* Modal buttons container */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Modal buttons */
+.product-selection-modal .button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 120px;
+    transition: background-color 0.2s ease;
+}
+
+.product-selection-modal .button-primary {
+    background-color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+    color: var(--lwwc-button-primary-text, white);
+}
+
+.product-selection-modal .button-primary:hover {
+    background-color: var(--lwwc-button-primary-hover, var(--wp-admin-theme-color-darker-10, #006b96));
+}
+
+.product-selection-modal .button-destructive {
+    background-color: var(--lwwc-button-danger, var(--wp-admin-notification-color, #dc3545));
+    color: var(--lwwc-button-danger-text, white);
+}
+
+.product-selection-modal .button-destructive:hover {
+    background-color: var(--lwwc-button-danger-hover, var(--wp-admin-notification-color-darker, #c82333));
+}
+

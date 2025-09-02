@@ -1,0 +1,83 @@
+name: Asset Release Workflow
+ 
+on:
+  release:
+    types: [created]
+
+# Required for uploading assets to the release using GITHUB_TOKEN
+permissions:
+  contents: write
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # 1. Checkout the repository code
+      - name: 👉 Checkout code
+        uses: actions/checkout@v4
+ 
+      # 2. Setup Node.js
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      # 3. Install dependencies and build
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      - name: 🔨 Build project
+        run: npm run build
+      
+      # 4. Install necessary packages: zip and rsync
+      - name: 🗄 Install zip and rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip rsync
+ 
+      # 5. Stage plugin files (exclude dev artifacts; keep built assets)
+      - name: 📂 Stage plugin files
+        run: |
+          mkdir link-wizard-for-woocommerce
+          # Remove dev dependency folders if present (safety)
+          rm -rf node_modules admin/node_modules || true
+          rsync -a \
+            --exclude="link-wizard-for-woocommerce/" \
+            --exclude=".git/" \
+            --exclude=".github/" \
+            --exclude=".gitignore" \
+            --exclude=".distignore" \
+            --exclude="languages/.gitkeep" \
+            --exclude="**/node_modules/**" \
+            --exclude="admin/src/" \
+            --exclude="**/*.map" \
+            --exclude=".DS_Store" \
+            --exclude="*.config.js" \
+            --exclude="webpack.config.js" \
+            --exclude="package.json" \
+            --exclude="package-lock.json" \
+            --exclude="yarn.lock" \
+            --exclude=".babelrc*" \
+            --exclude=".eslintrc*" \
+            --exclude=".prettier*" \
+            --exclude="DEVDOC.MD" \
+            --exclude="*.md" \
+            ./ link-wizard-for-woocommerce/
+ 
+      # 6. Zip the project
+      - name: 📦 Zip the project
+        run: zip -r link-wizard-for-woocommerce.zip link-wizard-for-woocommerce/
+ 
+      # 7. Upload the zipped project as a release asset
+      - name: 📤 Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: link-wizard-for-woocommerce.zip
+ 
+      # 8. All good
+      - name: 🎉 All good
+        run: echo "All good!"
