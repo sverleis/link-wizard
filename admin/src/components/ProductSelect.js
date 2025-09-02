@@ -662,7 +662,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                 {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
                                                             </div>
                                                             <div style={{ fontSize: '11px', opacity: 0.9 }}>
-                                                                {variation.disabled_reason || 'This variation cannot be used in links. Click to edit.'}
+                                                                Click to edit the variation and configure attributes properly.
                                                             </div>
                                                         </div>
                                                     )}
@@ -774,7 +774,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
                                                     </div>
                                                     <div style={{ fontSize: '11px' }}>
-                                                        {product.disabled_reason || 'This product cannot be used in links. Click to edit.'}
+                                                        Click to edit the product and configure variations properly.
                                                     </div>
                                                 </div>
                                             )}
@@ -954,7 +954,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                             {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
                                                                         </div>
                                                                         <div style={{ fontSize: '10px', opacity: 0.9 }}>
-                                                                            {variation.disabled_reason || 'Click to edit.'}
+                                                                            Click to edit and configure attributes.
                                                                         </div>
                                                                     </div>
                                                                 )}
