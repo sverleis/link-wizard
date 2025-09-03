@@ -440,41 +440,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     // Component to show when no variations are available
     const NoVariationsNotice = ({ product }) => {
         return (
-            <div style={{
-                marginTop: '10px',
-                padding: '15px',
-                backgroundColor: '#f8f9fa',
-                border: '1px solid #dee2e6',
-                borderRadius: '6px',
-                textAlign: 'center'
-            }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '8px'
-                }}>
-                    <span 
-                        className="dashicons dashicons-warning"
-                        style={{ 
-                            fontSize: '16px', 
-                            color: '#6c757d',
-                            marginRight: '8px'
-                        }}
-                    />
-                    <span style={{
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        color: '#6c757d'
-                    }}>
+            <div className="lwwc-no-variations-notice">
+                <div className="lwwc-no-variations-notice-header">
+                    <span className="dashicons dashicons-warning lwwc-no-variations-notice-icon" />
+                    <span className="lwwc-no-variations-notice-title">
                         {i18n.noVariationsAvailable || 'No variations available'}
                     </span>
                 </div>
-                <div style={{
-                    fontSize: '12px',
-                    color: '#6c757d',
-                    lineHeight: '1.4'
-                }}>
+                <div className="lwwc-no-variations-notice-description">
                     {i18n.noVariationsDescription || 'This product has no purchasable variations. Please check the product configuration.'}
                 </div>
             </div>
@@ -528,48 +501,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 </div>
 
                 {error && (
-                    <div className="notice notice-error inline" style={{
-                        marginTop: '15px',
-                        padding: '15px',
-                        backgroundColor: '#f8d7da',
-                        border: '1px solid #f5c6cb',
-                        borderRadius: '6px',
-                        color: '#721c24'
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: '10px'
-                        }}>
-                            <span 
-                                className="dashicons dashicons-warning"
-                                style={{ 
-                                    fontSize: '18px', 
-                                    color: '#721c24',
-                                    marginTop: '2px',
-                                    flexShrink: 0
-                                }}
-                            />
-                            <div>
-                                <div style={{
-                                    fontWeight: 'bold',
-                                    marginBottom: '8px',
-                                    fontSize: '14px'
-                                }}>
+                    <div className="notice notice-error inline lwwc-error-notice">
+                        <div className="lwwc-error-notice-content">
+                            <span className="dashicons dashicons-warning lwwc-error-notice-icon" />
+                            <div className="lwwc-error-notice-text">
+                                <div className="lwwc-error-notice-title">
                                     {i18n.variationErrorTitle || 'Variation Configuration Issue'}
                                 </div>
-                                <div style={{
-                                    fontSize: '13px',
-                                    lineHeight: '1.4',
-                                    marginBottom: '10px'
-                                }}>
+                                <div className="lwwc-error-notice-message">
                                     {error}
                                 </div>
-                                <div style={{
-                                    fontSize: '12px',
-                                    color: '#6c757d',
-                                    fontStyle: 'italic'
-                                }}>
+                                <div className="lwwc-error-notice-help">
                                     {i18n.variationErrorHelp || 'Tip: Edit the product to configure proper variations with specific attributes instead of "Any" values.'}
                                 </div>
                             </div>
@@ -606,93 +548,39 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 handleSelectProduct(variation);
                                             }
                                         }}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            padding: '10px',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '4px',
-                                            marginBottom: '8px',
-                                            cursor: 'pointer',
-                                            backgroundColor: '#fff',
-                                            transition: 'all 0.3s ease-in-out',
-                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
-                                            transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.backgroundColor = '#f5f5f5';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.backgroundColor = '#fff';
-                                        }}
+                                        className={`lwwc-variation-list-item ${addingProducts.has(variation.id) ? 'adding' : ''}`}
                                     >
                                         {/* Show "Added" message when variation is being added */}
                                         {addingProducts.has(variation.id) ? (
-                                            <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                padding: '20px',
-                                                color: '#28a745',
-                                                fontSize: '16px',
-                                                fontWeight: 'bold',
-                                                backgroundColor: '#d4edda',
-                                                border: '1px solid #c3e6cb',
-                                                borderRadius: '4px',
-                                                width: '100%'
-                                            }}>
-                                                <span className="dashicons dashicons-yes-alt" style={{ 
-                                                    marginRight: '8px',
-                                                    fontSize: '20px'
-                                                }} />
+                                            <div className="lwwc-added-message">
+                                                <span className="dashicons dashicons-yes-alt" />
                                                 {i18n.added || 'Added!'}
                                             </div>
                                         ) : (
                                             <>
-                                                <div style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    width: '32px',
-                                                    height: '32px',
-                                                    backgroundColor: '#f0f0f0',
-                                                    border: '1px solid #ddd',
-                                                    borderRadius: '3px',
-                                                    marginRight: '12px'
-                                                }}>
+                                                <div className="lwwc-variation-list-item-icon">
                                                     {variation.image ? (
                                                         <span 
                                                             className="dashicons dashicons-format-image"
-                                                            style={{ 
-                                                                fontSize: '16px', 
-                                                                color: '#0073aa',
-                                                                cursor: 'pointer'
-                                                            }}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleImageClick(variation.image);
                                                             }}
                                                         />
                                                     ) : (
-                                                        <span 
-                                                            className="dashicons dashicons-products"
-                                                            style={{ 
-                                                                fontSize: '16px', 
-                                                                color: '#666'
-                                                            }}
-                                                        />
+                                                        <span className="dashicons dashicons-products" />
                                                     )}
                                                 </div>
-                                                <div className="product-details" style={{ flex: 1 }}>
-                                                    <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>
+                                                <div className="lwwc-variation-list-item-details">
+                                                    <div className="lwwc-variation-list-item-name">
                                                         {variation.name}
                                                     </div>
                                                     {variation.sku && (
-                                                        <div style={{ color: '#666', fontSize: '12px' }}>
+                                                        <div className="lwwc-variation-list-item-sku">
                                                             {i18n.sku || 'SKU'}: {variation.sku}
                                                         </div>
                                                     )}
-                                                    <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
+                                                    <div className="lwwc-variation-list-item-price">
                                                         <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                     </div>
                                                 </div>
@@ -783,26 +671,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                             </div>
                                             {product.disabled && (
-                                                <div className="product-disabled-message" style={{
-                                                    marginTop: '8px',
-                                                    padding: '8px',
-                                                    backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
-                                                    border: '1px solid var(--wp-admin-theme-color, #0073aa)',
-                                                    borderRadius: '4px',
-                                                    fontSize: '12px',
-                                                    color: 'var(--wp-admin-theme-color, #0073aa)'
-                                                }}>
-                                                    <div style={{ 
-                                                        fontWeight: 'bold', 
-                                                        marginBottom: '4px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '6px'
-                                                    }}>
-                                                        <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
+                                                <div className="product-disabled-message lwwc-product-disabled-message">
+                                                    <div className="lwwc-product-disabled-message-header">
+                                                        <span className="dashicons dashicons-warning lwwc-product-disabled-message-icon"></span>
                                                         {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
                                                     </div>
-                                                    <div style={{ fontSize: '11px' }}>
+                                                    <div className="lwwc-product-disabled-message-text">
                                                         Click to edit the product and configure variations properly.
                                                     </div>
                                                 </div>
@@ -824,19 +698,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
                                     {/* Show All Variations Button */}
                                     {product.type === 'variable' && (
-                                        <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                                        <div className="lwwc-show-all-variations-button">
                                             <button
                                                 onClick={() => toggleAllVariations(product)}
-                                                style={{
-                                                    padding: '8px 16px',
-                                                    backgroundColor: showingAllVariations[product.id] ? '#dc3545' : '#0073aa',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '12px',
-                                                    fontWeight: '500'
-                                                }}
+                                                className={showingAllVariations[product.id] ? 'showing' : ''}
                                             >
                                                 {showingAllVariations[product.id] 
                                                     ? (i18n.hideAllVariations || 'Hide All Variations')
@@ -850,100 +715,42 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     {product.type === 'variable' && (
                                         filteredVariations[product.id]?.length > 0 || showingAllVariations[product.id]
                                     ) && (
-                                        <div style={{ marginTop: '10px' }}>
-                                            <div style={{ 
-                                                fontWeight: 'bold', 
-                                                marginBottom: '8px',
-                                                fontSize: '14px',
-                                                color: '#666'
-                                            }}>
+                                        <div className="lwwc-variations-section">
+                                            <div className="lwwc-variations-section-title">
                                                 {showingAllVariations[product.id] 
                                                     ? (i18n.allVariations || 'All Variations:')
                                                     : (i18n.availableVariations || 'Available Variations:')
                                                 }
                                             </div>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            <div className="lwwc-variations-list">
                                                 {filteredVariations[product.id]?.filter(variation => !variation.disabled).map(variation => (
                                                     <div
                                                         key={variation.id}
                                                         onClick={() => handleSelectProduct(variation)}
-                                                        style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            padding: '8px 10px',
-                                                            border: '1px solid #ddd',
-                                                            borderRadius: '4px',
-                                                            backgroundColor: '#fff',
-                                                            cursor: 'pointer',
-                                                            fontSize: '13px',
-                                                            transition: 'all 0.3s ease-in-out',
-                                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
-                                                            transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
-                                                        }}
-                                                        onMouseEnter={(e) => {
-                                                            e.target.style.backgroundColor = '#f5f5f5';
-                                                        }}
-                                                        onMouseLeave={(e) => {
-                                                            e.target.style.backgroundColor = '#fff';
-                                                        }}
+                                                        className={`lwwc-variation-item ${addingProducts.has(variation.id) ? 'adding' : ''}`}
                                                     >
                                                         {/* Show "Added" message when variation is being added */}
                                                         {addingProducts.has(variation.id) ? (
-                                                            <div style={{
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                padding: '15px',
-                                                                color: '#28a745',
-                                                                fontSize: '14px',
-                                                                fontWeight: 'bold',
-                                                                backgroundColor: '#d4edda',
-                                                                border: '1px solid #c3e6cb',
-                                                                borderRadius: '4px',
-                                                                width: '100%'
-                                                            }}>
-                                                                <span className="dashicons dashicons-yes-alt" style={{ 
-                                                                    marginRight: '8px',
-                                                                    fontSize: '16px'
-                                                                }} />
+                                                            <div className="lwwc-added-message">
+                                                                <span className="dashicons dashicons-yes-alt" />
                                                                 {i18n.added || 'Added!'}
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <div style={{
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    width: '24px',
-                                                                    height: '24px',
-                                                                    backgroundColor: '#f0f0f0',
-                                                                    border: '1px solid #ddd',
-                                                                    borderRadius: '3px',
-                                                                    marginRight: '10px'
-                                                                }}>
-                                                                    <span 
-                                                                        className="dashicons dashicons-products"
-                                                                        style={{ 
-                                                                            fontSize: '12px', 
-                                                                            color: '#666'
-                                                                        }}
-                                                                    />
+                                                                <div className="lwwc-variation-item-icon">
+                                                                    <span className="dashicons dashicons-products" />
                                                                 </div>
-                                                                <div style={{ flex: 1 }}>
-                                                                    <div style={{ fontWeight: '500', marginBottom: '2px' }}>
+                                                                <div className="lwwc-variation-item-details">
+                                                                    <div className="lwwc-variation-item-name">
                                                                         {variation.name}
                                                                     </div>
                                                                     {variation.sku && (
-                                                                        <div style={{ color: '#666', fontSize: '11px' }}>
+                                                                        <div className="lwwc-variation-item-sku">
                                                                             {i18n.sku || 'SKU'}: {variation.sku}
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                <div style={{ 
-                                                                    color: '#0073aa', 
-                                                                    fontWeight: '500',
-                                                                    fontSize: '14px'
-                                                                }}>
+                                                                <div className="lwwc-variation-item-price">
                                                                     <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                                                 </div>
                                                             </>
@@ -957,7 +764,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     {/* Grouped Invalid Variations Button */}
                                     {product.type === 'variable' && 
                                      filteredVariations[product.id]?.some(v => v.disabled) && (
-                                        <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                                        <div className="lwwc-invalid-variations-button">
                                             <button
                                                 onClick={() => {
                                                     const invalidVariations = filteredVariations[product.id].filter(v => v.disabled);
@@ -966,22 +773,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         invalidVariations: invalidVariations
                                                     });
                                                 }}
-                                                style={{
-                                                    padding: '8px 16px',
-                                                    backgroundColor: '#dc3545',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '4px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '12px',
-                                                    fontWeight: '500',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '6px',
-                                                    margin: '0 auto'
-                                                }}
                                             >
-                                                <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
+                                                <span className="dashicons dashicons-warning"></span>
                                                 {i18n.viewInvalidVariations || 'View Invalid Variations'} 
                                                 ({filteredVariations[product.id].filter(v => v.disabled).length})
                                             </button>
@@ -1012,111 +805,54 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                         </h3>
                         <ul className="selected-products-list">
                             {selectedProducts.map(product => (
-                                <li key={product.id} style={{ 
-                                    marginBottom: '10px', 
-                                    padding: '15px', 
-                                    border: '1px solid #ddd', 
-                                    borderRadius: '6px',
-                                    backgroundColor: '#f9f9f9'
-                                }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: 1 }}>
-                                            <div style={{ 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
-                                                justifyContent: 'center',
-                                                width: '40px',
-                                                height: '40px',
-                                                backgroundColor: '#fff',
-                                                border: '1px solid #ddd',
-                                                borderRadius: '4px',
-                                                cursor: product.image ? 'pointer' : 'default',
-                                                position: 'relative' // Add position relative for absolute positioning of magnifier
-                                            }}>
+                                                                <li key={product.id} className="lwwc-selected-product-item">
+                                    <div className="lwwc-selected-product-content">
+                                        <div className="lwwc-selected-product-info">
+                                            <div className="lwwc-selected-product-icon">
                                                 {product.image ? (
                                                     <>
                                                         <span 
                                                             className="dashicons dashicons-format-image"
-                                                            style={{ 
-                                                                fontSize: '20px', 
-                                                                color: '#0073aa',
-                                                                cursor: 'pointer'
-                                                            }}
                                                             onClick={() => handleImageClick(product.image)}
                                                             title={i18n.clickToViewImage || 'Click to view image'}
                                                         />
                                                         {/* Magnifying glass icon */}
                                                         <span 
-                                                            className="dashicons dashicons-search"
-                                                            style={{ 
-                                                                position: 'absolute',
-                                                                top: '2px',
-                                                                right: '2px',
-                                                                fontSize: '12px',
-                                                                color: '#0073aa',
-                                                                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                                                borderRadius: '50%',
-                                                                width: '16px',
-                                                                height: '16px',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                cursor: 'pointer'
-                                                            }}
+                                                            className="dashicons dashicons-search lwwc-selected-product-zoom-icon"
                                                             onClick={() => handleImageClick(product.image)}
                                                             title={i18n.viewFullSize || 'View full size'}
                                                         />
                                                     </>
                                                 ) : (
-                                                    <span 
-                                                        className="dashicons dashicons-products"
-                                                        style={{ 
-                                                            fontSize: '20px', 
-                                                            color: '#666'
-                                                        }}
-                                                    />
+                                                    <span className="dashicons dashicons-products" />
                                                 )}
                                             </div>
-                                            <div>
-                                                <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                                            <div className="lwwc-selected-product-details">
+                                                <div className="lwwc-selected-product-name">
                                                     {product.name}
                                                 </div>
-                                                <div style={{ color: '#666', fontSize: '14px' }}>
+                                                <div className="lwwc-selected-product-price">
                                                     <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                                                         <label style={{ fontSize: '14px', fontWeight: '500' }}>{i18n.qty || 'Qty'}:</label>
+                                        <div className="lwwc-selected-product-controls">
+                                            <label className="lwwc-selected-product-qty-label">{i18n.qty || 'Qty'}:</label>
                                             <input
                                                 type="number"
                                                 min="1"
                                                 value={product.quantity || 1}
                                                 onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 1)}
-                                                style={{ 
-                                                    width: '60px', 
-                                                    padding: '6px 8px',
-                                                    border: '1px solid #ddd',
-                                                    borderRadius: '3px',
-                                                    fontSize: '14px'
-                                                }}
+                                                className="lwwc-selected-product-qty-input"
                                             />
                                             <button
                                                 onClick={() => handleQuantityChange(product.id, 0)}
-                                                style={{ 
-                                                    padding: '6px 12px', 
-                                                    background: '#dc3545', 
-                                                    color: 'white', 
-                                                    border: 'none', 
-                                                    borderRadius: '3px', 
-                                                    cursor: 'pointer',
-                                                    fontSize: '14px'
-                                                }}
+                                                className="lwwc-selected-product-remove-button"
                                             >
                                                 {i18n.remove || 'Remove'}
                                             </button>
                                         </div>
-                                    </div>                                
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -1125,55 +861,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
                 {/* Image Modal */}
                 {isImageModalOpen && selectedImage && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 9999,
-                        padding: '20px' // Add padding around the modal for buffer
-                    }} onClick={closeModal}>
-                        <div style={{
-                            position: 'relative',
-                            maxWidth: 'calc(100vw - 40px)', // Full viewport width minus padding
-                            maxHeight: 'calc(100vh - 40px)', // Full viewport height minus padding
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }} onClick={(e) => e.stopPropagation()}>
+                    <div className="lwwc-image-modal-overlay" onClick={closeModal}>
+                        <div className="lwwc-image-modal-content" onClick={(e) => e.stopPropagation()}>
                             <button
                                 onClick={closeModal}
-                                style={{
-                                    position: 'absolute',
-                                    top: '-50px', // Move close button up to account for padding
-                                    right: '0',
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'white',
-                                    fontSize: '28px',
-                                    cursor: 'pointer',
-                                    padding: '8px',
-                                    zIndex: 10000
-                                }}
+                                className="lwwc-image-modal-close"
                             >
                                 ×
                             </button>
                             <img 
                                 src={selectedImage} 
                                 alt={i18n.productImageAlt || 'Product'} 
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: '100%',
-                                    width: 'auto',
-                                    height: 'auto',
-                                    objectFit: 'contain',
-                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-                                }}
+                                className="lwwc-image-modal-image"
                             />
                         </div>
                     </div>
@@ -1231,28 +930,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     <div className="confirmation-modal" onClick={() => setVariationErrorModal(null)}>
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <h3>{i18n.variationErrorTitle || 'Variation Configuration Issues'}</h3>
-                            <div style={{ marginBottom: '20px' }}>
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    marginBottom: '15px',
-                                    padding: '10px',
-                                    backgroundColor: '#f8f9fa',
-                                    borderRadius: '4px'
-                                }}>
-                                    <span 
-                                        className="dashicons dashicons-warning"
-                                        style={{ 
-                                            fontSize: '20px', 
-                                            color: '#dc3545'
-                                        }}
-                                    />
-                                    <div>
-                                        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                            <div className="lwwc-modal-content-spacing">
+                                <div className="lwwc-variation-error-modal-header">
+                                    <span className="dashicons dashicons-warning lwwc-variation-error-modal-icon" />
+                                    <div className="lwwc-variation-error-modal-product-info">
+                                        <div className="lwwc-variation-error-modal-product-name">
                                             {variationErrorModal.product.name}
                                         </div>
-                                        <div style={{ fontSize: '12px', color: '#666' }}>
+                                        <div className="lwwc-variation-error-modal-product-subtitle">
                                             {variationErrorModal.invalidVariations ? 
                                                 `${variationErrorModal.invalidVariations.length} variations have configuration issues` :
                                                 'Variation has "Any" attributes'
@@ -1261,48 +946,31 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     </div>
                                 </div>
                                 
-                                <div style={{ marginBottom: '15px' }}>
-                                    <p style={{ marginBottom: '10px' }}>
+                                <div className="lwwc-variation-error-modal-description">
+                                    <p>
                                         {i18n.variationErrorDescription || 'These variations cannot be used in links because they have "Any" attributes configured. This means the variations are not properly set up with specific attribute values.'}
                                     </p>
-                                    <p style={{ marginBottom: '10px' }}>
+                                    <p>
                                         {i18n.variationErrorSolution || 'To fix this issue, you need to edit each variation and configure all attributes with specific values instead of "Any".'}
                                     </p>
                                 </div>
 
                                 {/* List of Invalid Variations */}
                                 {variationErrorModal.invalidVariations && (
-                                    <div style={{ marginBottom: '15px' }}>
-                                        <div style={{ fontWeight: 'bold', marginBottom: '10px', fontSize: '14px' }}>
+                                    <div className="lwwc-variation-error-modal-variations-list">
+                                        <div className="lwwc-variation-error-modal-variations-title">
                                             {i18n.invalidVariationsList || 'Invalid Variations:'}
                                         </div>
-                                        <div style={{ 
-                                            maxHeight: '200px', 
-                                            overflowY: 'auto',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '4px',
-                                            padding: '10px',
-                                            backgroundColor: '#f9f9f9'
-                                        }}>
+                                        <div className="lwwc-variation-error-modal-variations-container">
                                             {variationErrorModal.invalidVariations.map((variation, index) => (
-                                                <div key={variation.id} style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px',
-                                                    padding: '6px 0',
-                                                    borderBottom: index < variationErrorModal.invalidVariations.length - 1 ? '1px solid #eee' : 'none'
-                                                }}>
-                                                    <span className="dashicons dashicons-warning" style={{ 
-                                                        fontSize: '14px', 
-                                                        color: '#dc3545',
-                                                        flexShrink: 0
-                                                    }}></span>
-                                                    <div style={{ flex: 1 }}>
-                                                        <div style={{ fontWeight: '500', fontSize: '13px' }}>
+                                                <div key={variation.id} className="lwwc-variation-error-modal-variation-item">
+                                                    <span className="dashicons dashicons-warning lwwc-variation-error-modal-variation-icon"></span>
+                                                    <div className="lwwc-variation-error-modal-variation-details">
+                                                        <div className="lwwc-variation-error-modal-variation-name">
                                                             {variation.name}
                                                         </div>
                                                         {variation.sku && (
-                                                            <div style={{ fontSize: '11px', color: '#666' }}>
+                                                            <div className="lwwc-variation-error-modal-variation-sku">
                                                                 {i18n.sku || 'SKU'}: {variation.sku}
                                                             </div>
                                                         )}
@@ -1313,13 +981,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     </div>
                                 )}
 
-                                <div style={{
-                                    padding: '10px',
-                                    backgroundColor: '#e7f3ff',
-                                    border: '1px solid #b3d9ff',
-                                    borderRadius: '4px',
-                                    fontSize: '13px'
-                                }}>
+                                <div className="lwwc-variation-error-modal-action-box">
                                     <strong>{i18n.variationErrorAction || 'Action Required:'}</strong> {i18n.variationErrorActionText || 'Edit the product to configure proper attribute values for all variations.'}
                                 </div>
                             </div>

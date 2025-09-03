@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.5
 Tested up to: 6.8
-Stable tag: 1.0.2.2
+Stable tag: 1.0.2.3
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -19,6 +19,15 @@ This plugin adds a feature to the product menu, where an admin or store manager 
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 1.0.2.3 =
+* Refactored inline styles to CSS classes for better maintainability
+* Moved all ProductSelect component styling from inline styles to CSS file
+* Replaced hard-coded colors with CSS custom properties (variables)
+* Improved theme consistency and support for WordPress admin color schemes
+* Enhanced code organization and separation of concerns
+* Better performance by reducing inline style calculations
+* Future-proof styling that adapts to WordPress theme changes
+
 = 1.0.2.2 =
 * Enhanced variation error handling and UX improvements
 * Streamlined invalid variation display - removed redundancy from main list
