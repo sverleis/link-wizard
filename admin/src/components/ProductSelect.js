@@ -27,6 +27,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     // New state for fade-out animation
     const [removingProducts, setRemovingProducts] = useState(new Set());
     const [addingProducts, setAddingProducts] = useState(new Set());
+    // State for variation error modal
+    const [variationErrorModal, setVariationErrorModal] = useState(null);
 
     // Get i18n translations from PHP
     const i18n = window.lwwcI18n || {};
@@ -240,7 +242,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 setIsLoadingVariations(false);
             })
             .catch((err) => {
-                setError(err.message || i18n.errorFetchingVariations || 'An error occurred while fetching variations.');
+                // Provide more specific error messages for variation loading failures
+                let errorMessage = i18n.errorFetchingVariations || 'An error occurred while fetching variations.';
+                
+                if (err.message && err.message.includes('No route was found')) {
+                    errorMessage = i18n.variationRouteNotFound || 'This variable product cannot be used because it has invalid variation configurations. Please edit the product to fix the variation settings.';
+                } else if (err.message) {
+                    errorMessage = err.message;
+                }
+                
+                setError(errorMessage);
                 setIsLoadingVariations(false);
             });
     };
@@ -291,7 +302,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     setFilteredVariations(prev => ({ ...prev, [product.id]: [] }));
                     setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
                 } else {
-                    setError(err.message || i18n.errorFetchingFilteredVariations || 'An error occurred while fetching filtered variations.');
+                    // Provide more specific error messages for filtered variation loading failures
+                    let errorMessage = i18n.errorFetchingFilteredVariations || 'An error occurred while fetching filtered variations.';
+                    
+                    if (err.message && err.message.includes('No route was found')) {
+                        errorMessage = i18n.filteredVariationRouteNotFound || 'This variable product cannot be used because it has invalid variation configurations. Please edit the product to fix the variation settings.';
+                    } else if (err.message) {
+                        errorMessage = err.message;
+                    }
+                    
+                    setError(errorMessage);
                     setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
                 }
             });
@@ -333,7 +353,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
             })
             .catch((err) => {
-                setError(err.message || i18n.errorFetchingVariations || 'An error occurred while fetching variations.');
+                // Provide more specific error messages for variation loading failures
+                let errorMessage = i18n.errorFetchingVariations || 'An error occurred while fetching variations.';
+                
+                if (err.message && err.message.includes('No route was found')) {
+                    errorMessage = i18n.allVariationsRouteNotFound || 'This variable product cannot be used because it has invalid variation configurations. Please edit the product to fix the variation settings.';
+                } else if (err.message) {
+                    errorMessage = err.message;
+                }
+                
+                setError(errorMessage);
                 setIsLoadingFilteredVariations(prev => ({ ...prev, [product.id]: false }));
             });
     };
@@ -498,7 +527,55 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                     </div>
                 </div>
 
-                {error && <div className="notice notice-error inline"><p>{error}</p></div>}
+                {error && (
+                    <div className="notice notice-error inline" style={{
+                        marginTop: '15px',
+                        padding: '15px',
+                        backgroundColor: '#f8d7da',
+                        border: '1px solid #f5c6cb',
+                        borderRadius: '6px',
+                        color: '#721c24'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px'
+                        }}>
+                            <span 
+                                className="dashicons dashicons-warning"
+                                style={{ 
+                                    fontSize: '18px', 
+                                    color: '#721c24',
+                                    marginTop: '2px',
+                                    flexShrink: 0
+                                }}
+                            />
+                            <div>
+                                <div style={{
+                                    fontWeight: 'bold',
+                                    marginBottom: '8px',
+                                    fontSize: '14px'
+                                }}>
+                                    {i18n.variationErrorTitle || 'Variation Configuration Issue'}
+                                </div>
+                                <div style={{
+                                    fontSize: '13px',
+                                    lineHeight: '1.4',
+                                    marginBottom: '10px'
+                                }}>
+                                    {error}
+                                </div>
+                                <div style={{
+                                    fontSize: '12px',
+                                    color: '#6c757d',
+                                    fontStyle: 'italic'
+                                }}>
+                                    {i18n.variationErrorHelp || 'Tip: Edit the product to configure proper variations with specific attributes instead of "Any" values.'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {showingVariations ? (
                     // Show variations for a variable product
@@ -519,29 +596,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
                         {variations.length > 0 && (
                             <ul className="product-search-results">
-                                {variations.map(variation => (
+                                {variations.filter(variation => !variation.disabled).map(variation => (
                                     <li
                                         key={variation.id}
-                                        onClick={() => {
-                                            if (variation.disabled) {
-                                                // If variation is disabled, open edit link in new tab.
-                                                if (variation.edit_link) {
-                                                    window.open(variation.edit_link, '_blank');
-                                                }
-                                                return;
-                                            }
-                                            handleSelectProduct(variation);
-                                        }}
+                                        onClick={() => handleSelectProduct(variation)}
                                         tabIndex="0"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
-                                                if (variation.disabled) {
-                                                    // If variation is disabled, open edit link in new tab.
-                                                    if (variation.edit_link) {
-                                                        window.open(variation.edit_link, '_blank');
-                                                    }
-                                                    return;
-                                                }
                                                 handleSelectProduct(variation);
                                             }
                                         }}
@@ -552,21 +613,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             border: '1px solid #ddd',
                                             borderRadius: '4px',
                                             marginBottom: '8px',
-                                            cursor: variation.disabled ? 'pointer' : 'pointer',
-                                            backgroundColor: variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff',
+                                            cursor: 'pointer',
+                                            backgroundColor: '#fff',
                                             transition: 'all 0.3s ease-in-out',
-                                            opacity: variation.disabled ? 0.7 : (addingProducts.has(variation.id) ? 0.6 : 1),
+                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
                                             transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                         }}
                                         onMouseEnter={(e) => {
-                                            if (!variation.disabled) {
-                                                e.target.style.backgroundColor = '#f5f5f5';
-                                            } else {
-                                                e.target.style.backgroundColor = 'var(--wp-admin-theme-color-light, #f0f6fc)';
-                                            }
+                                            e.target.style.backgroundColor = '#f5f5f5';
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.target.style.backgroundColor = variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff';
+                                            e.target.style.backgroundColor = '#fff';
                                         }}
                                     >
                                         {/* Show "Added" message when variation is being added */}
@@ -635,37 +692,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                             {i18n.sku || 'SKU'}: {variation.sku}
                                                         </div>
                                                     )}
-                                                    {!variation.disabled && (
-                                                        <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
-                                                            <span dangerouslySetInnerHTML={{ __html: variation.price }} />
-                                                        </div>
-                                                    )}
-                                                    {variation.disabled && (
-                                                        <div style={{
-                                                            marginTop: '8px',
-                                                            padding: '8px',
-                                                            backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
-                                                            border: '1px solid var(--wp-admin-theme-color, #0073aa)',
-                                                            borderRadius: '4px',
-                                                            fontSize: '12px',
-                                                            color: 'var(--wp-admin-theme-color, #0073aa)',
-                                                            lineHeight: '1.4'
-                                                        }}>
-                                                            <div style={{ 
-                                                                fontWeight: 'bold', 
-                                                                marginBottom: '4px',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '6px'
-                                                            }}>
-                                                                <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
-                                                                {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
-                                                            </div>
-                                                            <div style={{ fontSize: '11px', opacity: 0.9 }}>
-                                                                Click to edit the variation and configure attributes properly.
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                    <div style={{ color: '#0073aa', fontSize: '14px', fontWeight: '500' }}>
+                                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                                    </div>
                                                 </div>
                                             </>
                                         )}
@@ -834,41 +863,28 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 }
                                             </div>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                {filteredVariations[product.id]?.map(variation => (
+                                                {filteredVariations[product.id]?.filter(variation => !variation.disabled).map(variation => (
                                                     <div
                                                         key={variation.id}
-                                                        onClick={() => {
-                                                            if (variation.disabled) {
-                                                                // If variation is disabled, open edit link in new tab.
-                                                                if (variation.edit_link) {
-                                                                    window.open(variation.edit_link, '_blank');
-                                                                }
-                                                                return;
-                                                            }
-                                                            handleSelectProduct(variation);
-                                                        }}
+                                                        onClick={() => handleSelectProduct(variation)}
                                                         style={{
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             padding: '8px 10px',
                                                             border: '1px solid #ddd',
                                                             borderRadius: '4px',
-                                                            backgroundColor: variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff',
+                                                            backgroundColor: '#fff',
                                                             cursor: 'pointer',
                                                             fontSize: '13px',
                                                             transition: 'all 0.3s ease-in-out',
-                                                            opacity: variation.disabled ? 0.7 : (addingProducts.has(variation.id) ? 0.6 : 1),
+                                                            opacity: addingProducts.has(variation.id) ? 0.6 : 1,
                                                             transform: addingProducts.has(variation.id) ? 'scale(0.98)' : 'scale(1)'
                                                         }}
                                                         onMouseEnter={(e) => {
-                                                            if (!variation.disabled) {
-                                                                e.target.style.backgroundColor = '#f5f5f5';
-                                                            } else {
-                                                                e.target.style.backgroundColor = 'var(--wp-admin-theme-color-light, #f0f6fc)';
-                                                            }
+                                                            e.target.style.backgroundColor = '#f5f5f5';
                                                         }}
                                                         onMouseLeave={(e) => {
-                                                            e.target.style.backgroundColor = variation.disabled ? 'var(--wp-admin-theme-color-light, #f0f6fc)' : '#fff';
+                                                            e.target.style.backgroundColor = '#fff';
                                                         }}
                                                     >
                                                         {/* Show "Added" message when variation is being added */}
@@ -923,46 +939,52 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                {!variation.disabled && (
-                                                                    <div style={{ 
-                                                                        color: '#0073aa', 
-                                                                        fontWeight: '500',
-                                                                        fontSize: '14px'
-                                                                    }}>
-                                                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
-                                                                    </div>
-                                                                )}
-                                                                {variation.disabled && (
-                                                                    <div style={{
-                                                                        marginTop: '4px',
-                                                                        padding: '6px',
-                                                                        backgroundColor: 'var(--wp-admin-theme-color-light, #f0f6fc)',
-                                                                        border: '1px solid var(--wp-admin-theme-color, #0073aa)',
-                                                                        borderRadius: '3px',
-                                                                        fontSize: '11px',
-                                                                        color: 'var(--wp-admin-theme-color, #0073aa)',
-                                                                        lineHeight: '1.3'
-                                                                    }}>
-                                                                        <div style={{ 
-                                                                            fontWeight: 'bold', 
-                                                                            marginBottom: '2px',
-                                                                            display: 'flex',
-                                                                            alignItems: 'center',
-                                                                            gap: '4px'
-                                                                        }}>
-                                                                            <span className="dashicons dashicons-warning" style={{ fontSize: '12px' }}></span>
-                                                                            {i18n.variationHasAnyAttributes || 'Variation has "Any" attributes'}
-                                                                        </div>
-                                                                        <div style={{ fontSize: '10px', opacity: 0.9 }}>
-                                                                            Click to edit and configure attributes.
-                                                                        </div>
-                                                                    </div>
-                                                                )}
+                                                                <div style={{ 
+                                                                    color: '#0073aa', 
+                                                                    fontWeight: '500',
+                                                                    fontSize: '14px'
+                                                                }}>
+                                                                    <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                                                </div>
                                                             </>
                                                         )}
                                                     </div>
                                                 ))}
                                             </div>
+                                        </div>
+                                    )}
+
+                                    {/* Grouped Invalid Variations Button */}
+                                    {product.type === 'variable' && 
+                                     filteredVariations[product.id]?.some(v => v.disabled) && (
+                                        <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                                            <button
+                                                onClick={() => {
+                                                    const invalidVariations = filteredVariations[product.id].filter(v => v.disabled);
+                                                    setVariationErrorModal({
+                                                        product: product,
+                                                        invalidVariations: invalidVariations
+                                                    });
+                                                }}
+                                                style={{
+                                                    padding: '8px 16px',
+                                                    backgroundColor: '#dc3545',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '12px',
+                                                    fontWeight: '500',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    margin: '0 auto'
+                                                }}
+                                            >
+                                                <span className="dashicons dashicons-warning" style={{ fontSize: '14px' }}></span>
+                                                {i18n.viewInvalidVariations || 'View Invalid Variations'} 
+                                                ({filteredVariations[product.id].filter(v => v.disabled).length})
+                                            </button>
                                         </div>
                                     )}
 
@@ -1198,6 +1220,127 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     className="button"
                                 >
                                     {i18n.cancelReplace || 'Cancel'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Variation Error Modal */}
+                {variationErrorModal && (
+                    <div className="confirmation-modal" onClick={() => setVariationErrorModal(null)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h3>{i18n.variationErrorTitle || 'Variation Configuration Issues'}</h3>
+                            <div style={{ marginBottom: '20px' }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    marginBottom: '15px',
+                                    padding: '10px',
+                                    backgroundColor: '#f8f9fa',
+                                    borderRadius: '4px'
+                                }}>
+                                    <span 
+                                        className="dashicons dashicons-warning"
+                                        style={{ 
+                                            fontSize: '20px', 
+                                            color: '#dc3545'
+                                        }}
+                                    />
+                                    <div>
+                                        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                                            {variationErrorModal.product.name}
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: '#666' }}>
+                                            {variationErrorModal.invalidVariations ? 
+                                                `${variationErrorModal.invalidVariations.length} variations have configuration issues` :
+                                                'Variation has "Any" attributes'
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style={{ marginBottom: '15px' }}>
+                                    <p style={{ marginBottom: '10px' }}>
+                                        {i18n.variationErrorDescription || 'These variations cannot be used in links because they have "Any" attributes configured. This means the variations are not properly set up with specific attribute values.'}
+                                    </p>
+                                    <p style={{ marginBottom: '10px' }}>
+                                        {i18n.variationErrorSolution || 'To fix this issue, you need to edit each variation and configure all attributes with specific values instead of "Any".'}
+                                    </p>
+                                </div>
+
+                                {/* List of Invalid Variations */}
+                                {variationErrorModal.invalidVariations && (
+                                    <div style={{ marginBottom: '15px' }}>
+                                        <div style={{ fontWeight: 'bold', marginBottom: '10px', fontSize: '14px' }}>
+                                            {i18n.invalidVariationsList || 'Invalid Variations:'}
+                                        </div>
+                                        <div style={{ 
+                                            maxHeight: '200px', 
+                                            overflowY: 'auto',
+                                            border: '1px solid #ddd',
+                                            borderRadius: '4px',
+                                            padding: '10px',
+                                            backgroundColor: '#f9f9f9'
+                                        }}>
+                                            {variationErrorModal.invalidVariations.map((variation, index) => (
+                                                <div key={variation.id} style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    padding: '6px 0',
+                                                    borderBottom: index < variationErrorModal.invalidVariations.length - 1 ? '1px solid #eee' : 'none'
+                                                }}>
+                                                    <span className="dashicons dashicons-warning" style={{ 
+                                                        fontSize: '14px', 
+                                                        color: '#dc3545',
+                                                        flexShrink: 0
+                                                    }}></span>
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ fontWeight: '500', fontSize: '13px' }}>
+                                                            {variation.name}
+                                                        </div>
+                                                        {variation.sku && (
+                                                            <div style={{ fontSize: '11px', color: '#666' }}>
+                                                                {i18n.sku || 'SKU'}: {variation.sku}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div style={{
+                                    padding: '10px',
+                                    backgroundColor: '#e7f3ff',
+                                    border: '1px solid #b3d9ff',
+                                    borderRadius: '4px',
+                                    fontSize: '13px'
+                                }}>
+                                    <strong>{i18n.variationErrorAction || 'Action Required:'}</strong> {i18n.variationErrorActionText || 'Edit the product to configure proper attribute values for all variations.'}
+                                </div>
+                            </div>
+                            <div className="modal-buttons">
+                                <button
+                                    onClick={() => {
+                                        // Generate edit link if it doesn't exist
+                                        const editLink = variationErrorModal.product.edit_link || 
+                                            `${window.location.origin}/wp-admin/post.php?post=${variationErrorModal.product.id}&action=edit`;
+                                        window.open(editLink, '_blank');
+                                        setVariationErrorModal(null);
+                                    }}
+                                    className="button button-primary"
+                                >
+                                    {i18n.editProduct || 'Edit Product'}
+                                </button>
+                                <button
+                                    onClick={() => setVariationErrorModal(null)}
+                                    className="button"
+                                >
+                                    {i18n.close || 'Close'}
                                 </button>
                             </div>
                         </div>
