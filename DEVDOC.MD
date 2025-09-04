@@ -453,13 +453,14 @@ link-wizard-for-woocommerce/
 ### Planned Features
 1. **Link Generation**: Generate actual WooCommerce URLs
 2. **Link Preview**: Show generated links with copy functionality
-3. **Bulk Operations**: Select multiple products at once
-4. **Link History**: Save and manage generated links
-5. **Export Options**: Export links in various formats
-6. **CSS Architecture**: Dedicated CSS files with WordPress/WooCommerce standards
-7. **Theme Integration**: Full compatibility with WordPress admin themes
-8. **Facebook Commerce Platform**: Meta checkout URL endpoint with product/coupon handling
-9. **Link Reverse Engineering**: Parse existing links to populate the workflow for quick edits
+3. **QR Code Generation**: Generate QR codes for generated links for offline marketing materials
+4. **Bulk Operations**: Select multiple products at once
+5. **Link History**: Save and manage generated links
+6. **Export Options**: Export links in various formats
+7. **CSS Architecture**: Dedicated CSS files with WordPress/WooCommerce standards
+8. **Theme Integration**: Full compatibility with WordPress admin themes
+9. **Facebook Commerce Platform**: Meta checkout URL endpoint with product/coupon handling
+10. **Link Reverse Engineering**: Parse existing links to populate the workflow for quick edits
 
 ### Potential Product Types
 1. **Grouped Products**: Handle product groups
