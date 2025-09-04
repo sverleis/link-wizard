@@ -16,7 +16,7 @@ const DynamicLink = ({
     const [generatedLink, setGeneratedLink] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
-    const [urlEncoding, setUrlEncoding] = useState('decoded'); // 'decoded' or 'encoded'
+    const [urlEncoding, setUrlEncoding] = useState('decoded'); // 'decoded' or 'encoded'.
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
@@ -40,16 +40,16 @@ const DynamicLink = ({
                     // Step 1: Show placeholder with base structure
                     let placeholderUrl = `${baseUrl}/?add-to-cart=PRODUCT_ID&quantity=1`;
                     if (redirectOption === 'page' && selectedRedirectPage) {
-                        // Use the redirect page as the path (e.g., "/sample-page/")
+                        // Use the redirect page as the path (e.g., "/sample-page/").
                         const urlParts = selectedRedirectPage.url.split('/');
-                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash)
+                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash).
                         if (slug) {
                             placeholderUrl = `${baseUrl}/${slug}/?add-to-cart=PRODUCT_ID&quantity=1`;
                         }
                     }
                     finalUrl = placeholderUrl;
                 } else if (selectedProducts && selectedProducts.length > 0) {
-                    // Step 2+: Build actual URL
+                    // Step 2+: Build actual URL.
                     const params = new URLSearchParams();
                     selectedProducts.forEach(product => {
                         params.append('add-to-cart', product.id);
@@ -58,14 +58,14 @@ const DynamicLink = ({
                         }
                     });
                     
-                    // Build the URL with proper redirect paths
+                    // Build the URL with proper redirect paths.
                     let path = '/';
                     if (redirectOption === 'cart') {
                         path = '/cart/';
                     } else if (redirectOption === 'checkout') {
                         path = '/checkout/';
                     } else if (redirectOption === 'product' && selectedProducts.length > 0) {
-                        // For product redirect, use the product slug for better SEO and readability
+                        // For product redirect, use the product slug for better SEO and readability.
                         const product = selectedProducts[0];
                         if (product.slug) {
                             path = `/product/${product.slug}/`;
@@ -76,7 +76,7 @@ const DynamicLink = ({
                     } else if (redirectOption === 'page' && selectedRedirectPage) {
                         // Use the redirect page as the path (e.g., "/sample-page/")
                         const urlParts = selectedRedirectPage.url.split('/');
-                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash)
+                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash).
                         if (slug) {
                             path = `/${slug}/`;
                         }
@@ -87,32 +87,31 @@ const DynamicLink = ({
             } else {
                 // Checkout link format: https://store.local/checkout-link/?products=18:2,19:1&coupon=TEST
                 if (currentStep === 1) {
-                    // Step 1: Show placeholder with base structure
+                    // Step 1: Show placeholder with base structure.
                     finalUrl = `${baseUrl}/checkout-link/?products=PRODUCT_ID:QUANTITY`;
                 } else if (selectedProducts && selectedProducts.length > 0) {
-                    // Step 2+: Build actual URL
+                    // Step 2+: Build actual URL.
                     const params = new URLSearchParams();
                     
-                    // Build products parameter in format: 18:2,19:1
+                    // Build products parameter in format: 18:2,19:1.
                     const productsParam = selectedProducts.map(product => 
                         `${product.id}:${product.quantity}`
                     ).join(',');
                     params.append('products', productsParam);
                     
-                    // Add coupon if selected
+                    // Add coupon if selected.
                     if (selectedCoupon) {
                         params.append('coupon', selectedCoupon.code);
                     }
                     
                     let urlString = params.toString();
                     
-                    // Apply URL encoding based on user preference
+                    // Apply URL encoding based on user preference.
                     if (urlEncoding === 'decoded') {
-                        // Decode the URL parameters for cleaner display
+                        // Decode the URL parameters for cleaner display.
                         urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
                     }
-                    // If 'encoded', keep the default URLSearchParams encoding
-                    
+                    // If 'encoded', keep the default URLSearchParams encoding.
                     finalUrl = `${baseUrl}/checkout-link/?${urlString}`;
                 }
             }
@@ -132,7 +131,7 @@ const DynamicLink = ({
             setCopySuccess(true);
             setTimeout(() => setCopySuccess(false), 2000);
         } catch (err) {
-            // Fallback for older browsers
+            // Fallback for older browsers.
             const textArea = document.createElement('textarea');
             textArea.value = generatedLink;
             document.body.appendChild(textArea);
@@ -162,26 +161,26 @@ const DynamicLink = ({
         }
     };
 
-    // Function to highlight different parts of the URL based on current step
+    // Function to highlight different parts of the URL based on current step.
     const renderHighlightedUrl = () => {
         const parts = [];
         const baseUrl = window.location.origin;
         
                     if (linkType === 'addToCart') {
-                // Always show base URL
+                // Always show base URL.
                 parts.push(
                     <span key="base" className="dynamic-link-base-url">{baseUrl}</span>
                 );
                 
                 if (currentStep === 1) {
-                    // Step 1: Show placeholder with highlighting
+                    // Step 1: Show placeholder with highlighting.
                     parts.push(
                         <span key="highlight" className="dynamic-link-highlight">/?add-to-cart=PRODUCT_ID&quantity=1</span>
                     );
                 } else if (selectedProducts && selectedProducts.length > 0) {
-                    // Step 2+: Show actual parameters with individual highlighting
+                    // Step 2+: Show actual parameters with individual highlighting.
                     
-                    // Show redirect path if selected
+                    // Show redirect path if selected.
                     if (redirectOption === 'cart') {
                         parts.push(
                             <span key="redirect-cart" className="dynamic-link-highlight">/cart/</span>
@@ -197,25 +196,25 @@ const DynamicLink = ({
                             <span key="redirect-product" className="dynamic-link-highlight">{productPath}</span>
                         );
                     } else if (redirectOption === 'page' && selectedRedirectPage) {
-                        // Extract slug from URL for display
+                        // Extract slug from URL for display.
                         const urlParts = selectedRedirectPage.url.split('/');
-                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash)
+                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash).
                         parts.push(
                             <span key="redirect-page" className="dynamic-link-highlight">/{slug}/</span>
                         );
                     } else {
-                        // Default home page
+                        // Default home page.
                         parts.push(
                             <span key="home" className="dynamic-link-separator">/</span>
                         );
                     }
                     
-                    // Add query parameters
+                    // Add query parameters.
                     parts.push(
                         <span key="question" className="dynamic-link-separator">?</span>
                     );
                     
-                    // Add products with individual highlighting
+                    // Add products with individual highlighting.
                     selectedProducts.forEach((product, index) => {
                         if (index > 0) {
                             parts.push(<span key={`amp-${index}`} className="dynamic-link-separator">&</span>);
@@ -231,7 +230,7 @@ const DynamicLink = ({
                         }
                     });
             } else {
-                // Step 2+ but no products: Show placeholder
+                // Step 2+ but no products: Show placeholder.
                 parts.push(
                     <span key="highlight" style={{ 
                         backgroundColor: '#fff3cd', 
@@ -243,14 +242,14 @@ const DynamicLink = ({
                 );
             }
         } else {
-            // Checkout link format
-            // Always show base URL
+            // Checkout link format.
+            // Always show base URL.
             parts.push(
                 <span key="base" className="dynamic-link-base-url">{baseUrl}/</span>
             );
             
             if (currentStep === 1) {
-                // Step 1: Show placeholder with highlighting
+                // Step 1: Show placeholder with highlighting.
                 parts.push(
                     <span key="highlight" style={{ 
                         backgroundColor: '#fff3cd', 
@@ -261,16 +260,21 @@ const DynamicLink = ({
                     }}>checkout-link/?products=PRODUCT_ID:QUANTITY</span>
                 );
             } else if (selectedProducts && selectedProducts.length > 0) {
-                // Step 2+: Show actual parameters with individual highlighting
+                // Step 2+: Show actual parameters with individual highlighting.
                 parts.push(
                     <span key="checkout-link" style={{ color: '#495057' }}>checkout-link/</span>,
                     <span key="question" style={{ color: '#495057' }}>?</span>
                 );
                 
-                // Add products parameter with highlighting
-                const productsParam = selectedProducts.map(product => 
+                // Add products parameter with highlighting.
+                let productsParam = selectedProducts.map(product => 
                     `${product.id}:${product.quantity}`
                 ).join(',');
+                
+                // Apply URL encoding based on user preference for display.
+                if (urlEncoding === 'encoded') {
+                    productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
+                }
                 
                 parts.push(
                     <span key="products" style={{ 
@@ -282,7 +286,7 @@ const DynamicLink = ({
                     }}>products={productsParam}</span>
                 );
                 
-                // Add coupon if selected with individual highlighting
+                // Add coupon if selected with individual highlighting.
                 if (selectedCoupon) {
                     parts.push(
                         <span key="amp-coupon" style={{ color: '#495057' }}>&</span>,
@@ -296,7 +300,7 @@ const DynamicLink = ({
                     );
                 }
             } else {
-                // Step 2+ but no products: Show placeholder
+                // Step 2+ but no products: Show placeholder.
                 parts.push(
                     <span key="highlight" style={{ 
                         backgroundColor: '#fff3cd', 
@@ -312,8 +316,8 @@ const DynamicLink = ({
         return parts;
     };
 
-    // Determine if the component should be disabled (greyed out)
-    // Step 1 is always disabled, Step 2+ is disabled only when no products are selected
+    // Determine if the component should be disabled (greyed out).
+    // Step 1 is always disabled, Step 2+ is disabled only when no products are selected.
     const isDisabled = currentStep === 1 || (currentStep > 1 && (!selectedProducts || selectedProducts.length === 0));
     const canOpenLink = currentStep > 1 && generatedLink && !isGenerating && selectedProducts && selectedProducts.length > 0;
 
@@ -358,19 +362,20 @@ const DynamicLink = ({
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        marginBottom: '8px'
-                    }}>
-                        <span className="dashicons dashicons-admin-settings" style={{ fontSize: '16px', color: '#495057' }} />
-                        <strong style={{ color: '#495057', fontSize: '14px' }}>
-                            {i18n.urlEncoding || 'URL Format'}
-                        </strong>
-                    </div>
-                    <div style={{
-                        display: 'flex',
                         gap: '20px',
-                        alignItems: 'center'
+                        flexWrap: 'wrap'
                     }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}>
+                            <span className="dashicons dashicons-admin-settings" style={{ fontSize: '16px', color: '#495057' }} />
+                            <strong style={{ color: '#495057', fontSize: '14px' }}>
+                                {i18n.urlEncoding || 'URL Format'}:
+                            </strong>
+                        </div>
+                        
                         <label style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -394,6 +399,7 @@ const DynamicLink = ({
                                 </span>
                             </span>
                         </label>
+                        
                         <label style={{
                             display: 'flex',
                             alignItems: 'center',
