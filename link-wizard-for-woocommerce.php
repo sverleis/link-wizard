@@ -3,7 +3,7 @@
  * Plugin Name: Link Wizard for WooCommerce
  * Plugin URI: https://github.com/sverleis/link-wizard
  * Description: A plugin to generate add-to-cart and checkout links for WooCommerce products.
- * Version: 1.0.2.3
+ * Version: 1.0.3
  * Requires at least: 6.5
  * Tested up to: 6.4
  * Requires PHP: 7.4

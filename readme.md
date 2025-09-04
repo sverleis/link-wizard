@@ -7,7 +7,7 @@ Tags: woocommerce, products
 - Requires at least: 6.5
 - Tested up to: 6.8
 - WC tested up to: 10.1
-- Stable tag: 1.0.2.3
+- Stable tag: 1.0.3
 - License: GPL-2.0+
 - License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 - Generate add-to-cart or checkout-links within the WP Admin interface.
@@ -46,6 +46,21 @@ Useful if you need to set up a Checkout URL for Facebook.
 - Incremental update for continued development
 - Improved .gitignore configuration
 - Ready for WordPress.org submission
+
+### 1.0.3
+- Enhanced UX with streamlined variation error display
+- Added modal for invalid variations with scrollable content
+- Fixed "Edit Product" links to open correct WordPress admin pages
+- Moved all inline styles to external CSS classes
+- Implemented CSS variables for consistent theming
+- Added URL encoding options (Decoded/Encoded) with real-time display
+- Improved layout with inline URL encoding options on desktop
+- Enhanced error handling and user feedback
+- Updated WordPress Coding Standards compliance
+- Improved code documentation and comment consistency
+- Standardized all code comments with proper punctuation
+- Extracted inline styles from React components to CSS classes
+- Improved maintainability and theme consistency
 
 ### 1.0.2
 - WordPress.org compliant version
