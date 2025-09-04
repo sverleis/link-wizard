@@ -80,31 +80,31 @@ class LWWC_Link_Wizard {
 		/*
 		* The class responsible for orchestrating the loading of plugin dependencies.
 		*/
-		require_once LWWC_PATH . 'includes/class-link-wizard-loader.php';
+		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-loader.php';
 
 		/**
 		 * The class responsible for handling internationalization.
 		 */
-		require_once LWWC_PATH . 'includes/class-link-wizard-i18n.php';
+		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-i18n.php';
 
 		/**
 		 * The class that defines all of the hooks for the admin.
 		 */
-		require_once LWWC_PATH . 'admin/class-link-wizard-admin.php';
+		require_once LWWC_PATH . 'admin/class-lwwc-link-wizard-admin.php';
 
 		/**
 		 * Product handler interface and classes.
 		 */
-		require_once LWWC_PATH . 'includes/class-link-wizard-validation.php';
-		require_once LWWC_PATH . 'includes/product-handlers/class-product-handler-interface.php';
-		require_once LWWC_PATH . 'includes/product-handlers/class-product-handler-manager.php';
-		require_once LWWC_PATH . 'includes/product-handlers/class-simple-product-handler.php';
-		require_once LWWC_PATH . 'includes/product-handlers/class-variable-product-handler.php';
+		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-validation.php';
+		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-product-handler-interface.php';
+		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-product-handler-manager.php';
+		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-simple-product-handler.php';
+		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-variable-product-handler.php';
 
 		/**
 		 *  The class responsible for handling the search functionality.
 		 */
-		require_once LWWC_PATH . 'includes/class-link-wizard-search.php';
+		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-search.php';
 
 		$this->loader = new LWWC_Link_Wizard_Loader();
 
