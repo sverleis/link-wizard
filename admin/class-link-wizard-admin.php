@@ -200,6 +200,13 @@ class LWWC_Link_Wizard_Admin {
 				'redirectToCheckout'              => LWWC_Link_Wizard_I18n::get_admin_text( 'redirectToCheckout' ),
 				'redirectToProduct'               => LWWC_Link_Wizard_I18n::get_admin_text( 'redirectToProduct' ),
 				'redirectToPage'                  => LWWC_Link_Wizard_I18n::get_admin_text( 'redirectToPage' ),
+				
+				// URL Encoding options
+				'urlEncoding'                     => LWWC_Link_Wizard_I18n::get_admin_text( 'urlEncoding' ),
+				'decodedUrls'                     => LWWC_Link_Wizard_I18n::get_admin_text( 'decodedUrls' ),
+				'decodedUrlsDescription'          => LWWC_Link_Wizard_I18n::get_admin_text( 'decodedUrlsDescription' ),
+				'encodedUrls'                     => LWWC_Link_Wizard_I18n::get_admin_text( 'encodedUrls' ),
+				'encodedUrlsDescription'          => LWWC_Link_Wizard_I18n::get_admin_text( 'encodedUrlsDescription' ),
 			)
 		);
 	}

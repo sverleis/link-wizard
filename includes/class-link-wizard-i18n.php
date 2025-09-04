@@ -143,6 +143,13 @@ class LWWC_Link_Wizard_I18n {
 			'redirectToCheckout'                  => __( 'Redirect to checkout.', 'link-wizard-for-woocommerce' ),
 			'redirectToProduct'                   => __( 'Redirect to the selected product page.', 'link-wizard-for-woocommerce' ),
 			'redirectToPage'                      => __( 'Redirect to a specific page or post.', 'link-wizard-for-woocommerce' ),
+			
+			// URL Encoding options
+			'urlEncoding'                         => __( 'URL Format', 'link-wizard-for-woocommerce' ),
+			'decodedUrls'                         => __( 'Decoded URLs', 'link-wizard-for-woocommerce' ),
+			'decodedUrlsDescription'              => __( 'Clean, readable format (recommended)', 'link-wizard-for-woocommerce' ),
+			'encodedUrls'                         => __( 'Encoded URLs', 'link-wizard-for-woocommerce' ),
+			'encodedUrlsDescription'              => __( 'URL-encoded format (for special cases)', 'link-wizard-for-woocommerce' ),
 		);
 
 		return isset( $texts[ $key ] ) ? $texts[ $key ] : $key;

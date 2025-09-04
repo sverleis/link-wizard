@@ -16,20 +16,21 @@ const DynamicLink = ({
     const [generatedLink, setGeneratedLink] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
+    const [urlEncoding, setUrlEncoding] = useState('decoded'); // 'decoded' or 'encoded'
 
-    // Get i18n translations from PHP
+    // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
 
-    // Generate the link whenever any of the dependencies change
+    // Generate the link whenever any of the dependencies change.
     useEffect(() => {
         generateLink();
-    }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep]);
+    }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
     const generateLink = async () => {
         setIsGenerating(true);
 
         try {
-            // Get the current site URL
+            // Get the current site URL.
             const baseUrl = window.location.origin;
             let finalUrl = '';
             
@@ -103,7 +104,16 @@ const DynamicLink = ({
                         params.append('coupon', selectedCoupon.code);
                     }
                     
-                    finalUrl = `${baseUrl}/checkout-link/?${params.toString()}`;
+                    let urlString = params.toString();
+                    
+                    // Apply URL encoding based on user preference
+                    if (urlEncoding === 'decoded') {
+                        // Decode the URL parameters for cleaner display
+                        urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
+                    }
+                    // If 'encoded', keep the default URLSearchParams encoding
+                    
+                    finalUrl = `${baseUrl}/checkout-link/?${urlString}`;
                 }
             }
             
@@ -335,6 +345,81 @@ const DynamicLink = ({
                     : (i18n.dynamicLinkDescription || 'Your link updates automatically as you configure your products. The base URL is always visible, and parameters update as you add products.')
                 }
             </p>
+
+            {/* URL Encoding Options */}
+            {!isDisabled && currentStep > 1 && (
+                <div className="url-encoding-options" style={{
+                    marginBottom: '15px',
+                    padding: '12px',
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #dee2e6',
+                    borderRadius: '4px'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '8px'
+                    }}>
+                        <span className="dashicons dashicons-admin-settings" style={{ fontSize: '16px', color: '#495057' }} />
+                        <strong style={{ color: '#495057', fontSize: '14px' }}>
+                            {i18n.urlEncoding || 'URL Format'}
+                        </strong>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        gap: '20px',
+                        alignItems: 'center'
+                    }}>
+                        <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: '#495057'
+                        }}>
+                            <input
+                                type="radio"
+                                name="urlEncoding"
+                                value="decoded"
+                                checked={urlEncoding === 'decoded'}
+                                onChange={(e) => setUrlEncoding(e.target.value)}
+                                style={{ margin: 0 }}
+                            />
+                            <span>
+                                <strong>{i18n.decodedUrls || 'Decoded URLs'}</strong>
+                                <span style={{ color: '#6c757d', fontSize: '12px', display: 'block' }}>
+                                    {i18n.decodedUrlsDescription || 'Clean, readable format (recommended)'}
+                                </span>
+                            </span>
+                        </label>
+                        <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: '#495057'
+                        }}>
+                            <input
+                                type="radio"
+                                name="urlEncoding"
+                                value="encoded"
+                                checked={urlEncoding === 'encoded'}
+                                onChange={(e) => setUrlEncoding(e.target.value)}
+                                style={{ margin: 0 }}
+                            />
+                            <span>
+                                <strong>{i18n.encodedUrls || 'Encoded URLs'}</strong>
+                                <span style={{ color: '#6c757d', fontSize: '12px', display: 'block' }}>
+                                    {i18n.encodedUrlsDescription || 'URL-encoded format (for special cases)'}
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            )}
 
             {/* URL Input Field */}
             <div className={`dynamic-link-display ${isDisabled ? 'disabled' : ''}`}>
