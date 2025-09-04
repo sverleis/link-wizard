@@ -2,19 +2,14 @@
 /**
  * The loader class for registering all actions and filters.
  *
- * @package Link_Wizard_For_WooCommerce
- */
-
-/**
  * Register all of the actions and filters within the plugin.
- *
  * Maintaining a list of all hooks that are registered throughout the plugin.
  * and registering them with WordPress.
  * Call the function to execute the list of actions and filters.
  *
- * @since       1.0.0
- * @package     Link_Wizard_For_WooCommerce
- * @subpackage  Includes
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes
+ * @since 1.0.0
  */
 class LWWC_Link_Wizard_Loader {
 

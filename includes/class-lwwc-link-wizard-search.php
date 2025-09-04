@@ -5,6 +5,10 @@
  *
  * Registers a REST API endpoint for searching WooCommerce products by keyword.
  * This endpoint can be called from your React frontend to get product results as the user types.
+ *
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes
+ * @since 1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -5,6 +5,10 @@
  *
  * Defines the contract that all product handlers must implement.
  * This allows for extensible product type support.
+ *
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes/product-handlers
+ * @since 1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

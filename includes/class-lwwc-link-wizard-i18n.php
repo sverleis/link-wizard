@@ -2,19 +2,17 @@
 /**
  * Internationalization (i18n) for Link Wizard for WooCommerce
  *
+ * Note: WordPress 4.6+ automatically loads plugin textdomains for plugins
+ * hosted on WordPress.org, so manual loading is no longer required.
+ *
  * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes
+ * @since 1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
-/**
- * Internationalization (i18n) for Link Wizard for WooCommerce
- *
- * Note: WordPress 4.6+ automatically loads plugin textdomains for plugins
- * hosted on WordPress.org, so manual loading is no longer required.
- */
 class LWWC_Link_Wizard_I18n {
 
 	/**

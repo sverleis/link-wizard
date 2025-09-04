@@ -5,14 +5,8 @@
  * @link https://magsindustries.wordpress.com
  * @since 1.0.0
  *
- * @package Link_Wizard_for_WooCommerce
- * @subpackage Link_Wizard_for_WooCommerce/admin
- */
-
-/**
- * So what?
- *
- * This file defines the plugin name, version and hooks for enqueing admin-specific stylesheets and JavaScript.
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/admin
  */
 class LWWC_Link_Wizard_Admin {
 

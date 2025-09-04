@@ -4,6 +4,10 @@
  * Product Handler Manager
  *
  * Manages and coordinates all product handlers for the Link Wizard.
+ *
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes/product-handlers
+ * @since 1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
