@@ -2532,3 +2532,184 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 13px;
 }
 
+/* Dynamic Link Component Styles */
+.lwwc-url-encoding-options {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: var(--wp-admin-background-color-lightest, #f8f9fa);
+    border: 1px solid var(--wp-admin-border-color-light, #dee2e6);
+    border-radius: 4px;
+}
+
+.lwwc-url-encoding-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.lwwc-url-encoding-title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lwwc-url-encoding-title-icon {
+    font-size: 16px;
+    color: var(--wp-admin-text-color-secondary, #495057);
+}
+
+.lwwc-url-encoding-title {
+    color: var(--wp-admin-text-color-secondary, #495057);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.lwwc-url-encoding-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--wp-admin-text-color-secondary, #495057);
+}
+
+.lwwc-url-encoding-radio {
+    margin: 0;
+}
+
+.lwwc-url-encoding-label-text {
+    font-weight: 600;
+}
+
+.lwwc-url-encoding-description {
+    color: var(--wp-admin-text-color-muted, #6c757d);
+    font-size: 12px;
+    display: block;
+}
+
+.lwwc-dynamic-link-highlight-placeholder {
+    background-color: var(--wp-admin-warning-background, #fff3cd);
+    color: var(--wp-admin-warning-text, #856404);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.lwwc-dynamic-link-checkout-text {
+    color: var(--wp-admin-text-color-secondary, #495057);
+}
+
+.lwwc-dynamic-link-products-highlight {
+    background-color: var(--wp-admin-info-background, #d1ecf1);
+    color: var(--wp-admin-info-text, #0c5460);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.lwwc-dynamic-link-coupon-highlight {
+    background-color: var(--wp-admin-warning-background, #fff3cd);
+    color: var(--wp-admin-warning-text, #856404);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.lwwc-dynamic-link-open-button {
+    padding: 10px 16px;
+    background-color: var(--wp-admin-success-color, #28a745);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.lwwc-dynamic-link-open-button:hover {
+    background-color: var(--wp-admin-success-color-dark, #218838);
+}
+
+.lwwc-dynamic-link-open-button:disabled {
+    background-color: var(--wp-admin-text-color-muted, #6c757d);
+    cursor: not-allowed;
+}
+
+.lwwc-dynamic-link-status-container {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: var(--wp-admin-info-background, #e7f3ff);
+    border: 1px solid var(--wp-admin-info-border, #b3d9ff);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--wp-admin-info-text, #0056b3);
+}
+
+.lwwc-dynamic-link-status-container.disabled {
+    background-color: var(--wp-admin-background-color-lightest, #e9ecef);
+    border-color: var(--wp-admin-border-color-light, #ced4da);
+    color: var(--wp-admin-text-color-muted, #6c757d);
+}
+
+.lwwc-dynamic-link-status-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.lwwc-dynamic-link-status-icon {
+    font-size: 16px;
+}
+
+.lwwc-dynamic-link-status-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.lwwc-dynamic-link-status-button {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    color: var(--wp-admin-text-color, #333);
+    text-decoration: underline;
+    font-weight: normal;
+}
+
+.lwwc-dynamic-link-status-button.active {
+    background: var(--wp-admin-info-background, #e7f3ff);
+    border: 2px solid var(--wp-admin-theme-color, #0073aa);
+    color: var(--wp-admin-theme-color, #0073aa);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.lwwc-dynamic-link-status-button:hover:not(.active) {
+    background-color: var(--wp-admin-background-color-lightest, #f8f9fa);
+}
+
+.lwwc-dynamic-link-status-step-number {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    font-weight: bold;
+    color: var(--wp-admin-text-color-muted, #666);
+}
+
+.lwwc-dynamic-link-status-button.active .lwwc-dynamic-link-status-step-number {
+    color: var(--wp-admin-theme-color, #0073aa);
+}
+

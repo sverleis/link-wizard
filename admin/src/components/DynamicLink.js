@@ -232,13 +232,7 @@ const DynamicLink = ({
             } else {
                 // Step 2+ but no products: Show placeholder.
                 parts.push(
-                    <span key="highlight" style={{ 
-                        backgroundColor: '#fff3cd', 
-                        color: '#856404',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontWeight: 'bold'
-                    }}>?add-to-cart=PRODUCT_ID&quantity=1</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">?add-to-cart=PRODUCT_ID&quantity=1</span>
                 );
             }
         } else {
@@ -251,19 +245,13 @@ const DynamicLink = ({
             if (currentStep === 1) {
                 // Step 1: Show placeholder with highlighting.
                 parts.push(
-                    <span key="highlight" style={{ 
-                        backgroundColor: '#fff3cd', 
-                        color: '#856404',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontWeight: 'bold'
-                    }}>checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
                 );
             } else if (selectedProducts && selectedProducts.length > 0) {
                 // Step 2+: Show actual parameters with individual highlighting.
                 parts.push(
-                    <span key="checkout-link" style={{ color: '#495057' }}>checkout-link/</span>,
-                    <span key="question" style={{ color: '#495057' }}>?</span>
+                    <span key="checkout-link" className="lwwc-dynamic-link-checkout-text">checkout-link/</span>,
+                    <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
                 );
                 
                 // Add products parameter with highlighting.
@@ -277,38 +265,20 @@ const DynamicLink = ({
                 }
                 
                 parts.push(
-                    <span key="products" style={{ 
-                        backgroundColor: '#d1ecf1', 
-                        color: '#0c5460',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontWeight: 'bold'
-                    }}>products={productsParam}</span>
+                    <span key="products" className="lwwc-dynamic-link-products-highlight">products={productsParam}</span>
                 );
                 
                 // Add coupon if selected with individual highlighting.
                 if (selectedCoupon) {
                     parts.push(
-                        <span key="amp-coupon" style={{ color: '#495057' }}>&</span>,
-                        <span key="coupon" style={{ 
-                            backgroundColor: '#fff3cd', 
-                            color: '#856404',
-                            padding: '2px 4px',
-                            borderRadius: '3px',
-                            fontWeight: 'bold'
-                        }}>coupon={selectedCoupon.code}</span>
+                        <span key="amp-coupon" className="lwwc-dynamic-link-checkout-text">&</span>,
+                        <span key="coupon" className="lwwc-dynamic-link-coupon-highlight">coupon={selectedCoupon.code}</span>
                     );
                 }
             } else {
                 // Step 2+ but no products: Show placeholder.
                 parts.push(
-                    <span key="highlight" style={{ 
-                        backgroundColor: '#fff3cd', 
-                        color: '#856404',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontWeight: 'bold'
-                    }}>checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
                 );
             }
         }
@@ -352,73 +322,44 @@ const DynamicLink = ({
 
             {/* URL Encoding Options */}
             {!isDisabled && currentStep > 1 && (
-                <div className="url-encoding-options" style={{
-                    marginBottom: '15px',
-                    padding: '12px',
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px'
-                }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '20px',
-                        flexWrap: 'wrap'
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}>
-                            <span className="dashicons dashicons-admin-settings" style={{ fontSize: '16px', color: '#495057' }} />
-                            <strong style={{ color: '#495057', fontSize: '14px' }}>
+                <div className="lwwc-url-encoding-options">
+                    <div className="lwwc-url-encoding-container">
+                        <div className="lwwc-url-encoding-title-container">
+                            <span className="dashicons dashicons-admin-settings lwwc-url-encoding-title-icon" />
+                            <strong className="lwwc-url-encoding-title">
                                 {i18n.urlEncoding || 'URL Format'}:
                             </strong>
                         </div>
                         
-                        <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            color: '#495057'
-                        }}>
+                        <label className="lwwc-url-encoding-label">
                             <input
                                 type="radio"
                                 name="urlEncoding"
                                 value="decoded"
                                 checked={urlEncoding === 'decoded'}
                                 onChange={(e) => setUrlEncoding(e.target.value)}
-                                style={{ margin: 0 }}
+                                className="lwwc-url-encoding-radio"
                             />
                             <span>
-                                <strong>{i18n.decodedUrls || 'Decoded URLs'}</strong>
-                                <span style={{ color: '#6c757d', fontSize: '12px', display: 'block' }}>
+                                <strong className="lwwc-url-encoding-label-text">{i18n.decodedUrls || 'Decoded URLs'}</strong>
+                                <span className="lwwc-url-encoding-description">
                                     {i18n.decodedUrlsDescription || 'Clean, readable format (recommended)'}
                                 </span>
                             </span>
                         </label>
                         
-                        <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            color: '#495057'
-                        }}>
+                        <label className="lwwc-url-encoding-label">
                             <input
                                 type="radio"
                                 name="urlEncoding"
                                 value="encoded"
                                 checked={urlEncoding === 'encoded'}
                                 onChange={(e) => setUrlEncoding(e.target.value)}
-                                style={{ margin: 0 }}
+                                className="lwwc-url-encoding-radio"
                             />
                             <span>
-                                <strong>{i18n.encodedUrls || 'Encoded URLs'}</strong>
-                                <span style={{ color: '#6c757d', fontSize: '12px', display: 'block' }}>
+                                <strong className="lwwc-url-encoding-label-text">{i18n.encodedUrls || 'Encoded URLs'}</strong>
+                                <span className="lwwc-url-encoding-description">
                                     {i18n.encodedUrlsDescription || 'URL-encoded format (for special cases)'}
                                 </span>
                             </span>
@@ -455,32 +396,7 @@ const DynamicLink = ({
                 <button
                     onClick={openLink}
                     disabled={!canOpenLink}
-                    style={{
-                        padding: '10px 16px',
-                        backgroundColor: isDisabled ? '#6c757d' : '#28a745',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: canOpenLink ? 'pointer' : 'not-allowed',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        minWidth: '100px',
-                        justifyContent: 'center'
-                    }}
-                    onMouseEnter={(e) => {
-                        if (canOpenLink) {
-                            e.target.style.backgroundColor = '#218838';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (canOpenLink) {
-                            e.target.style.backgroundColor = isDisabled ? '#6c757d' : '#28a745';
-                        }
-                    }}
+                    className="lwwc-dynamic-link-open-button"
                 >
                     <span className="dashicons dashicons-external" />
                     Open
@@ -488,131 +404,37 @@ const DynamicLink = ({
             </div>
 
             {/* Streamlined Link Status Information - Inline layout */}
-            <div style={{
-                marginTop: '15px',
-                padding: '12px',
-                backgroundColor: isDisabled ? '#e9ecef' : '#e7f3ff',
-                border: `1px solid ${isDisabled ? '#ced4da' : '#b3d9ff'}`,
-                borderRadius: '4px',
-                fontSize: '13px',
-                color: isDisabled ? '#6c757d' : '#0056b3'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <span className="dashicons dashicons-info" style={{ fontSize: '16px' }} />
+            <div className={`lwwc-dynamic-link-status-container ${isDisabled ? 'disabled' : ''}`}>
+                <div className="lwwc-dynamic-link-status-header">
+                    <span className="dashicons dashicons-info lwwc-dynamic-link-status-icon" />
                     <strong>{i18n.linkStatus || 'Link Status'}</strong>
                 </div>
-                <div style={{ 
-                    display: 'flex', 
-                    gap: '20px', 
-                    flexWrap: 'wrap',
-                    alignItems: 'center'
-                }}>
+                <div className="lwwc-dynamic-link-status-buttons">
                     <button
                         onClick={() => onNavigateToStep && onNavigateToStep(1)}
-                        style={{
-                            background: currentStep === 1 ? '#e7f3ff' : 'none',
-                            border: currentStep === 1 ? '2px solid #0073aa' : 'none',
-                            padding: '4px 8px',
-                            cursor: 'pointer',
-                            borderRadius: '4px',
-                            transition: 'all 0.2s ease',
-                            color: currentStep === 1 ? '#0073aa' : '#333',
-                            textDecoration: currentStep === 1 ? 'none' : 'underline',
-                            fontWeight: currentStep === 1 ? '600' : 'normal'
-                        }}
-                        onMouseEnter={(e) => {
-                            if (currentStep !== 1) {
-                                e.target.style.backgroundColor = '#f8f9fa';
-                            }
-                        }}
-                        onMouseLeave={(e) => {
-                            if (currentStep !== 1) {
-                                e.target.style.backgroundColor = 'transparent';
-                            }
-                        }}
+                        className={`lwwc-dynamic-link-status-button ${currentStep === 1 ? 'active' : ''}`}
                         title="Click to edit Link Type"
                     >
-                        <span style={{ 
-                            display: 'inline-block', 
-                            width: '20px', 
-                            textAlign: 'center', 
-                            marginRight: '8px',
-                            fontWeight: 'bold',
-                            color: currentStep === 1 ? '#0073aa' : '#666'
-                        }}>1</span>
+                        <span className="lwwc-dynamic-link-status-step-number">1</span>
                         <strong>{i18n.linkType || 'Type'}:</strong> {linkType === 'addToCart' ? 'Add to Cart' : 'Checkout'}
                     </button>
                     
                     <button
                         onClick={() => onNavigateToStep && onNavigateToStep(2)}
-                        style={{
-                            background: currentStep === 2 ? '#e7f3ff' : 'none',
-                            border: currentStep === 2 ? '2px solid #0073aa' : 'none',
-                            padding: '4px 8px',
-                            cursor: 'pointer',
-                            borderRadius: '4px',
-                            transition: 'all 0.2s ease',
-                            color: currentStep === 2 ? '#0073aa' : '#333',
-                            textDecoration: currentStep === 2 ? 'none' : 'underline',
-                            fontWeight: currentStep === 2 ? '600' : 'normal'
-                        }}
-                        onMouseEnter={(e) => {
-                            if (currentStep !== 2) {
-                                e.target.style.backgroundColor = '#f8f9fa';
-                            }
-                        }}
-                        onMouseLeave={(e) => {
-                            if (currentStep !== 2) {
-                                e.target.style.backgroundColor = 'transparent';
-                            }
-                        }}
+                        className={`lwwc-dynamic-link-status-button ${currentStep === 2 ? 'active' : ''}`}
                         title="Click to edit Products"
                     >
-                        <span style={{ 
-                            display: 'inline-block', 
-                            width: '20px', 
-                            textAlign: 'center', 
-                            marginRight: '8px',
-                            fontWeight: 'bold',
-                            color: currentStep === 2 ? '#0073aa' : '#666'
-                        }}>2</span>
+                        <span className="lwwc-dynamic-link-status-step-number">2</span>
                         <strong>{i18n.products || 'Products'}:</strong> {selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}
                     </button>
                     
                     {linkType === 'checkoutLink' && (
                         <button
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
-                            style={{
-                                background: currentStep === 3 ? '#e7f3ff' : 'none',
-                                border: currentStep === 3 ? '2px solid #0073aa' : 'none',
-                                padding: '4px 8px',
-                                cursor: 'pointer',
-                                borderRadius: '4px',
-                                transition: 'all 0.2s ease',
-                                color: currentStep === 3 ? '#0073aa' : '#333',
-                                textDecoration: currentStep === 3 ? 'none' : 'underline',
-                                fontWeight: currentStep === 3 ? '600' : 'normal'
-                            }}
-                            onMouseEnter={(e) => {
-                                if (currentStep !== 3) {
-                                    e.target.style.backgroundColor = '#f8f9fa';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (currentStep !== 3) {
-                                    e.target.style.backgroundColor = 'transparent';
-                                }
-                            }}
+                            className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Coupon"
                         >
-                            <span style={{ 
-                                display: 'inline-block', 
-                                width: '20px', 
-                                textAlign: 'center', 
-                                marginRight: '8px',
-                                fontWeight: 'bold',
-                                color: currentStep === 3 ? '#0073aa' : '#666'
-                            }}>3</span>
+                            <span className="lwwc-dynamic-link-status-step-number">3</span>
                             <strong>{i18n.coupon || 'Coupon'}:</strong> {selectedCoupon ? selectedCoupon.code : 'None'}
                         </button>
                     )}
@@ -620,37 +442,10 @@ const DynamicLink = ({
                     {linkType === 'addToCart' && redirectOption && (
                         <button
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
-                            style={{
-                                background: currentStep === 3 ? '#e7f3ff' : 'none',
-                                border: currentStep === 3 ? '2px solid #0073aa' : 'none',
-                                padding: '4px 8px',
-                                cursor: 'pointer',
-                                borderRadius: '4px',
-                                transition: 'all 0.2s ease',
-                                color: currentStep === 3 ? '#0073aa' : '#333',
-                                textDecoration: currentStep === 3 ? 'none' : 'underline',
-                                fontWeight: currentStep === 3 ? '600' : 'normal'
-                            }}
-                            onMouseEnter={(e) => {
-                                if (currentStep !== 3) {
-                                    e.target.style.backgroundColor = '#f8f9fa';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (currentStep !== 3) {
-                                    e.target.style.backgroundColor = 'transparent';
-                                }
-                            }}
+                            className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Redirect"
                         >
-                            <span style={{ 
-                                display: 'inline-block', 
-                                width: '20px', 
-                                textAlign: 'center', 
-                                marginRight: '8px',
-                                fontWeight: 'bold',
-                                color: currentStep === 3 ? '#0073aa' : '#666'
-                            }}>3</span>
+                            <span className="lwwc-dynamic-link-status-step-number">3</span>
                             <strong>{i18n.redirect || 'Redirect'}:</strong> {
                                 redirectOption === 'cart' ? 'Cart Page' :
                                 redirectOption === 'checkout' ? 'Checkout Page' :
