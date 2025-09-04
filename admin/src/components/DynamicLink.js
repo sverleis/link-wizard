@@ -67,8 +67,10 @@ const DynamicLink = ({
                     } else if (redirectOption === 'product' && selectedProducts.length > 0) {
                         // For product redirect, use the product slug for better SEO and readability.
                         const product = selectedProducts[0];
-                        if (product.slug) {
-                            path = `/product/${product.slug}/`;
+                        // For variations, use parent_slug; for regular products, use slug.
+                        const slug = product.parent_slug || product.slug;
+                        if (slug) {
+                            path = `/product/${slug}/`;
                         } else {
                             // Fallback to ID if slug is not available
                             path = `/product/${product.id}/`;

@@ -191,6 +191,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 			'image'       => $this->get_variation_image( $variation, $parent_product ),
 			'parent_id'   => $parent_product->get_id(),
 			'parent_name' => $parent_product->get_name(),
+			'parent_slug' => $parent_product->get_slug(), // Add parent slug for URL generation.
 			'attributes'  => $variation['attributes'],
 			'type'        => 'variation',
 		);
