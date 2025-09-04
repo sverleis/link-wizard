@@ -7,48 +7,48 @@
  * This allows for extensible product type support.
  */
 
-if (! defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
-interface LWWC_Product_Handler_Interface
-{
-    /**
-     * Get the product type this handler supports.
-     *
-     * @return string
-     */
-    public function get_product_type();
+interface LWWC_Product_Handler_Interface {
 
-    /**
-     * Check if this handler can handle the given product.
-     *
-     * @param WC_Product $product
-     * @return bool
-     */
-    public function can_handle($product);
+	/**
+	 * Get the product type this handler supports.
+	 *
+	 * @return string
+	 */
+	public function get_product_type();
 
-    /**
-     * Get search results for this product type.
-     *
-     * @param WC_Product $product
-     * @return array
-     */
-    public function get_search_results($product);
+	/**
+	 * Check if this handler can handle the given product.
+	 *
+	 * @param WC_Product $product
+	 * @return bool
+	 */
+	public function can_handle( $product );
 
-    /**
-     * Get product data for the frontend.
-     *
-     * @param WC_Product $product
-     * @return array
-     */
-    public function get_product_data($product);
+	/**
+	 * Get search results for this product type.
+	 *
+	 * @param WC_Product $product
+	 * @return array
+	 */
+	public function get_search_results( $product );
 
-    /**
-     * Validate if the product can be used in links.
-     *
-     * @param WC_Product $product
-     * @return bool
-     */
-    public function is_valid_for_links($product);
+	/**
+	 * Get product data for the frontend.
+	 *
+	 * @param WC_Product $product
+	 * @return array
+	 */
+	public function get_product_data( $product );
+
+	/**
+	 * Validate if the product can be used in links.
+	 *
+	 * @param WC_Product $product
+	 * @return bool
+	 */
+	public function is_valid_for_links( $product );
 }

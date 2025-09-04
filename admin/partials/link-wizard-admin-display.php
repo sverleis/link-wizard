@@ -9,6 +9,6 @@
 
 ?>
 <div class="wrap">
-    <!-- The root element for the React app -->
-    <div id="link-wizard-root"></div>
-    </div>
+	<!-- The root element for the React app -->
+	<div id="link-wizard-root"></div>
+	</div>
