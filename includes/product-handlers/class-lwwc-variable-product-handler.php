@@ -111,7 +111,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 		}
 
 		$validation_result = LWWC_Validation::validate_product( $product );
-		
+
 		// Format validation data for frontend display.
 		$validation_data = array(
 			'is_valid' => $validation_result['is_valid'],

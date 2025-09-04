@@ -13,6 +13,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+/**
+ * Link Wizard Internationalization Class
+ *
+ * Handles internationalization and translation functionality for the Link Wizard plugin.
+ * Provides methods for getting translated text for the admin interface.
+ */
 class LWWC_Link_Wizard_I18n {
 
 	/**
@@ -141,8 +147,8 @@ class LWWC_Link_Wizard_I18n {
 			'redirectToCheckout'                  => __( 'Redirect to checkout.', 'link-wizard-for-woocommerce' ),
 			'redirectToProduct'                   => __( 'Redirect to the selected product page.', 'link-wizard-for-woocommerce' ),
 			'redirectToPage'                      => __( 'Redirect to a specific page or post.', 'link-wizard-for-woocommerce' ),
-			
-			// URL Encoding options
+
+			// URL Encoding options.
 			'urlEncoding'                         => __( 'URL Format', 'link-wizard-for-woocommerce' ),
 			'decodedUrls'                         => __( 'Decoded URLs', 'link-wizard-for-woocommerce' ),
 			'decodedUrlsDescription'              => __( 'Clean, readable format (recommended)', 'link-wizard-for-woocommerce' ),

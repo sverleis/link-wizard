@@ -32,7 +32,7 @@ class LWWC_Validation {
 	public static function init() {
 		// Register default validation rules.
 		self::register_default_rules();
-		
+
 		// Allow other plugins to register their own validation rules.
 		do_action( 'lwwc_validation_init' );
 	}
@@ -156,7 +156,7 @@ class LWWC_Validation {
 
 		foreach ( $rules as $rule_id => $rule ) {
 			$result = call_user_func( $rule['callback'], $product, $rule_id );
-			
+
 			if ( is_array( $result ) ) {
 				if ( isset( $result['is_valid'] ) && ! $result['is_valid'] ) {
 					$is_valid = false;
@@ -221,10 +221,10 @@ class LWWC_Validation {
 				$variation_product = wc_get_product( $variation['variation_id'] );
 				if ( $variation_product ) {
 					$errors[] = array(
-						'variation_id' => $variation['variation_id'],
+						'variation_id'   => $variation['variation_id'],
 						'variation_name' => $variation_product->get_name(),
-						'attributes' => $variation['attributes'],
-						'message' => __( 'This variation has "Any" attributes and cannot be used in links', 'link-wizard-for-woocommerce' ),
+						'attributes'     => $variation['attributes'],
+						'message'        => __( 'This variation has "Any" attributes and cannot be used in links', 'link-wizard-for-woocommerce' ),
 					);
 				}
 			}
@@ -307,7 +307,7 @@ class LWWC_Validation {
 	 * @return array Array of validation rules formatted for frontend.
 	 */
 	public static function get_frontend_validation_rules( $product_type ) {
-		$rules = self::get_validation_rules( $product_type );
+		$rules          = self::get_validation_rules( $product_type );
 		$frontend_rules = array();
 
 		foreach ( $rules as $rule_id => $rule ) {

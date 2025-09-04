@@ -45,7 +45,7 @@ function lwwc_validate_grouped_product_children( $product, $rule_id ) {
 		return array( 'is_valid' => true );
 	}
 
-	$errors = array();
+	$errors   = array();
 	$children = $product->get_children();
 
 	foreach ( $children as $child_id ) {
@@ -110,7 +110,7 @@ function lwwc_validate_external_product_url( $product, $rule_id ) {
 		return array( 'is_valid' => true );
 	}
 
-	$errors = array();
+	$errors      = array();
 	$product_url = $product->get_product_url();
 
 	if ( empty( $product_url ) ) {
@@ -153,11 +153,11 @@ function lwwc_example_custom_validation() {
  */
 function lwwc_validate_product_required_meta( $product, $rule_id ) {
 	$errors = array();
-	
+
 	// Example: Check if product has a required custom field.
 	$required_meta_key = 'custom_required_field';
-	$meta_value = $product->get_meta( $required_meta_key );
-	
+	$meta_value        = $product->get_meta( $required_meta_key );
+
 	if ( empty( $meta_value ) ) {
 		$errors[] = sprintf(
 			__( 'Product is missing required field: %s', 'link-wizard-for-woocommerce' ),
@@ -283,7 +283,7 @@ class LWWC_Example_Custom_Product_Handler implements LWWC_Product_Handler_Interf
 		}
 
 		$validation_result = LWWC_Validation::validate_product( $product );
-		
+
 		// Format validation data for frontend display.
 		$validation_data = array(
 			'is_valid' => $validation_result['is_valid'],
@@ -313,7 +313,7 @@ function lwwc_example_validation_filter( $validation_result, $product, $product_
 	// Example: Always mark products with a specific meta field as valid.
 	if ( $product->get_meta( 'force_valid' ) === 'yes' ) {
 		$validation_result['is_valid'] = true;
-		$validation_result['errors'] = array();
+		$validation_result['errors']   = array();
 	}
 
 	// Example: Add a warning for products with a specific meta field.
@@ -353,13 +353,13 @@ add_action( 'lwwc_validation_init', 'lwwc_example_register_custom_validation_rul
  */
 function lwwc_example_get_validation_rules_for_display() {
 	$product_types = array( 'simple', 'variable', 'grouped', 'external' );
-	
+
 	foreach ( $product_types as $product_type ) {
 		$rules = LWWC_Validation::get_frontend_validation_rules( $product_type );
-		
+
 		// Display rules for each product type.
 		foreach ( $rules as $rule ) {
-			echo sprintf(
+			printf(
 				'<p>%s: %s (Priority: %d)</p>',
 				esc_html( $rule['id'] ),
 				esc_html( $rule['description'] ),
@@ -377,7 +377,7 @@ function lwwc_example_get_validation_rules_for_display() {
 function lwwc_example_unregister_validation_rules() {
 	// Unregister a specific validation rule.
 	LWWC_Validation::unregister_validation_rule( 'variable_product_any_attributes' );
-	
+
 	// Note: This would remove the default "Any" attributes validation
 	// for variable products, which is not recommended unless you have
 	// a specific reason to do so.

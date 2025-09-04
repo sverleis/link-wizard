@@ -15,6 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+/**
+ * Link Wizard Search Class
+ *
+ * Handles product search functionality for the Link Wizard plugin.
+ * Provides REST API endpoints for searching WooCommerce products.
+ */
 class LWWC_Link_Wizard_Search {
 
 	/**
@@ -204,7 +210,7 @@ class LWWC_Link_Wizard_Search {
 			if ( $product ) {
 				// Use the product handler manager to get results.
 				$product_results = $this->get_handler_manager()->get_search_results( $product );
-				
+
 				// Add validation data to each product result.
 				$handler = $this->get_handler_manager()->get_handler_for_product( $product );
 				if ( $handler && method_exists( $handler, 'get_validation_data' ) ) {
@@ -212,7 +218,7 @@ class LWWC_Link_Wizard_Search {
 						$result['validation_data'] = $handler->get_validation_data( $product );
 					}
 				}
-				
+
 				$results = array_merge( $results, $product_results );
 			}
 		}
@@ -413,9 +419,9 @@ class LWWC_Link_Wizard_Search {
 					$coupons[] = array(
 						'id'            => $coupon_id,
 						'code'          => $coupon_code,
-						'discount_type' => $discount_type ?: 'fixed_cart',
-						'amount'        => $amount ?: '0',
-						'description'   => $description ?: '',
+						'discount_type' => $discount_type ? $discount_type : 'fixed_cart',
+						'amount'        => $amount ? $amount : '0',
+						'description'   => $description ? $description : '',
 					);
 				}
 			}
