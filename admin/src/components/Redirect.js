@@ -7,12 +7,12 @@ const Redirect = ({
     selectedRedirectPage,
     setSelectedRedirectPage
 }) => {
-    // Get i18n translations from PHP
+    // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
     
     const handleRedirectChange = (value) => {
         setRedirectOption(value);
-        // Clear page selection when switching away from page redirect
+        // Clear page selection when switching away from page redirect.
         if (value !== 'page') {
             setSelectedRedirectPage(null);
         }
