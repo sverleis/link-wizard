@@ -281,7 +281,7 @@ class LWWC_Validation {
 		foreach ( $variation['attributes'] as $attribute_name => $attribute_value ) {
 			++$total_attributes;
 
-			if ( $attribute_value === '' || $attribute_value === null ) {
+			if ( '' === $attribute_value || null === $attribute_value ) {
 				$has_any_empty_attributes = true;
 			}
 		}

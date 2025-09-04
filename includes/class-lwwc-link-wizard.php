@@ -118,7 +118,7 @@ class LWWC_Link_Wizard {
 	 * @return Link_Wizard_Search
 	 */
 	private function get_search() {
-		if ( $this->search === null ) {
+		if ( null === $this->search ) {
 			$this->search = new LWWC_Link_Wizard_Search();
 		}
 		return $this->search;

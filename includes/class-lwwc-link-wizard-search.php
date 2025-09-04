@@ -38,7 +38,7 @@ class LWWC_Link_Wizard_Search {
 	 * @return LWWC_Product_Handler_Manager
 	 */
 	private function get_handler_manager() {
-		if ( $this->handler_manager === null ) {
+		if ( null === $this->handler_manager ) {
 			$this->handler_manager = new LWWC_Product_Handler_Manager();
 			// Ensure default handlers are registered.
 			$this->handler_manager->register_default_handlers();

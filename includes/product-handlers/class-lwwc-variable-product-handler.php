@@ -161,7 +161,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 		foreach ( $variation['attributes'] as $attribute_name => $attribute_value ) {
 			++$total_attributes;
 
-			if ( $attribute_value === '' || $attribute_value === null ) {
+			if ( '' === $attribute_value || null === $attribute_value ) {
 				$has_any_empty_attributes = true;
 			}
 		}
@@ -210,7 +210,7 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 
 		if ( isset( $variation['attributes'] ) ) {
 			foreach ( $variation['attributes'] as $attribute_name => $attribute_value ) {
-				if ( $attribute_value !== '' && $attribute_value !== null ) {
+				if ( '' !== $attribute_value && null !== $attribute_value ) {
 					// Remove the 'attribute_' prefix to get the clean attribute name.
 					$clean_attribute_name = str_replace( 'attribute_', '', $attribute_name );
 
