@@ -200,7 +200,16 @@ class LWWC_Link_Wizard_Search {
 			if ( $product ) {
 				// Use the product handler manager to get results.
 				$product_results = $this->get_handler_manager()->get_search_results( $product );
-				$results         = array_merge( $results, $product_results );
+				
+				// Add validation data to each product result.
+				$handler = $this->get_handler_manager()->get_handler_for_product( $product );
+				if ( $handler && method_exists( $handler, 'get_validation_data' ) ) {
+					foreach ( $product_results as &$result ) {
+						$result['validation_data'] = $handler->get_validation_data( $product );
+					}
+				}
+				
+				$results = array_merge( $results, $product_results );
 			}
 		}
 

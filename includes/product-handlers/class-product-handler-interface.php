@@ -51,4 +51,20 @@ interface LWWC_Product_Handler_Interface {
 	 * @return bool
 	 */
 	public function is_valid_for_links( $product );
+
+	/**
+	 * Get validation errors for the product.
+	 *
+	 * @param WC_Product $product
+	 * @return array Array of validation errors.
+	 */
+	public function get_validation_errors( $product );
+
+	/**
+	 * Get validation data for frontend display.
+	 *
+	 * @param WC_Product $product
+	 * @return array Validation data including errors and warnings.
+	 */
+	public function get_validation_data( $product );
 }

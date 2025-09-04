@@ -4,8 +4,8 @@
  * Plugin URI: https://github.com/sverleis/link-wizard
  * Description: A plugin to generate add-to-cart and checkout links for WooCommerce products.
  * Version: 1.0.3
- * Requires at least: 6.5
- * Tested up to: 6.4
+ * Requires at least: 6.0
+ * Tested up to: 6.8
  * Requires PHP: 7.4
  * Author: Mags Industries
  * Author URI: https://magsindustries.wordpress.com
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /* Current plugin version. */
-define( 'LWWC_VERSION', '1.0.2.2' );
+define( 'LWWC_VERSION', '1.0.3' );
 
 /* The absolute path to the plugin directory. */
 define( 'LWWC_PATH', plugin_dir_path( __FILE__ ) );

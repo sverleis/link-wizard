@@ -1,7 +1,7 @@
 === Link Wizard for WooCommerce ===
 Contributors: magsindustries
 Tags: woocommerce, products
-Requires at least: 6.5
+Requires at least: 6.0
 Tested up to: 6.8
 Stable tag: 1.0.3
 License: GPL-2.0+

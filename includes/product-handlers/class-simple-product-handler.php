@@ -81,6 +81,56 @@ class LWWC_Simple_Product_Handler implements LWWC_Product_Handler_Interface {
 			return false;
 		}
 
-		return $product->is_purchasable() && $product->is_in_stock();
+		// Use the centralized validation system.
+		return LWWC_Validation::is_valid_for_links( $product );
+	}
+
+	/**
+	 * Get validation errors for the product.
+	 *
+	 * @param WC_Product $product
+	 * @return array Array of validation errors.
+	 */
+	public function get_validation_errors( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array();
+		}
+
+		return LWWC_Validation::get_validation_errors( $product );
+	}
+
+	/**
+	 * Get validation data for frontend display.
+	 *
+	 * @param WC_Product $product
+	 * @return array Validation data including errors and warnings.
+	 */
+	public function get_validation_data( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array(
+				'is_valid' => false,
+				'errors'   => array(),
+				'warnings' => array(),
+			);
+		}
+
+		$validation_result = LWWC_Validation::validate_product( $product );
+		
+		// Format validation data for frontend display.
+		$validation_data = array(
+			'is_valid' => $validation_result['is_valid'],
+			'errors'   => array(),
+			'warnings' => array(),
+		);
+
+		// Process validation errors for frontend display.
+		foreach ( $validation_result['errors'] as $error ) {
+			$validation_data['errors'][] = array(
+				'type'    => 'product',
+				'message' => is_string( $error ) ? $error : __( 'Validation error', 'link-wizard-for-woocommerce' ),
+			);
+		}
+
+		return $validation_data;
 	}
 }

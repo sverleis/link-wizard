@@ -1,4 +1,11 @@
 
+<?php
+/**
+ * Link Wizard SVG Icon (themeable)
+ *
+ * @package Link_Wizard_For_WooCommerce
+ */
+?>
 <!-- Link Wizard SVG Icon (themeable) -->
 <svg class="lwwc-header-icon lwwc-theme-colored" width="65" height="65" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
   <g transform="translate(34.418029,66.286421)">

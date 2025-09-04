@@ -52,8 +52,10 @@ jobs:
             --exclude="languages/.gitkeep" \
             --exclude="**/node_modules/**" \
             --exclude="admin/src/" \
+            --exclude="admin/js/" \
             --exclude="**/*.map" \
             --exclude=".DS_Store" \
+            --exclude="**/.DS_Store" \
             --exclude="*.config.js" \
             --exclude="webpack.config.js" \
             --exclude="package.json" \
@@ -62,8 +64,11 @@ jobs:
             --exclude=".babelrc*" \
             --exclude=".eslintrc*" \
             --exclude=".prettier*" \
+            --exclude="phpcs.xml" \
             --exclude="DEVDOC.MD" \
-            --exclude="*.md" \
+            --exclude="readme.md" \
+            --exclude="admin/css/search-component-guide.md" \
+            --exclude="assets/" \
             ./ link-wizard-for-woocommerce/
  
       # 6. Zip the project

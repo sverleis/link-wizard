@@ -761,13 +761,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                         </div>
                                     )}
 
-                                    {/* Grouped Invalid Variations Button. */}
+                                    {/* Grouped Invalid Variations Button - Using new validation system. */}
                                     {product.type === 'variable' && 
-                                     filteredVariations[product.id]?.some(v => v.disabled) && (
+                                     product.validation_data && 
+                                     !product.validation_data.is_valid && 
+                                     product.validation_data.errors.some(error => error.type === 'variation') && (
                                         <div className="lwwc-invalid-variations-button">
                                             <button
                                                 onClick={() => {
-                                                    const invalidVariations = filteredVariations[product.id].filter(v => v.disabled);
+                                                    const invalidVariations = product.validation_data.errors.filter(error => error.type === 'variation');
                                                     setVariationErrorModal({
                                                         product: product,
                                                         invalidVariations: invalidVariations
@@ -776,7 +778,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             >
                                                 <span className="dashicons dashicons-warning"></span>
                                                 {i18n.viewInvalidVariations || 'View Invalid Variations'} 
-                                                ({filteredVariations[product.id].filter(v => v.disabled).length})
+                                                ({product.validation_data.errors.filter(error => error.type === 'variation').length})
                                             </button>
                                         </div>
                                     )}
@@ -955,23 +957,30 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     </p>
                                 </div>
 
-                                {/* List of Invalid Variations. */}
+                                {/* List of Invalid Variations - Using new validation system. */}
                                 {variationErrorModal.invalidVariations && (
                                     <div className="lwwc-variation-error-modal-variations-list">
                                         <div className="lwwc-variation-error-modal-variations-title">
                                             {i18n.invalidVariationsList || 'Invalid Variations:'}
                                         </div>
                                         <div className="lwwc-variation-error-modal-variations-container">
-                                            {variationErrorModal.invalidVariations.map((variation, index) => (
-                                                <div key={variation.id} className="lwwc-variation-error-modal-variation-item">
+                                            {variationErrorModal.invalidVariations.map((error, index) => (
+                                                <div key={error.variation_id || index} className="lwwc-variation-error-modal-variation-item">
                                                     <span className="dashicons dashicons-warning lwwc-variation-error-modal-variation-icon"></span>
                                                     <div className="lwwc-variation-error-modal-variation-details">
                                                         <div className="lwwc-variation-error-modal-variation-name">
-                                                            {variation.name}
+                                                            {error.variation_name || `Variation ${error.variation_id}`}
                                                         </div>
-                                                        {variation.sku && (
-                                                            <div className="lwwc-variation-error-modal-variation-sku">
-                                                                {i18n.sku || 'SKU'}: {variation.sku}
+                                                        <div className="lwwc-variation-error-modal-variation-message">
+                                                            {error.message}
+                                                        </div>
+                                                        {error.attributes && (
+                                                            <div className="lwwc-variation-error-modal-variation-attributes">
+                                                                {Object.entries(error.attributes).map(([attr, value]) => (
+                                                                    <span key={attr} className="lwwc-variation-attribute">
+                                                                        {attr}: {value || i18n.anyAttribute || 'Any'}
+                                                                    </span>
+                                                                ))}
                                                             </div>
                                                         )}
                                                     </div>

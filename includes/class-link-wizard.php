@@ -61,6 +61,7 @@ class LWWC_Link_Wizard {
 		$this->plugin_name = 'link-wizard-for-woocommerce';
 
 		$this->load_dependencies();
+		$this->init_validation_system();
 		$this->define_admin_hooks();
 	}
 
@@ -94,6 +95,7 @@ class LWWC_Link_Wizard {
 		/**
 		 * Product handler interface and classes.
 		 */
+		require_once LWWC_PATH . 'includes/class-link-wizard-validation.php';
 		require_once LWWC_PATH . 'includes/product-handlers/class-product-handler-interface.php';
 		require_once LWWC_PATH . 'includes/product-handlers/class-product-handler-manager.php';
 		require_once LWWC_PATH . 'includes/product-handlers/class-simple-product-handler.php';
@@ -120,6 +122,17 @@ class LWWC_Link_Wizard {
 			$this->search = new LWWC_Link_Wizard_Search();
 		}
 		return $this->search;
+	}
+
+	/**
+	 * Initialize the validation system.
+	 *
+	 * @since   1.0.3
+	 * @access  private
+	 */
+	private function init_validation_system() {
+		// Initialize the validation system with default rules.
+		LWWC_Validation::init();
 	}
 
 	/**

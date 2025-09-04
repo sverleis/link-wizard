@@ -73,18 +73,69 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 			return false;
 		}
 
-		// A variable product is valid if it has at least one valid variation.
-		$variations = $product->get_available_variations();
-		foreach ( $variations as $variation ) {
-			if ( ! $this->has_any_attributes( $variation ) ) {
-				$variation_product = wc_get_product( $variation['variation_id'] );
-				if ( $variation_product && $variation_product->is_purchasable() && $variation_product->is_in_stock() ) {
-					return true;
-				}
+		// Use the centralized validation system.
+		return LWWC_Validation::is_valid_for_links( $product );
+	}
+
+	/**
+	 * Get validation errors for the product.
+	 *
+	 * @param WC_Product $product
+	 * @return array Array of validation errors.
+	 */
+	public function get_validation_errors( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array();
+		}
+
+		return LWWC_Validation::get_validation_errors( $product );
+	}
+
+	/**
+	 * Get validation data for frontend display.
+	 *
+	 * @param WC_Product $product
+	 * @return array Validation data including errors and warnings.
+	 */
+	public function get_validation_data( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array(
+				'is_valid' => false,
+				'errors'   => array(),
+				'warnings' => array(),
+			);
+		}
+
+		$validation_result = LWWC_Validation::validate_product( $product );
+		
+		// Format validation data for frontend display.
+		$validation_data = array(
+			'is_valid' => $validation_result['is_valid'],
+			'errors'   => array(),
+			'warnings' => array(),
+		);
+
+		// Process validation errors for frontend display.
+		foreach ( $validation_result['errors'] as $error ) {
+			if ( is_array( $error ) && isset( $error['variation_id'] ) ) {
+				// This is a variation-specific error.
+				$validation_data['errors'][] = array(
+					'type'           => 'variation',
+					'variation_id'   => $error['variation_id'],
+					'variation_name' => $error['variation_name'],
+					'message'        => $error['message'],
+					'attributes'     => $error['attributes'],
+				);
+			} else {
+				// This is a general product error.
+				$validation_data['errors'][] = array(
+					'type'    => 'product',
+					'message' => is_string( $error ) ? $error : __( 'Validation error', 'link-wizard-for-woocommerce' ),
+				);
 			}
 		}
 
-		return false;
+		return $validation_data;
 	}
 
 	/**
