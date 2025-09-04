@@ -1,5 +1,5 @@
 # Link Wizard for WooCommerce
-Contributors: magsindustries
+Contributors: sverleis
 
 Tags: woocommerce, products
 
@@ -13,8 +13,33 @@ Tags: woocommerce, products
 - Generate add-to-cart or checkout-links within the WP Admin interface.
 
 ## Description
-This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links. 
-Useful if you need to set up a Checkout URL for Facebook.
+This plugin adds a powerful feature to the product menu, where an admin or store manager can generate add-to-cart or checkout links for WooCommerce products. **Perfect for Facebook and Instagram shop pages**, this plugin creates seamless checkout experiences that work flawlessly with social media commerce.
+
+**Facebook & Instagram Shop Integration:**
+- **Multi-product checkout links** - Add multiple products with different quantities in a single link
+- **Coupon integration** - Include discount codes directly in the checkout URL
+- **Social media optimized** - Designed specifically for Facebook and Instagram shop pages
+- **Seamless checkout flow** - Customers can purchase directly from your social media posts
+- **URL encoding support** - Handles all social media platform requirements
+
+**Key Features:**
+- Generate add-to-cart links for simple and variable products
+- Create Facebook Commerce Platform-compatible checkout links
+- Support for product variations with validation
+- Multi-product and multi-coupon support in single links
+- URL encoding options for different platforms
+- Redirect customization options
+
+**Perfect for:**
+- **Facebook and Instagram Shop Pages** - Seamless integration with your social media commerce
+- **Social Media Marketing** - Drive sales directly from Facebook and Instagram posts
+- **Multi-product campaigns** - Create checkout links with multiple products and quantities
+- **Promotional campaigns** - Include coupon codes in checkout URLs for social media
+- **Email marketing** - Create direct purchase links in newsletters
+- **Affiliate marketing** - Provide partners with direct product links
+- **QR codes** - Generate links for offline marketing materials
+
+The checkout links are specifically optimized for Facebook and Instagram shop pages, allowing you to drive traffic directly to the checkout page with multiple products and applied discounts for higher conversion rates from your social media presence.
 
 
 ## Installation 
