@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: Link Wizard for WooCommerce
  * Plugin URI: https://github.com/sverleis/link-wizard
@@ -15,6 +14,8 @@
  * Text Domain: link-wizard-for-woocommerce
  * Domain Path: /languages
  * Requires Plugins: woocommerce
+ *
+ * @package Link_Wizard_For_WooCommerce
  */
 
 // If this file is called directly, abort.

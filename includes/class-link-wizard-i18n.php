@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Internationalization (i18n) for Link Wizard for WooCommerce
  *
@@ -16,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Note: WordPress 4.6+ automatically loads plugin textdomains for plugins
  * hosted on WordPress.org, so manual loading is no longer required.
  */
-class LWWC_Link_Wizard_i18n {
+class LWWC_Link_Wizard_I18n {
 
 	/**
 	 * Get translated text for admin interface.

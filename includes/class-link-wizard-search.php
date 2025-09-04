@@ -257,16 +257,16 @@ class LWWC_Link_Wizard_Search {
 		if ( $product_id <= 0 ) {
 			return new WP_Error(
 				'invalid_product_id',
-				LWWC_Link_Wizard_i18n::get_admin_text( 'invalid_product_id_message' ),
+				LWWC_Link_Wizard_I18n::get_admin_text( 'invalid_product_id_message' ),
 				array( 'status' => 400 )
 			);
 		}
 
 		$product = wc_get_product( $product_id );
 		if ( ! $product ) {
-			$message  = LWWC_Link_Wizard_i18n::get_admin_text_formatted( 'product_not_found_message', $product_id );
+			$message  = LWWC_Link_Wizard_I18n::get_admin_text_formatted( 'product_not_found_message', $product_id );
 			$message .= ' <a href="' . admin_url( 'edit.php?post_type=product' ) . '" target="_blank">' .
-						LWWC_Link_Wizard_i18n::get_admin_text( 'view_all_products_link' ) . '</a>';
+						LWWC_Link_Wizard_I18n::get_admin_text( 'view_all_products_link' ) . '</a>';
 
 			return new WP_Error(
 				'product_not_found',
@@ -278,9 +278,9 @@ class LWWC_Link_Wizard_Search {
 		// Get the appropriate handler for this product.
 		$handler = $this->get_handler_manager()->get_handler_for_product( $product );
 		if ( ! $handler ) {
-			$message  = LWWC_Link_Wizard_i18n::get_admin_text_formatted( 'no_handler_message', $product->get_type() );
+			$message  = LWWC_Link_Wizard_I18n::get_admin_text_formatted( 'no_handler_message', $product->get_type() );
 			$message .= ' <a href="' . get_edit_post_link( $product_id ) . '" target="_blank">' .
-						LWWC_Link_Wizard_i18n::get_admin_text( 'edit_product_link' ) . '</a>';
+						LWWC_Link_Wizard_I18n::get_admin_text( 'edit_product_link' ) . '</a>';
 
 			return new WP_Error(
 				'no_handler',
@@ -299,7 +299,7 @@ class LWWC_Link_Wizard_Search {
 				if ( json_last_error() !== JSON_ERROR_NONE ) {
 					return new WP_Error(
 						'invalid_attributes',
-						LWWC_Link_Wizard_i18n::get_admin_text( 'invalid_attributes_message' ),
+						LWWC_Link_Wizard_I18n::get_admin_text( 'invalid_attributes_message' ),
 						array( 'status' => 400 )
 					);
 				}
@@ -310,16 +310,16 @@ class LWWC_Link_Wizard_Search {
 			// If no variations found, provide helpful error.
 			if ( empty( $variations ) ) {
 				$edit_link = get_edit_post_link( $product_id );
-				$message   = LWWC_Link_Wizard_i18n::get_admin_text( 'no_valid_variations_message' ) . ' ';
+				$message   = LWWC_Link_Wizard_I18n::get_admin_text( 'no_valid_variations_message' ) . ' ';
 
 				if ( empty( $selected_attributes ) ) {
-					$message .= LWWC_Link_Wizard_i18n::get_admin_text( 'no_variations_configured' ) . ' ';
+					$message .= LWWC_Link_Wizard_I18n::get_admin_text( 'no_variations_configured' ) . ' ';
 				} else {
-					$message .= LWWC_Link_Wizard_i18n::get_admin_text( 'attribute_combination_invalid' ) . ' ';
+					$message .= LWWC_Link_Wizard_I18n::get_admin_text( 'attribute_combination_invalid' ) . ' ';
 				}
 
 				$message .= '<a href="' . $edit_link . '" target="_blank">' .
-							LWWC_Link_Wizard_i18n::get_admin_text( 'configure_variations_message' ) . '</a>';
+							LWWC_Link_Wizard_I18n::get_admin_text( 'configure_variations_message' ) . '</a>';
 
 				return new WP_Error(
 					'no_valid_variations',

@@ -1,4 +1,9 @@
 <?php
+/**
+ * The loader class for registering all actions and filters.
+ *
+ * @package Link_Wizard_For_WooCommerce
+ */
 
 /**
  * Register all of the actions and filters within the plugin.
@@ -11,7 +16,6 @@
  * @package     Link_Wizard_For_WooCommerce
  * @subpackage  Includes
  */
-
 class LWWC_Link_Wizard_Loader {
 
 	/**
