@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 
 const { apiFetch } = wp;
 
-// Set up API authentication with nonce if available
+// Set up API authentication with nonce if available.
 if (typeof window.lwwcApiSettings !== 'undefined') {
     apiFetch.use(apiFetch.createNonceMiddleware(window.lwwcApiSettings.nonce));
     apiFetch.use(apiFetch.createRootURLMiddleware(window.lwwcApiSettings.root));
@@ -20,13 +20,13 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
     const [pendingCoupon, setPendingCoupon] = useState(null);
     const [pendingReplacement, setPendingReplacement] = useState(null);
 
-    // Get i18n translations from PHP
+    // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
 
-    // Handle pending coupon selection with useEffect instead of setTimeout
+    // Handle pending coupon selection with useEffect instead of setTimeout.
     useEffect(() => {
         if (pendingCoupon) {
-            // Immediately clear search results and hide results to prevent "No coupons found" message
+            // Immediately clear search results and hide results to prevent "No coupons found" message.
             setSearchResults([]);
             setShowResults(false);
             
@@ -41,10 +41,10 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
         }
     }, [pendingCoupon, setSelectedCoupon]);
 
-    // Handle pending replacement with useEffect instead of setTimeout
+    // Handle pending replacement with useEffect instead of setTimeout.
     useEffect(() => {
         if (pendingReplacement) {
-            // Immediately clear search results and hide results to prevent "No coupons found" message
+            // Immediately clear search results and hide results to prevent "No coupons found" message.
             setSearchResults([]);
             setShowResults(false);
             
@@ -58,7 +58,7 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
         }
     }, [pendingReplacement, setSelectedCoupon]);
 
-    // Search for coupons when search term changes
+    // Search for coupons when search term changes.
     useEffect(() => {
         if (searchTerm.length < 2) {
             setSearchResults([]);
@@ -72,7 +72,7 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
             setError(null);
             
             try {
-                // Use custom Link Wizard REST API to search coupons
+                // Use custom Link Wizard REST API to search coupons.
                 const response = await apiFetch({
                     path: `link-wizard/v1/coupons?search=${encodeURIComponent(searchTerm)}&limit=10`
                 });
@@ -88,23 +88,23 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
             }
         };
 
-        // Debounce search to avoid excessive API calls
+        // Debounce search to avoid excessive API calls.
         const timeoutId = setTimeout(searchCoupons, 300);
         return () => clearTimeout(timeoutId);
     }, [searchTerm]);
 
     const handleCouponSelect = (coupon) => {
-        // Check if we need to show replacement modal FIRST
+        // Check if we need to show replacement modal FIRST.
         if (selectedCoupon && selectedCoupon.id !== coupon.id) {
-            // Show replacement modal immediately, no animation or changes yet
+            // Show replacement modal immediately, no animation or changes yet.
             setReplaceCoupon({ old: selectedCoupon, new: coupon });
             return;
         }
         
-        // Show "Adding" animation
+        // Show "Adding" animation.
         setAddingCoupon(coupon.id);
         
-        // Set pending coupon to trigger useEffect
+        // Set pending coupon to trigger useEffect.
         setPendingCoupon(coupon);
     };
 
@@ -340,16 +340,16 @@ const Coupon = ({ selectedCoupon, setSelectedCoupon }) => {
                                     e.preventDefault();
                                     const newCoupon = replaceCoupon.new;
                                     
-                                    // Clear the modal first
+                                    // Clear the modal first.
                                     setReplaceCoupon(null);
                                     
-                                    // Reset search state immediately to allow new searches
+                                    // Reset search state immediately to allow new searches.
                                     resetSearchState();
                                     
-                                    // Show "Adding" animation for new coupon
+                                    // Show "Adding" animation for new coupon.
                                     setAddingCoupon(newCoupon.id);
                                     
-                                    // Set pending replacement to trigger useEffect
+                                    // Set pending replacement to trigger useEffect.
                                     setPendingReplacement(newCoupon);
                                 }}
                             >
