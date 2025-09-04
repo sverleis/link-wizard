@@ -9,30 +9,30 @@ import DynamicLink from './components/DynamicLink';
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
     const [linkType, setLinkType] = useState('checkoutLink');
-    // Add redirect state management
+    // Add redirect state management.
     const [redirectOption, setRedirectOption] = useState('cart');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);
-    // Add coupon state management
+    // Add coupon state management.
     const [selectedCoupon, setSelectedCoupon] = useState(null);
-    // Add product selection state management
+    // Add product selection state management.
     const [selectedProducts, setSelectedProducts] = useState([]);
-    // Add state for product selection modal
+    // Add state for product selection modal.
     const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
     const [pendingLinkType, setPendingLinkType] = useState(null);
-    // Add validation state for step navigation
+    // Add validation state for step navigation.
     const [showValidationModal, setShowValidationModal] = useState(false);
-    // Add state to track attempted navigation
+    // Add state to track attempted navigation.
     const [attemptedStep, setAttemptedStep] = useState(null);
     // More to come as we build out the extension further.
 
-    // Ensure the header SVG icon color matches the admin primary button background
+    // Ensure the header SVG icon color matches the admin primary button background.
     useEffect(() => {
-        // Defer to next tick to ensure DOM is painted
+        // Defer to next tick to ensure DOM is painted.
         const t = setTimeout(() => {
             try {
                 const icon = document.querySelector('.lwwc-header-icon');
                 if (!icon) return;
-                // Prefer a visible primary button within our UI; fallback to global admin primary
+                // Prefer a visible primary button within our UI; fallback to global admin primary.
                 let sourceBtn = document.querySelector('#link-wizard-form .button-primary');
                 if (!sourceBtn) sourceBtn = document.querySelector('.button-primary');
                 if (!sourceBtn) return;
@@ -46,23 +46,23 @@ function App() {
         return () => clearTimeout(t);
     }, []);
 
-    // Initialize browser history and handle navigation
+    // Initialize browser history and handle navigation.
     useEffect(() => {
-        // Set initial URL if not already set
+        // Set initial URL if not already set.
         if (!window.location.hash) {
             window.history.replaceState({ step: 1 }, '', '#step-1');
         }
 
-        // Handle browser back/forward buttons
+        // Handle browser back/forward buttons.
         const handlePopState = (event) => {
             if (event.state && event.state.step) {
                 const step = event.state.step;
-                // Validate the step before setting it
+                // Validate the step before setting it.
                 if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
-                    // Show validation modal and don't change step
+                    // Show validation modal and don't change step.
                     setAttemptedStep(step);
                     setShowValidationModal(true);
-                    // Revert the URL to the current step
+                    // Revert the URL to the current step.
                     window.history.replaceState({ step: currentStep }, '', `#step-${currentStep}`);
                 } else {
                     setCurrentStep(step);
@@ -70,19 +70,19 @@ function App() {
             }
         };
 
-        // Handle hash changes (for direct URL access)
+        // Handle hash changes (for direct URL access).
         const handleHashChange = () => {
             const hash = window.location.hash;
             const stepMatch = hash.match(/#step-(\d+)/);
             if (stepMatch) {
                 const step = parseInt(stepMatch[1], 10);
                 if (step >= 1 && step <= 3) {
-                    // Validate the step before setting it
+                    // Validate the step before setting it.
                     if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
-                        // Show validation modal and don't change step
+                        // Show validation modal and don't change step.
                         setAttemptedStep(step);
                         setShowValidationModal(true);
-                        // Revert the URL to the current step
+                        // Revert the URL to the current step.
                         window.history.replaceState({ step: currentStep }, '', `#step-${currentStep}`);
                     } else {
                         setCurrentStep(step);
@@ -91,21 +91,21 @@ function App() {
             }
         };
 
-        // Set up event listeners
+        // Set up event listeners.
         window.addEventListener('popstate', handlePopState);
         window.addEventListener('hashchange', handleHashChange);
 
-        // Initial hash check
+        // Initial hash check.
         handleHashChange();
 
-        // Cleanup
+        // Cleanup.
         return () => {
             window.removeEventListener('popstate', handlePopState);
             window.removeEventListener('hashchange', handleHashChange);
         };
     }, []);
 
-    // Update browser history when step changes
+    // Update browser history when step changes.
     useEffect(() => {
         const newHash = `#step-${currentStep}`;
         if (window.location.hash !== newHash) {
@@ -114,10 +114,10 @@ function App() {
     }, [currentStep]);
 
     const nextStep = () => {
-        // Validate that products are selected before allowing navigation to steps 3+
+        // Validate that products are selected before allowing navigation to steps 3+.
         if (currentStep >= 2 && (!selectedProducts || selectedProducts.length === 0)) {
             setShowValidationModal(true);
-            return; // Don't proceed
+            return; // Don't proceed.
         }
         setCurrentStep((prevStep) => prevStep + 1);
     };
@@ -136,18 +136,18 @@ function App() {
         setSelectedRedirectPage(null);
     };
 
-    // Function to navigate to a specific step with validation
+    // Function to navigate to a specific step with validation.
     const goToStep = (step) => {
-        // Validate that we can go to the requested step
+        // Validate that we can go to the requested step.
         if (step < 1 || step > 3) {
             return false;
         }
 
-        // If trying to go to step 3 without products, show validation modal
+        // If trying to go to step 3 without products, show validation modal.
         if (step === 3 && (!selectedProducts || selectedProducts.length === 0)) {
             setAttemptedStep(step);
             setShowValidationModal(true);
-            // Don't update the URL if validation fails
+            // Don't update the URL if validation fails.
             return false;
         }
 
@@ -155,22 +155,22 @@ function App() {
         return true;
     };
 
-    // Handle validation modal close and navigation
+    // Handle validation modal close and navigation.
     const handleValidationModalClose = () => {
         setShowValidationModal(false);
         setAttemptedStep(null);
     };
 
-    // Handle validation modal confirm (user acknowledges they need to select products)
+    // Handle validation modal confirm (user acknowledges they need to select products).
     const handleValidationModalConfirm = () => {
         setShowValidationModal(false);
         setAttemptedStep(null);
-        // Navigate to product selection step
+        // Navigate to product selection step.
         setCurrentStep(2);
     };
 
     const handleLinkTypeChange = (newLinkType) => {
-        // If switching to addToCart and there are multiple products, show modal
+        // If switching to addToCart and there are multiple products, show modal.
         if (newLinkType === 'addToCart' && selectedProducts.length > 1) {
             setPendingLinkType(newLinkType);
             setShowProductSelectionModal(true);
@@ -186,12 +186,12 @@ function App() {
             setSelectedProducts([]);
         }
         
-        // Set the pending link type and close modal
+        // Set the pending link type and close modal.
         setLinkType(pendingLinkType);
         setShowProductSelectionModal(false);
         setPendingLinkType(null);
         
-        // Keep user on the product selection page (step 2)
+        // Keep user on the product selection page (step 2).
         setCurrentStep(2);
     };
 
@@ -201,7 +201,7 @@ function App() {
                 return (
                     <>
                         <LinkType linkType={linkType} setLinkType={handleLinkTypeChange} />
-                        {/* Duplicate navigation below each step for better UX */}
+                        {/* Duplicate navigation below each step for better UX. */}
                         <div className="form-step-navigation form-step-navigation-bottom">
                             {renderNavigation()}
                         </div>
@@ -228,7 +228,7 @@ function App() {
                             selectedProducts={selectedProducts}
                             setSelectedProducts={setSelectedProducts}
                         />
-                        {/* Duplicate navigation below each step for better UX */}
+                        {/* Duplicate navigation below each step for better UX. */}
                         <div className="form-step-navigation form-step-navigation-bottom">
                             {renderNavigation()}
                         </div>
@@ -257,7 +257,7 @@ function App() {
                                 selectedRedirectPage={selectedRedirectPage}
                                 setSelectedRedirectPage={setSelectedRedirectPage}
                             />
-                            {/* Duplicate navigation below each step for better UX */}
+                            {/* Duplicate navigation below each step for better UX. */}
                             <div className="form-step-navigation form-step-navigation-bottom">
                                 {renderNavigation()}
                             </div>
@@ -284,7 +284,7 @@ function App() {
                                 selectedCoupon={selectedCoupon}
                                 setSelectedCoupon={setSelectedCoupon}
                             />
-                            {/* Duplicate navigation below each step for better UX */}
+                            {/* Duplicate navigation below each step for better UX. */}
                             <div className="form-step-navigation form-step-navigation-bottom">
                                 {renderNavigation()}
                             </div>
@@ -305,14 +305,14 @@ function App() {
                     );
                 }
             case 4:
-                // This step is no longer needed since DynamicLink shows everything
+                // This step is no longer needed since DynamicLink shows everything.
                 return null;
 
             default:
                 return (
                     <>
                         <LinkType linkType={linkType} setLinkType={setLinkType} />
-                        {/* Duplicate navigation below each step for better UX */}
+                        {/* Duplicate navigation below each step for better UX. */}
                         <div className="form-step-navigation form-step-navigation-bottom">
                             {renderNavigation()}
                         </div>
