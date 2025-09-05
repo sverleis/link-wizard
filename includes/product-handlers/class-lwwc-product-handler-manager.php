@@ -38,6 +38,7 @@ class LWWC_Product_Handler_Manager {
 		if ( empty( $this->handlers ) ) {
 			$this->register_handler( new LWWC_Simple_Product_Handler() );
 			$this->register_handler( new LWWC_Variable_Product_Handler() );
+			$this->register_handler( new LWWC_Subscription_Product_Handler() );
 		}
 	}
 

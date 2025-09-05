@@ -12,7 +12,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
 
     const i18n = window.lwwcI18n || {};
 
-    // Search for pages and posts when search term changes
+    // Search for pages and posts when search term changes.
     useEffect(() => {
         if (searchTerm.length < 2) {
             setSearchResults([]);
@@ -157,7 +157,7 @@ const PageSearch = ({ selectedPage, setSelectedPage }) => {
                 </div>
             )}
 
-            {/* Replace Page Confirmation Modal */}
+            {/* Replace Page Confirmation Modal. */}
             {replacePage && (
                 <div className="confirmation-modal" onClick={() => setReplacePage(null)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const GenerateLink = () => {
-    // This component will handle the final link generation and display
+    // This component will handle the final link generation and display.
     return (
         <div className="form-step">
             <h2 className="form-step-heading">Your Generated Link!</h2>
