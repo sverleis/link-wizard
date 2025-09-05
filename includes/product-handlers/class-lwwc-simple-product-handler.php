@@ -61,16 +61,17 @@ class LWWC_Simple_Product_Handler implements LWWC_Product_Handler_Interface {
 		}
 
 		return array(
-			'id'          => $product->get_id(),
-			'name'        => $product->get_name(),
-			'sku'         => $product->get_sku(),
-			'price'       => $product->get_price_html(), // Use formatted price with currency.
-			'image'       => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
-			'parent_id'   => null,
-			'parent_name' => null,
-			'attributes'  => null,
-			'type'        => 'simple',
-			'slug'        => $product->get_slug(),
+			'id'                => $product->get_id(),
+			'name'              => $product->get_name(),
+			'sku'               => $product->get_sku(),
+			'price'             => $product->get_price_html(), // Use formatted price with currency.
+			'image'             => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
+			'parent_id'         => null,
+			'parent_name'       => null,
+			'attributes'        => null,
+			'type'              => 'simple',
+			'slug'              => $product->get_slug(),
+			'sold_individually' => $product->is_sold_individually(),
 		);
 	}
 

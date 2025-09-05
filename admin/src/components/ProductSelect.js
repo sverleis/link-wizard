@@ -843,10 +843,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             <input
                                                 type="number"
                                                 min="1"
+                                                max={product.sold_individually ? "1" : undefined}
                                                 value={product.quantity || 1}
-                                                onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 1)}
+                                                onChange={(e) => {
+                                                    const newQuantity = parseInt(e.target.value) || 1;
+                                                    // If sold individually, force quantity to 1.
+                                                    const finalQuantity = product.sold_individually ? 1 : newQuantity;
+                                                    handleQuantityChange(product.id, finalQuantity);
+                                                }}
                                                 className="lwwc-selected-product-qty-input"
+                                                disabled={product.sold_individually}
+                                                title={product.sold_individually ? (i18n.soldIndividually || 'This product is sold individually') : ''}
                                             />
+                                            {product.sold_individually && (
+                                                <span className="lwwc-sold-individually-note">
+                                                    {i18n.soldIndividually || 'Sold individually'}
+                                                </span>
+                                            )}
                                             <button
                                                 onClick={() => handleQuantityChange(product.id, 0)}
                                                 className="lwwc-selected-product-remove-button"

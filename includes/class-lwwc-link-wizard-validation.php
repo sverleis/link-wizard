@@ -62,6 +62,17 @@ class LWWC_Validation {
 				'description'   => __( 'Validates that simple products are purchasable and in stock', 'link-wizard-for-woocommerce' ),
 			)
 		);
+
+		// Register sold individually validation rule for all product types.
+		self::register_validation_rule(
+			'product_sold_individually',
+			array(
+				'product_types' => array( 'simple', 'variable', 'subscription', 'variable-subscription' ),
+				'callback'      => array( __CLASS__, 'validate_product_sold_individually' ),
+				'priority'      => 5,
+				'description'   => __( 'Validates that products marked as "Sold individually" are handled correctly', 'link-wizard-for-woocommerce' ),
+			)
+		);
 	}
 
 	/**
@@ -298,6 +309,33 @@ class LWWC_Validation {
 	 */
 	private static function sort_by_priority( $a, $b ) {
 		return $a['priority'] - $b['priority'];
+	}
+
+	/**
+	 * Validate product sold individually setting.
+	 *
+	 * @param WC_Product $product The product to validate.
+	 * @param string     $rule_id The validation rule ID.
+	 * @return array Validation result.
+	 */
+	public static function validate_product_sold_individually( $product, $rule_id ) {
+		$errors = array();
+
+		// Check if product is sold individually.
+		if ( $product->is_sold_individually() ) {
+			// This is not an error, but we need to ensure the frontend knows about this limitation.
+			// The validation passes but we add a warning/info message.
+			$errors[] = array(
+				'type'    => 'info',
+				'message' => __( 'This product is sold individually and quantity will be limited to 1', 'link-wizard-for-woocommerce' ),
+			);
+		}
+
+		// Always return valid for sold individually products - it's not an error, just a limitation.
+		return array(
+			'is_valid' => true,
+			'errors'   => $errors,
+		);
 	}
 
 	/**

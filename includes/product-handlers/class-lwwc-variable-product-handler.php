@@ -382,17 +382,18 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 	private function get_parent_product_data( $product ) {
 		$is_valid     = $this->is_valid_for_links( $product );
 		$product_data = array(
-			'id'              => $product->get_id(),
-			'name'            => $product->get_name(),
-			'sku'             => $product->get_sku(),
-			'price'           => $product->get_price_html(), // Use price HTML to show range.
-			'image'           => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
-			'type'            => 'variable',
-			'has_variations'  => true,
-			'variation_count' => count( $product->get_available_variations() ),
-			'attributes'      => $this->get_attributes( $product ), // Add available attributes.
-			'slug'            => $product->get_slug(),
-			'disabled'        => ! $is_valid,
+			'id'                => $product->get_id(),
+			'name'              => $product->get_name(),
+			'sku'               => $product->get_sku(),
+			'price'             => $product->get_price_html(), // Use price HTML to show range.
+			'image'             => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
+			'type'              => 'variable',
+			'has_variations'    => true,
+			'variation_count'   => count( $product->get_available_variations() ),
+			'attributes'        => $this->get_attributes( $product ), // Add available attributes.
+			'slug'              => $product->get_slug(),
+			'sold_individually' => $product->is_sold_individually(),
+			'disabled'          => ! $is_valid,
 		);
 
 		// If the product is not valid for links, add edit link and reason.

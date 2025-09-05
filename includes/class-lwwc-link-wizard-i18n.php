@@ -38,6 +38,7 @@ class LWWC_Link_Wizard_I18n {
 			'selected_products'                   => __( 'Selected Products:', 'link-wizard-for-woocommerce' ),
 			'selected_product'                    => __( 'Selected Product:', 'link-wizard-for-woocommerce' ),
 			'quantity_label'                      => __( 'Qty:', 'link-wizard-for-woocommerce' ),
+			'sold_individually'                   => __( 'Sold individually', 'link-wizard-for-woocommerce' ),
 			'remove_button'                       => __( 'Remove', 'link-wizard-for-woocommerce' ),
 			'available_variations'                => __( 'Available Variations:', 'link-wizard-for-woocommerce' ),
 			'filter_by_attributes'                => __( 'Filter by Attributes:', 'link-wizard-for-woocommerce' ),
