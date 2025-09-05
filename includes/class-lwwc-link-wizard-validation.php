@@ -331,6 +331,27 @@ class LWWC_Validation {
 			);
 		}
 
+		// For variable products, also check if any variations are sold individually.
+		if ( $product->is_type( 'variable' ) ) {
+			$variations = $product->get_available_variations();
+			$has_sold_individually_variations = false;
+
+			foreach ( $variations as $variation ) {
+				$variation_product = wc_get_product( $variation['variation_id'] );
+				if ( $variation_product && $variation_product->is_sold_individually() ) {
+					$has_sold_individually_variations = true;
+					break;
+				}
+			}
+
+			if ( $has_sold_individually_variations ) {
+				$errors[] = array(
+					'type'    => 'info',
+					'message' => __( 'Some variations of this product are sold individually and quantity will be limited to 1', 'link-wizard-for-woocommerce' ),
+				);
+			}
+		}
+
 		// Always return valid for sold individually products - it's not an error, just a limitation.
 		return array(
 			'is_valid' => true,

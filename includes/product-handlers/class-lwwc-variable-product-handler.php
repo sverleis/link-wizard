@@ -183,17 +183,23 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 	 * @return array
 	 */
 	private function get_variation_data( $parent_product, $variation, $variation_product ) {
+		// Check if either parent or variation is sold individually.
+		$parent_sold_individually = $parent_product->is_sold_individually();
+		$variation_sold_individually = $variation_product->is_sold_individually();
+		$sold_individually = $parent_sold_individually || $variation_sold_individually;
+
 		return array(
-			'id'          => $variation['variation_id'],
-			'name'        => $this->get_variation_name( $parent_product, $variation ),
-			'sku'         => $variation_product->get_sku(),
-			'price'       => $variation_product->get_price_html(), // Use formatted price with currency.
-			'image'       => $this->get_variation_image( $variation, $parent_product ),
-			'parent_id'   => $parent_product->get_id(),
-			'parent_name' => $parent_product->get_name(),
-			'parent_slug' => $parent_product->get_slug(), // Add parent slug for URL generation.
-			'attributes'  => $variation['attributes'],
-			'type'        => 'variation',
+			'id'                => $variation['variation_id'],
+			'name'              => $this->get_variation_name( $parent_product, $variation ),
+			'sku'               => $variation_product->get_sku(),
+			'price'             => $variation_product->get_price_html(), // Use formatted price with currency.
+			'image'             => $this->get_variation_image( $variation, $parent_product ),
+			'parent_id'         => $parent_product->get_id(),
+			'parent_name'       => $parent_product->get_name(),
+			'parent_slug'       => $parent_product->get_slug(), // Add parent slug for URL generation.
+			'attributes'        => $variation['attributes'],
+			'type'              => 'variation',
+			'sold_individually' => $sold_individually,
 		);
 	}
 
@@ -569,18 +575,24 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 	private function get_disabled_variation_data( $variation, $product ) {
 		$variation_product = wc_get_product( $variation['variation_id'] );
 
+		// Check if either parent or variation is sold individually.
+		$parent_sold_individually = $product->is_sold_individually();
+		$variation_sold_individually = $variation_product ? $variation_product->is_sold_individually() : false;
+		$sold_individually = $parent_sold_individually || $variation_sold_individually;
+
 		return array(
-			'id'              => $variation['variation_id'],
-			'name'            => $this->get_variation_name( $product, $variation ),
-			'sku'             => $variation_product ? $variation_product->get_sku() : '',
-			'price'           => '', // Remove pricing for disabled items.
-			'image'           => $this->get_variation_image( $variation, $product ),
-			'type'            => 'variation',
-			'parent_id'       => $product->get_id(),
-			'attributes'      => $variation['attributes'],
-			'disabled'        => true,
-			'edit_link'       => admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ), // Link to product edit page.
-			'disabled_reason' => LWWC_Link_Wizard_I18n::get_admin_text( 'variation_has_any_attributes' ),
+			'id'                => $variation['variation_id'],
+			'name'              => $this->get_variation_name( $product, $variation ),
+			'sku'               => $variation_product ? $variation_product->get_sku() : '',
+			'price'             => '', // Remove pricing for disabled items.
+			'image'             => $this->get_variation_image( $variation, $product ),
+			'type'              => 'variation',
+			'parent_id'         => $product->get_id(),
+			'attributes'        => $variation['attributes'],
+			'sold_individually' => $sold_individually,
+			'disabled'          => true,
+			'edit_link'         => admin_url( 'post.php?post=' . $product->get_id() . '&action=edit' ), // Link to product edit page.
+			'disabled_reason'   => LWWC_Link_Wizard_I18n::get_admin_text( 'variation_has_any_attributes' ),
 		);
 	}
 }
