@@ -163,7 +163,7 @@ class LWWC_Link_Wizard_I18n {
 			'noAddonsAvailable'                   => __( 'No addons are currently active.', 'link-wizard-for-woocommerce' ),
 			'installAddonsHint'                   => __( 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.', 'link-wizard-for-woocommerce' ),
 			'recheckAddons'                       => __( 'Recheck', 'link-wizard-for-woocommerce' ),
-			'openAddon'                           => __( 'Open', 'link-wizard-for-woocommerce' ),
+			'settingsAddon'                       => __( 'Settings', 'link-wizard-for-woocommerce' ),
 			'retry'                               => __( 'Retry', 'link-wizard-for-woocommerce' ),
 		);
 

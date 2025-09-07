@@ -196,7 +196,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                                 </span>
                                 {addon.author && (
                                     <span className="lwwc-addon-author">
-                                        by {addon.author}
+                                        by <span dangerouslySetInnerHTML={{ __html: addon.author }} />
                                     </span>
                                 )}
                             </div>
@@ -206,7 +206,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                                 type="button"
                                 className="button button-primary lwwc-addon-button"
                             >
-                                {i18n.openAddon || 'Open'}
+                                {i18n.settingsAddon || 'Settings'}
                             </button>
                         </div>
                     </div>
