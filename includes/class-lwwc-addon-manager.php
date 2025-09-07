@@ -255,7 +255,7 @@ class LWWC_Addon_Manager {
 		
 		// Add addon data to the existing admin script.
 		wp_localize_script( 
-			'lwwc-link-wizard-admin', 
+			'link-wizard-for-woocommerce', 
 			'lwwcAddons', 
 			array(
 				'addons' => $addon_data,
@@ -270,7 +270,7 @@ class LWWC_Addon_Manager {
 		$icon_html = ob_get_clean();
 		
 		wp_add_inline_script( 
-			'lwwc-link-wizard-admin', 
+			'link-wizard-for-woocommerce', 
 			'window.lwwcIcon = ' . wp_json_encode( $icon_html ) . ';'
 		);
 	}
