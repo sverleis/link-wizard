@@ -33,6 +33,11 @@ const AddonsSection = ({ onAddonSelect }) => {
         }
     };
 
+    const handleRecheck = async () => {
+        // Force reload the page to refresh addon detection
+        window.location.reload();
+    };
+
     const handleAddonClick = (addon) => {
         if (onAddonSelect) {
             onAddonSelect(addon);
@@ -114,6 +119,15 @@ const AddonsSection = ({ onAddonSelect }) => {
                     ></span>
                     <div className="lwwc-addons-empty">
                         <p>{i18n.noAddonsAvailable || 'No addons are currently active.'}</p>
+                        <button 
+                            type="button" 
+                            className="button button-secondary lwwc-addons-recheck-btn"
+                            onClick={handleRecheck}
+                            title={i18n.recheckAddons || 'Refresh addon detection'}
+                        >
+                            <span className="dashicons dashicons-update"></span>
+                            {i18n.recheckAddons || 'Recheck'}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -122,9 +136,20 @@ const AddonsSection = ({ onAddonSelect }) => {
 
     return (
         <div className="lwwc-addons-section">
-            <h3 className="lwwc-addons-heading">
-                {i18n.addons || 'Addons'}
-            </h3>
+            <div className="lwwc-addons-header">
+                <h3 className="lwwc-addons-heading">
+                    {i18n.addons || 'Addons'}
+                </h3>
+                <button 
+                    type="button" 
+                    className="button button-secondary lwwc-addons-recheck-btn"
+                    onClick={handleRecheck}
+                    title={i18n.recheckAddons || 'Refresh addon detection'}
+                >
+                    <span className="dashicons dashicons-update"></span>
+                    {i18n.recheckAddons || 'Recheck'}
+                </button>
+            </div>
             <p className="lwwc-addons-description">
                 {i18n.addonsDescription || 'Access additional product types and features through these addons:'}
             </p>

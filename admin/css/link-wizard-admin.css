@@ -2905,6 +2905,30 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin: 0 auto;
 }
 
+/* Recheck Button */
+.lwwc-addons-recheck-btn {
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lwwc-addons-recheck-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+.lwwc-addons-recheck-btn:hover .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .lwwc-addons-grid {
