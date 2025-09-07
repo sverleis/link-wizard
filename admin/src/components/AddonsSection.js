@@ -189,17 +189,12 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </h4>
                             <p className="lwwc-addon-description">
                                 {getAddonDescription(addon)}
-                            </p>
-                            <div className="lwwc-addon-meta">
-                                <span className="lwwc-addon-version">
-                                    v{addon.version}
-                                </span>
                                 {addon.author && (
                                     <span className="lwwc-addon-author">
-                                        by <span dangerouslySetInnerHTML={{ __html: addon.author }} />
+                                        {' | '}by <span dangerouslySetInnerHTML={{ __html: addon.author }} />
                                     </span>
                                 )}
-                            </div>
+                            </p>
                         </div>
                         <div className="lwwc-addon-action">
                             <button 
@@ -208,6 +203,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                             >
                                 {i18n.settingsAddon || 'Settings'}
                             </button>
+                            <div className="lwwc-addon-version">
+                                v{addon.version}
+                            </div>
                         </div>
                     </div>
                 ))}

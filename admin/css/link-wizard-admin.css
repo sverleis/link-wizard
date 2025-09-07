@@ -2743,6 +2743,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 .lwwc-addons-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     margin-bottom: 0;
 }
@@ -2916,7 +2917,6 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Recheck Button */
 .lwwc-addons-recheck-btn {
-    margin-left: auto;
     display: inline-flex;
     align-items: center;
     gap: 5px;
