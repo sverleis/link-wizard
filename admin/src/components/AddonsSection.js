@@ -45,15 +45,15 @@ const AddonsSection = ({ onAddonSelect }) => {
             return addon.icon;
         }
         
-        // Fallback to default icons based on addon slug.
+        // Fallback to Dashicons based on addon slug.
         const iconMap = {
-            'link-wizard-addons': '🧩',
-            'link-wizard-bundles': '📦',
-            'link-wizard-composite': '🔗',
-            'link-wizard-grouped': '📋',
+            'link-wizard-addons': 'dashicons-admin-plugins',
+            'link-wizard-bundles': 'dashicons-products',
+            'link-wizard-composite': 'dashicons-admin-links',
+            'link-wizard-grouped': 'dashicons-groups',
         };
         
-        return iconMap[addon.plugin_slug] || '🔌';
+        return iconMap[addon.plugin_slug] || 'dashicons-admin-plugins';
     };
 
     const getAddonDescription = (addon) => {
@@ -104,14 +104,17 @@ const AddonsSection = ({ onAddonSelect }) => {
     if (addons.length === 0) {
         return (
             <div className="lwwc-addons-section">
-                <h3 className="lwwc-addons-heading">
-                    {i18n.addons || 'Addons'}
-                </h3>
+                <div className="lwwc-addons-header">
+                    <h3 className="lwwc-addons-heading">
+                        {i18n.addons || 'Addons'}
+                    </h3>
+                    <span 
+                        className="dashicons dashicons-editor-help lwwc-addons-help-icon"
+                        title={i18n.installAddonsHint || 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.'}
+                    ></span>
+                </div>
                 <div className="lwwc-addons-empty">
                     <p>{i18n.noAddonsAvailable || 'No addons are currently active.'}</p>
-                    <p className="lwwc-addons-install-hint">
-                        {i18n.installAddonsHint || 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.'}
-                    </p>
                 </div>
             </div>
         );
@@ -134,7 +137,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                         onClick={() => handleAddonClick(addon)}
                     >
                         <div className="lwwc-addon-icon">
-                            {getAddonIcon(addon)}
+                            <span className={`dashicons ${getAddonIcon(addon)}`}></span>
                         </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
