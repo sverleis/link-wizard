@@ -82,6 +82,7 @@ class LWWC_Addon_Manager {
 		// Debug: Log detected addons.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( 'LWWC Addon Manager: Detected ' . count( self::$registered_addons ) . ' addons: ' . implode( ', ', array_keys( self::$registered_addons ) ) );
+			error_log( 'LWWC Addon Manager: Active plugins: ' . print_r( get_option( 'active_plugins', array() ), true ) );
 		}
 	}
 
