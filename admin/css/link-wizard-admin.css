@@ -2744,7 +2744,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 0;
 }
 
 .lwwc-addons-help-icon {
@@ -2885,13 +2885,17 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Addons Empty State */
 .lwwc-addons-empty {
-    text-align: center;
-    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
     color: var(--wp-admin-text-color-muted, #666);
+    font-size: 14px;
+    padding: 0;
 }
 
 .lwwc-addons-empty p {
-    margin: 0 0 10px 0;
+    margin: 0;
 }
 
 .lwwc-addons-install-hint {

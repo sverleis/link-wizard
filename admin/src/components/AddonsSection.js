@@ -112,9 +112,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                         className="dashicons dashicons-editor-help lwwc-addons-help-icon"
                         title={i18n.installAddonsHint || 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.'}
                     ></span>
-                </div>
-                <div className="lwwc-addons-empty">
-                    <p>{i18n.noAddonsAvailable || 'No addons are currently active.'}</p>
+                    <div className="lwwc-addons-empty">
+                        <p>{i18n.noAddonsAvailable || 'No addons are currently active.'}</p>
+                    </div>
                 </div>
             </div>
         );
