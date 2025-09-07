@@ -127,6 +127,14 @@ class LWWC_Addon_Manager {
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
 		$plugin_slug = dirname( $plugin_file );
 		
+		// Check if plugin is active.
+		$is_active = is_plugin_active( $plugin_file );
+		
+		// Debug: Log addon registration details.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Registering addon - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
+		}
+		
 		// Extract addon info from plugin data.
 		$addon_info = array(
 			'plugin_file'    => $plugin_file,
@@ -137,7 +145,7 @@ class LWWC_Addon_Manager {
 			'author'         => $plugin_data['Author'] ?? '',
 			'plugin_uri'     => $plugin_data['PluginURI'] ?? '',
 			'text_domain'    => $plugin_data['TextDomain'] ?? '',
-			'is_active'      => is_plugin_active( $plugin_file ),
+			'is_active'      => $is_active,
 			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
 			'capabilities'   => self::get_addon_capabilities( $plugin_slug ),
 			'icon'           => self::get_addon_icon( $plugin_slug ),
@@ -238,12 +246,19 @@ class LWWC_Addon_Manager {
 	 * @since 1.0.4
 	 */
 	public static function enqueue_addon_data() {
+		$addon_data = self::get_registered_addons();
+		
+		// Debug: Log addon data being passed to frontend.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Enqueuing addon data: ' . print_r( $addon_data, true ) );
+		}
+		
 		// Add addon data to the existing admin script.
 		wp_localize_script( 
 			'lwwc-link-wizard-admin', 
 			'lwwcAddons', 
 			array(
-				'addons' => self::get_registered_addons(),
+				'addons' => $addon_data,
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
 			)
