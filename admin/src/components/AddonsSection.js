@@ -39,8 +39,13 @@ const AddonsSection = ({ onAddonSelect }) => {
         }
     };
 
-    const getAddonIcon = (addonSlug) => {
-        // Return appropriate icon based on addon type.
+    const getAddonIcon = (addon) => {
+        // Check if addon has a custom icon defined.
+        if (addon.icon) {
+            return addon.icon;
+        }
+        
+        // Fallback to default icons based on addon slug.
         const iconMap = {
             'link-wizard-addons': '🧩',
             'link-wizard-bundles': '📦',
@@ -48,7 +53,7 @@ const AddonsSection = ({ onAddonSelect }) => {
             'link-wizard-grouped': '📋',
         };
         
-        return iconMap[addonSlug] || '🔌';
+        return iconMap[addon.plugin_slug] || '🔌';
     };
 
     const getAddonDescription = (addon) => {
@@ -129,7 +134,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                         onClick={() => handleAddonClick(addon)}
                     >
                         <div className="lwwc-addon-icon">
-                            {getAddonIcon(addon.plugin_slug)}
+                            {getAddonIcon(addon)}
                         </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">

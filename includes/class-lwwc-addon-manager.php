@@ -125,6 +125,7 @@ class LWWC_Addon_Manager {
 			'is_active'      => is_plugin_active( $plugin_file ),
 			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
 			'capabilities'   => self::get_addon_capabilities( $plugin_slug ),
+			'icon'           => self::get_addon_icon( $plugin_slug ),
 		);
 		
 		// Allow addons to modify their registration info.
@@ -164,6 +165,23 @@ class LWWC_Addon_Manager {
 		
 		// Allow addons to register their capabilities.
 		return apply_filters( 'lwwc_addon_capabilities', $default_capabilities, $plugin_slug );
+	}
+
+	/**
+	 * Get addon icon.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_slug The plugin slug.
+	 * @return string The addon icon (emoji, SVG, or URL).
+	 */
+	private static function get_addon_icon( $plugin_slug ) {
+		// Default icon.
+		$default_icon = '🔌';
+		
+		// Allow addons to register their own icons.
+		$icon = apply_filters( 'lwwc_addon_icon', $default_icon, $plugin_slug );
+		
+		return $icon;
 	}
 
 	/**
@@ -214,6 +232,17 @@ class LWWC_Addon_Manager {
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
 			)
+		);
+		
+		// Add the icon HTML to the admin script.
+		ob_start();
+		include LWWC_PATH . 'admin/partials/lwwc_icon.php';
+		$icon_html = ob_get_clean();
+		
+		wp_localize_script( 
+			'lwwc-link-wizard-admin', 
+			'lwwcIcon', 
+			$icon_html
 		);
 	}
 
