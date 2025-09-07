@@ -185,8 +185,8 @@ const AddonsSection = ({ onAddonSelect }) => {
                         </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
-                                <span className="lwwc-addon-version">v{addon.version}</span>
                                 {addon.name}
+                                <span className="lwwc-addon-version">v{addon.version}</span>
                             </h4>
                             <p className="lwwc-addon-description">
                                 {getAddonDescription(addon)}
