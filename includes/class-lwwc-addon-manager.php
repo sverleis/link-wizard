@@ -168,6 +168,11 @@ class LWWC_Addon_Manager {
 		// Default admin URL - can be customized by addons.
 		$admin_url = admin_url( 'edit.php?post_type=product&page=link-wizard-for-woocommerce&addon=' . $plugin_slug );
 		
+		// Special handling for link-wizard-addons.
+		if ( 'link-wizard-addons' === $plugin_slug ) {
+			$admin_url = admin_url( 'edit.php?post_type=product&page=link-wizard-addons-settings' );
+		}
+		
 		// Allow addons to customize their admin URL.
 		return apply_filters( 'lwwc_addon_admin_url', $admin_url, $plugin_slug );
 	}

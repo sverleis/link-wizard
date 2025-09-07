@@ -185,6 +185,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                         </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
+                                <span className="lwwc-addon-version">v{addon.version}</span>
                                 {addon.name}
                             </h4>
                             <p className="lwwc-addon-description">
@@ -197,15 +198,12 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </p>
                         </div>
                         <div className="lwwc-addon-action">
-                            <button 
-                                type="button"
+                            <a 
+                                href={addon.admin_url}
                                 className="button button-primary lwwc-addon-button"
                             >
                                 {i18n.settingsAddon || 'Settings'}
-                            </button>
-                            <div className="lwwc-addon-version">
-                                v{addon.version}
-                            </div>
+                            </a>
                         </div>
                     </div>
                 ))}

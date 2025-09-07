@@ -2819,6 +2819,18 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 16px;
     font-weight: 600;
     color: var(--wp-admin-text-color, #333);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lwwc-addon-title .lwwc-addon-version {
+    background: var(--wp-admin-background-color-lightest, #f0f0f0);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--wp-admin-text-color-muted, #999);
 }
 
 .lwwc-addon-description {
@@ -2928,6 +2940,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     height: 16px;
     line-height: 1;
     margin-right: 5px;
+    margin-top: 6px;
 }
 
 .lwwc-addons-recheck-btn:hover .dashicons {
