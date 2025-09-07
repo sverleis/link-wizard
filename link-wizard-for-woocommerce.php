@@ -61,4 +61,5 @@ function lwwc_run_plugin() {
 	$plugin->run();
 }
 
-lwwc_run_plugin();
+// Initialize the plugin on init to avoid translation loading warnings.
+add_action( 'init', 'lwwc_run_plugin' );

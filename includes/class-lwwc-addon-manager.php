@@ -37,7 +37,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function init() {
 		// Hook into WordPress plugin system to detect addons.
-		add_action( 'plugins_loaded', array( __CLASS__, 'detect_addons' ), 20 );
+		add_action( 'init', array( __CLASS__, 'detect_addons' ), 20 );
 		
 		// Add admin hooks for addon management.
 		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
@@ -55,6 +55,9 @@ class LWWC_Addon_Manager {
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
 		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === $_GET['page'] ) {
+			// Re-detect addons in case some were loaded after initial detection.
+			self::detect_addons();
+			
 			// Add addon data to admin JavaScript.
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_addon_data' ) );
 		}
@@ -75,6 +78,11 @@ class LWWC_Addon_Manager {
 				self::register_addon( $plugin_file );
 			}
 		}
+		
+		// Debug: Log detected addons.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Detected ' . count( self::$registered_addons ) . ' addons: ' . implode( ', ', array_keys( self::$registered_addons ) ) );
+		}
 	}
 
 	/**
@@ -91,6 +99,12 @@ class LWWC_Addon_Manager {
 			
 			// Get plugin data to verify it's a proper addon.
 			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
+			
+			// Debug: Log plugin data for link-wizard-addons.
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && strpos( $plugin_file, 'link-wizard-addons' ) !== false ) {
+				error_log( 'LWWC Addon Manager: Checking plugin ' . $plugin_file );
+				error_log( 'LWWC Addon Manager: Plugin data: ' . print_r( $plugin_data, true ) );
+			}
 			
 			// Check if it requires the core plugin.
 			if ( isset( $plugin_data['RequiresPlugins'] ) && 
