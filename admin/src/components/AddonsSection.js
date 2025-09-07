@@ -137,6 +137,11 @@ const AddonsSection = ({ onAddonSelect }) => {
                     </div>
                 </div>
                 
+                {/* Hello World Notice */}
+                <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', borderRadius: '4px', color: '#155724' }}>
+                    <strong>✅ Link Wizard Addons:</strong> Hello World! The addon is working correctly.
+                </div>
+                
                 {/* Debug Information */}
                 <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', fontSize: '12px' }}>
                     <strong>Debug Info:</strong><br/>
