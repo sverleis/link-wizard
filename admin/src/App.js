@@ -5,6 +5,7 @@ import Redirect from './components/Redirect';
 import Coupon from './components/Coupon';
 import GenerateLink from './components/GenerateLink';
 import DynamicLink from './components/DynamicLink';
+import AddonsSection from './components/AddonsSection';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -23,6 +24,9 @@ function App() {
     const [showValidationModal, setShowValidationModal] = useState(false);
     // Add state to track attempted navigation.
     const [attemptedStep, setAttemptedStep] = useState(null);
+    // Add state for addon management.
+    const [selectedAddon, setSelectedAddon] = useState(null);
+    const [showAddonInterface, setShowAddonInterface] = useState(false);
     // More to come as we build out the extension further.
 
     // Ensure the header SVG icon color matches the admin primary button background.
@@ -193,6 +197,16 @@ function App() {
         
         // Keep user on the product selection page (step 2).
         setCurrentStep(2);
+    };
+
+    // Handle addon selection.
+    const handleAddonSelect = (addon) => {
+        setSelectedAddon(addon);
+        setShowAddonInterface(true);
+        
+        // Navigate to addon interface.
+        // This could be a separate step or a modal overlay.
+        console.log('Selected addon:', addon);
     };
 
     const renderStep = () => {
@@ -383,6 +397,9 @@ function App() {
                 {renderStep()}
                 {renderNavigation()}
             </div>
+
+            {/* Addons Section */}
+            <AddonsSection onAddonSelect={handleAddonSelect} />
 
             {/* Product Selection Modal */}
             {showProductSelectionModal && (

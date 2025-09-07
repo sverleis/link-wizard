@@ -1,0 +1,306 @@
+<?php
+/**
+ * Addon Manager.
+ *
+ * Manages addon detection, registration, and integration for Link Wizard for WooCommerce.
+ *
+ * @package Link_Wizard_For_WooCommerce
+ * @subpackage Link_Wizard_For_WooCommerce/includes
+ * @since 1.0.4
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * Addon Manager class.
+ *
+ * Handles the detection, registration, and management of Link Wizard addons.
+ *
+ * @since 1.0.4
+ */
+class LWWC_Addon_Manager {
+
+	/**
+	 * Registered addons.
+	 *
+	 * @since 1.0.4
+	 * @var array
+	 */
+	private static $registered_addons = array();
+
+	/**
+	 * Initialize the addon manager.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function init() {
+		// Hook into WordPress plugin system to detect addons.
+		add_action( 'plugins_loaded', array( __CLASS__, 'detect_addons' ), 20 );
+		
+		// Add admin hooks for addon management.
+		add_action( 'admin_init', array( __CLASS__, 'admin_init' ) );
+		
+		// Add AJAX handlers for addon actions.
+		add_action( 'wp_ajax_lwwc_get_addons', array( __CLASS__, 'ajax_get_addons' ) );
+		add_action( 'wp_ajax_lwwc_activate_addon', array( __CLASS__, 'ajax_activate_addon' ) );
+	}
+
+	/**
+	 * Admin initialization.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function admin_init() {
+		// Only load on Link Wizard admin pages.
+		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === $_GET['page'] ) {
+			// Add addon data to admin JavaScript.
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_addon_data' ) );
+		}
+	}
+
+	/**
+	 * Detect and register available addons.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function detect_addons() {
+		// Get all active plugins.
+		$active_plugins = get_option( 'active_plugins', array() );
+		
+		foreach ( $active_plugins as $plugin_file ) {
+			// Check if this is a Link Wizard addon.
+			if ( self::is_link_wizard_addon( $plugin_file ) ) {
+				self::register_addon( $plugin_file );
+			}
+		}
+	}
+
+	/**
+	 * Check if a plugin is a Link Wizard addon.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_file The plugin file path.
+	 * @return bool True if it's a Link Wizard addon.
+	 */
+	private static function is_link_wizard_addon( $plugin_file ) {
+		// Check if plugin file contains 'link-wizard' and is not the core plugin.
+		if ( strpos( $plugin_file, 'link-wizard' ) !== false && 
+			 strpos( $plugin_file, 'link-wizard-for-woocommerce' ) === false ) {
+			
+			// Get plugin data to verify it's a proper addon.
+			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
+			
+			// Check if it requires the core plugin.
+			if ( isset( $plugin_data['RequiresPlugins'] ) && 
+				 strpos( $plugin_data['RequiresPlugins'], 'link-wizard-for-woocommerce' ) !== false ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Register an addon.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_file The plugin file path.
+	 */
+	private static function register_addon( $plugin_file ) {
+		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
+		$plugin_slug = dirname( $plugin_file );
+		
+		// Extract addon info from plugin data.
+		$addon_info = array(
+			'plugin_file'    => $plugin_file,
+			'plugin_slug'    => $plugin_slug,
+			'name'           => $plugin_data['Name'] ?? 'Unknown Addon',
+			'description'    => $plugin_data['Description'] ?? '',
+			'version'        => $plugin_data['Version'] ?? '1.0.0',
+			'author'         => $plugin_data['Author'] ?? '',
+			'plugin_uri'     => $plugin_data['PluginURI'] ?? '',
+			'text_domain'    => $plugin_data['TextDomain'] ?? '',
+			'is_active'      => is_plugin_active( $plugin_file ),
+			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
+			'capabilities'   => self::get_addon_capabilities( $plugin_slug ),
+		);
+		
+		// Allow addons to modify their registration info.
+		$addon_info = apply_filters( 'lwwc_addon_registration_info', $addon_info, $plugin_slug );
+		
+		self::$registered_addons[ $plugin_slug ] = $addon_info;
+	}
+
+	/**
+	 * Get addon admin URL.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_slug The plugin slug.
+	 * @return string The admin URL for the addon.
+	 */
+	private static function get_addon_admin_url( $plugin_slug ) {
+		// Default admin URL - can be customized by addons.
+		$admin_url = admin_url( 'edit.php?post_type=product&page=link-wizard-for-woocommerce&addon=' . $plugin_slug );
+		
+		// Allow addons to customize their admin URL.
+		return apply_filters( 'lwwc_addon_admin_url', $admin_url, $plugin_slug );
+	}
+
+	/**
+	 * Get addon capabilities.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_slug The plugin slug.
+	 * @return array Array of addon capabilities.
+	 */
+	private static function get_addon_capabilities( $plugin_slug ) {
+		$default_capabilities = array(
+			'product_types' => array(),
+			'features'      => array(),
+			'admin_pages'   => array(),
+		);
+		
+		// Allow addons to register their capabilities.
+		return apply_filters( 'lwwc_addon_capabilities', $default_capabilities, $plugin_slug );
+	}
+
+	/**
+	 * Get all registered addons.
+	 *
+	 * @since 1.0.4
+	 * @return array Array of registered addons.
+	 */
+	public static function get_registered_addons() {
+		return self::$registered_addons;
+	}
+
+	/**
+	 * Get a specific addon by slug.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_slug The plugin slug.
+	 * @return array|null The addon info or null if not found.
+	 */
+	public static function get_addon( $plugin_slug ) {
+		return isset( self::$registered_addons[ $plugin_slug ] ) ? self::$registered_addons[ $plugin_slug ] : null;
+	}
+
+	/**
+	 * Check if an addon is active.
+	 *
+	 * @since 1.0.4
+	 * @param string $plugin_slug The plugin slug.
+	 * @return bool True if the addon is active.
+	 */
+	public static function is_addon_active( $plugin_slug ) {
+		$addon = self::get_addon( $plugin_slug );
+		return $addon ? $addon['is_active'] : false;
+	}
+
+	/**
+	 * Enqueue addon data for admin JavaScript.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function enqueue_addon_data() {
+		// Add addon data to the existing admin script.
+		wp_localize_script( 
+			'lwwc-link-wizard-admin', 
+			'lwwcAddons', 
+			array(
+				'addons' => self::get_registered_addons(),
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
+			)
+		);
+	}
+
+	/**
+	 * AJAX handler to get addons.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function ajax_get_addons() {
+		// Verify nonce.
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
+			wp_die( 'Security check failed' );
+		}
+		
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( 'Insufficient permissions' );
+		}
+		
+		wp_send_json_success( self::get_registered_addons() );
+	}
+
+	/**
+	 * AJAX handler to activate an addon.
+	 *
+	 * @since 1.0.4
+	 */
+	public static function ajax_activate_addon() {
+		// Verify nonce.
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
+			wp_die( 'Security check failed' );
+		}
+		
+		// Check user capabilities.
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			wp_die( 'Insufficient permissions' );
+		}
+		
+		$plugin_slug = sanitize_text_field( $_POST['plugin_slug'] ?? '' );
+		
+		if ( empty( $plugin_slug ) ) {
+			wp_send_json_error( 'Plugin slug is required' );
+		}
+		
+		$addon = self::get_addon( $plugin_slug );
+		
+		if ( ! $addon ) {
+			wp_send_json_error( 'Addon not found' );
+		}
+		
+		// Activate the plugin.
+		$result = activate_plugin( $addon['plugin_file'] );
+		
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( $result->get_error_message() );
+		}
+		
+		wp_send_json_success( 'Addon activated successfully' );
+	}
+
+	/**
+	 * Get addon product types.
+	 *
+	 * @since 1.0.4
+	 * @return array Array of all addon product types.
+	 */
+	public static function get_addon_product_types() {
+		$product_types = array();
+		
+		foreach ( self::$registered_addons as $addon ) {
+			if ( $addon['is_active'] && isset( $addon['capabilities']['product_types'] ) ) {
+				$product_types = array_merge( $product_types, $addon['capabilities']['product_types'] );
+			}
+		}
+		
+		return $product_types;
+	}
+
+	/**
+	 * Check if a product type is supported by an addon.
+	 *
+	 * @since 1.0.4
+	 * @param string $product_type The product type to check.
+	 * @return bool True if supported by an active addon.
+	 */
+	public static function is_product_type_supported( $product_type ) {
+		$addon_product_types = self::get_addon_product_types();
+		return in_array( $product_type, $addon_product_types, true );
+	}
+}

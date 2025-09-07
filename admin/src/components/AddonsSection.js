@@ -1,0 +1,167 @@
+import React, { useState, useEffect } from 'react';
+
+const AddonsSection = ({ onAddonSelect }) => {
+    const [addons, setAddons] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Get i18n translations from PHP.
+    const i18n = window.lwwcI18n || {};
+
+    useEffect(() => {
+        loadAddons();
+    }, []);
+
+    const loadAddons = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Get addons from the addon manager.
+            const addonData = window.lwwcAddons || {};
+            const addonsList = addonData.addons || {};
+
+            // Convert object to array and filter active addons.
+            const activeAddons = Object.values(addonsList).filter(addon => addon.is_active);
+            
+            setAddons(activeAddons);
+        } catch (err) {
+            setError('Failed to load addons');
+            console.error('Error loading addons:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAddonClick = (addon) => {
+        if (onAddonSelect) {
+            onAddonSelect(addon);
+        }
+    };
+
+    const getAddonIcon = (addonSlug) => {
+        // Return appropriate icon based on addon type.
+        const iconMap = {
+            'link-wizard-addons': '🧩',
+            'link-wizard-bundles': '📦',
+            'link-wizard-composite': '🔗',
+            'link-wizard-grouped': '📋',
+        };
+        
+        return iconMap[addonSlug] || '🔌';
+    };
+
+    const getAddonDescription = (addon) => {
+        // Extract product types from capabilities.
+        const productTypes = addon.capabilities?.product_types || [];
+        
+        if (productTypes.length > 0) {
+            return `Supports: ${productTypes.join(', ')}`;
+        }
+        
+        return addon.description || 'Additional product type support';
+    };
+
+    if (loading) {
+        return (
+            <div className="lwwc-addons-section">
+                <h3 className="lwwc-addons-heading">
+                    {i18n.addons || 'Addons'}
+                </h3>
+                <div className="lwwc-addons-loading">
+                    <span className="spinner is-active"></span>
+                    {i18n.loadingAddons || 'Loading addons...'}
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="lwwc-addons-section">
+                <h3 className="lwwc-addons-heading">
+                    {i18n.addons || 'Addons'}
+                </h3>
+                <div className="lwwc-addons-error">
+                    <p>{error}</p>
+                    <button 
+                        type="button" 
+                        className="button button-secondary"
+                        onClick={loadAddons}
+                    >
+                        {i18n.retry || 'Retry'}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (addons.length === 0) {
+        return (
+            <div className="lwwc-addons-section">
+                <h3 className="lwwc-addons-heading">
+                    {i18n.addons || 'Addons'}
+                </h3>
+                <div className="lwwc-addons-empty">
+                    <p>{i18n.noAddonsAvailable || 'No addons are currently active.'}</p>
+                    <p className="lwwc-addons-install-hint">
+                        {i18n.installAddonsHint || 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.'}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="lwwc-addons-section">
+            <h3 className="lwwc-addons-heading">
+                {i18n.addons || 'Addons'}
+            </h3>
+            <p className="lwwc-addons-description">
+                {i18n.addonsDescription || 'Access additional product types and features through these addons:'}
+            </p>
+            
+            <div className="lwwc-addons-grid">
+                {addons.map((addon) => (
+                    <div 
+                        key={addon.plugin_slug}
+                        className="lwwc-addon-card"
+                        onClick={() => handleAddonClick(addon)}
+                    >
+                        <div className="lwwc-addon-icon">
+                            {getAddonIcon(addon.plugin_slug)}
+                        </div>
+                        <div className="lwwc-addon-content">
+                            <h4 className="lwwc-addon-title">
+                                {addon.name}
+                            </h4>
+                            <p className="lwwc-addon-description">
+                                {getAddonDescription(addon)}
+                            </p>
+                            <div className="lwwc-addon-meta">
+                                <span className="lwwc-addon-version">
+                                    v{addon.version}
+                                </span>
+                                {addon.author && (
+                                    <span className="lwwc-addon-author">
+                                        by {addon.author}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="lwwc-addon-action">
+                            <button 
+                                type="button"
+                                className="button button-primary lwwc-addon-button"
+                            >
+                                {i18n.openAddon || 'Open'}
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default AddonsSection;

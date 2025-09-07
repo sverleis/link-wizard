@@ -103,6 +103,11 @@ class LWWC_Link_Wizard {
 		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-subscription-product-handler.php';
 
 		/**
+		 * The class responsible for managing addons.
+		 */
+		require_once LWWC_PATH . 'includes/class-lwwc-addon-manager.php';
+
+		/**
 		 *  The class responsible for handling the search functionality.
 		 */
 		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-search.php';
@@ -134,6 +139,9 @@ class LWWC_Link_Wizard {
 	private function init_validation_system() {
 		// Initialize the validation system with default rules.
 		LWWC_Validation::init();
+		
+		// Initialize the addon manager.
+		LWWC_Addon_Manager::init();
 	}
 
 	/**

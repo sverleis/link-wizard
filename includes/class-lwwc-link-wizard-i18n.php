@@ -155,6 +155,15 @@ class LWWC_Link_Wizard_I18n {
 			'decodedUrlsDescription'              => __( 'Clean, readable format (recommended)', 'link-wizard-for-woocommerce' ),
 			'encodedUrls'                         => __( 'Encoded URLs', 'link-wizard-for-woocommerce' ),
 			'encodedUrlsDescription'              => __( 'URL-encoded format (for special cases)', 'link-wizard-for-woocommerce' ),
+
+			// Addons Section.
+			'addons'                              => __( 'Addons', 'link-wizard-for-woocommerce' ),
+			'addonsDescription'                   => __( 'Access additional product types and features through these addons:', 'link-wizard-for-woocommerce' ),
+			'loadingAddons'                       => __( 'Loading addons...', 'link-wizard-for-woocommerce' ),
+			'noAddonsAvailable'                   => __( 'No addons are currently active.', 'link-wizard-for-woocommerce' ),
+			'installAddonsHint'                   => __( 'Install and activate Link Wizard addons to access additional product types like bundles, composite products, and more.', 'link-wizard-for-woocommerce' ),
+			'openAddon'                           => __( 'Open', 'link-wizard-for-woocommerce' ),
+			'retry'                               => __( 'Retry', 'link-wizard-for-woocommerce' ),
 		);
 
 		return isset( $texts[ $key ] ) ? $texts[ $key ] : $key;
