@@ -253,10 +253,9 @@ class LWWC_Addon_Manager {
 		include LWWC_PATH . 'admin/partials/lwwc_icon.php';
 		$icon_html = ob_get_clean();
 		
-		wp_localize_script( 
+		wp_add_inline_script( 
 			'lwwc-link-wizard-admin', 
-			'lwwcIcon', 
-			$icon_html
+			'window.lwwcIcon = ' . wp_json_encode( $icon_html ) . ';'
 		);
 	}
 
