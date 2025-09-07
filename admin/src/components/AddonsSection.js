@@ -136,6 +136,14 @@ const AddonsSection = ({ onAddonSelect }) => {
                         </button>
                     </div>
                 </div>
+                
+                {/* Debug Information */}
+                <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', fontSize: '12px' }}>
+                    <strong>Debug Info:</strong><br/>
+                    Raw addon data: {JSON.stringify(window.lwwcAddons || {}, null, 2)}<br/>
+                    Addons list: {JSON.stringify(Object.values(window.lwwcAddons?.addons || {}), null, 2)}<br/>
+                    Active addons count: {addons.length}
+                </div>
             </div>
         );
     }
