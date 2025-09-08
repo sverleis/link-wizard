@@ -66,6 +66,7 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 
 		// Prepare the query with appropriate parameters
 		if ( ! empty( $search_term ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Performance optimization for grouped product search
 			$products_data = $wpdb->get_results( $wpdb->prepare(
 				"SELECT p.ID, p.post_title, p.post_content 
 				FROM {$wpdb->posts} p 
@@ -82,6 +83,7 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 				$limit
 			) );
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Performance optimization for grouped product search
 			$products_data = $wpdb->get_results( $wpdb->prepare(
 				"SELECT p.ID, p.post_title, p.post_content 
 				FROM {$wpdb->posts} p 

@@ -496,6 +496,7 @@ class LWWC_Addon_Manager {
 		}
 
 		// Use direct database query for better performance
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Performance optimization for product type checking
 		$count = $wpdb->get_var( $wpdb->prepare(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p 
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
