@@ -77,6 +77,20 @@ const AddonsSection = ({ onAddonSelect }) => {
         return addon.description || 'WooCommerce extension';
     };
 
+    const getProductTypeBadges = (addon) => {
+        const productTypes = addon.capabilities?.product_types || [];
+        
+        if (productTypes.length === 0) {
+            return null;
+        }
+        
+        return productTypes.map((type, index) => (
+            <span key={index} className="lwwc-addon-product-type-badge">
+                {type}
+            </span>
+        ));
+    };
+
     if (loading) {
         return (
             <div className="lwwc-addons-section">
@@ -189,6 +203,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                             <p className="lwwc-addon-description">
                                 {getAddonDescription(addon)}
                             </p>
+                            <div className="lwwc-addon-product-types">
+                                {getProductTypeBadges(addon)}
+                            </div>
                         </div>
                         <div className="lwwc-addon-action">
                             <a 
