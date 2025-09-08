@@ -1,6 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AddonSettings = ({ onClose }) => {
+    const [addons, setAddons] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Get addon data from the global variable
+        if (window.lwwcAddons && window.lwwcAddons.addons) {
+            const addonList = Object.values(window.lwwcAddons.addons);
+            setAddons(addonList);
+            setLoading(false);
+        } else {
+            setLoading(false);
+        }
+    }, []);
+
+    const getPluginStatus = (addon) => {
+        if (addon.is_active) {
+            return <span className="lwwc-status-active">Active</span>;
+        }
+        return <span className="lwwc-status-inactive">Inactive</span>;
+    };
+
+    const getPluginIcon = (addon) => {
+        if (addon.icon) {
+            return <span className={`dashicons ${addon.icon}`}></span>;
+        }
+        return <span className="dashicons dashicons-admin-plugins"></span>;
+    };
+
+    const getProductTypes = (addon) => {
+        if (addon.capabilities && addon.capabilities.product_types) {
+            return addon.capabilities.product_types.join(', ');
+        }
+        return 'N/A';
+    };
+
+    if (loading) {
+        return (
+            <div className="lwwc-addon-settings-page">
+                <div className="lwwc-addon-settings-header">
+                    <h1>Link Wizard Addons Settings</h1>
+                    <button 
+                        className="button button-secondary"
+                        onClick={onClose}
+                    >
+                        ← Back to Link Wizard
+                    </button>
+                </div>
+                <div className="lwwc-addon-settings-content">
+                    <p>Loading addon information...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="lwwc-addon-settings-page">
             <div className="lwwc-addon-settings-header">
@@ -15,39 +69,44 @@ const AddonSettings = ({ onClose }) => {
             
             <div className="lwwc-addon-settings-content">
                 <div className="lwwc-addon-settings-section">
-                    <h2>Product Type Support</h2>
-                    <p>Configure additional product types supported by Link Wizard for WooCommerce.</p>
+                    <h2>Detected Plugins</h2>
+                    <p>Plugins detected by Link Wizard for WooCommerce, including WooCommerce extensions and Link Wizard addons.</p>
                 </div>
 
-                <div className="lwwc-addon-settings-grid">
-                    <div className="lwwc-addon-settings-card">
-                        <h3>Product Bundles</h3>
-                        <p>Support for WooCommerce Product Bundles - create links for bundled products.</p>
-                        <div className="lwwc-addon-status">
-                            {window.wp && window.wp.data && window.wp.data.select('core/editor') ? (
-                                <span className="lwwc-status-active">Active</span>
-                            ) : (
-                                <span className="lwwc-status-inactive">Inactive</span>
-                            )}
-                        </div>
+                {addons.length === 0 ? (
+                    <div className="lwwc-addon-settings-empty">
+                        <p>No plugins detected. Make sure WooCommerce and relevant plugins are installed and activated.</p>
                     </div>
-
-                    <div className="lwwc-addon-settings-card">
-                        <h3>Composite Products</h3>
-                        <p>Support for WooCommerce Composite Products - create links for composite products.</p>
-                        <div className="lwwc-addon-status">
-                            <span className="lwwc-status-inactive">Inactive</span>
-                        </div>
+                ) : (
+                    <div className="lwwc-addon-settings-grid">
+                        {addons.map((addon, index) => (
+                            <div key={index} className="lwwc-addon-settings-card">
+                                <div className="lwwc-addon-card-header">
+                                    {getPluginIcon(addon)}
+                                    <div className="lwwc-addon-card-title">
+                                        <h3>{addon.name}</h3>
+                                        <span className="lwwc-addon-version">v{addon.version}</span>
+                                    </div>
+                                </div>
+                                <p>{addon.description}</p>
+                                <div className="lwwc-addon-card-details">
+                                    <div className="lwwc-addon-detail">
+                                        <strong>Author:</strong> {addon.author}
+                                    </div>
+                                    <div className="lwwc-addon-detail">
+                                        <strong>Product Types:</strong> {getProductTypes(addon)}
+                                    </div>
+                                    <div className="lwwc-addon-detail">
+                                        <strong>Type:</strong> {addon.type === 'link_wizard_addon' ? 'Link Wizard Addon' : 'WooCommerce Plugin'}
+                                    </div>
+                                </div>
+                                <div className="lwwc-addon-status">
+                                    {getPluginStatus(addon)}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-
-                    <div className="lwwc-addon-settings-card">
-                        <h3>Grouped Products</h3>
-                        <p>Support for WooCommerce Grouped Products - create links for grouped products.</p>
-                        <div className="lwwc-addon-status">
-                            <span className="lwwc-status-active">Active</span>
-                        </div>
-                    </div>
-                </div>
+                )}
 
                 <div className="lwwc-addon-settings-footer">
                     <p>
