@@ -96,10 +96,11 @@ const AddonsSection = ({ onAddonSelect }) => {
             const isActive = status.active;
             const isInstalled = status.installed;
             
-            let statusIcon = '❌';
+            let statusIcon = null;
             let statusClass = 'disabled';
             let displayName = type;
             let linkUrl = null;
+            let tooltipText = '';
             
             // Set display names and links
             if (type === 'bundle') {
@@ -111,11 +112,17 @@ const AddonsSection = ({ onAddonSelect }) => {
             }
             
             if (isActive) {
-                statusIcon = '✅';
+                statusIcon = <span className="dashicons dashicons-yes"></span>;
                 statusClass = 'enabled';
+                tooltipText = 'Plugin is installed and active';
             } else if (isInstalled) {
-                statusIcon = '⚠️';
+                statusIcon = <span className="dashicons dashicons-warning"></span>;
                 statusClass = 'inactive';
+                tooltipText = 'Plugin is installed but inactive - activate to use';
+            } else {
+                statusIcon = <span className="dashicons dashicons-external"></span>;
+                statusClass = 'disabled';
+                tooltipText = 'Purchase this extension on WooCommerce.com';
             }
             
             const badgeContent = (
@@ -132,6 +139,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`}
+                        title={tooltipText}
                     >
                         {badgeContent}
                     </a>
@@ -156,9 +164,20 @@ const AddonsSection = ({ onAddonSelect }) => {
 
         return coreTypes.map((item, index) => {
             const isEnabled = window.lwwcCoreProductTypes?.[item.type] || false;
+            const statusIcon = isEnabled ? 
+                <span className="dashicons dashicons-yes"></span> : 
+                <span className="dashicons dashicons-no"></span>;
+            const tooltipText = isEnabled ? 
+                'Products of this type exist in your store' : 
+                'No products of this type found in your store';
+            
             return (
-                <span key={index} className={`lwwc-addon-product-type-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
-                    {isEnabled ? '✅' : '❌'} {item.label}
+                <span 
+                    key={index} 
+                    className={`lwwc-addon-product-type-badge ${isEnabled ? 'enabled' : 'disabled'}`}
+                    title={tooltipText}
+                >
+                    {statusIcon} {item.label}
                 </span>
             );
         });

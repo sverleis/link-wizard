@@ -3058,6 +3058,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     gap: 4px;
 }
 
+.lwwc-addon-product-type-badge .dashicons {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    line-height: 1;
+}
+
 .lwwc-addon-product-type-badge.enabled {
     background: var(--wp-admin-theme-color, #0073aa);
     color: white;
