@@ -2750,7 +2750,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Addon Settings Page */
 .lwwc-addon-settings-page {
-    max-width: 1200px;
+    width: 100%;
     margin: 20px 0;
 }
 
