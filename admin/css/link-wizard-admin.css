@@ -47,15 +47,15 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 /* Sold Individually Styles */
 .lwwc-sold-individually-note {
     font-size: 11px;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-style: italic;
     margin-left: 8px;
     white-space: nowrap;
 }
 
 .lwwc-selected-product-qty-input:disabled {
-    background-color: #f9f9f9;
-    color: #666;
+    background-color: var(--wp-admin-background-color-lightest, #f9f9f9);
+    color: var(--wp-admin-secondary-text-color-light, #666);
     cursor: not-allowed;
 }
 
@@ -878,7 +878,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Base URL styling */
 .dynamic-link-base-url {
-    color: var(--wp-admin-secondary-text-color, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
 }
 
 /* Highlight styling for placeholders and redirects */
@@ -901,7 +901,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Separator styling */
 .dynamic-link-separator {
-    color: var(--wp-admin-secondary-text-color, #1d2327);
+    color: var(--wp-admin-text-color, #1d2327);
 }
 
 /* Container styling */
@@ -959,7 +959,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 /* Description styling */
 .dynamic-link-description {
 	margin: 0.25em 0 1em 0;
-	color: var(--wp-admin-secondary-text-color, #666);
+	color: var(--wp-admin-secondary-text-color-light, #666);
 	line-height: 1.5;
 }
 
@@ -979,8 +979,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .dynamic-link-display.disabled {
-    background-color: var(--wp-admin-background-color, #f0f0f0);
-    color: var(--wp-admin-secondary-text-color, #666);
+    background-color: var(--wp-admin-background-color-light, #f0f0f0);
+    color: var(--wp-admin-secondary-text-color-light, #666);
 }
 
 /* Button styling */
@@ -1006,7 +1006,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .dynamic-link-button:disabled,
 .dynamic-link-button.disabled {
-    background-color: var(--wp-admin-secondary-text-color, #666);
+    background-color: var(--wp-admin-secondary-text-color-light, #666);
     cursor: not-allowed;
 }
 
@@ -2812,17 +2812,17 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     justify-content: space-between;
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--wp-admin-border-color-light, #e0e0e0);
 }
 
 .lwwc-addon-settings-header h1 {
     margin: 0;
-    color: #23282d;
+    color: var(--wp-admin-text-color, #23282d);
 }
 
 .lwwc-addon-settings-content {
-    background: #fff;
-    border: 1px solid #ccd0d4;
+    background: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, #ccd0d4);
     border-radius: 4px;
     padding: 20px;
 }
@@ -2833,12 +2833,12 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .lwwc-addon-settings-section h2 {
     margin: 0 0 10px 0;
-    color: #23282d;
+    color: var(--wp-admin-text-color, #23282d);
 }
 
 .lwwc-addon-settings-section p {
     margin: 0;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
 }
 
@@ -2850,8 +2850,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-addon-settings-card {
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
+    background: var(--wp-admin-background-color-lightest, #f9f9f9);
+    border: 1px solid var(--wp-admin-border-color-light, #e0e0e0);
     border-radius: 6px;
     padding: 20px;
     position: relative;
@@ -2859,13 +2859,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .lwwc-addon-settings-card h3 {
     margin: 0 0 10px 0;
-    color: #23282d;
+    color: var(--wp-admin-text-color, #23282d);
     font-size: 16px;
 }
 
 .lwwc-addon-settings-card p {
     margin: 0 0 15px 0;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -2877,8 +2877,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-status-active {
-    background: #d4edda;
-    color: #155724;
+    background: var(--wp-admin-success-background, #d4edda);
+    color: var(--wp-admin-success-color-darker, #155724);
     padding: 4px 8px;
     border-radius: 3px;
     font-size: 12px;
@@ -2886,8 +2886,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-status-inactive {
-    background: #f8d7da;
-    color: #721c24;
+    background: var(--wp-admin-notification-color-focus, #f8d7da);
+    color: var(--wp-admin-notification-color-darker, #721c24);
     padding: 4px 8px;
     border-radius: 3px;
     font-size: 12px;
@@ -2895,19 +2895,19 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-addon-settings-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--wp-admin-border-color-light, #eee);
     padding-top: 20px;
     text-align: center;
 }
 
 .lwwc-addon-settings-footer p {
     margin: 0;
-    color: #666;
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
 }
 
 .lwwc-addon-settings-footer a {
-    color: #0073aa;
+    color: var(--wp-admin-theme-color, #0073aa);
     text-decoration: none;
 }
 
@@ -2916,13 +2916,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-addons-help-icon {
-    color: var(--wp-admin-color-text-light, #8c8f94);
+    color: var(--wp-admin-secondary-text-color-light, #8c8f94);
     font-size: 16px;
     cursor: help;
 }
 
 .lwwc-addons-help-icon:hover {
-    color: var(--wp-admin-color-primary, #2271b1);
+    color: var(--wp-admin-theme-color, #2271b1);
 }
 
 .lwwc-addons-heading {
@@ -2934,7 +2934,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .lwwc-addons-description {
     margin: 0 0 20px 0;
-    color: var(--wp-admin-text-color-muted, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -2973,7 +2973,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 32px;
     width: 32px;
     height: 32px;
-    color: var(--wp-admin-color-primary, #2271b1);
+    color: var(--wp-admin-theme-color, #2271b1);
 }
 
 .lwwc-addon-content {
@@ -3002,7 +3002,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .lwwc-addon-description {
     margin: 0 0 12px 0;
-    color: var(--wp-admin-text-color-muted, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
     line-height: 1.4;
 }
@@ -3012,7 +3012,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
-    color: var(--wp-admin-text-color-muted, #999);
+    color: var(--wp-admin-secondary-text-color-light, #999);
 }
 
 .lwwc-addon-version {
@@ -3052,7 +3052,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     align-items: center;
     justify-content: center;
     padding: 40px 20px;
-    color: var(--wp-admin-text-color-muted, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
 }
 
@@ -3064,12 +3064,12 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 .lwwc-addons-error {
     text-align: center;
     padding: 40px 20px;
-    color: var(--wp-admin-text-color-muted, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
 }
 
 .lwwc-addons-error p {
     margin: 0 0 15px 0;
-    color: var(--wp-admin-error-color, #d63384);
+    color: var(--wp-admin-notification-color, #d63384);
 }
 
 /* Addons Empty State */
@@ -3078,7 +3078,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     align-items: center;
     gap: 8px;
     margin-left: auto;
-    color: var(--wp-admin-text-color-muted, #666);
+    color: var(--wp-admin-secondary-text-color-light, #666);
     font-size: 14px;
     padding: 0;
 }

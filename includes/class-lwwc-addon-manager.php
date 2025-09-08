@@ -72,15 +72,18 @@ class LWWC_Addon_Manager {
 		// Get all active plugins.
 		$active_plugins = get_option( 'active_plugins', array() );
 		
+		// Get list of plugins to detect from addons.
+		$plugins_to_detect = apply_filters( 'lwwc_addon_detection_plugins', array() );
+		
 		foreach ( $active_plugins as $plugin_file ) {
 			// Check if this is a Link Wizard addon.
 			if ( self::is_link_wizard_addon( $plugin_file ) ) {
 				self::register_addon( $plugin_file );
 			}
 			
-			// Check if this is a relevant WooCommerce plugin.
-			if ( self::is_relevant_woocommerce_plugin( $plugin_file ) ) {
-				self::register_woocommerce_plugin( $plugin_file );
+			// Check if this is a plugin that addons want to detect.
+			if ( self::is_plugin_to_detect( $plugin_file, $plugins_to_detect ) ) {
+				self::register_external_plugin( $plugin_file );
 			}
 		}
 		
@@ -123,22 +126,15 @@ class LWWC_Addon_Manager {
 	}
 
 	/**
-	 * Check if a plugin is a relevant WooCommerce plugin.
+	 * Check if a plugin should be detected by addons.
 	 *
 	 * @since 1.0.4
 	 * @param string $plugin_file The plugin file path.
-	 * @return bool True if it's a relevant WooCommerce plugin.
+	 * @param array  $plugins_to_detect List of plugin slugs to detect.
+	 * @return bool True if it's a plugin to detect.
 	 */
-	private static function is_relevant_woocommerce_plugin( $plugin_file ) {
-		// List of WooCommerce plugins we want to track.
-		$relevant_plugins = array(
-			'woocommerce-composite-products',
-			'woocommerce-product-bundles',
-			'woocommerce-subscriptions',
-			'woocommerce-grouped-products',
-		);
-		
-		foreach ( $relevant_plugins as $plugin_slug ) {
+	private static function is_plugin_to_detect( $plugin_file, $plugins_to_detect ) {
+		foreach ( $plugins_to_detect as $plugin_slug ) {
 			if ( strpos( $plugin_file, $plugin_slug ) !== false ) {
 				return true;
 			}
@@ -189,22 +185,26 @@ class LWWC_Addon_Manager {
 	}
 
 	/**
-	 * Register a WooCommerce plugin.
+	 * Register an external plugin.
 	 *
 	 * @since 1.0.4
 	 * @param string $plugin_file The plugin file path.
 	 */
-	private static function register_woocommerce_plugin( $plugin_file ) {
+	private static function register_external_plugin( $plugin_file ) {
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
 		$plugin_slug = dirname( $plugin_file );
 		
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
 		
-		// Debug: Log WooCommerce plugin registration details.
+		// Debug: Log external plugin registration details.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'LWWC Addon Manager: Registering WooCommerce plugin - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
+			error_log( 'LWWC Addon Manager: Registering external plugin - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
 		}
+		
+		// Get capabilities and icon from addons.
+		$capabilities = apply_filters( 'lwwc_addon_plugin_capabilities', array(), $plugin_slug );
+		$icon = apply_filters( 'lwwc_addon_plugin_icon', 'dashicons-admin-plugins', $plugin_slug );
 		
 		// Extract plugin info from plugin data.
 		$plugin_info = array(
@@ -218,9 +218,9 @@ class LWWC_Addon_Manager {
 			'text_domain'    => $plugin_data['TextDomain'] ?? '',
 			'is_active'      => $is_active,
 			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
-			'capabilities'   => self::get_woocommerce_plugin_capabilities( $plugin_slug ),
-			'icon'           => self::get_woocommerce_plugin_icon( $plugin_slug ),
-			'type'           => 'woocommerce_plugin',
+			'capabilities'   => $capabilities,
+			'icon'           => $icon,
+			'type'           => 'external_plugin',
 		);
 		
 		self::$registered_addons[ $plugin_slug ] = $plugin_info;
@@ -349,61 +349,6 @@ class LWWC_Addon_Manager {
 		);
 	}
 
-	/**
-	 * Get WooCommerce plugin capabilities.
-	 *
-	 * @since 1.0.4
-	 * @param string $plugin_slug The plugin slug.
-	 * @return array The plugin capabilities.
-	 */
-	private static function get_woocommerce_plugin_capabilities( $plugin_slug ) {
-		$capabilities = array();
-		
-		// Map plugin slugs to their supported product types.
-		switch ( $plugin_slug ) {
-			case 'woocommerce-composite-products':
-				$capabilities['product_types'] = array( 'composite' );
-				$capabilities['features'] = array( 'composite_product_links', 'component_validation' );
-				break;
-			case 'woocommerce-product-bundles':
-				$capabilities['product_types'] = array( 'bundle' );
-				$capabilities['features'] = array( 'bundle_product_links', 'bundled_item_validation' );
-				break;
-			case 'woocommerce-subscriptions':
-				$capabilities['product_types'] = array( 'subscription', 'variable-subscription' );
-				$capabilities['features'] = array( 'subscription_links', 'recurring_payment_validation' );
-				break;
-			case 'woocommerce-grouped-products':
-				$capabilities['product_types'] = array( 'grouped' );
-				$capabilities['features'] = array( 'grouped_product_links', 'group_validation' );
-				break;
-		}
-		
-		return $capabilities;
-	}
-
-	/**
-	 * Get WooCommerce plugin icon.
-	 *
-	 * @since 1.0.4
-	 * @param string $plugin_slug The plugin slug.
-	 * @return string The plugin icon.
-	 */
-	private static function get_woocommerce_plugin_icon( $plugin_slug ) {
-		// Map plugin slugs to their icons.
-		switch ( $plugin_slug ) {
-			case 'woocommerce-composite-products':
-				return 'dashicons-admin-tools';
-			case 'woocommerce-product-bundles':
-				return 'dashicons-products';
-			case 'woocommerce-subscriptions':
-				return 'dashicons-update';
-			case 'woocommerce-grouped-products':
-				return 'dashicons-groups';
-			default:
-				return 'dashicons-admin-plugins';
-		}
-	}
 
 	/**
 	 * AJAX handler to get addons.
