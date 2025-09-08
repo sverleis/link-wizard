@@ -196,6 +196,18 @@ const AddonsSection = ({ onAddonSelect }) => {
 
     return (
         <div className="lwwc-addons-section">
+            <div className="lwwc-core-product-types">
+                <h4 className="lwwc-core-product-types-title">
+                    Core Product Types
+                </h4>
+                <p className="lwwc-core-product-types-description">
+                    Link Wizard for WooCommerce natively supports:
+                </p>
+                <div className="lwwc-core-product-types-badges">
+                    {getCoreProductTypeBadges()}
+                </div>
+            </div>
+            
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">
                     {i18n.addons || 'Addons'}
@@ -213,18 +225,6 @@ const AddonsSection = ({ onAddonSelect }) => {
             <p className="lwwc-addons-description">
                 {i18n.addonsDescription || 'Access additional product types and features through these addons:'}
             </p>
-            
-            <div className="lwwc-core-product-types">
-                <h4 className="lwwc-core-product-types-title">
-                    Core Product Types
-                </h4>
-                <p className="lwwc-core-product-types-description">
-                    Link Wizard for WooCommerce natively supports:
-                </p>
-                <div className="lwwc-core-product-types-badges">
-                    {getCoreProductTypeBadges()}
-                </div>
-            </div>
             
             <div className="lwwc-addons-grid">
                 {addons.map((addon) => (
