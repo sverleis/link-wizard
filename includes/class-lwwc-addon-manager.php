@@ -386,6 +386,65 @@ class LWWC_Addon_Manager {
 	}
 
 	/**
+	 * Check if products of a specific type exist.
+	 *
+	 * @since 1.0.4
+	 * @param string $product_type The product type to check.
+	 * @return bool True if products exist.
+	 */
+	private static function has_products_of_type( $product_type ) {
+		global $wpdb;
+
+		// Check cache first
+		$cache_key = 'lwwc_products_type_' . $product_type;
+		$cached_result = wp_cache_get( $cache_key, 'lwwc_addon_manager' );
+		
+		if ( false !== $cached_result ) {
+			return $cached_result;
+		}
+
+		// Use direct database query for better performance
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Performance optimization for product type checking
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+			WHERE p.post_type = 'product' 
+			AND p.post_status = 'publish' 
+			AND pm.meta_key = '_product_type' 
+			AND pm.meta_value = %s
+			LIMIT 1",
+			$product_type
+		) );
+
+		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
+		// and has any products (they would be simple by default)
+		if ( $count === 0 && in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
+			// Check if WooCommerce is active and has any products
+			if ( class_exists( 'WooCommerce' ) ) {
+				$total_products = wp_count_posts( 'product' );
+				$published_products = $total_products->publish ?? 0;
+				
+				// If there are published products, assume core types are available
+				if ( $published_products > 0 ) {
+					$count = $published_products;
+				}
+			}
+		}
+
+		// For subscription products, check if WooCommerce Subscriptions is active
+		if ( $product_type === 'subscription' && class_exists( 'WC_Subscriptions' ) ) {
+			$count = 1; // Assume available if WooCommerce Subscriptions is active
+		}
+
+		$result = $count > 0;
+		
+		// Cache the result for 5 minutes
+		wp_cache_set( $cache_key, $result, 'lwwc_addon_manager', 300 );
+
+		return $result;
+	}
+
+	/**
 	 * Get addon product type status.
 	 *
 	 * @since 1.0.4
