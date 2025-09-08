@@ -99,7 +99,7 @@ class LWWC_Link_Wizard_Admin {
 			$this->plugin_name,
 			plugin_dir_url( __FILE__ ) . 'build/link-wizard-admin.js',
 			array( 'jquery', 'wp-api-fetch' ),  // Add wp-api-fetch as a dependency.
-			$this->version,
+			$this->version . '.' . time(), // Add timestamp for cache busting
 			true
 		);
 

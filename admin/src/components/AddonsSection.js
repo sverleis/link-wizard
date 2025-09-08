@@ -191,13 +191,6 @@ const AddonsSection = ({ onAddonSelect }) => {
         const addonData = window.lwwcAddons || {};
         const addonsList = addonData.addons || {};
         
-        // Debug: Log addon data
-        console.log('LWWC Advertising Debug:', {
-            addonsList,
-            externalPlugins: Object.values(addonsList).filter(addon => addon.type === 'external_plugin'),
-            linkWizardAddons: Object.values(addonsList).filter(addon => addon.type === 'link_wizard_addon')
-        });
-        
         // Check if WooCommerce extensions are active or installed (but inactive)
         const hasWooCommerceExtensions = Object.values(addonsList).some(addon => 
             addon.type === 'external_plugin' && (addon.is_active || addon.installed)
@@ -207,12 +200,6 @@ const AddonsSection = ({ onAddonSelect }) => {
         const hasLinkWizardAddons = Object.values(addonsList).some(addon => 
             addon.type === 'link_wizard_addon' && addon.is_active
         );
-        
-        console.log('LWWC Advertising Logic:', {
-            hasWooCommerceExtensions,
-            hasLinkWizardAddons,
-            shouldShowBanner: hasWooCommerceExtensions && !hasLinkWizardAddons
-        });
         
         // Show advertising if WooCommerce extensions are present but Link Wizard Addons is not
         if (hasWooCommerceExtensions && !hasLinkWizardAddons) {
@@ -277,6 +264,22 @@ const AddonsSection = ({ onAddonSelect }) => {
     if (addons.length === 0) {
         return (
             <div className="lwwc-addons-section">
+                {/* Core Product Types Section */}
+                <div className="lwwc-core-product-types">
+                    <h4 className="lwwc-core-product-types-title">
+                        {i18n.coreProductTypes || 'Core Product Types'}
+                    </h4>
+                    <p className="lwwc-core-product-types-description">
+                        {i18n.coreProductTypesDescription || 'Product types supported by the core plugin:'}
+                    </p>
+                    <div className="lwwc-core-product-types-badges">
+                        {getCoreProductTypeBadges()}
+                    </div>
+                </div>
+
+                {/* Addon Advertising Banner */}
+                {getAddonAdvertising()}
+
                 <div className="lwwc-addons-header">
                     <h3 className="lwwc-addons-heading">
                         {i18n.addons || 'Addons'}
@@ -299,18 +302,6 @@ const AddonsSection = ({ onAddonSelect }) => {
                     </div>
                 </div>
                 
-                {/* Hello World Notice */}
-                <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', borderRadius: '4px', color: '#155724' }}>
-                    <strong>✅ Link Wizard Addons:</strong> Hello World! The addon is working correctly.
-                </div>
-                
-                {/* Debug Information */}
-                <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', fontSize: '12px' }}>
-                    <strong>Debug Info:</strong><br/>
-                    Raw addon data: {JSON.stringify(window.lwwcAddons || {}, null, 2)}<br/>
-                    Addons list: {JSON.stringify(Object.values(window.lwwcAddons?.addons || {}), null, 2)}<br/>
-                    Active addons count: {addons.length}
-                </div>
             </div>
         );
     }
@@ -331,7 +322,12 @@ const AddonsSection = ({ onAddonSelect }) => {
             </div>
 
             {/* Addon Advertising Banner */}
-            {getAddonAdvertising()}
+            {(() => {
+                console.log('🚀 LWWC: About to call getAddonAdvertising...');
+                const result = getAddonAdvertising();
+                console.log('🚀 LWWC: getAddonAdvertising result:', result);
+                return result;
+            })()}
 
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">

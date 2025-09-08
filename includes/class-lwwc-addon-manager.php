@@ -59,7 +59,7 @@ class LWWC_Addon_Manager {
 			self::detect_addons();
 			
 			// Add addon data to admin JavaScript.
-			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_addon_data' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_addon_data' ), 20 );
 		}
 	}
 
