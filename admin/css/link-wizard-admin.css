@@ -215,8 +215,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 	--lwwc-theme-primary-darker-10: #006b96; /* 10% darker than primary */
 	--lwwc-theme-primary-darker-20: #005782; /* 20% darker than primary */
 	
-	/* Expose as wp-admin theme-color shades */
-	--wp-admin-theme-color: var(--lwwc-theme-primary);
+	/* Expose as wp-admin theme-color shades - let WordPress set the actual theme color */
+	/* --wp-admin-theme-color: var(--lwwc-theme-primary); */
 	--wp-admin-theme-color-darker-10: var(--lwwc-theme-primary-darker-10);
 	--wp-admin-theme-color-darker-20: var(--lwwc-theme-primary-darker-20);
 	
