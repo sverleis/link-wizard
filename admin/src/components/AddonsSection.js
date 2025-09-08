@@ -25,8 +25,10 @@ const AddonsSection = ({ onAddonSelect }) => {
             console.log('LWWC Addons: Raw addon data:', addonData);
             console.log('LWWC Addons: Addons list:', addonsList);
 
-            // Convert object to array and filter active addons.
-            const activeAddons = Object.values(addonsList).filter(addon => addon.is_active);
+            // Convert object to array and filter for Link Wizard addons only.
+            const activeAddons = Object.values(addonsList).filter(addon => 
+                addon.is_active && addon.type === 'link_wizard_addon'
+            );
             
             console.log('LWWC Addons: Active addons after filtering:', activeAddons);
             
