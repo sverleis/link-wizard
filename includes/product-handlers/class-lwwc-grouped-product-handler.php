@@ -56,33 +56,34 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 
 		// Use direct database query for better performance
 
-		// Build the base query
-		$query = "SELECT p.ID, p.post_title, p.post_content 
-			FROM {$wpdb->posts} p 
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-			WHERE p.post_type = 'product' 
-			AND p.post_status = 'publish' 
-			AND pm.meta_key = '_product_type' 
-			AND pm.meta_value = 'grouped'";
-		
-		// Add search condition if needed
-		if ( ! empty( $search_term ) ) {
-			$query .= " AND (p.post_title LIKE %s OR p.post_content LIKE %s)";
-		}
-		
-		$query .= " ORDER BY p.post_title ASC LIMIT %d";
-		
 		// Prepare the query with appropriate parameters
 		if ( ! empty( $search_term ) ) {
 			$products_data = $wpdb->get_results( $wpdb->prepare(
-				$query,
+				"SELECT p.ID, p.post_title, p.post_content 
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+				WHERE p.post_type = 'product' 
+				AND p.post_status = 'publish' 
+				AND pm.meta_key = '_product_type' 
+				AND pm.meta_value = 'grouped'
+				AND (p.post_title LIKE %s OR p.post_content LIKE %s)
+				ORDER BY p.post_title ASC
+				LIMIT %d",
 				'%' . $wpdb->esc_like( $search_term ) . '%',
 				'%' . $wpdb->esc_like( $search_term ) . '%',
 				$limit
 			) );
 		} else {
 			$products_data = $wpdb->get_results( $wpdb->prepare(
-				$query,
+				"SELECT p.ID, p.post_title, p.post_content 
+				FROM {$wpdb->posts} p 
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+				WHERE p.post_type = 'product' 
+				AND p.post_status = 'publish' 
+				AND pm.meta_key = '_product_type' 
+				AND pm.meta_value = 'grouped'
+				ORDER BY p.post_title ASC
+				LIMIT %d",
 				$limit
 			) );
 		}
