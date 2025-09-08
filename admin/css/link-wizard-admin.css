@@ -4,35 +4,25 @@
    ============================================================================= */
 
 /* 
- * Color Scheme Extensibility:
- * To support additional WordPress admin color schemes, you can override these custom properties:
+ * WordPress Admin Color Scheme Integration:
  * 
- * For Default/Fresh color scheme (.wp-core-ui .button-primary { background: #2271b1; }):
- * :root { --lwwc-theme-primary: #2271b1; --lwwc-theme-ui: #2c3338; }
+ * This plugin automatically adapts to WordPress admin color schemes using
+ * the standardized CSS variables introduced in WordPress 5.7+.
  * 
- * For Light color scheme (.wp-core-ui .button-primary { background: #d64e07; }):
- * :root { --lwwc-theme-primary: #d64e07; --lwwc-theme-ui: #999; }
+ * Key Variables Available:
+ * - --wp-admin-theme-color: Primary theme color (matches .wp-core-ui .button-primary)
+ * - --wp-admin-theme-color-darker-10: 10% darker variant
+ * - --wp-admin-theme-color-darker-20: 20% darker variant
+ * - --wp-admin-background-color: Admin background color
+ * - --wp-admin-text-color: Primary text color
+ * - --wp-admin-secondary-text-color: Secondary text color
  * 
- * For Modern color scheme (.wp-core-ui .button-primary { background: #3858e9; }):
- * :root { --lwwc-theme-primary: #3858e9; --lwwc-theme-ui: #1e1e1e; }
+ * Icons automatically inherit these colors, so they will match any WordPress
+ * admin color scheme (Default, Light, Modern, Blue, Coffee, Ectoplasm, 
+ * Midnight, Ocean, Sunrise, or any custom schemes) without manual updates.
  * 
- * For Blue color scheme (.wp-core-ui .button-primary { background: #52accc; }):
- * :root { --lwwc-theme-primary: #52accc; --lwwc-theme-ui: #4796b3; }
- * 
- * For Coffee color scheme (.wp-core-ui .button-primary { background: #c7a589; }):
- * :root { --lwwc-theme-primary: #c7a589; --lwwc-theme-ui: #59524c; }
- * 
- * For Ectoplasm color scheme (.wp-core-ui .button-primary { background: #a3b745; }):
- * :root { --lwwc-theme-primary: #a3b745; --lwwc-theme-ui: #523f6d; }
- * 
- * For Midnight color scheme (.wp-core-ui .button-primary { background: #e14d43; }):
- * :root { --lwwc-theme-primary: #e14d43; --lwwc-theme-ui: #363b3f; }
- * 
- * For Ocean color scheme (.wp-core-ui .button-primary { background: #9ebaa0; }):
- * :root { --lwwc-theme-primary: #9ebaa0; --lwwc-theme-ui: #738e96; }
- * 
- * For Sunrise color scheme (.wp-core-ui .button-primary { background: #dd823b; }):
- * :root { --lwwc-theme-primary: #dd823b; --lwwc-theme-ui: #cf4944; }
+ * For more information, see:
+ * https://make.wordpress.org/core/2021/02/23/standardization-of-wp-admin-colors-in-wordpress-5-7/
  */
 
 /* =============================================================================
@@ -338,8 +328,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Theme-aware coloring (uses currentColor from the SVG) */
 .lwwc-theme-colored {
-	/* Use the same color variable chain as .wp-core-ui .button-primary */
-	color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+	/* Use WordPress standard admin theme color - automatically adapts to any color scheme */
+	color: var(--wp-admin-theme-color);
 }
 
 /* Header layout for icon next to title/description */
@@ -3164,7 +3154,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 28px;
     width: 28px;
     height: 28px;
-    color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
+    color: var(--wp-admin-theme-color);
 }
 
 .lwwc-addon-content {
