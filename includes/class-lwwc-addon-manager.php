@@ -469,6 +469,13 @@ class LWWC_Addon_Manager {
 			$status[ $type ] = self::has_products_of_type( $type );
 		}
 
+		// Add subscription plugin status for frontend
+		$subscription_plugin_file = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
+		$status['subscription_status'] = array(
+			'installed' => file_exists( WP_PLUGIN_DIR . '/' . $subscription_plugin_file ),
+			'active' => is_plugin_active( $subscription_plugin_file ),
+		);
+
 		return $status;
 	}
 

@@ -159,25 +159,71 @@ const AddonsSection = ({ onAddonSelect }) => {
             { type: 'simple', label: 'Simple' },
             { type: 'variable', label: 'Variable' },
             { type: 'grouped', label: 'Grouped' },
-            { type: 'subscription', label: 'Subscription' }
+            { type: 'subscription', label: 'Subscription', link: 'https://woocommerce.com/products/woocommerce-subscriptions/' }
         ];
 
         return coreTypes.map((item, index) => {
             const isEnabled = window.lwwcCoreProductTypes?.[item.type] || false;
-            const statusIcon = isEnabled ? 
-                <span className="dashicons dashicons-yes"></span> : 
-                <span className="dashicons dashicons-no"></span>;
-            const tooltipText = isEnabled ? 
-                'Products of this type exist in your store' : 
-                'No products of this type found in your store';
+            let statusIcon, statusClass, tooltipText, linkUrl = null;
+            
+            if (isEnabled) {
+                statusIcon = <span className="dashicons dashicons-yes"></span>;
+                statusClass = 'enabled';
+                tooltipText = 'Products of this type exist in your store';
+            } else {
+                // For subscription, check if WooCommerce Subscriptions is installed
+                if (item.type === 'subscription') {
+                    const subscriptionStatus = window.lwwcCoreProductTypes?.subscription_status || { installed: false, active: false };
+                    
+                    if (subscriptionStatus.active) {
+                        statusIcon = <span className="dashicons dashicons-yes"></span>;
+                        statusClass = 'enabled';
+                        tooltipText = 'WooCommerce Subscriptions is active';
+                    } else if (subscriptionStatus.installed) {
+                        statusIcon = <span className="dashicons dashicons-warning"></span>;
+                        statusClass = 'inactive';
+                        tooltipText = 'WooCommerce Subscriptions is installed but inactive - activate to use';
+                    } else {
+                        statusIcon = <span className="dashicons dashicons-external"></span>;
+                        statusClass = 'disabled';
+                        tooltipText = 'Purchase WooCommerce Subscriptions on WooCommerce.com';
+                        linkUrl = item.link;
+                    }
+                } else {
+                    statusIcon = <span className="dashicons dashicons-no"></span>;
+                    statusClass = 'disabled';
+                    tooltipText = 'No products of this type found in your store';
+                }
+            }
+            
+            const badgeContent = (
+                <>
+                    {statusIcon} {item.label}
+                </>
+            );
+            
+            if (linkUrl) {
+                return (
+                    <a 
+                        key={index} 
+                        href={linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`}
+                        title={tooltipText}
+                    >
+                        {badgeContent}
+                    </a>
+                );
+            }
             
             return (
                 <span 
                     key={index} 
-                    className={`lwwc-addon-product-type-badge ${isEnabled ? 'enabled' : 'disabled'}`}
+                    className={`lwwc-addon-product-type-badge ${statusClass}`}
                     title={tooltipText}
                 >
-                    {statusIcon} {item.label}
+                    {badgeContent}
                 </span>
             );
         });
