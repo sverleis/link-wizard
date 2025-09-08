@@ -3,6 +3,20 @@
    WordPress Admin Color Scheme
    ============================================================================= */
 
+/* 
+ * Color Scheme Extensibility:
+ * To support additional WordPress admin color schemes, you can override these custom properties:
+ * 
+ * For Blue color scheme (.wp-core-ui .button-primary { background: #0073aa; }):
+ * :root { --lwwc-theme-primary: #0073aa; --lwwc-theme-ui: #2c5aa0; }
+ * 
+ * For Coffee color scheme (.wp-core-ui .button-primary { background: #59524c; }):
+ * :root { --lwwc-theme-primary: #59524c; --lwwc-theme-ui: #46403c; }
+ * 
+ * For Midnight color scheme (.wp-core-ui .button-primary { background: #e14d43; }):
+ * :root { --lwwc-theme-primary: #e14d43; --lwwc-theme-ui: #363b3f; }
+ */
+
 /* =============================================================================
    Dynamic Link Component Styles
    ============================================================================= */
