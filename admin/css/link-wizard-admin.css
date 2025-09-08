@@ -306,8 +306,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Theme-aware coloring (uses currentColor from the SVG) */
 .lwwc-theme-colored {
-	/* Use the actual admin theme primary color if available */
-	color: var(--wp-admin-theme-color, #2271b1);
+	/* Use the success color to match the Next buttons */
+	color: var(--wp-admin-success-color, #28a745);
 }
 
 /* Header layout for icon next to title/description */
