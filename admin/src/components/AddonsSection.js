@@ -98,6 +98,17 @@ const AddonsSection = ({ onAddonSelect }) => {
             
             let statusIcon = '❌';
             let statusClass = 'disabled';
+            let displayName = type;
+            let linkUrl = null;
+            
+            // Set display names and links
+            if (type === 'bundle') {
+                displayName = 'Product Bundles';
+                linkUrl = 'https://woocommerce.com/products/product-bundles/';
+            } else if (type === 'composite') {
+                displayName = 'Composite Products';
+                linkUrl = 'https://woocommerce.com/products/composite-products/';
+            }
             
             if (isActive) {
                 statusIcon = '✅';
@@ -107,9 +118,29 @@ const AddonsSection = ({ onAddonSelect }) => {
                 statusClass = 'inactive';
             }
             
+            const badgeContent = (
+                <>
+                    {statusIcon} {displayName}
+                </>
+            );
+            
+            if (linkUrl) {
+                return (
+                    <a 
+                        key={index} 
+                        href={linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`}
+                    >
+                        {badgeContent}
+                    </a>
+                );
+            }
+            
             return (
                 <span key={index} className={`lwwc-addon-product-type-badge ${statusClass}`}>
-                    {statusIcon} {type}
+                    {badgeContent}
                 </span>
             );
         });

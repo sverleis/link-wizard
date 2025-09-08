@@ -498,17 +498,47 @@ class LWWC_Addon_Manager {
 	 * @return bool True if products exist.
 	 */
 	private static function has_products_of_type( $product_type ) {
-		global $wpdb;
+		// Use WooCommerce's built-in function to get products
+		$args = array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'   => '_product_type',
+					'value' => $product_type,
+				),
+			),
+		);
 
-		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->posts} p 
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-			WHERE p.post_type = 'product' 
-			AND p.post_status = 'publish' 
-			AND pm.meta_key = '_product_type' 
-			AND pm.meta_value = %s",
-			$product_type
-		) );
+		$products = get_posts( $args );
+		$count = count( $products );
+
+		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
+		// and has any products (they would be simple by default)
+		if ( $count === 0 && in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
+			// Check if WooCommerce is active and has any products
+			if ( class_exists( 'WooCommerce' ) ) {
+				$total_products = wp_count_posts( 'product' );
+				$published_products = $total_products->publish ?? 0;
+				
+				// If there are published products, assume core types are available
+				if ( $published_products > 0 ) {
+					$count = $published_products;
+				}
+			}
+		}
+
+		// For subscription products, check if WooCommerce Subscriptions is active
+		if ( $product_type === 'subscription' && class_exists( 'WC_Subscriptions' ) ) {
+			$count = 1; // Assume available if WooCommerce Subscriptions is active
+		}
+
+		// Debug logging
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "LWWC Core Product Types: Checking {$product_type}, found {$count} products" );
+		}
 
 		return $count > 0;
 	}
