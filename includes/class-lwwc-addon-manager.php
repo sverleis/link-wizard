@@ -421,13 +421,10 @@ class LWWC_Addon_Manager {
 			$product_type
 		) );
 
-		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
-		// Core types are always available if WooCommerce is active
-		if ( $count === 0 && in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
-			// Check if WooCommerce is active - core types are always available
-			if ( class_exists( 'WooCommerce' ) ) {
-				$count = 1; // Core types are always available if WooCommerce is active
-			}
+		// For core WooCommerce types, they are always available if we're in WooCommerce admin
+		// Since this method is only called from WooCommerce admin pages, WooCommerce is definitely active
+		if ( in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
+			$count = 1; // Core types are always available in WooCommerce admin
 		}
 
 		// For subscription products, check if WooCommerce Subscriptions is active
