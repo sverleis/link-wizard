@@ -7,14 +7,32 @@
  * Color Scheme Extensibility:
  * To support additional WordPress admin color schemes, you can override these custom properties:
  * 
- * For Blue color scheme (.wp-core-ui .button-primary { background: #0073aa; }):
- * :root { --lwwc-theme-primary: #0073aa; --lwwc-theme-ui: #2c5aa0; }
+ * For Default/Fresh color scheme (.wp-core-ui .button-primary { background: #2271b1; }):
+ * :root { --lwwc-theme-primary: #2271b1; --lwwc-theme-ui: #2c3338; }
  * 
- * For Coffee color scheme (.wp-core-ui .button-primary { background: #59524c; }):
- * :root { --lwwc-theme-primary: #59524c; --lwwc-theme-ui: #46403c; }
+ * For Light color scheme (.wp-core-ui .button-primary { background: #d64e07; }):
+ * :root { --lwwc-theme-primary: #d64e07; --lwwc-theme-ui: #999; }
+ * 
+ * For Modern color scheme (.wp-core-ui .button-primary { background: #3858e9; }):
+ * :root { --lwwc-theme-primary: #3858e9; --lwwc-theme-ui: #1e1e1e; }
+ * 
+ * For Blue color scheme (.wp-core-ui .button-primary { background: #52accc; }):
+ * :root { --lwwc-theme-primary: #52accc; --lwwc-theme-ui: #4796b3; }
+ * 
+ * For Coffee color scheme (.wp-core-ui .button-primary { background: #c7a589; }):
+ * :root { --lwwc-theme-primary: #c7a589; --lwwc-theme-ui: #59524c; }
+ * 
+ * For Ectoplasm color scheme (.wp-core-ui .button-primary { background: #a3b745; }):
+ * :root { --lwwc-theme-primary: #a3b745; --lwwc-theme-ui: #523f6d; }
  * 
  * For Midnight color scheme (.wp-core-ui .button-primary { background: #e14d43; }):
  * :root { --lwwc-theme-primary: #e14d43; --lwwc-theme-ui: #363b3f; }
+ * 
+ * For Ocean color scheme (.wp-core-ui .button-primary { background: #9ebaa0; }):
+ * :root { --lwwc-theme-primary: #9ebaa0; --lwwc-theme-ui: #738e96; }
+ * 
+ * For Sunrise color scheme (.wp-core-ui .button-primary { background: #dd823b; }):
+ * :root { --lwwc-theme-primary: #dd823b; --lwwc-theme-ui: #cf4944; }
  */
 
 /* =============================================================================
