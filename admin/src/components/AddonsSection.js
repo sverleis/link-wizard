@@ -191,6 +191,13 @@ const AddonsSection = ({ onAddonSelect }) => {
         const addonData = window.lwwcAddons || {};
         const addonsList = addonData.addons || {};
         
+        // Debug: Log addon data
+        console.log('LWWC Advertising Debug:', {
+            addonsList,
+            externalPlugins: Object.values(addonsList).filter(addon => addon.type === 'external_plugin'),
+            linkWizardAddons: Object.values(addonsList).filter(addon => addon.type === 'link_wizard_addon')
+        });
+        
         // Check if WooCommerce extensions are active or installed (but inactive)
         const hasWooCommerceExtensions = Object.values(addonsList).some(addon => 
             addon.type === 'external_plugin' && (addon.is_active || addon.installed)
@@ -200,6 +207,12 @@ const AddonsSection = ({ onAddonSelect }) => {
         const hasLinkWizardAddons = Object.values(addonsList).some(addon => 
             addon.type === 'link_wizard_addon' && addon.is_active
         );
+        
+        console.log('LWWC Advertising Logic:', {
+            hasWooCommerceExtensions,
+            hasLinkWizardAddons,
+            shouldShowBanner: hasWooCommerceExtensions && !hasLinkWizardAddons
+        });
         
         // Show advertising if WooCommerce extensions are present but Link Wizard Addons is not
         if (hasWooCommerceExtensions && !hasLinkWizardAddons) {

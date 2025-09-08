@@ -75,6 +75,11 @@ class LWWC_Addon_Manager {
 		// Get list of plugins to detect from addons.
 		$plugins_to_detect = apply_filters( 'lwwc_addon_detection_plugins', array() );
 		
+		// Also detect WooCommerce extensions directly for advertising purposes
+		$woocommerce_extensions = self::get_woocommerce_extensions_to_detect();
+		$plugins_to_detect = array_merge( $plugins_to_detect, $woocommerce_extensions );
+		
+		// Check active plugins first
 		foreach ( $active_plugins as $plugin_file ) {
 			// Check if this is a Link Wizard addon.
 			if ( self::is_link_wizard_addon( $plugin_file ) ) {
@@ -87,11 +92,32 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
+		// Also check for installed but inactive WooCommerce extensions
+		foreach ( $woocommerce_extensions as $plugin_file ) {
+			if ( ! in_array( $plugin_file, $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
+				self::register_external_plugin( $plugin_file );
+			}
+		}
+		
 		// Debug: Log detected addons.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( 'LWWC Addon Manager: Detected ' . count( self::$registered_addons ) . ' addons: ' . implode( ', ', array_keys( self::$registered_addons ) ) );
 			error_log( 'LWWC Addon Manager: Active plugins: ' . print_r( get_option( 'active_plugins', array() ), true ) );
 		}
+	}
+
+	/**
+	 * Get WooCommerce extensions to detect for advertising purposes.
+	 *
+	 * @since 1.0.4
+	 * @return array Array of plugin files to detect.
+	 */
+	private static function get_woocommerce_extensions_to_detect() {
+		return array(
+			'woocommerce-subscriptions/woocommerce-subscriptions.php',
+			'woocommerce-product-bundles/woocommerce-product-bundles.php',
+			'woocommerce-composite-products/woocommerce-composite-products.php',
+		);
 	}
 
 	/**
