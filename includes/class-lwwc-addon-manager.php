@@ -54,6 +54,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Standard admin page check
 		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === $_GET['page'] ) {
 			// Re-detect addons in case some were loaded after initial detection.
 			self::detect_addons();
@@ -512,6 +513,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_get_addons() {
 		// Verify nonce.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- wp_verify_nonce expects raw nonce
 		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
@@ -531,6 +533,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_activate_addon() {
 		// Verify nonce.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- wp_verify_nonce expects raw nonce
 		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
