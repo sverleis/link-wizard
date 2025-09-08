@@ -6,7 +6,6 @@ import Coupon from './components/Coupon';
 import GenerateLink from './components/GenerateLink';
 import DynamicLink from './components/DynamicLink';
 import AddonsSection from './components/AddonsSection';
-import AddonSettings from './components/AddonSettings';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -28,7 +27,6 @@ function App() {
     // Add state for addon management.
     const [selectedAddon, setSelectedAddon] = useState(null);
     const [showAddonInterface, setShowAddonInterface] = useState(false);
-    const [showAddonSettings, setShowAddonSettings] = useState(false);
     // More to come as we build out the extension further.
 
     // Ensure the header SVG icon color matches the admin primary button background.
@@ -58,7 +56,6 @@ function App() {
         const addonParam = urlParams.get('addon');
         
         if (addonParam === 'link-wizard-addons') {
-            setShowAddonSettings(true);
         }
     }, []);
 
@@ -221,14 +218,6 @@ function App() {
         console.log('Selected addon:', addon);
     };
 
-    // Handle closing addon settings.
-    const handleCloseAddonSettings = () => {
-        setShowAddonSettings(false);
-        // Remove the addon parameter from URL.
-        const url = new URL(window.location);
-        url.searchParams.delete('addon');
-        window.history.replaceState({}, '', url);
-    };
 
     const renderStep = () => {
         switch (currentStep) {
@@ -397,14 +386,6 @@ function App() {
         );
     };
 
-    // If showing addon settings, render that instead of the main interface.
-    if (showAddonSettings) {
-        return (
-            <div className="wrap">
-                <AddonSettings onClose={handleCloseAddonSettings} />
-            </div>
-        );
-    }
 
     return (
         <div className="wrap">
