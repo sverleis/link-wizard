@@ -3132,7 +3132,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 28px;
     width: 28px;
     height: 28px;
-    color: var(--wp-admin-theme-color, #2271b1);
+    color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
 }
 
 .lwwc-addon-content {
