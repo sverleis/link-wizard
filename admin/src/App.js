@@ -207,7 +207,6 @@ function App() {
         
         // Navigate to addon interface.
         // This could be a separate step or a modal overlay.
-        console.log('Selected addon:', addon);
     };
 
 

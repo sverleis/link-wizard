@@ -21,16 +21,12 @@ const AddonsSection = ({ onAddonSelect }) => {
             const addonData = window.lwwcAddons || {};
             const addonsList = addonData.addons || {};
 
-            // Debug: Log addon data received from backend.
-            console.log('LWWC Addons: Raw addon data:', addonData);
-            console.log('LWWC Addons: Addons list:', addonsList);
+            // Process addon data received from backend.
 
             // Convert object to array and filter for Link Wizard addons only.
             const activeAddons = Object.values(addonsList).filter(addon => 
                 addon.is_active && addon.type === 'link_wizard_addon'
             );
-            
-            console.log('LWWC Addons: Active addons after filtering:', activeAddons);
             
             setAddons(activeAddons);
         } catch (err) {
@@ -49,7 +45,6 @@ const AddonsSection = ({ onAddonSelect }) => {
     const handleAddonClick = (addon) => {
         // Addons are now "always on" - no settings needed
         // Just show status information
-        console.log('Addon status:', addon);
     };
 
     const getAddonIcon = (addon) => {
