@@ -394,6 +394,17 @@ class LWWC_Addon_Manager {
 	 * @return bool True if products exist.
 	 */
 	private static function has_products_of_type( $product_type ) {
+		// For core WooCommerce types, they are always available if we're in WooCommerce admin
+		// Since this method is only called from WooCommerce admin pages, WooCommerce is definitely active
+		if ( in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
+			return true; // Core types are always available in WooCommerce admin
+		}
+
+		// For subscription products, check if WooCommerce Subscriptions is active
+		if ( $product_type === 'subscription' && class_exists( 'WC_Subscriptions' ) ) {
+			return true; // Assume available if WooCommerce Subscriptions is active
+		}
+
 		global $wpdb;
 
 		// Check cache first
@@ -416,17 +427,6 @@ class LWWC_Addon_Manager {
 			LIMIT 1",
 			$product_type
 		) );
-
-		// For core WooCommerce types, they are always available if we're in WooCommerce admin
-		// Since this method is only called from WooCommerce admin pages, WooCommerce is definitely active
-		if ( in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
-			$count = 1; // Core types are always available in WooCommerce admin
-		}
-
-		// For subscription products, check if WooCommerce Subscriptions is active
-		if ( $product_type === 'subscription' && class_exists( 'WC_Subscriptions' ) ) {
-			$count = 1; // Assume available if WooCommerce Subscriptions is active
-		}
 
 		$result = $count > 0;
 		
