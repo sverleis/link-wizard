@@ -67,7 +67,7 @@ class LWWC_Validation {
 		self::register_validation_rule(
 			'product_sold_individually',
 			array(
-				'product_types' => array( 'simple', 'variable', 'subscription', 'variable-subscription' ),
+				'product_types' => array( 'simple', 'variable', 'subscription', 'variable-subscription', 'grouped' ),
 				'callback'      => array( __CLASS__, 'validate_product_sold_individually' ),
 				'priority'      => 5,
 				'description'   => __( 'Validates that products marked as "Sold individually" are handled correctly', 'link-wizard-for-woocommerce' ),

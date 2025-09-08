@@ -68,14 +68,13 @@ const AddonsSection = ({ onAddonSelect }) => {
     };
 
     const getAddonDescription = (addon) => {
-        // Extract product types from capabilities.
-        const productTypes = addon.capabilities?.product_types || [];
-        
-        if (productTypes.length > 0) {
-            return `Supports: ${productTypes.join(', ')}`;
+        // Show a simple description for addon cards.
+        if (addon.type === 'link_wizard_addon') {
+            return 'Additional product type support';
         }
         
-        return addon.description || 'Additional product type support';
+        // For WooCommerce plugins, show a brief description.
+        return addon.description || 'WooCommerce extension';
     };
 
     if (loading) {
@@ -186,15 +185,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
                                 {addon.name}
-                                <span className="lwwc-addon-version">v{addon.version}</span>
                             </h4>
                             <p className="lwwc-addon-description">
                                 {getAddonDescription(addon)}
-                                {addon.author && (
-                                    <span className="lwwc-addon-author">
-                                        {' | '}by <span dangerouslySetInnerHTML={{ __html: addon.author }} />
-                                    </span>
-                                )}
                             </p>
                         </div>
                         <div className="lwwc-addon-action">

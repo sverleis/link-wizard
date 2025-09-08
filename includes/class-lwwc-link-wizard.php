@@ -101,6 +101,7 @@ class LWWC_Link_Wizard {
 		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-simple-product-handler.php';
 		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-variable-product-handler.php';
 		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-subscription-product-handler.php';
+		require_once LWWC_PATH . 'includes/product-handlers/class-lwwc-grouped-product-handler.php';
 
 		/**
 		 * The class responsible for managing addons.
