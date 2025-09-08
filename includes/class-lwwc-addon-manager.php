@@ -322,9 +322,20 @@ class LWWC_Addon_Manager {
 	public static function enqueue_addon_data() {
 		$addon_data = self::get_registered_addons();
 		
+		// Add product type status to addon data.
+		foreach ( $addon_data as $plugin_slug => $addon ) {
+			if ( $addon['type'] === 'link_wizard_addon' ) {
+				$addon_data[ $plugin_slug ]['product_type_status'] = self::get_addon_product_type_status( $addon );
+			}
+		}
+		
+		// Get core product types status.
+		$core_product_types = self::get_core_product_types_status();
+		
 		// Debug: Log addon data being passed to frontend.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( 'LWWC Addon Manager: Enqueuing addon data: ' . print_r( $addon_data, true ) );
+			error_log( 'LWWC Addon Manager: Core product types status: ' . print_r( $core_product_types, true ) );
 		}
 		
 		// Add addon data to the existing admin script.
@@ -336,6 +347,13 @@ class LWWC_Addon_Manager {
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
 			)
+		);
+		
+		// Add core product types status.
+		wp_localize_script( 
+			'link-wizard-for-woocommerce', 
+			'lwwcCoreProductTypes', 
+			$core_product_types
 		);
 		
 		// Add the icon HTML to the admin script.
@@ -435,5 +453,83 @@ class LWWC_Addon_Manager {
 	public static function is_product_type_supported( $product_type ) {
 		$addon_product_types = self::get_addon_product_types();
 		return in_array( $product_type, $addon_product_types, true );
+	}
+
+	/**
+	 * Get core product types status (check if products exist).
+	 *
+	 * @since 1.0.4
+	 * @return array Array of product types with their status.
+	 */
+	private static function get_core_product_types_status() {
+		$core_types = array( 'simple', 'variable', 'grouped', 'subscription' );
+		$status = array();
+
+		foreach ( $core_types as $type ) {
+			$status[ $type ] = self::has_products_of_type( $type );
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Get addon product type status (check if plugins are active).
+	 *
+	 * @since 1.0.4
+	 * @param array $addon The addon data.
+	 * @return array Array of product types with their status.
+	 */
+	private static function get_addon_product_type_status( $addon ) {
+		$product_types = $addon['capabilities']['product_types'] ?? array();
+		$status = array();
+
+		foreach ( $product_types as $type ) {
+			$status[ $type ] = self::is_woocommerce_plugin_active_for_type( $type );
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Check if there are products of a specific type.
+	 *
+	 * @since 1.0.4
+	 * @param string $product_type The product type to check.
+	 * @return bool True if products exist.
+	 */
+	private static function has_products_of_type( $product_type ) {
+		global $wpdb;
+
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+			WHERE p.post_type = 'product' 
+			AND p.post_status = 'publish' 
+			AND pm.meta_key = '_product_type' 
+			AND pm.meta_value = %s",
+			$product_type
+		) );
+
+		return $count > 0;
+	}
+
+	/**
+	 * Check if a WooCommerce plugin is active for a product type.
+	 *
+	 * @since 1.0.4
+	 * @param string $product_type The product type to check.
+	 * @return bool True if the corresponding plugin is active.
+	 */
+	private static function is_woocommerce_plugin_active_for_type( $product_type ) {
+		$plugin_map = array(
+			'composite' => 'woocommerce-composite-products/woocommerce-composite-products.php',
+			'bundle' => 'woocommerce-product-bundles/woocommerce-product-bundles.php',
+		);
+
+		if ( ! isset( $plugin_map[ $product_type ] ) ) {
+			return false;
+		}
+
+		return is_plugin_active( $plugin_map[ $product_type ] );
 	}
 }
