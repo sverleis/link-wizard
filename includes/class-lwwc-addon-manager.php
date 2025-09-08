@@ -417,17 +417,11 @@ class LWWC_Addon_Manager {
 		) );
 
 		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
-		// and has any products (they would be simple by default)
+		// Core types are always available if WooCommerce is active
 		if ( $count === 0 && in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
-			// Check if WooCommerce is active and has any products
+			// Check if WooCommerce is active - core types are always available
 			if ( class_exists( 'WooCommerce' ) ) {
-				$total_products = wp_count_posts( 'product' );
-				$published_products = $total_products->publish ?? 0;
-				
-				// If there are published products, assume core types are available
-				if ( $published_products > 0 ) {
-					$count = $published_products;
-				}
+				$count = 1; // Core types are always available if WooCommerce is active
 			}
 		}
 
