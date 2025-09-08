@@ -57,6 +57,7 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 			'post_status'    => 'publish',
 			'posts_per_page' => $limit,
 			's'              => $search_term,
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for product type filtering
 			'meta_query'     => array(
 				array(
 					'key'     => '_product_type',
