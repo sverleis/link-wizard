@@ -52,21 +52,37 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 	 * @return array Array of product data.
 	 */
 	public function get_search_results( $search_term, $limit = 10 ) {
-		$args = array(
-			'post_type'      => 'product',
-			'post_status'    => 'publish',
-			'posts_per_page' => $limit,
-			's'              => $search_term,
-			'meta_query'     => array(
-				array(
-					'key'     => '_product_type',
-					'value'   => 'grouped',
-					'compare' => '=',
-				),
-			),
-		);
+		global $wpdb;
 
-		$products = get_posts( $args );
+		// Use direct database query for better performance
+		$search_condition = '';
+		if ( ! empty( $search_term ) ) {
+			$search_condition = $wpdb->prepare( "AND (p.post_title LIKE %s OR p.post_content LIKE %s)", 
+				'%' . $wpdb->esc_like( $search_term ) . '%',
+				'%' . $wpdb->esc_like( $search_term ) . '%'
+			);
+		}
+
+		$products_data = $wpdb->get_results( $wpdb->prepare(
+			"SELECT p.ID, p.post_title, p.post_content 
+			FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+			WHERE p.post_type = 'product' 
+			AND p.post_status = 'publish' 
+			AND pm.meta_key = '_product_type' 
+			AND pm.meta_value = 'grouped'
+			{$search_condition}
+			ORDER BY p.post_title ASC
+			LIMIT %d",
+			$limit
+		) );
+
+		// Convert to WP_Post objects for compatibility
+		$products = array();
+		foreach ( $products_data as $product_data ) {
+			$product = new WP_Post( (object) $product_data );
+			$products[] = $product;
+		}
 		$results  = array();
 
 		foreach ( $products as $product_post ) {

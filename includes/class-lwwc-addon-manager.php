@@ -54,7 +54,8 @@ class LWWC_Addon_Manager {
 	 */
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
-		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+		$current_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+		if ( 'link-wizard-for-woocommerce' === $current_page ) {
 			// Re-detect addons in case some were loaded after initial detection.
 			self::detect_addons();
 			
@@ -352,7 +353,8 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_get_addons() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -371,7 +373,8 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_activate_addon() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
+		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -482,22 +485,19 @@ class LWWC_Addon_Manager {
 	 * @return bool True if products exist.
 	 */
 	private static function has_products_of_type( $product_type ) {
-		// Use WooCommerce's built-in function to get products
-		$args = array(
-			'post_type'      => 'product',
-			'post_status'    => 'publish',
-			'posts_per_page' => 1,
-			'fields'         => 'ids',
-			'meta_query'     => array(
-				array(
-					'key'   => '_product_type',
-					'value' => $product_type,
-				),
-			),
-		);
+		global $wpdb;
 
-		$products = get_posts( $args );
-		$count = count( $products );
+		// Use direct database query for better performance
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
+			WHERE p.post_type = 'product' 
+			AND p.post_status = 'publish' 
+			AND pm.meta_key = '_product_type' 
+			AND pm.meta_value = %s
+			LIMIT 1",
+			$product_type
+		) );
 
 		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
 		// and has any products (they would be simple by default)
