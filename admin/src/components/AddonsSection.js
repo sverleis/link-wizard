@@ -115,14 +115,17 @@ const AddonsSection = ({ onAddonSelect }) => {
                 statusIcon = <span className="dashicons dashicons-yes"></span>;
                 statusClass = 'enabled';
                 tooltipText = 'Plugin is installed and active';
+                linkUrl = null; // No link for active plugins
             } else if (isInstalled) {
                 statusIcon = <span className="dashicons dashicons-warning"></span>;
                 statusClass = 'inactive';
-                tooltipText = 'Plugin is installed but inactive - activate to use';
+                tooltipText = 'Plugin is installed but inactive - click to activate';
+                linkUrl = '/wp-admin/plugins.php'; // Link to plugins page
             } else {
                 statusIcon = <span className="dashicons dashicons-external"></span>;
                 statusClass = 'disabled';
                 tooltipText = 'Purchase this extension on WooCommerce.com';
+                // Keep existing linkUrl for purchase
             }
             
             const badgeContent = (
@@ -179,10 +182,12 @@ const AddonsSection = ({ onAddonSelect }) => {
                         statusIcon = <span className="dashicons dashicons-yes"></span>;
                         statusClass = 'enabled';
                         tooltipText = 'WooCommerce Subscriptions is active';
+                        linkUrl = null; // No link for active plugins
                     } else if (subscriptionStatus.installed) {
                         statusIcon = <span className="dashicons dashicons-warning"></span>;
                         statusClass = 'inactive';
-                        tooltipText = 'WooCommerce Subscriptions is installed but inactive - activate to use';
+                        tooltipText = 'WooCommerce Subscriptions is installed but inactive - click to activate';
+                        linkUrl = '/wp-admin/plugins.php'; // Link to plugins page
                     } else {
                         statusIcon = <span className="dashicons dashicons-external"></span>;
                         statusClass = 'disabled';
