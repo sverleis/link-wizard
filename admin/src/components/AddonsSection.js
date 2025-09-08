@@ -21,12 +21,16 @@ const AddonsSection = ({ onAddonSelect }) => {
             const addonData = window.lwwcAddons || {};
             const addonsList = addonData.addons || {};
 
-            // Process addon data received from backend.
+            // Debug: Log addon data received from backend.
+            console.log('LWWC Addons: Raw addon data:', addonData);
+            console.log('LWWC Addons: Addons list:', addonsList);
 
             // Convert object to array and filter for Link Wizard addons only.
             const activeAddons = Object.values(addonsList).filter(addon => 
                 addon.is_active && addon.type === 'link_wizard_addon'
             );
+            
+            console.log('LWWC Addons: Active addons after filtering:', activeAddons);
             
             setAddons(activeAddons);
         } catch (err) {
@@ -43,8 +47,9 @@ const AddonsSection = ({ onAddonSelect }) => {
     };
 
     const handleAddonClick = (addon) => {
-        // Addons are now "always on" - no settings needed
-        // Just show status information
+        if (onAddonSelect) {
+            onAddonSelect(addon);
+        }
     };
 
     const getAddonIcon = (addon) => {
@@ -86,147 +91,11 @@ const AddonsSection = ({ onAddonSelect }) => {
             return null;
         }
         
-        return productTypes.map((type, index) => {
-            const status = addon.product_type_status?.[type] || { status: 'not_installed', active: false };
-            const isActive = status.active;
-            const isInstalled = status.installed;
-            
-            let statusIcon = null;
-            let statusClass = 'disabled';
-            let displayName = type;
-            let linkUrl = null;
-            let tooltipText = '';
-            
-            // Set display names and links
-            if (type === 'bundle') {
-                displayName = 'Product Bundles';
-                linkUrl = 'https://woocommerce.com/products/product-bundles/';
-            } else if (type === 'composite') {
-                displayName = 'Composite Products';
-                linkUrl = 'https://woocommerce.com/products/composite-products/';
-            }
-            
-            if (isActive) {
-                statusIcon = <span className="dashicons dashicons-yes"></span>;
-                statusClass = 'enabled';
-                tooltipText = 'Plugin is installed and active';
-                linkUrl = null; // No link for active plugins
-            } else if (isInstalled) {
-                statusIcon = <span className="dashicons dashicons-warning"></span>;
-                statusClass = 'inactive';
-                tooltipText = 'Plugin is installed but inactive - click to activate';
-                linkUrl = '/wp-admin/plugins.php'; // Link to plugins page
-            } else {
-                statusIcon = <span className="dashicons dashicons-external"></span>;
-                statusClass = 'disabled';
-                tooltipText = 'Purchase this extension on WooCommerce.com';
-                // Keep existing linkUrl for purchase
-            }
-            
-            const badgeContent = (
-                <>
-                    {statusIcon} {displayName}
-                </>
-            );
-            
-            if (linkUrl) {
-                return (
-                    <a 
-                        key={index} 
-                        href={linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`}
-                        title={tooltipText}
-                    >
-                        {badgeContent}
-                    </a>
-                );
-            }
-            
-            return (
-                <span key={index} className={`lwwc-addon-product-type-badge ${statusClass}`}>
-                    {badgeContent}
-                </span>
-            );
-        });
-    };
-
-    const getCoreProductTypeBadges = () => {
-        const coreTypes = [
-            { type: 'simple', label: 'Simple' },
-            { type: 'variable', label: 'Variable' },
-            { type: 'grouped', label: 'Grouped' },
-            { type: 'subscription', label: 'Subscription', link: 'https://woocommerce.com/products/woocommerce-subscriptions/' }
-        ];
-
-        return coreTypes.map((item, index) => {
-            const isEnabled = window.lwwcCoreProductTypes?.[item.type] || false;
-            let statusIcon, statusClass, tooltipText, linkUrl = null;
-            
-            if (isEnabled) {
-                statusIcon = <span className="dashicons dashicons-yes"></span>;
-                statusClass = 'enabled';
-                tooltipText = 'Products of this type exist in your store';
-            } else {
-                // For subscription, check if WooCommerce Subscriptions is installed
-                if (item.type === 'subscription') {
-                    const subscriptionStatus = window.lwwcCoreProductTypes?.subscription_status || { installed: false, active: false };
-                    
-                    if (subscriptionStatus.active) {
-                        statusIcon = <span className="dashicons dashicons-yes"></span>;
-                        statusClass = 'enabled';
-                        tooltipText = 'WooCommerce Subscriptions is active';
-                        linkUrl = null; // No link for active plugins
-                    } else if (subscriptionStatus.installed) {
-                        statusIcon = <span className="dashicons dashicons-warning"></span>;
-                        statusClass = 'inactive';
-                        tooltipText = 'WooCommerce Subscriptions is installed but inactive - click to activate';
-                        linkUrl = '/wp-admin/plugins.php'; // Link to plugins page
-                    } else {
-                        statusIcon = <span className="dashicons dashicons-external"></span>;
-                        statusClass = 'disabled';
-                        tooltipText = 'Purchase WooCommerce Subscriptions on WooCommerce.com';
-                        linkUrl = item.link;
-                    }
-                } else {
-                    statusIcon = <span className="dashicons dashicons-no"></span>;
-                    statusClass = 'disabled';
-                    tooltipText = 'No products of this type found in your store';
-                }
-            }
-            
-            const badgeContent = (
-                <>
-                    {statusIcon} {item.label}
-                </>
-            );
-            
-            if (linkUrl) {
-                return (
-                    <a 
-                        key={index} 
-                        href={linkUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`}
-                        title={tooltipText}
-                    >
-                        {badgeContent}
-                    </a>
-                );
-            }
-            
-            return (
-                <span 
-                    key={index} 
-                    className={`lwwc-addon-product-type-badge ${statusClass}`}
-                    title={tooltipText}
-                >
-                    {badgeContent}
-                </span>
-            );
-        });
+        return productTypes.map((type, index) => (
+            <span key={index} className="lwwc-addon-product-type-badge">
+                {type}
+            </span>
+        ));
     };
 
     if (loading) {
@@ -306,18 +175,6 @@ const AddonsSection = ({ onAddonSelect }) => {
 
     return (
         <div className="lwwc-addons-section">
-            <div className="lwwc-core-product-types">
-                <h4 className="lwwc-core-product-types-title">
-                    Core Product Types
-                </h4>
-                <p className="lwwc-core-product-types-description">
-                    Link Wizard for WooCommerce natively supports:
-                </p>
-                <div className="lwwc-core-product-types-badges">
-                    {getCoreProductTypeBadges()}
-                </div>
-            </div>
-            
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">
                     {i18n.addons || 'Addons'}
@@ -358,9 +215,12 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </div>
                         </div>
                         <div className="lwwc-addon-action">
-                            <span className={`lwwc-addon-status ${addon.is_active ? 'active' : ''}`}>
-                                {addon.is_active ? 'Active' : 'Inactive'}
-                            </span>
+                            <a 
+                                href={addon.admin_url}
+                                className="button button-primary lwwc-addon-button"
+                            >
+                                {i18n.settingsAddon || 'Settings'}
+                            </a>
                         </div>
                     </div>
                 ))}

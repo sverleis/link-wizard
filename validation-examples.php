@@ -51,28 +51,25 @@ function lwwc_validate_grouped_product_children( $product, $rule_id ) {
 	foreach ( $children as $child_id ) {
 		$child_product = wc_get_product( $child_id );
 		if ( ! $child_product ) {
-		$errors[] = sprintf(
-			/* translators: %d: child product ID */
-			__( 'Child product ID %d not found', 'link-wizard-for-woocommerce' ),
-			$child_id
-		);
+			$errors[] = sprintf(
+				__( 'Child product ID %d not found', 'link-wizard-for-woocommerce' ),
+				$child_id
+			);
 			continue;
 		}
 
 		if ( ! $child_product->is_purchasable() ) {
-		$errors[] = sprintf(
-			/* translators: %s: child product name */
-			__( 'Child product "%s" is not purchasable', 'link-wizard-for-woocommerce' ),
-			$child_product->get_name()
-		);
+			$errors[] = sprintf(
+				__( 'Child product "%s" is not purchasable', 'link-wizard-for-woocommerce' ),
+				$child_product->get_name()
+			);
 		}
 
 		if ( ! $child_product->is_in_stock() ) {
-		$errors[] = sprintf(
-			/* translators: %s: child product name */
-			__( 'Child product "%s" is out of stock', 'link-wizard-for-woocommerce' ),
-			$child_product->get_name()
-		);
+			$errors[] = sprintf(
+				__( 'Child product "%s" is out of stock', 'link-wizard-for-woocommerce' ),
+				$child_product->get_name()
+			);
 		}
 	}
 
@@ -162,11 +159,10 @@ function lwwc_validate_product_required_meta( $product, $rule_id ) {
 	$meta_value        = $product->get_meta( $required_meta_key );
 
 	if ( empty( $meta_value ) ) {
-	$errors[] = sprintf(
-		/* translators: %s: required meta key name */
-		__( 'Product is missing required field: %s', 'link-wizard-for-woocommerce' ),
-		$required_meta_key
-	);
+		$errors[] = sprintf(
+			__( 'Product is missing required field: %s', 'link-wizard-for-woocommerce' ),
+			$required_meta_key
+		);
 	}
 
 	return array(

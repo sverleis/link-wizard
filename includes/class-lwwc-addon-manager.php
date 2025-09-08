@@ -54,8 +54,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
-		$screen = get_current_screen();
-		if ( $screen && 'product_page_link-wizard-for-woocommerce' === $screen->id ) {
+		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === $_GET['page'] ) {
 			// Re-detect addons in case some were loaded after initial detection.
 			self::detect_addons();
 			
@@ -88,6 +87,11 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
+		// Debug: Log detected addons.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Detected ' . count( self::$registered_addons ) . ' addons: ' . implode( ', ', array_keys( self::$registered_addons ) ) );
+			error_log( 'LWWC Addon Manager: Active plugins: ' . print_r( get_option( 'active_plugins', array() ), true ) );
+		}
 	}
 
 	/**
@@ -105,6 +109,11 @@ class LWWC_Addon_Manager {
 			// Get plugin data to verify it's a proper addon.
 			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
 			
+			// Debug: Log plugin data for link-wizard-addons.
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && strpos( $plugin_file, 'link-wizard-addons' ) !== false ) {
+				error_log( 'LWWC Addon Manager: Checking plugin ' . $plugin_file );
+				error_log( 'LWWC Addon Manager: Plugin data: ' . print_r( $plugin_data, true ) );
+			}
 			
 			// Check if it requires the core plugin.
 			if ( isset( $plugin_data['RequiresPlugins'] ) && 
@@ -147,6 +156,10 @@ class LWWC_Addon_Manager {
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
 		
+		// Debug: Log addon registration details.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Registering addon - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
+		}
 		
 		// Extract addon info from plugin data.
 		$addon_info = array(
@@ -184,6 +197,10 @@ class LWWC_Addon_Manager {
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
 		
+		// Debug: Log external plugin registration details.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Registering external plugin - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
+		}
 		
 		// Get capabilities and icon from addons.
 		$capabilities = apply_filters( 'lwwc_addon_plugin_capabilities', array(), $plugin_slug );
@@ -305,16 +322,10 @@ class LWWC_Addon_Manager {
 	public static function enqueue_addon_data() {
 		$addon_data = self::get_registered_addons();
 		
-		// Add product type status to addon data.
-		foreach ( $addon_data as $plugin_slug => $addon ) {
-			if ( $addon['type'] === 'link_wizard_addon' ) {
-				$addon_data[ $plugin_slug ]['product_type_status'] = self::get_addon_product_type_status( $addon );
-			}
+		// Debug: Log addon data being passed to frontend.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Addon Manager: Enqueuing addon data: ' . print_r( $addon_data, true ) );
 		}
-		
-		// Get core product types status.
-		$core_product_types = self::get_core_product_types_status();
-		
 		
 		// Add addon data to the existing admin script.
 		wp_localize_script( 
@@ -325,13 +336,6 @@ class LWWC_Addon_Manager {
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
 			)
-		);
-		
-		// Add core product types status.
-		wp_localize_script( 
-			'link-wizard-for-woocommerce', 
-			'lwwcCoreProductTypes', 
-			$core_product_types
 		);
 		
 		// Add the icon HTML to the admin script.
@@ -353,8 +357,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_get_addons() {
 		// Verify nonce.
-		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'lwwc_addon_actions' ) ) {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -373,8 +376,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_activate_addon() {
 		// Verify nonce.
-		$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
-		if ( ! wp_verify_nonce( $nonce, 'lwwc_addon_actions' ) ) {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -383,7 +385,7 @@ class LWWC_Addon_Manager {
 			wp_die( 'Insufficient permissions' );
 		}
 		
-		$plugin_slug = sanitize_text_field( wp_unslash( $_POST['plugin_slug'] ?? '' ) );
+		$plugin_slug = sanitize_text_field( $_POST['plugin_slug'] ?? '' );
 		
 		if ( empty( $plugin_slug ) ) {
 			wp_send_json_error( 'Plugin slug is required' );
@@ -433,143 +435,5 @@ class LWWC_Addon_Manager {
 	public static function is_product_type_supported( $product_type ) {
 		$addon_product_types = self::get_addon_product_types();
 		return in_array( $product_type, $addon_product_types, true );
-	}
-
-	/**
-	 * Get core product types status (check if products exist).
-	 *
-	 * @since 1.0.4
-	 * @return array Array of product types with their status.
-	 */
-	private static function get_core_product_types_status() {
-		$core_types = array( 'simple', 'variable', 'grouped', 'subscription' );
-		$status = array();
-
-		foreach ( $core_types as $type ) {
-			$status[ $type ] = self::has_products_of_type( $type );
-		}
-
-		// Add subscription plugin status for frontend
-		$subscription_plugin_file = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
-		$status['subscription_status'] = array(
-			'installed' => file_exists( WP_PLUGIN_DIR . '/' . $subscription_plugin_file ),
-			'active' => is_plugin_active( $subscription_plugin_file ),
-		);
-
-		return $status;
-	}
-
-	/**
-	 * Get addon product type status (check if plugins are active).
-	 *
-	 * @since 1.0.4
-	 * @param array $addon The addon data.
-	 * @return array Array of product types with their status.
-	 */
-	private static function get_addon_product_type_status( $addon ) {
-		$product_types = $addon['capabilities']['product_types'] ?? array();
-		$status = array();
-
-		foreach ( $product_types as $type ) {
-			$status[ $type ] = self::get_woocommerce_plugin_status_for_type( $type );
-		}
-
-		return $status;
-	}
-
-	/**
-	 * Check if there are products of a specific type.
-	 *
-	 * @since 1.0.4
-	 * @param string $product_type The product type to check.
-	 * @return bool True if products exist.
-	 */
-	private static function has_products_of_type( $product_type ) {
-		global $wpdb;
-
-		// Check cache first
-		$cache_key = 'lwwc_products_type_' . $product_type;
-		$cached_result = wp_cache_get( $cache_key, 'lwwc_addon_manager' );
-		
-		if ( false !== $cached_result ) {
-			return $cached_result;
-		}
-
-		// Use direct database query for better performance
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Performance optimization for product type checking
-		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->posts} p 
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id 
-			WHERE p.post_type = 'product' 
-			AND p.post_status = 'publish' 
-			AND pm.meta_key = '_product_type' 
-			AND pm.meta_value = %s
-			LIMIT 1",
-			$product_type
-		) );
-
-		// For core WooCommerce types, if no specific products found, check if WooCommerce is active
-		// and has any products (they would be simple by default)
-		if ( $count === 0 && in_array( $product_type, array( 'simple', 'variable', 'grouped' ), true ) ) {
-			// Check if WooCommerce is active and has any products
-			if ( class_exists( 'WooCommerce' ) ) {
-				$total_products = wp_count_posts( 'product' );
-				$published_products = $total_products->publish ?? 0;
-				
-				// If there are published products, assume core types are available
-				if ( $published_products > 0 ) {
-					$count = $published_products;
-				}
-			}
-		}
-
-		// For subscription products, check if WooCommerce Subscriptions is active
-		if ( $product_type === 'subscription' && class_exists( 'WC_Subscriptions' ) ) {
-			$count = 1; // Assume available if WooCommerce Subscriptions is active
-		}
-
-		$result = $count > 0;
-		
-		// Cache the result for 5 minutes
-		wp_cache_set( $cache_key, $result, 'lwwc_addon_manager', 300 );
-
-		return $result;
-	}
-
-	/**
-	 * Get WooCommerce plugin status for a product type.
-	 *
-	 * @since 1.0.4
-	 * @param string $product_type The product type to check.
-	 * @return array Status information: 'status' (active/inactive/not_installed), 'installed' (bool), 'active' (bool).
-	 */
-	private static function get_woocommerce_plugin_status_for_type( $product_type ) {
-		$plugin_map = array(
-			'composite' => 'woocommerce-composite-products/woocommerce-composite-products.php',
-			'bundle' => 'woocommerce-product-bundles/woocommerce-product-bundles.php',
-		);
-
-		if ( ! isset( $plugin_map[ $product_type ] ) ) {
-			return array(
-				'status' => 'not_installed',
-				'installed' => false,
-				'active' => false
-			);
-		}
-
-		$plugin_file = $plugin_map[ $product_type ];
-		$installed = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
-		$active = $installed && is_plugin_active( $plugin_file );
-
-		$status = 'not_installed';
-		if ( $installed ) {
-			$status = $active ? 'active' : 'inactive';
-		}
-
-		return array(
-			'status' => $status,
-			'installed' => $installed,
-			'active' => $active
-		);
 	}
 }
