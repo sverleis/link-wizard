@@ -203,21 +203,38 @@ const AddonsSection = ({ onAddonSelect }) => {
         
         // Show advertising if WooCommerce extensions are present but Link Wizard Addons is not
         if (hasWooCommerceExtensions && !hasLinkWizardAddons) {
+            // Check if extensions are installed but inactive
+            const inactiveExtensions = Object.values(addonsList).filter(addon => 
+                addon.type === 'external_plugin' && addon.installed && !addon.is_active
+            );
+            
+            const isAlert = inactiveExtensions.length > 0;
+            
             return (
-                <div className="lwwc-addon-advertising">
+                <div className={`lwwc-addon-advertising ${isAlert ? 'lwwc-addon-alert' : ''}`}>
                     <div className="lwwc-addon-advertising-content">
-                        <span className="dashicons dashicons-megaphone"></span>
+                        <span className={`dashicons ${isAlert ? 'dashicons-warning' : 'dashicons-megaphone'}`}></span>
                         <div className="lwwc-addon-advertising-text">
-                            <strong>Enhance your WooCommerce extensions!</strong>
-                            <p>You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</p>
+                            <strong>
+                                {isAlert 
+                                    ? 'WooCommerce Extensions Detected!' 
+                                    : 'Enhance your WooCommerce extensions!'
+                                }
+                            </strong>
+                            <p>
+                                {isAlert 
+                                    ? `You have ${inactiveExtensions.length} WooCommerce extension${inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.`
+                                    : 'You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.'
+                                }
+                            </p>
                         </div>
                         <a 
                             href="https://wordpress.org/plugins/link-wizard-addons/" 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="button button-primary lwwc-addon-advertising-button"
+                            className={`button ${isAlert ? 'button-secondary' : 'button-primary'} lwwc-addon-advertising-button`}
                         >
-                            Get Link Wizard Addons
+                            {isAlert ? 'Get Link Wizard Addons' : 'Get Link Wizard Addons'}
                         </a>
                     </div>
                 </div>

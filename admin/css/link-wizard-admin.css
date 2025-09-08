@@ -3040,6 +3040,24 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Alert version for inactive extensions */
+.lwwc-addon-advertising.lwwc-addon-alert {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: 1px solid #f59e0b;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.lwwc-addon-alert .lwwc-addon-advertising-button {
+    color: #f59e0b !important;
+}
+
+.lwwc-addon-alert .lwwc-addon-advertising-button:hover {
+    background: #f59e0b !important;
+    color: white !important;
+    border-color: white !important;
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
 .lwwc-addon-settings-footer p {
     margin: 0;
     color: var(--wp-admin-secondary-text-color-light, #666);
