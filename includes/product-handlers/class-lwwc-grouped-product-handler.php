@@ -54,6 +54,14 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 	public function get_search_results( $search_term, $limit = 10 ) {
 		global $wpdb;
 
+		// Check cache first
+		$cache_key = 'lwwc_grouped_products_' . md5( $search_term . '_' . $limit );
+		$cached_result = wp_cache_get( $cache_key, 'lwwc_grouped_products' );
+		
+		if ( false !== $cached_result ) {
+			return $cached_result;
+		}
+
 		// Use direct database query for better performance
 
 		// Prepare the query with appropriate parameters
@@ -102,6 +110,9 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 				$results[] = $this->get_product_data( $product );
 			}
 		}
+
+		// Cache the results for 5 minutes
+		wp_cache_set( $cache_key, $results, 'lwwc_grouped_products', 300 );
 
 		return $results;
 	}

@@ -487,6 +487,14 @@ class LWWC_Addon_Manager {
 	private static function has_products_of_type( $product_type ) {
 		global $wpdb;
 
+		// Check cache first
+		$cache_key = 'lwwc_products_type_' . $product_type;
+		$cached_result = wp_cache_get( $cache_key, 'lwwc_addon_manager' );
+		
+		if ( false !== $cached_result ) {
+			return $cached_result;
+		}
+
 		// Use direct database query for better performance
 		$count = $wpdb->get_var( $wpdb->prepare(
 			"SELECT COUNT(*) FROM {$wpdb->posts} p 
@@ -519,8 +527,12 @@ class LWWC_Addon_Manager {
 			$count = 1; // Assume available if WooCommerce Subscriptions is active
 		}
 
+		$result = $count > 0;
+		
+		// Cache the result for 5 minutes
+		wp_cache_set( $cache_key, $result, 'lwwc_addon_manager', 300 );
 
-		return $count > 0;
+		return $result;
 	}
 
 	/**
