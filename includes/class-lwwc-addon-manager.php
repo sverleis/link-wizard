@@ -206,6 +206,9 @@ class LWWC_Addon_Manager {
 		$capabilities = apply_filters( 'lwwc_addon_plugin_capabilities', array(), $plugin_slug );
 		$icon = apply_filters( 'lwwc_addon_plugin_icon', 'dashicons-admin-plugins', $plugin_slug );
 		
+		// Check if plugin is installed
+		$is_installed = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
+
 		// Extract plugin info from plugin data.
 		$plugin_info = array(
 			'plugin_file'    => $plugin_file,
@@ -217,6 +220,7 @@ class LWWC_Addon_Manager {
 			'plugin_uri'     => $plugin_data['PluginURI'] ?? '',
 			'text_domain'    => $plugin_data['TextDomain'] ?? '',
 			'is_active'      => $is_active,
+			'installed'      => $is_installed,
 			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
 			'capabilities'   => $capabilities,
 			'icon'           => $icon,
