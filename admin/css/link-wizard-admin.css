@@ -306,8 +306,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Theme-aware coloring (uses currentColor from the SVG) */
 .lwwc-theme-colored {
-	/* Use the actual admin theme primary color to match .wp-core-ui .button-primary */
-	color: var(--wp-admin-theme-color, #0073aa);
+	/* Use the same color variable chain as .wp-core-ui .button-primary */
+	color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
 }
 
 /* Header layout for icon next to title/description */
@@ -3132,7 +3132,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 28px;
     width: 28px;
     height: 28px;
-    color: var(--wp-admin-theme-color, #0073aa);
+    color: var(--lwwc-button-primary, var(--wp-admin-theme-color, #0073aa));
 }
 
 .lwwc-addon-content {
