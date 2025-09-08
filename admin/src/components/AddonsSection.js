@@ -70,7 +70,7 @@ const AddonsSection = ({ onAddonSelect }) => {
     const getAddonDescription = (addon) => {
         // Show a simple description for addon cards.
         if (addon.type === 'link_wizard_addon') {
-            return 'Additional product type support';
+            return 'Extends Link Wizard with additional product types';
         }
         
         // For WooCommerce plugins, show a brief description.
@@ -78,6 +78,11 @@ const AddonsSection = ({ onAddonSelect }) => {
     };
 
     const getProductTypeBadges = (addon) => {
+        // Only show product type badges for Link Wizard Addons
+        if (addon.type !== 'link_wizard_addon') {
+            return null;
+        }
+        
         const productTypes = addon.capabilities?.product_types || [];
         
         if (productTypes.length === 0) {
