@@ -142,12 +142,8 @@ const AddonsSection = ({ onAddonSelect }) => {
             { type: 'subscription', label: 'Subscription', link: 'https://woocommerce.com/products/woocommerce-subscriptions/' }
         ];
 
-        // Debug: Log core product types data
-        console.log('LWWC Core Product Types Data:', window.lwwcCoreProductTypes);
-
         return coreTypes.map((item, index) => {
             const isEnabled = window.lwwcCoreProductTypes?.[item.type] || false;
-            console.log(`Core type ${item.type}: isEnabled = ${isEnabled}`);
             let statusIcon, statusClass, tooltipText, linkUrl = null;
 
             if (isEnabled) {
@@ -188,6 +184,47 @@ const AddonsSection = ({ onAddonSelect }) => {
             }
             return (<span key={index} className={`lwwc-addon-product-type-badge ${statusClass}`} title={tooltipText}>{badgeContent}</span>);
         });
+    };
+
+    const getAddonAdvertising = () => {
+        // Check if WooCommerce extensions are active but Link Wizard Addons is not
+        const addonData = window.lwwcAddons || {};
+        const addonsList = addonData.addons || {};
+        
+        // Check if WooCommerce extensions are active
+        const hasActiveWooCommerceExtensions = Object.values(addonsList).some(addon => 
+            addon.type === 'external_plugin' && addon.is_active
+        );
+        
+        // Check if Link Wizard Addons is active
+        const hasLinkWizardAddons = Object.values(addonsList).some(addon => 
+            addon.type === 'link_wizard_addon' && addon.is_active
+        );
+        
+        // Show advertising if WooCommerce extensions are active but Link Wizard Addons is not
+        if (hasActiveWooCommerceExtensions && !hasLinkWizardAddons) {
+            return (
+                <div className="lwwc-addon-advertising">
+                    <div className="lwwc-addon-advertising-content">
+                        <span className="dashicons dashicons-megaphone"></span>
+                        <div className="lwwc-addon-advertising-text">
+                            <strong>Enhance your WooCommerce extensions!</strong>
+                            <p>You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</p>
+                        </div>
+                        <a 
+                            href="https://wordpress.org/plugins/link-wizard-addons/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="button button-primary lwwc-addon-advertising-button"
+                        >
+                            Get Link Wizard Addons
+                        </a>
+                    </div>
+                </div>
+            );
+        }
+        
+        return null;
     };
 
     if (loading) {
@@ -279,6 +316,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                     {getCoreProductTypeBadges()}
                 </div>
             </div>
+
+            {/* Addon Advertising Banner */}
+            {getAddonAdvertising()}
 
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">

@@ -2979,6 +2979,67 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     background: var(--wp-admin-secondary-text-color-light, #999);
 }
 
+/* Addon Advertising Banner */
+.lwwc-addon-advertising {
+    background: linear-gradient(135deg, var(--wp-admin-theme-color, #0073aa) 0%, var(--wp-admin-theme-color-darker, #005a87) 100%);
+    border: 1px solid var(--wp-admin-theme-color, #0073aa);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 115, 170, 0.15);
+}
+
+.lwwc-addon-advertising-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.lwwc-addon-advertising .dashicons {
+    font-size: 24px;
+    color: white;
+    opacity: 0.9;
+}
+
+.lwwc-addon-advertising-text {
+    flex: 1;
+}
+
+.lwwc-addon-advertising-text strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: white;
+}
+
+.lwwc-addon-advertising-text p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.lwwc-addon-advertising-button {
+    background: white !important;
+    color: var(--wp-admin-theme-color, #0073aa) !important;
+    border: 2px solid white !important;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.lwwc-addon-advertising-button:hover {
+    background: var(--wp-admin-theme-color, #0073aa) !important;
+    color: white !important;
+    border-color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .lwwc-addon-settings-footer p {
     margin: 0;
     color: var(--wp-admin-secondary-text-color-light, #666);
