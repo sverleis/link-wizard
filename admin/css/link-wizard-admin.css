@@ -3059,14 +3059,22 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-addon-product-type-badge.enabled {
-    background: var(--wp-admin-success-color, #28a745);
+    background: var(--wp-admin-theme-color, #0073aa);
     color: white;
+    font-weight: 600;
+}
+
+.lwwc-addon-product-type-badge.inactive {
+    background: var(--wp-admin-warning-color, #ffb900);
+    color: var(--wp-admin-text-color, #333);
+    font-weight: 500;
 }
 
 .lwwc-addon-product-type-badge.disabled {
     background: var(--wp-admin-secondary-text-color-light, #999);
-    color: var(--wp-admin-background-color-lightest, #f8f9fa);
-    opacity: 0.7;
+    color: white;
+    font-weight: 400;
+    opacity: 0.8;
 }
 
 .lwwc-addon-meta {

@@ -92,10 +92,24 @@ const AddonsSection = ({ onAddonSelect }) => {
         }
         
         return productTypes.map((type, index) => {
-            const isEnabled = addon.product_type_status?.[type] || false;
+            const status = addon.product_type_status?.[type] || { status: 'not_installed', active: false };
+            const isActive = status.active;
+            const isInstalled = status.installed;
+            
+            let statusIcon = '❌';
+            let statusClass = 'disabled';
+            
+            if (isActive) {
+                statusIcon = '✅';
+                statusClass = 'enabled';
+            } else if (isInstalled) {
+                statusIcon = '⚠️';
+                statusClass = 'inactive';
+            }
+            
             return (
-                <span key={index} className={`lwwc-addon-product-type-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
-                    {isEnabled ? '✅' : '❌'} {type}
+                <span key={index} className={`lwwc-addon-product-type-badge ${statusClass}`}>
+                    {statusIcon} {type}
                 </span>
             );
         });

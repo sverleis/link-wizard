@@ -484,7 +484,7 @@ class LWWC_Addon_Manager {
 		$status = array();
 
 		foreach ( $product_types as $type ) {
-			$status[ $type ] = self::is_woocommerce_plugin_active_for_type( $type );
+			$status[ $type ] = self::get_woocommerce_plugin_status_for_type( $type );
 		}
 
 		return $status;
@@ -514,22 +514,39 @@ class LWWC_Addon_Manager {
 	}
 
 	/**
-	 * Check if a WooCommerce plugin is active for a product type.
+	 * Get WooCommerce plugin status for a product type.
 	 *
 	 * @since 1.0.4
 	 * @param string $product_type The product type to check.
-	 * @return bool True if the corresponding plugin is active.
+	 * @return array Status information: 'status' (active/inactive/not_installed), 'installed' (bool), 'active' (bool).
 	 */
-	private static function is_woocommerce_plugin_active_for_type( $product_type ) {
+	private static function get_woocommerce_plugin_status_for_type( $product_type ) {
 		$plugin_map = array(
 			'composite' => 'woocommerce-composite-products/woocommerce-composite-products.php',
 			'bundle' => 'woocommerce-product-bundles/woocommerce-product-bundles.php',
 		);
 
 		if ( ! isset( $plugin_map[ $product_type ] ) ) {
-			return false;
+			return array(
+				'status' => 'not_installed',
+				'installed' => false,
+				'active' => false
+			);
 		}
 
-		return is_plugin_active( $plugin_map[ $product_type ] );
+		$plugin_file = $plugin_map[ $product_type ];
+		$installed = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
+		$active = $installed && is_plugin_active( $plugin_file );
+
+		$status = 'not_installed';
+		if ( $installed ) {
+			$status = $active ? 'active' : 'inactive';
+		}
+
+		return array(
+			'status' => $status,
+			'installed' => $installed,
+			'active' => $active
+		);
 	}
 }
