@@ -54,8 +54,8 @@ class LWWC_Addon_Manager {
 	 */
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
-		$current_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
-		if ( 'link-wizard-for-woocommerce' === $current_page ) {
+		$screen = get_current_screen();
+		if ( $screen && 'product_page_link-wizard-for-woocommerce' === $screen->id ) {
 			// Re-detect addons in case some were loaded after initial detection.
 			self::detect_addons();
 			

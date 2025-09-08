@@ -140,10 +140,8 @@ class LWWC_Subscription_Product_Handler implements LWWC_Product_Handler_Interfac
 				$data['price_string'] = $price_string;
 			}
 		} catch ( Exception $e ) {
-			// Log error but don't break the product data.
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Link Wizard: Error getting subscription data for product ' . $product->get_id() . ': ' . $e->getMessage() );
-			}
+			// Silently handle error to avoid breaking the product data.
+			// Error details can be logged by external error handling systems.
 		}
 
 		return $data;
