@@ -177,6 +177,7 @@ class LWWC_Validation {
 				}
 			} elseif ( false === $result ) {
 				$is_valid = false;
+				/* translators: %s: validation rule ID */
 				$errors[] = sprintf( __( 'Validation failed for rule: %s', 'link-wizard-for-woocommerce' ), $rule_id );
 			}
 		}

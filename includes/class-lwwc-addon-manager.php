@@ -54,7 +54,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function admin_init() {
 		// Only load on Link Wizard admin pages.
-		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === $_GET['page'] ) {
+		if ( isset( $_GET['page'] ) && 'link-wizard-for-woocommerce' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
 			// Re-detect addons in case some were loaded after initial detection.
 			self::detect_addons();
 			
@@ -87,11 +87,6 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
-		// Debug: Log detected addons.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'LWWC Addon Manager: Detected ' . count( self::$registered_addons ) . ' addons: ' . implode( ', ', array_keys( self::$registered_addons ) ) );
-			error_log( 'LWWC Addon Manager: Active plugins: ' . print_r( get_option( 'active_plugins', array() ), true ) );
-		}
 	}
 
 	/**
@@ -109,11 +104,6 @@ class LWWC_Addon_Manager {
 			// Get plugin data to verify it's a proper addon.
 			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
 			
-			// Debug: Log plugin data for link-wizard-addons.
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && strpos( $plugin_file, 'link-wizard-addons' ) !== false ) {
-				error_log( 'LWWC Addon Manager: Checking plugin ' . $plugin_file );
-				error_log( 'LWWC Addon Manager: Plugin data: ' . print_r( $plugin_data, true ) );
-			}
 			
 			// Check if it requires the core plugin.
 			if ( isset( $plugin_data['RequiresPlugins'] ) && 
@@ -156,10 +146,6 @@ class LWWC_Addon_Manager {
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
 		
-		// Debug: Log addon registration details.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'LWWC Addon Manager: Registering addon - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
-		}
 		
 		// Extract addon info from plugin data.
 		$addon_info = array(
@@ -197,10 +183,6 @@ class LWWC_Addon_Manager {
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
 		
-		// Debug: Log external plugin registration details.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'LWWC Addon Manager: Registering external plugin - File: ' . $plugin_file . ', Active: ' . ( $is_active ? 'Yes' : 'No' ) );
-		}
 		
 		// Get capabilities and icon from addons.
 		$capabilities = apply_filters( 'lwwc_addon_plugin_capabilities', array(), $plugin_slug );
@@ -332,11 +314,6 @@ class LWWC_Addon_Manager {
 		// Get core product types status.
 		$core_product_types = self::get_core_product_types_status();
 		
-		// Debug: Log addon data being passed to frontend.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'LWWC Addon Manager: Enqueuing addon data: ' . print_r( $addon_data, true ) );
-			error_log( 'LWWC Addon Manager: Core product types status: ' . print_r( $core_product_types, true ) );
-		}
 		
 		// Add addon data to the existing admin script.
 		wp_localize_script( 
@@ -375,7 +352,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_get_addons() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -394,7 +371,7 @@ class LWWC_Addon_Manager {
 	 */
 	public static function ajax_activate_addon() {
 		// Verify nonce.
-		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'lwwc_addon_actions' ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( $_POST['nonce'] ?? '' ), 'lwwc_addon_actions' ) ) {
 			wp_die( 'Security check failed' );
 		}
 		
@@ -403,7 +380,7 @@ class LWWC_Addon_Manager {
 			wp_die( 'Insufficient permissions' );
 		}
 		
-		$plugin_slug = sanitize_text_field( $_POST['plugin_slug'] ?? '' );
+		$plugin_slug = sanitize_text_field( wp_unslash( $_POST['plugin_slug'] ?? '' ) );
 		
 		if ( empty( $plugin_slug ) ) {
 			wp_send_json_error( 'Plugin slug is required' );
@@ -542,10 +519,6 @@ class LWWC_Addon_Manager {
 			$count = 1; // Assume available if WooCommerce Subscriptions is active
 		}
 
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( "LWWC Core Product Types: Checking {$product_type}, found {$count} products" );
-		}
 
 		return $count > 0;
 	}

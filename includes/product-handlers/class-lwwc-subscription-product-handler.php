@@ -141,7 +141,9 @@ class LWWC_Subscription_Product_Handler implements LWWC_Product_Handler_Interfac
 			}
 		} catch ( Exception $e ) {
 			// Log error but don't break the product data.
-			error_log( 'Link Wizard: Error getting subscription data for product ' . $product->get_id() . ': ' . $e->getMessage() );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Link Wizard: Error getting subscription data for product ' . $product->get_id() . ': ' . $e->getMessage() );
+			}
 		}
 
 		return $data;
