@@ -223,8 +223,8 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </strong>
                             <p>
                                 {isAlert 
-                                    ? `You have ${inactiveExtensions.length} WooCommerce extension${inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.`
-                                    : 'You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.'
+                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</>
+                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</>
                                 }
                             </p>
                         </div>
