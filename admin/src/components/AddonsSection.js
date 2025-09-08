@@ -47,9 +47,9 @@ const AddonsSection = ({ onAddonSelect }) => {
     };
 
     const handleAddonClick = (addon) => {
-        if (onAddonSelect) {
-            onAddonSelect(addon);
-        }
+        // Addons are now "always on" - no settings needed
+        // Just show status information
+        console.log('Addon status:', addon);
     };
 
     const getAddonIcon = (addon) => {
@@ -363,12 +363,9 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </div>
                         </div>
                         <div className="lwwc-addon-action">
-                            <a 
-                                href={addon.admin_url}
-                                className="button button-primary lwwc-addon-button"
-                            >
-                                {i18n.settingsAddon || 'Settings'}
-                            </a>
+                            <span className={`lwwc-addon-status ${addon.is_active ? 'active' : ''}`}>
+                                {addon.is_active ? 'Active' : 'Inactive'}
+                            </span>
                         </div>
                     </div>
                 ))}

@@ -3127,11 +3127,19 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     flex-shrink: 0;
 }
 
-.lwwc-addon-button {
-    padding: 8px 16px;
-    font-size: 14px;
+.lwwc-addon-status {
+    background: var(--wp-admin-success-color, #28a745);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
     font-weight: 500;
-    min-width: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lwwc-addon-status:not(.active) {
+    background: var(--wp-admin-secondary-text-color-light, #999);
 }
 
 /* Addons Loading State */
