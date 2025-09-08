@@ -382,6 +382,11 @@ class LWWC_Addon_Manager {
 			'active' => is_plugin_active( $subscription_plugin_file ),
 		);
 
+		// Debug: Log core product types status
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Core Product Types Status: ' . print_r( $status, true ) );
+		}
+
 		return $status;
 	}
 
@@ -431,6 +436,11 @@ class LWWC_Addon_Manager {
 		}
 
 		$result = $count > 0;
+		
+		// Debug: Log product type check
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( "LWWC has_products_of_type({$product_type}): count={$count}, result=" . ( $result ? 'true' : 'false' ) );
+		}
 		
 		// Cache the result for 5 minutes
 		wp_cache_set( $cache_key, $result, 'lwwc_addon_manager', 300 );

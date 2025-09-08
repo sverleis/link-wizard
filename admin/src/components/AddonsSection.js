@@ -142,8 +142,12 @@ const AddonsSection = ({ onAddonSelect }) => {
             { type: 'subscription', label: 'Subscription', link: 'https://woocommerce.com/products/woocommerce-subscriptions/' }
         ];
 
+        // Debug: Log core product types data
+        console.log('LWWC Core Product Types Data:', window.lwwcCoreProductTypes);
+
         return coreTypes.map((item, index) => {
             const isEnabled = window.lwwcCoreProductTypes?.[item.type] || false;
+            console.log(`Core type ${item.type}: isEnabled = ${isEnabled}`);
             let statusIcon, statusClass, tooltipText, linkUrl = null;
 
             if (isEnabled) {
