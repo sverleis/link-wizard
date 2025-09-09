@@ -370,17 +370,29 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         let componentIndex = 0;
         product.components.forEach((component) => {
             if (component.options && component.options.length > 0) {
-                // For now, select the first option as default
-                const selectedOption = component.options[0];
-                urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
-                urlParams.set(`wccpq_c${componentIndex}`, component.default_quantity || 1);
+                // Get selected option from dropdown
+                const selectElement = document.getElementById(`component-${component.id}-select`);
+                const quantityElement = document.getElementById(`component-${component.id}-quantity`);
                 
-                // Add variation ID if it's a variable product
-                if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
-                    urlParams.set(`wccpv_c${componentIndex}`, selectedOption.variations[0].id);
+                if (selectElement && quantityElement) {
+                    const selectedOptionId = selectElement.value;
+                    const selectedQuantity = parseInt(quantityElement.value) || 1;
+                    
+                    // Find the selected option object
+                    const selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
+                    
+                    if (selectedOption) {
+                        urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                        urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                        
+                        // Add variation ID if it's a variable product
+                        if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
+                            urlParams.set(`wccpv_c${componentIndex}`, selectedOption.variations[0].id);
+                        }
+                        
+                        componentIndex++;
+                    }
                 }
-                
-                componentIndex++;
             }
         });
         
@@ -1072,27 +1084,37 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                 </div>
                                                                 <div className="lwwc-composite-component-options">
                                                                     {component.options && component.options.length > 0 ? (
-                                                                        component.options.map((option, optionIndex) => (
-                                                                            <div key={option.id} className="lwwc-composite-component-option">
-                                                                                <div className="lwwc-composite-option-info">
-                                                                                    <span className="lwwc-composite-option-name">{option.name}</span>
-                                                                                    {option.sku && (
-                                                                                        <span className="lwwc-composite-option-sku">({option.sku})</span>
-                                                                                    )}
-                                                                                    <span className="lwwc-composite-option-price" dangerouslySetInnerHTML={{ __html: option.price }} />
-                                                                                </div>
-                                                                                <div className="lwwc-composite-option-quantity">
-                                                                                    <label>Qty:</label>
-                                                                                    <input
-                                                                                        type="number"
-                                                                                        min={component.min_quantity || 0}
-                                                                                        max={component.max_quantity || 999}
-                                                                                        value={component.default_quantity || 1}
-                                                                                        className="lwwc-composite-option-qty-input"
-                                                                                    />
-                                                                                </div>
+                                                                        <div className="lwwc-composite-component-selection">
+                                                                            <div className="lwwc-composite-option-selector">
+                                                                                <label htmlFor={`component-${component.id}-select`}>
+                                                                                    Select Product:
+                                                                                </label>
+                                                                                <select
+                                                                                    id={`component-${component.id}-select`}
+                                                                                    className="lwwc-composite-option-dropdown"
+                                                                                    defaultValue={component.options[0]?.id || ''}
+                                                                                >
+                                                                                    {component.options.map((option) => (
+                                                                                        <option key={option.id} value={option.id}>
+                                                                                            {option.name} {option.sku && `(${option.sku})`} - {option.price}
+                                                                                        </option>
+                                                                                    ))}
+                                                                                </select>
                                                                             </div>
-                                                                        ))
+                                                                            <div className="lwwc-composite-option-quantity">
+                                                                                <label htmlFor={`component-${component.id}-quantity`}>
+                                                                                    Quantity:
+                                                                                </label>
+                                                                                <input
+                                                                                    id={`component-${component.id}-quantity`}
+                                                                                    type="number"
+                                                                                    min={component.min_quantity || 0}
+                                                                                    max={component.max_quantity || 999}
+                                                                                    defaultValue={component.default_quantity || 1}
+                                                                                    className="lwwc-composite-option-qty-input"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
                                                                     ) : (
                                                                         <div className="lwwc-composite-component-no-options">
                                                                             No options available for this component.
