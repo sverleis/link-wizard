@@ -387,13 +387,20 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 	 */
 	private function get_parent_product_data( $product ) {
 		$is_valid     = $this->is_valid_for_links( $product );
+		
+		// Determine the correct product type - check if it's a variable subscription
+		$product_type = 'variable';
+		if ( class_exists( 'WC_Subscriptions_Product' ) && WC_Subscriptions_Product::is_variable_subscription( $product ) ) {
+			$product_type = 'variable-subscription';
+		}
+		
 		$product_data = array(
 			'id'                => $product->get_id(),
 			'name'              => $product->get_name(),
 			'sku'               => $product->get_sku(),
 			'price'             => $product->get_price_html(), // Use price HTML to show range.
 			'image'             => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
-			'type'              => 'variable',
+			'type'              => $product_type,
 			'has_variations'    => true,
 			'variation_count'   => count( $product->get_available_variations() ),
 			'attributes'        => $this->get_attributes( $product ), // Add available attributes.
