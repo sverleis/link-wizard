@@ -62,16 +62,6 @@ class LWWC_Link_Wizard_Admin {
 				LWWC_Link_Wizard_I18n::get_admin_text( 'products_link_wizard' )
 			);
 			$links[]     = $wizard_link;
-			
-			// Add Link Wizard Addons settings link if the addon is active.
-			if ( is_plugin_active( 'link-wizard-addons/link-wizard-addons.php' ) ) {
-				$addons_link = sprintf(
-					'<a href="%s">%s</a>',
-					admin_url( 'edit.php?post_type=product&page=link-wizard-for-woocommerce&addon=link-wizard-addons' ),
-					__( 'Link Wizard Addons Settings', 'link-wizard-for-woocommerce' )
-				);
-				$links[]     = $addons_link;
-			}
 		}
 		return $links;
 	}
