@@ -737,7 +737,25 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                         <div className="product-details">
                                             <div className="product-name">
                                                 {product.name}
-                                                {getProductTypeTag(product)}
+                                                {(() => {
+                                                    const productType = product.type;
+                                                    const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
+                                                    
+                                                    if (!badgeInfo) {
+                                                        return (
+                                                            <span className={`product-type-badge product-type-${productType}`}>
+                                                                {productType.charAt(0).toUpperCase() + productType.slice(1)}
+                                                            </span>
+                                                        );
+                                                    }
+                                                    
+                                                    return (
+                                                        <span className={`product-type-badge ${badgeInfo.className}`}>
+                                                            {badgeInfo.label}
+                                                            {badgeInfo.extra && <span className="product-type-extra"> {badgeInfo.extra}</span>}
+                                                        </span>
+                                                    );
+                                                })()}
                                             </div>
                                             {product.sku && (
                                                 <div className="product-sku">
