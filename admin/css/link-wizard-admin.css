@@ -3342,25 +3342,25 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     opacity: 0.9;
 }
 
-/* Product Type Specific Colors */
+/* Product Type Specific Colors - All using WordPress admin color variations */
 .product-type-simple {
     background-color: var(--wp-admin-theme-color, #0073aa);
 }
 
 .product-type-variable {
-    background-color: #00a32a;
+    background-color: var(--wp-admin-theme-color-darker-10, #005a87);
 }
 
 .product-type-grouped {
-    background-color: #d63638;
+    background-color: var(--wp-admin-theme-color-darker-20, #004085);
 }
 
 .product-type-subscription {
-    background-color: #8c8f94;
+    background-color: var(--wp-admin-theme-color, #0073aa);
 }
 
 .product-type-variable-subscription {
-    background-color: #996633;
+    background-color: var(--wp-admin-theme-color-darker-10, #005a87);
 }
 
 /* Responsive Design */

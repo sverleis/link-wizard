@@ -54,7 +54,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 extra: product.children && product.children.length ? `(${product.children.length} products)` : ''
             },
             'subscription': {
-                label: 'Subscription',
+                label: 'Simple Subscription',
                 className: 'product-type-subscription'
             },
             'variable-subscription': {
