@@ -361,6 +361,34 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }, 1000);
     };
 
+    // Helper function to clean HTML entities and tags from price strings
+    const cleanPriceText = (priceHtml) => {
+        if (!priceHtml) return '';
+        
+        // Create a temporary div to parse HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = priceHtml;
+        
+        // Get text content and clean up
+        let cleanText = tempDiv.textContent || tempDiv.innerText || '';
+        
+        // Clean up any remaining entities
+        cleanText = cleanText.replace(/&[^;]+;/g, (entity) => {
+            const entities = {
+                '&#82;': 'R',
+                '&amp;': '&',
+                '&lt;': '<',
+                '&gt;': '>',
+                '&quot;': '"',
+                '&#039;': "'",
+                '&nbsp;': ' '
+            };
+            return entities[entity] || entity;
+        });
+        
+        return cleanText.trim();
+    };
+
     // Handle adding composite product to selection.
     const handleAddCompositeProduct = (product) => {
         // Generate composite add-to-cart URL with component selections
@@ -1094,11 +1122,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                                     className="lwwc-composite-option-dropdown"
                                                                                     defaultValue={component.options[0]?.id || ''}
                                                                                 >
-                                                                                    {component.options.map((option) => (
-                                                                                        <option key={option.id} value={option.id}>
-                                                                                            {option.name} {option.sku && `(${option.sku})`} - {option.price}
-                                                                                        </option>
-                                                                                    ))}
+                                                                                    {component.options
+                                                                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                                                                        .map((option) => (
+                                                                                            <option key={option.id} value={option.id}>
+                                                                                                {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
+                                                                                            </option>
+                                                                                        ))}
                                                                                 </select>
                                                                             </div>
                                                                             <div className="lwwc-composite-option-quantity">
