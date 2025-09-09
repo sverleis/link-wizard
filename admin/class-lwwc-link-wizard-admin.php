@@ -93,6 +93,13 @@ class LWWC_Link_Wizard_Admin {
 			true
 		);
 
+		// Add inline CSS to set the admin menu color CSS variable.
+		$admin_menu_color = $this->get_admin_menu_color();
+		wp_add_inline_style(
+			$this->plugin_name,
+			':root { --lwwc-admin-menu-color: ' . esc_attr( $admin_menu_color ) . '; }'
+		);
+
 		// Pass REST API root and nonce to JS.
 		wp_localize_script(
 			$this->plugin_name,
@@ -134,6 +141,7 @@ class LWWC_Link_Wizard_Admin {
 				'remove'                          => LWWC_Link_Wizard_I18n::get_admin_text( 'remove' ),
 				// Product Type Badges.
 				'productTypeBadges'               => $this->get_product_type_badges(),
+				'adminMenuColor'                  => $this->get_admin_menu_color(),
 				'variableProduct'                 => LWWC_Link_Wizard_I18n::get_admin_text( 'variable_product' ),
 				'variations'                      => LWWC_Link_Wizard_I18n::get_admin_text( 'variations' ),
 				'productImageAlt'                 => LWWC_Link_Wizard_I18n::get_admin_text( 'product_image_alt' ),
@@ -261,5 +269,29 @@ class LWWC_Link_Wizard_Admin {
 		}
 		
 		return $badges;
+	}
+
+	/**
+	 * Get the current admin menu color for theming.
+	 *
+	 * @return string Admin menu background color.
+	 */
+	private function get_admin_menu_color() {
+		// Get the current user's admin color scheme
+		$admin_color = get_user_option( 'admin_color' );
+		
+		// Get the global admin color schemes
+		global $_wp_admin_css_colors;
+		
+		// If we have the color scheme and it exists, get the first color (menu background)
+		if ( $admin_color && isset( $_wp_admin_css_colors[ $admin_color ] ) ) {
+			$colors = $_wp_admin_css_colors[ $admin_color ]->colors;
+			if ( isset( $colors[0] ) ) {
+				return $colors[0];
+			}
+		}
+		
+		// Fallback to default admin color
+		return '#23282d';
 	}
 }
