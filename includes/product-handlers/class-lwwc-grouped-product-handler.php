@@ -104,6 +104,10 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 			}
 		}
 
+		// Generate default add-to-cart URL with all children at quantity 1.
+		$default_quantities = $this->get_default_quantities( $product );
+		$add_to_cart_url = $this->generate_add_to_cart_url( $product, $default_quantities );
+
 		return array(
 			'id'                => $product->get_id(),
 			'name'              => $product->get_name(),
@@ -117,6 +121,8 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 			'slug'              => $product->get_slug(),
 			'sold_individually' => $product->is_sold_individually(),
 			'children'          => $children_data,
+			'add_to_cart_url'   => $add_to_cart_url,
+			'default_quantities' => $default_quantities,
 		);
 	}
 
@@ -174,5 +180,64 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 			'children_count'  => $children_count,
 			'has_children'    => $children_count > 0,
 		);
+	}
+
+	/**
+	 * Generate add-to-cart URL for grouped product.
+	 *
+	 * @since 1.0.4
+	 * @param WC_Product $product The grouped product.
+	 * @param array      $quantities Array of child product IDs and quantities.
+	 * @param string     $redirect_url Optional redirect URL after adding to cart.
+	 * @return string The generated add-to-cart URL.
+	 */
+	public function generate_add_to_cart_url( $product, $quantities = array(), $redirect_url = '' ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return '';
+		}
+
+		$base_url = home_url( '/?add-to-cart=' . $product->get_id() );
+		$url_parts = array();
+
+		// Add quantities for each child product.
+		foreach ( $quantities as $child_id => $quantity ) {
+			if ( $quantity > 0 ) {
+				$url_parts[] = 'quantity[' . $child_id . ']=' . $quantity;
+			}
+		}
+
+		// Add redirect URL if provided.
+		if ( ! empty( $redirect_url ) ) {
+			$url_parts[] = 'redirect=' . urlencode( $redirect_url );
+		}
+
+		// Build the complete URL.
+		if ( ! empty( $url_parts ) ) {
+			$base_url .= '&' . implode( '&', $url_parts );
+		}
+
+		return $base_url;
+	}
+
+	/**
+	 * Get default quantities for grouped product children.
+	 *
+	 * @since 1.0.4
+	 * @param WC_Product $product The grouped product.
+	 * @return array Array of child product IDs with default quantity of 1.
+	 */
+	public function get_default_quantities( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array();
+		}
+
+		$children = $product->get_children();
+		$quantities = array();
+
+		foreach ( $children as $child_id ) {
+			$quantities[ $child_id ] = 1; // Default quantity of 1 for each child.
+		}
+
+		return $quantities;
 	}
 }
