@@ -332,10 +332,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         const bundleUrl = `${window.location.origin}/cart/?add-to-cart=${product.id}&${urlParams.toString()}`;
 
         // Create a bundle product entry with child quantities
+        const childQuantities = { ...(bundleQuantities[product.id] || product.default_quantities || {}) };
+        
         const bundleProduct = {
             ...product,
             quantity: 1, // Bundle product itself has quantity 1
-            child_quantities: { ...(bundleQuantities[product.id] || product.default_quantities || {}) },
+            child_quantities: childQuantities,
             add_to_cart_url: bundleUrl
         };
 
