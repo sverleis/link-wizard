@@ -329,7 +329,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
             add_to_cart_url: bundleUrl
         };
 
-        setSelectedProducts(prev => [...prev, bundleProduct]);
+        // Replace all selected products with just the bundle product
+        setSelectedProducts([bundleProduct]);
         
         // Add to adding state for visual feedback
         setAddingProducts(prev => new Set([...prev, product.id]));
