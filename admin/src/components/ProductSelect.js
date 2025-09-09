@@ -442,7 +442,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Add component count
         urlParams.set('wccpl', componentIndex);
 
-        const compositeUrl = `${window.location.origin}/cart/?add-to-cart=${product.id}&${urlParams.toString()}`;
+        const compositeUrl = `${window.location.origin}/product/${product.slug}/?${urlParams.toString()}`;
 
         const compositeProduct = {
             ...product,
