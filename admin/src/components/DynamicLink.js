@@ -270,7 +270,7 @@ const DynamicLink = ({
             if (currentStep === 1) {
                 // Step 1: Show placeholder with highlighting.
                 parts.push(
-                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
                 );
             } else if (selectedProducts && selectedProducts.length > 0) {
                 // Step 2+: Show actual parameters with individual highlighting.
@@ -279,19 +279,50 @@ const DynamicLink = ({
                     <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
                 );
                 
-                // Add products parameter with highlighting.
-                let productsParam = selectedProducts.map(product => 
-                    `${product.id}:${product.quantity}`
-                ).join(',');
+                // Build proper WooCommerce add-to-cart parameters for display
+                const urlParams = new URLSearchParams();
+                selectedProducts.forEach(product => {
+                    if (product.type === 'grouped' && product.child_quantities) {
+                        // Handle grouped products with child quantities
+                        urlParams.append('add-to-cart', product.id);
+                        Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                            if (quantity > 0) {
+                                urlParams.append(`quantity[${childId}]`, quantity);
+                            }
+                        });
+                    } else {
+                        // Handle regular products
+                        urlParams.append('add-to-cart', product.id);
+                        if (product.quantity > 1) {
+                            urlParams.append('quantity', product.quantity);
+                        }
+                    }
+                });
                 
-                // Apply URL encoding based on user preference for display.
-                if (urlEncoding === 'encoded') {
-                    productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
-                }
+                // Convert URLSearchParams to display format
+                const paramString = urlParams.toString();
+                const paramParts = paramString.split('&');
                 
-                parts.push(
-                    <span key="products" className="lwwc-dynamic-link-products-highlight">products={productsParam}</span>
-                );
+                // Display each parameter with highlighting
+                paramParts.forEach((param, index) => {
+                    if (index > 0) {
+                        parts.push(<span key={`amp-${index}`} className="lwwc-dynamic-link-checkout-text">&</span>);
+                    }
+                    
+                    if (param.startsWith('add-to-cart=')) {
+                        parts.push(
+                            <span key={`add-to-cart-${index}`} className="lwwc-dynamic-link-products-highlight">{param}</span>
+                        );
+                    } else if (param.startsWith('quantity[')) {
+                        parts.push(
+                            <span key={`quantity-${index}`} className="lwwc-dynamic-link-products-highlight">{param}</span>
+                        );
+                    } else if (param.startsWith('quantity=')) {
+                        parts.push(
+                            <span key={`quantity-${index}`} className="lwwc-dynamic-link-products-highlight">{param}</span>
+                        );
+                    }
+                });
                 
                 // Add coupon if selected with individual highlighting.
                 if (selectedCoupon) {
@@ -303,7 +334,7 @@ const DynamicLink = ({
             } else {
                 // Step 2+ but no products: Show placeholder.
                 parts.push(
-                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
                 );
             }
         }
