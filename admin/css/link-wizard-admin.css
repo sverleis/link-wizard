@@ -3679,6 +3679,176 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     opacity: 0.6;
 }
 
+/* Composite Product Components Styles */
+.lwwc-composite-components-section {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--wp-admin-background-color-lighter);
+    border: 1px solid var(--wp-admin-border-color-light);
+    border-radius: 4px;
+}
+
+.lwwc-composite-disabled-notice {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 12px;
+    background-color: var(--wp-admin-warning-background);
+    border: 1px solid var(--wp-admin-warning-color);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--wp-admin-warning-color);
+}
+
+.lwwc-composite-disabled-icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.lwwc-composite-disabled-text {
+    flex: 1;
+}
+
+.lwwc-composite-components-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--wp-admin-text-color);
+    font-size: 14px;
+}
+
+.lwwc-composite-components-list {
+    margin-bottom: 15px;
+}
+
+.lwwc-composite-component-item {
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: var(--wp-admin-background-color);
+    border: 1px solid var(--wp-admin-border-color-light);
+    border-radius: 4px;
+}
+
+.lwwc-composite-component-header {
+    margin-bottom: 10px;
+}
+
+.lwwc-composite-component-title {
+    font-weight: 600;
+    color: var(--wp-admin-text-color);
+    font-size: 13px;
+}
+
+.lwwc-composite-component-required {
+    color: #d63638;
+    font-weight: bold;
+}
+
+.lwwc-composite-component-description {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--wp-admin-secondary-text-color);
+    font-style: italic;
+}
+
+.lwwc-composite-component-options {
+    margin-top: 8px;
+}
+
+.lwwc-composite-component-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--wp-admin-border-color-light);
+}
+
+.lwwc-composite-component-option:last-child {
+    border-bottom: none;
+}
+
+.lwwc-composite-option-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lwwc-composite-option-name {
+    font-weight: 500;
+    color: var(--wp-admin-text-color);
+    font-size: 13px;
+}
+
+.lwwc-composite-option-sku {
+    font-size: 11px;
+    color: var(--wp-admin-secondary-text-color);
+}
+
+.lwwc-composite-option-price {
+    font-size: 12px;
+    color: var(--wp-admin-text-color);
+    font-weight: 500;
+}
+
+.lwwc-composite-option-quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 15px;
+}
+
+.lwwc-composite-option-quantity label {
+    font-size: 12px;
+    color: var(--wp-admin-text-color);
+    font-weight: 500;
+}
+
+.lwwc-composite-option-qty-input {
+    width: 60px;
+    padding: 4px 6px;
+    border: 1px solid var(--wp-admin-border-color);
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.lwwc-composite-component-no-options {
+    padding: 10px;
+    text-align: center;
+    color: var(--wp-admin-secondary-text-color);
+    font-style: italic;
+    font-size: 12px;
+}
+
+.lwwc-composite-add-button {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.lwwc-add-composite-product-btn {
+    background-color: var(--lwwc-admin-menu-color, #0073aa);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.lwwc-add-composite-product-btn:hover:not(:disabled) {
+    background-color: var(--lwwc-admin-menu-color, #0073aa);
+    filter: brightness(0.9);
+}
+
+.lwwc-add-composite-product-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .lwwc-addons-grid {
