@@ -74,6 +74,16 @@ const DynamicLink = ({
                             // Add main product quantity
                             const bundleQuantity = product.quantity || 1;
                             params.append('quantity', bundleQuantity.toString());
+                        } else if (product.type === 'composite' && product.url) {
+                            // Handle composite products - use the pre-generated URL
+                            // Extract the query string from the composite URL
+                            const url = new URL(product.url);
+                            const compositeParams = new URLSearchParams(url.search);
+                            
+                            // Add all composite parameters to the main params
+                            for (const [key, value] of compositeParams.entries()) {
+                                params.append(key, value);
+                            }
                         } else {
                             // Handle regular products
                             params.append('add-to-cart', product.id);
