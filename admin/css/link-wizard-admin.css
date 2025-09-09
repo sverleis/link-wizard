@@ -1018,23 +1018,18 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin-bottom: 15px;
 }
 
-/* Base button styling - matches WordPress button-primary styling */
-.dynamic-link-button {
-    padding: 10px 16px;
-    background-color: var(--lwwc-button-primary, var(--wp-admin-theme-color));
-    color: var(--lwwc-button-primary-text, white);
-    border: 1px solid var(--lwwc-button-primary-border, var(--wp-admin-theme-color));
-    border-radius: 4px;
+/* Dynamic link buttons inherit WordPress core button-primary styling with enhanced padding */
+.wp-core-ui .dynamic-link-button {
+    padding: 12px 20px !important;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s ease;
-    min-width: 100px;
+    min-width: 120px !important;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     text-decoration: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .dynamic-link-button:hover {

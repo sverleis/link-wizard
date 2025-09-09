@@ -24,10 +24,31 @@ class LWWC_Product_Handler_Manager {
 	private $handlers = array();
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var LWWC_Product_Handler_Manager
+	 */
+	private static $instance = null;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		// Don't register handlers immediately - use lazy loading.
+	}
+
+	/**
+	 * Get singleton instance.
+	 *
+	 * @return LWWC_Product_Handler_Manager
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+			// Ensure default handlers are registered.
+			self::$instance->register_default_handlers();
+		}
+		return self::$instance;
 	}
 
 	/**
@@ -40,6 +61,9 @@ class LWWC_Product_Handler_Manager {
 			$this->register_handler( new LWWC_Variable_Product_Handler() );
 			$this->register_handler( new LWWC_Subscription_Product_Handler() );
 			$this->register_handler( new LWWC_Grouped_Product_Handler() );
+			
+			// Allow addon plugins to register their handlers.
+			do_action( 'lwwc_after_product_handlers_loaded', $this );
 		}
 	}
 
