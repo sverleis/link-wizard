@@ -208,6 +208,11 @@ class LWWC_Link_Wizard_Search {
 		foreach ( $product_ids as $product_id ) {
 			$product = wc_get_product( $product_id );
 			if ( $product ) {
+				// Debug: Log product type for troubleshooting.
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'LWWC Search: Processing product ID ' . $product_id . ' of type ' . $product->get_type() );
+				}
+
 				// Use the product handler manager to get results.
 				$product_results = $this->get_handler_manager()->get_search_results( $product );
 
