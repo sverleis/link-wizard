@@ -254,6 +254,48 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         }
     };
 
+    // Handle grouped product child quantity change.
+    const handleGroupedChildQuantityChange = (groupedProductId, childId, newQuantity) => {
+        setResults(prev => prev.map(product => {
+            if (product.id === groupedProductId && product.type === 'grouped') {
+                const child_quantities = { ...product.child_quantities };
+                child_quantities[childId] = newQuantity;
+                return { ...product, child_quantities };
+            }
+            return product;
+        }));
+    };
+
+    // Check if grouped product has any children selected.
+    const hasSelectedGroupedChildren = (product) => {
+        if (!product.child_quantities) return false;
+        return Object.values(product.child_quantities).some(qty => qty > 0);
+    };
+
+    // Handle adding grouped product to selection.
+    const handleAddGroupedProduct = (product) => {
+        if (!hasSelectedGroupedChildren(product)) return;
+
+        // Create a grouped product entry with child quantities
+        const groupedProduct = {
+            ...product,
+            quantity: 1, // Grouped product itself has quantity 1
+            child_quantities: { ...product.child_quantities }
+        };
+
+        setSelectedProducts(prev => [...prev, groupedProduct]);
+        
+        // Add to adding state for visual feedback
+        setAddingProducts(prev => new Set([...prev, product.id]));
+        setTimeout(() => {
+            setAddingProducts(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(product.id);
+                return newSet;
+            });
+        }, 1000);
+    };
+
     // Handling of the image modal.
     const handleImageClick = (imageUrl) => {
         setSelectedImage(imageUrl);
@@ -663,11 +705,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     if (product.type === 'variable') {
                                                         // For variable products, we'll handle selection differently.
                                                         // Don't do anything on click - let user use filters.
+                                                    } else if (product.type === 'grouped') {
+                                                        // For grouped products, we'll handle selection differently.
+                                                        // Don't do anything on click - let user select child products.
                                                     } else {
                                                         handleSelectProduct(product);
                                                     }
                                                 }}
-                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' ? 'variable' : 'clickable')}`}
+                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' || product.type === 'grouped' ? product.type : 'clickable')}`}
                                             >
                                         <div className="product-icon">
                                             {product.image ? (
@@ -746,6 +791,51 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                     : (i18n.showAllVariations || 'Show All Variations')
                                                 }
                                             </button>
+                                        </div>
+                                    )}
+
+                                    {/* Grouped Product Children Selection. */}
+                                    {product.type === 'grouped' && product.children && product.children.length > 0 && (
+                                        <div className="lwwc-grouped-children-section">
+                                            <div className="lwwc-grouped-children-title">
+                                                {i18n.groupedProducts || 'Grouped Products:'}
+                                            </div>
+                                            <div className="lwwc-grouped-children-list">
+                                                {product.children.map((child, index) => (
+                                                    <div key={child.id} className="lwwc-grouped-child-item">
+                                                        <div className="lwwc-grouped-child-info">
+                                                            <span className="lwwc-grouped-child-name">{child.name}</span>
+                                                            {child.sku && (
+                                                                <span className="lwwc-grouped-child-sku">({child.sku})</span>
+                                                            )}
+                                                            <span className="lwwc-grouped-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
+                                                        </div>
+                                                        <div className="lwwc-grouped-child-quantity">
+                                                            <label className="lwwc-grouped-child-qty-label">{i18n.qty || 'Qty'}:</label>
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                max="99"
+                                                                value={product.child_quantities?.[child.id] || 0}
+                                                                onChange={(e) => {
+                                                                    const newQuantity = parseInt(e.target.value) || 0;
+                                                                    handleGroupedChildQuantityChange(product.id, child.id, newQuantity);
+                                                                }}
+                                                                className="lwwc-grouped-child-qty-input"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="lwwc-grouped-add-button">
+                                                <button
+                                                    onClick={() => handleAddGroupedProduct(product)}
+                                                    disabled={!hasSelectedGroupedChildren(product)}
+                                                    className="lwwc-add-grouped-product-btn"
+                                                >
+                                                    {i18n.addGroupedProduct || 'Add Grouped Product'}
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
 
