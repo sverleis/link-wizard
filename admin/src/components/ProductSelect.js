@@ -738,10 +738,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                             <div className="product-name">
                                                 {product.name}
                                                 {(() => {
+                                                    console.log('LWWC Inline Badge: Processing product:', product.name, 'type:', product.type);
                                                     const productType = product.type;
                                                     const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
                                                     
+                                                    console.log('LWWC Inline Badge: Badge info for', productType, ':', badgeInfo);
+                                                    
                                                     if (!badgeInfo) {
+                                                        console.log('LWWC Inline Badge: Using fallback for', productType);
                                                         return (
                                                             <span className={`product-type-badge product-type-${productType}`}>
                                                                 {productType.charAt(0).toUpperCase() + productType.slice(1)}
@@ -749,6 +753,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                         );
                                                     }
                                                     
+                                                    console.log('LWWC Inline Badge: Returning badge for', productType);
                                                     return (
                                                         <span className={`product-type-badge ${badgeInfo.className}`}>
                                                             {badgeInfo.label}
