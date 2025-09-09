@@ -307,17 +307,19 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         const quantities = bundleQuantities[product.id] || product.default_quantities || {};
         const urlParams = new URLSearchParams();
         
-        // Add bundle quantities in WooCommerce format: bundle_quantity[ID]=qty
+        // Add bundle quantities in the format: bundle_quantity_1, bundle_quantity_2, etc.
+        let quantityIndex = 1;
         Object.entries(quantities).forEach(([childId, quantity]) => {
             if (quantity > 0) {
-                urlParams.set(`bundle_quantity[${childId}]`, quantity);
+                urlParams.set(`bundle_quantity_${quantityIndex}`, quantity);
+                quantityIndex++;
             }
         });
         
         // Add main product quantity
         urlParams.set('quantity', '1');
 
-        const bundleUrl = `${window.location.origin}/product/${product.slug}/?${urlParams.toString()}`;
+        const bundleUrl = `${window.location.origin}/cart/?add-to-cart=${product.id}&${urlParams.toString()}`;
 
         // Create a bundle product entry with child quantities
         const bundleProduct = {
