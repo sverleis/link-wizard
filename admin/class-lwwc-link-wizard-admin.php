@@ -132,6 +132,8 @@ class LWWC_Link_Wizard_Admin {
 				'skuLabel'                        => LWWC_Link_Wizard_I18n::get_admin_text( 'sku_label' ),
 				'qty'                             => LWWC_Link_Wizard_I18n::get_admin_text( 'qty' ),
 				'remove'                          => LWWC_Link_Wizard_I18n::get_admin_text( 'remove' ),
+				// Product Type Badges.
+				'productTypeBadges'               => $this->get_product_type_badges(),
 				'variableProduct'                 => LWWC_Link_Wizard_I18n::get_admin_text( 'variable_product' ),
 				'variations'                      => LWWC_Link_Wizard_I18n::get_admin_text( 'variations' ),
 				'productImageAlt'                 => LWWC_Link_Wizard_I18n::get_admin_text( 'product_image_alt' ),
@@ -238,5 +240,26 @@ class LWWC_Link_Wizard_Admin {
 	public function ajax_search_coupons() {
 		// This method is deprecated - use the REST API endpoint instead.
 		wp_die( 'This endpoint is deprecated. Use the REST API endpoint /wp-json/link-wizard/v1/coupons instead.' );
+	}
+
+	/**
+	 * Get product type badges for frontend.
+	 *
+	 * @return array Product type badges.
+	 */
+	private function get_product_type_badges() {
+		$badges = array();
+		
+		// Get all possible product types
+		$product_types = array( 'simple', 'variable', 'grouped', 'subscription', 'variable-subscription', 'bundle', 'bundle-item', 'composite' );
+		
+		foreach ( $product_types as $type ) {
+			$badge = LWWC_Link_Wizard_I18n::get_product_type_badge( $type );
+			if ( $badge ) {
+				$badges[ $type ] = $badge;
+			}
+		}
+		
+		return $badges;
 	}
 }

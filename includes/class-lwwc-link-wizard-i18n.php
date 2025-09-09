@@ -22,6 +22,68 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LWWC_Link_Wizard_I18n {
 
 	/**
+	 * Get product type badge information.
+	 *
+	 * @param string $product_type The product type.
+	 * @param array  $product_data Additional product data.
+	 * @return array|null Badge information or null if not supported.
+	 */
+	public static function get_product_type_badge( $product_type, $product_data = array() ) {
+		// Default product type badges.
+		$badges = array(
+			'simple' => array(
+				'label' => __( 'Simple', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-simple',
+				'extra' => ''
+			),
+			'variable' => array(
+				'label' => __( 'Variable', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-variable',
+				'extra' => isset( $product_data['variation_count'] ) && $product_data['variation_count'] ? 
+					sprintf( '(%d %s)', $product_data['variation_count'], __( 'variations', 'link-wizard-for-woocommerce' ) ) : ''
+			),
+			'grouped' => array(
+				'label' => __( 'Grouped', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-grouped',
+				'extra' => isset( $product_data['children'] ) && is_array( $product_data['children'] ) ? 
+					sprintf( '(%d %s)', count( $product_data['children'] ), __( 'products', 'link-wizard-for-woocommerce' ) ) : ''
+			),
+			'subscription' => array(
+				'label' => __( 'Simple Subscription', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-subscription',
+				'extra' => ''
+			),
+			'variable-subscription' => array(
+				'label' => __( 'Variable Subscription', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-variable-subscription',
+				'extra' => isset( $product_data['variation_count'] ) && $product_data['variation_count'] ? 
+					sprintf( '(%d %s)', $product_data['variation_count'], __( 'variations', 'link-wizard-for-woocommerce' ) ) : ''
+			),
+			'bundle' => array(
+				'label' => __( 'Bundle', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-bundle',
+				'extra' => isset( $product_data['bundled_items'] ) && is_array( $product_data['bundled_items'] ) ? 
+					sprintf( '(%d %s)', count( $product_data['bundled_items'] ), __( 'items', 'link-wizard-for-woocommerce' ) ) : ''
+			),
+			'bundle-item' => array(
+				'label' => __( 'Bundle Item', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-bundle-item',
+				'extra' => ''
+			),
+			'composite' => array(
+				'label' => __( 'Composite', 'link-wizard-for-woocommerce' ),
+				'className' => 'product-type-composite',
+				'extra' => ''
+			)
+		);
+
+		// Allow addon plugins to register their own product type badges.
+		$badges = apply_filters( 'lwwc_product_type_badges', $badges, $product_type, $product_data );
+
+		return isset( $badges[ $product_type ] ) ? $badges[ $product_type ] : null;
+	}
+
+	/**
 	 * Get translated text for admin interface.
 	 *
 	 * @param string $key The text key.
