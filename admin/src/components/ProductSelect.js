@@ -300,11 +300,26 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const handleAddBundleProduct = (product) => {
         if (!hasSelectedBundleChildren(product)) return;
 
+        // Generate bundle add-to-cart URL with quantities
+        const quantities = bundleQuantities[product.id] || {};
+        const urlParams = new URLSearchParams();
+        urlParams.set('add-to-cart', product.id);
+        
+        // Add bundle quantities
+        Object.entries(quantities).forEach(([childId, quantity]) => {
+            if (quantity > 0) {
+                urlParams.set(`bundle_quantity[${childId}]`, quantity);
+            }
+        });
+
+        const bundleUrl = `${window.location.origin}/?${urlParams.toString()}`;
+
         // Create a bundle product entry with child quantities
         const bundleProduct = {
             ...product,
             quantity: 1, // Bundle product itself has quantity 1
-            child_quantities: { ...bundleQuantities[product.id] }
+            child_quantities: { ...bundleQuantities[product.id] },
+            add_to_cart_url: bundleUrl
         };
 
         setSelectedProducts(prev => [...prev, bundleProduct]);
