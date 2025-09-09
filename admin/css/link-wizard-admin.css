@@ -1,6 +1,106 @@
 
 /* =============================================================================
-   WordPress Admin Color Scheme
+   CSS Custom Properties (CSS Variables)
+   ============================================================================= */
+
+/* 
+ * These are fallbacks for the CSS custom properties that are dynamically
+ * injected by WordPress core based on the user's selected admin color scheme.
+ * Using these variables ensures the plugin's UI matches the rest of the admin.
+ *
+ * @see https://developer.wordpress.org/block-editor/how-to-guides/stylesheets/admin-stylesheet-color-schemes/
+ */
+:root {
+	/* WordPress Core Theme Colors - Dynamic Fallbacks */
+	--lwwc-theme-primary: #0073aa;      /* button-primary background (Fresh scheme default) */
+	--lwwc-theme-primary-bg: rgba(0, 115, 170, 0.1);
+	--lwwc-theme-ui: #2c5aa0;           /* adminmenu background (Fresh scheme default) */
+	--lwwc-theme-ui-bg: rgba(44, 90, 160, 0.1);
+	--lwwc-theme-notification: #d54e21; /* notification color (Fresh scheme default) */
+	--lwwc-theme-notification-bg: rgba(213, 78, 33, 0.1);
+	--lwwc-theme-link: #0073aa;         /* link color (consistent across schemes) */
+	--lwwc-theme-link-bg: rgba(0, 115, 170, 0.1);
+
+	/* Darker variants for primary and admin theme-color */
+	--lwwc-theme-primary-darker-10: #006b96; /* 10% darker than primary */
+	--lwwc-theme-primary-darker-20: #005782; /* 20% darker than primary */
+	
+	/* Expose as wp-admin theme-color shades - let WordPress set the actual theme color */
+	--wp-admin-theme-color-darker-10: var(--lwwc-theme-primary-darker-10);
+	--wp-admin-theme-color-darker-20: var(--lwwc-theme-primary-darker-20);
+	
+	/* Link hover state uses darker-10 by default */
+	--lwwc-theme-link-hover: var(--wp-admin-theme-color-darker-10);
+	
+	/* Core Colors (Fallback values are from the "Fresh" theme) */
+	--wp-admin-background-color: #f0f0f1;
+	--wp-admin-text-color: #1d2327;
+	--wp-admin-secondary-text-color: #50575e;
+	--wp-admin-border-color: #c3c4c7;
+	--wp-admin-border-color-darker: #8c8f94;
+	--wp-admin-notification-color: #d63638;
+	--wp-admin-link: var(--lwwc-theme-link);
+	--wp-admin-link-hover: var(--lwwc-theme-link-hover);
+
+	/* Component Specific Colors */
+	--wp-admin-card-background: #fff;
+	--wp-admin-card-border: #c3c4c7;
+	--wp-admin-card-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	
+	/* Success Colors */
+	--wp-admin-success-color: #28a745;
+	--wp-admin-success-background: #d4edda;
+	--wp-admin-success-border: #c3e6cb;
+	--wp-admin-success-color-darker: #218838;
+	
+	/* Notification Colors */
+	--wp-admin-notification-color-darker: #c82333;
+	--wp-admin-notification-color-focus: rgba(220, 53, 69, 0.25);
+	
+	/* Additional Border and Background Colors */
+	--wp-admin-border-color-light: #ddd;
+	--wp-admin-background-color-light: #f0f0f0;
+	--wp-admin-background-color-lighter: #f9f9f9;
+	--wp-admin-background-color-lightest: #f6f7f7;
+	--wp-admin-secondary-text-color-light: #666;
+	--wp-admin-secondary-text-color-darker: #5a6268;
+	
+	/* Additional Theme Colors */
+	--wp-admin-warning-background: #fff3cd;
+	--wp-admin-warning-color: #856404;
+	--wp-admin-info-background: #d1ecf1;
+	--wp-admin-info-color: #0c5460;
+	--wp-admin-info-border: #c3d4e6;
+	
+	/* Theme Color Variants */
+	--wp-admin-theme-color-light: var(--lwwc-theme-primary-bg);
+	
+	/* Utility Colors for Consistent Styling */
+	--lwwc-button-primary: var(--lwwc-theme-primary);
+	--lwwc-button-primary-hover: var(--lwwc-theme-primary-darker-10);
+	--lwwc-button-primary-active: var(--lwwc-theme-primary-darker-20);
+	--lwwc-button-primary-text: #fff;
+	--lwwc-button-primary-border: var(--lwwc-theme-primary);
+	
+	--lwwc-button-secondary: var(--wp-admin-background-color-light);
+	--lwwc-button-secondary-hover: var(--wp-admin-border-color);
+	--lwwc-button-secondary-text: var(--wp-admin-text-color);
+	--lwwc-button-secondary-border: var(--wp-admin-border-color-light);
+	
+	--lwwc-button-danger: var(--wp-admin-notification-color);
+	--lwwc-button-danger-hover: var(--wp-admin-notification-color-darker);
+	--lwwc-button-danger-text: #fff;
+	--lwwc-button-danger-border: var(--wp-admin-notification-color);
+	
+	/* Focus and Selection Colors */
+	--lwwc-focus-color: var(--lwwc-theme-primary);
+	--lwwc-focus-color-light: var(--lwwc-theme-primary-bg);
+	--lwwc-selection-color: var(--lwwc-theme-primary-bg);
+	--lwwc-selection-text: var(--wp-admin-text-color);
+}
+
+/* =============================================================================
+   WordPress Admin Color Scheme Integration
    ============================================================================= */
 
 /* 
@@ -212,105 +312,6 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     }
 }
 
-/* 
- * These are fallbacks for the CSS custom properties that are dynamically
- * injected by WordPress core based on the user's selected admin color scheme.
- * Using these variables ensures the plugin's UI matches the rest of the admin.
- *
- * @see https://developer.wordpress.org/block-editor/how-to-guides/stylesheets/admin-stylesheet-color-schemes/
- */
-:root {
-	/* WordPress Core Theme Colors - Dynamic Fallbacks */
-	--lwwc-theme-primary: #0073aa;      /* button-primary background (Fresh scheme default) */
-	--lwwc-theme-primary-bg: rgba(0, 115, 170, 0.1);
-	--lwwc-theme-ui: #2c5aa0;           /* adminmenu background (Fresh scheme default) */
-	--lwwc-theme-ui-bg: rgba(44, 90, 160, 0.1);
-	--lwwc-theme-notification: #d54e21; /* notification color (Fresh scheme default) */
-	--lwwc-theme-notification-bg: rgba(213, 78, 33, 0.1);
-	--lwwc-theme-link: #0073aa;         /* link color (consistent across schemes) */
-	--lwwc-theme-link-bg: rgba(0, 115, 170, 0.1);
-
-
-    
-	
-	/* Darker variants for primary and admin theme-color */
-	--lwwc-theme-primary-darker-10: #006b96; /* 10% darker than primary */
-	--lwwc-theme-primary-darker-20: #005782; /* 20% darker than primary */
-	
-	/* Expose as wp-admin theme-color shades - let WordPress set the actual theme color */
-	/* --wp-admin-theme-color: var(--lwwc-theme-primary); */
-	--wp-admin-theme-color-darker-10: var(--lwwc-theme-primary-darker-10);
-	--wp-admin-theme-color-darker-20: var(--lwwc-theme-primary-darker-20);
-	
-	/* Link hover state uses darker-10 by default */
-	--lwwc-theme-link-hover: var(--wp-admin-theme-color-darker-10);
-	
-	/* Core Colors (Fallback values are from the "Fresh" theme) */
-	--wp-admin-background-color: #f0f0f1;
-	--wp-admin-text-color: #1d2327;
-	--wp-admin-secondary-text-color: #50575e;
-	--wp-admin-border-color: #c3c4c7;
-	--wp-admin-border-color-darker: #8c8f94;
-	--wp-admin-notification-color: #d63638;
-	--wp-admin-link: var(--lwwc-theme-link);
-	--wp-admin-link-hover: var(--lwwc-theme-link-hover);
-
-	/* Component Specific Colors */
-	--wp-admin-card-background: #fff;
-	--wp-admin-card-border: #c3c4c7;
-	--wp-admin-card-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-	
-	/* Success Colors */
-	--wp-admin-success-color: #28a745;
-	--wp-admin-success-background: #d4edda;
-	--wp-admin-success-border: #c3e6cb;
-	--wp-admin-success-color-darker: #218838;
-	
-	/* Notification Colors */
-	--wp-admin-notification-color-darker: #c82333;
-	--wp-admin-notification-color-focus: rgba(220, 53, 69, 0.25);
-	
-	/* Additional Border and Background Colors */
-	--wp-admin-border-color-light: #ddd;
-	--wp-admin-background-color-light: #f0f0f0;
-	--wp-admin-background-color-lighter: #f9f9f9;
-	--wp-admin-background-color-lightest: #f6f7f7;
-	--wp-admin-secondary-text-color-light: #666;
-	--wp-admin-secondary-text-color-darker: #5a6268;
-	
-	/* Additional Theme Colors */
-	--wp-admin-warning-background: #fff3cd;
-	--wp-admin-warning-color: #856404;
-	--wp-admin-info-background: #d1ecf1;
-	--wp-admin-info-color: #0c5460;
-	--wp-admin-info-border: #c3d4e6;
-	
-	/* Theme Color Variants */
-	--wp-admin-theme-color-light: var(--lwwc-theme-primary-bg);
-	
-	/* Utility Colors for Consistent Styling */
-	--lwwc-button-primary: var(--lwwc-theme-primary);
-	--lwwc-button-primary-hover: var(--lwwc-theme-primary-darker-10);
-	--lwwc-button-primary-active: var(--lwwc-theme-primary-darker-20);
-	--lwwc-button-primary-text: #fff;
-	--lwwc-button-primary-border: var(--lwwc-theme-primary);
-	
-	--lwwc-button-secondary: var(--wp-admin-background-color-light);
-	--lwwc-button-secondary-hover: var(--wp-admin-border-color);
-	--lwwc-button-secondary-text: var(--wp-admin-text-color);
-	--lwwc-button-secondary-border: var(--wp-admin-border-color-light);
-	
-	--lwwc-button-danger: var(--wp-admin-notification-color);
-	--lwwc-button-danger-hover: var(--wp-admin-notification-color-darker);
-	--lwwc-button-danger-text: #fff;
-	--lwwc-button-danger-border: var(--wp-admin-notification-color);
-	
-	/* Focus and Selection Colors */
-	--lwwc-focus-color: var(--lwwc-theme-primary);
-	--lwwc-focus-color-light: var(--lwwc-theme-primary-bg);
-	--lwwc-selection-color: var(--lwwc-theme-primary-bg);
-	--lwwc-selection-text: var(--wp-admin-text-color);
-}
 
 /* Link Wizard header icon placement */
 .lwwc-wrap {
@@ -1005,36 +1006,9 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     color: var(--wp-admin-secondary-text-color-light);
 }
 
-/* Button styling */
-.dynamic-link-button {
-    padding: 10px 16px;
-    background-color: var(--wp-admin-theme-color);
-    color: var(--wp-admin-card-background);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    min-width: 100px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.dynamic-link-button:hover {
-    background-color: var(--wp-admin-theme-color-darker-10);
-}
-
-.dynamic-link-button:disabled,
-.dynamic-link-button.disabled {
-    background-color: var(--wp-admin-secondary-text-color-light);
-    cursor: not-allowed;
-}
-
-.dynamic-link-button.success {
-    background-color: var(--wp-admin-success-color);
-}
+/* =============================================================================
+   Dynamic Link Button Styling
+   ============================================================================= */
 
 .dynamic-link-button-container {
     display: flex;
@@ -1042,6 +1016,65 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     align-items: center;
     flex-wrap: wrap;
     margin-bottom: 15px;
+}
+
+.dynamic-link-button {
+    padding: 10px 16px;
+    background-color: var(--wp-admin-theme-color);
+    color: var(--wp-admin-card-background);
+    border: 1px solid var(--wp-admin-theme-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dynamic-link-button:hover {
+    background-color: var(--wp-admin-theme-color-darker-10);
+    border-color: var(--wp-admin-theme-color-darker-10);
+    color: var(--wp-admin-card-background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.dynamic-link-button:focus {
+    outline: 2px solid var(--wp-admin-theme-color);
+    outline-offset: 2px;
+}
+
+.dynamic-link-button:active {
+    background-color: var(--wp-admin-theme-color-darker-20);
+    border-color: var(--wp-admin-theme-color-darker-20);
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dynamic-link-button:disabled,
+.dynamic-link-button.disabled {
+    background-color: var(--wp-admin-secondary-text-color-light);
+    border-color: var(--wp-admin-secondary-text-color-light);
+    color: var(--wp-admin-card-background);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.dynamic-link-button.success {
+    background-color: var(--wp-admin-success-color);
+    border-color: var(--wp-admin-success-color);
+    color: var(--wp-admin-card-background);
+}
+
+.dynamic-link-button.success:hover {
+    background-color: var(--wp-admin-success-color-darker);
+    border-color: var(--wp-admin-success-color-darker);
+    color: var(--wp-admin-card-background);
 }
 
 /* =============================================================================
