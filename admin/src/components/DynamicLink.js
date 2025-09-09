@@ -270,12 +270,12 @@ const DynamicLink = ({
             if (currentStep === 1) {
                 // Step 1: Show placeholder with highlighting.
                 parts.push(
-                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
                 );
             } else if (selectedProducts && selectedProducts.length > 0) {
                 // Step 2+: Show actual parameters with individual highlighting.
                 parts.push(
-                    <span key="checkout-link" className="lwwc-dynamic-link-checkout-text">checkout-link/</span>,
+                    <span key="checkout" className="lwwc-dynamic-link-checkout-text">checkout/</span>,
                     <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
                 );
                 
@@ -334,7 +334,7 @@ const DynamicLink = ({
             } else {
                 // Step 2+ but no products: Show placeholder.
                 parts.push(
-                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout/?add-to-cart=PRODUCT_ID&quantity=QUANTITY</span>
                 );
             }
         }
