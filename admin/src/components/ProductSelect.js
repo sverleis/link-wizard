@@ -78,15 +78,21 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 path: `link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=20`
             })
                 .then((products) => {
-                    console.log('LWWC Search Results:', products);
-                    // Filter out products that are already selected.
+                    // Filter out products that are already selected, but allow bundle products to be re-selected
                     const newResults = products.filter(
-                        (product) =>
-                            !selectedProducts.some(
+                        (product) => {
+                            const isAlreadySelected = selectedProducts.some(
                                 selected => selected.id === product.id
-                            )
+                            );
+                            
+                            // Allow bundle products to be re-selected for quantity adjustment
+                            if (product.type === 'bundle' && isAlreadySelected) {
+                                return true;
+                            }
+                            
+                            return !isAlreadySelected;
+                        }
                     );
-                    console.log('LWWC Filtered Results:', newResults);
                     setResults(newResults);
                     setIsLoading(false);
                 })
