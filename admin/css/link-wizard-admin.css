@@ -3341,7 +3341,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     text-transform: capitalize;
     letter-spacing: 0.5px;
     border-radius: 3px;
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
     vertical-align: middle;
     line-height: 1.4;
@@ -3354,43 +3354,43 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Product Type Badge Variations */
 .product-type-simple {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-variable {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-grouped {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-subscription {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-variable-subscription {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-bundle {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
 .product-type-bundle-item {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
     opacity: 0.8;
 }
 
 .product-type-composite {
-    background-color: var(--wp-admin-theme-color);
+    background-color: var(--wp-admin-theme-color-darker-20);
     color: #ffffff;
 }
 
