@@ -44,40 +44,18 @@ class LWWC_Grouped_Product_Handler implements LWWC_Product_Handler_Interface {
 	}
 
 	/**
-	 * Get search results for grouped products.
+	 * Get search results for this product type.
 	 *
 	 * @since 1.0.4
-	 * @param string $search_term The search term.
-	 * @param int    $limit       The maximum number of results.
+	 * @param WC_Product $product The product to get data for.
 	 * @return array Array of product data.
 	 */
-	public function get_search_results( $search_term, $limit = 10 ) {
-		$args = array(
-			'post_type'      => 'product',
-			'post_status'    => 'publish',
-			'posts_per_page' => $limit,
-			's'              => $search_term,
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Necessary for product type filtering
-			'meta_query'     => array(
-				array(
-					'key'     => '_product_type',
-					'value'   => 'grouped',
-					'compare' => '=',
-				),
-			),
-		);
-
-		$products = get_posts( $args );
-		$results  = array();
-
-		foreach ( $products as $product_post ) {
-			$product = wc_get_product( $product_post->ID );
-			if ( $product && $this->can_handle( $product ) ) {
-				$results[] = $this->get_product_data( $product );
-			}
+	public function get_search_results( $product ) {
+		if ( ! $this->can_handle( $product ) ) {
+			return array();
 		}
 
-		return $results;
+		return array( $this->get_product_data( $product ) );
 	}
 
 	/**
