@@ -35,25 +35,20 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
     // Simple Product Type Badge Component
     const ProductTypeBadge = ({ product }) => {
-        console.log('LWWC ProductTypeBadge: Rendering badge for product:', product.name, 'type:', product.type);
-        
         const productType = product.type;
         const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
         
-        console.log('LWWC ProductTypeBadge: Badge info for', productType, ':', badgeInfo);
-        
         if (!badgeInfo) {
-            console.log('LWWC ProductTypeBadge: Using fallback for', productType);
+            // Fallback for unknown product types
             return (
-                <span className={`product-type-badge product-type-${productType}`} style={{backgroundColor: 'red', color: 'white', padding: '2px 6px', borderRadius: '3px', marginLeft: '8px'}}>
+                <span className={`product-type-badge product-type-${productType}`}>
                     {productType.charAt(0).toUpperCase() + productType.slice(1)}
                 </span>
             );
         }
         
-        console.log('LWWC ProductTypeBadge: Returning badge for', productType);
         return (
-            <span className={`product-type-badge ${badgeInfo.className}`} style={{backgroundColor: 'blue', color: 'white', padding: '2px 6px', borderRadius: '3px', marginLeft: '8px'}}>
+            <span className={`product-type-badge ${badgeInfo.className}`}>
                 {badgeInfo.label}
                 {badgeInfo.extra && <span className="product-type-extra"> {badgeInfo.extra}</span>}
             </span>
