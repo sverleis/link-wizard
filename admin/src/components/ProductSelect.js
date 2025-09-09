@@ -79,6 +79,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                 path: `link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=20`
             })
                 .then((products) => {
+                    console.log('LWWC Search Results:', products);
                     // Filter out products that are already selected.
                     const newResults = products.filter(
                         (product) =>
@@ -86,6 +87,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                 selected => selected.id === product.id
                             )
                     );
+                    console.log('LWWC Filtered Results:', newResults);
                     setResults(newResults);
                     setIsLoading(false);
                 })
