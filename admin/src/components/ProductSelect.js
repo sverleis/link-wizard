@@ -8,7 +8,7 @@ if (typeof window.lwwcApiSettings !== 'undefined') {
     apiFetch.use(apiFetch.createRootURLMiddleware(window.lwwcApiSettings.root));
 }
 
-const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
+const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLinkType, onStepChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -297,6 +297,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
             return product.default_quantities && Object.values(product.default_quantities).some(qty => qty > 0);
         }
         return Object.values(bundleQuantities[product.id]).some(qty => qty > 0);
+    };
+
+    // Handle switching to Add-to-Cart URL for bundle products
+    const handleSwitchToAddToCart = () => {
+        if (setLinkType) {
+            setLinkType('addToCart');
+        }
+        if (onStepChange) {
+            onStepChange(1); // Go back to step 1 (URL type selection)
+        }
     };
 
     // Handle adding bundle product to selection.
@@ -904,7 +914,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                 <div className="lwwc-bundle-disabled-notice">
                                                     <span className="lwwc-bundle-disabled-icon">⚠️</span>
                                                     <span className="lwwc-bundle-disabled-text">
-                                                        {i18n.bundleDisabledNotice || 'Bundle products are not available for Checkout-Link URLs. Please switch to Add-to-Cart URL to use bundle products.'}
+                                                        Bundle products are not available for Checkout-Link URLs. 
+                                                        <button 
+                                                            type="button"
+                                                            onClick={handleSwitchToAddToCart}
+                                                            className="lwwc-switch-link-btn"
+                                                        >
+                                                            Please switch to Add-to-Cart URL to use bundle products.
+                                                        </button>
                                                     </span>
                                                 </div>
                                             ) : (
