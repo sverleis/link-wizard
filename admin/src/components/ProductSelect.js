@@ -797,6 +797,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     {/* Grouped Product Children Selection. */}
                                     {product.type === 'grouped' && product.children && product.children.length > 0 && (
                                         <div className="lwwc-grouped-children-section">
+                                            <div className="lwwc-grouped-notice">
+                                                <span className="lwwc-grouped-notice-icon">ℹ️</span>
+                                                <span className="lwwc-grouped-notice-text">
+                                                    {i18n.groupedNotice || 'Grouped products are only available for Add-to-Cart URLs. Checkout links are not supported for grouped products.'}
+                                                </span>
+                                            </div>
                                             <div className="lwwc-grouped-children-title">
                                                 {i18n.groupedProducts || 'Grouped Products:'}
                                             </div>

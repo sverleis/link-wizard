@@ -9,7 +9,7 @@ import AddonsSection from './components/AddonsSection';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(1);
-    const [linkType, setLinkType] = useState('checkoutLink');
+    const [linkType, setLinkType] = useState('addToCart');
     // Add redirect state management.
     const [redirectOption, setRedirectOption] = useState('cart');
     const [selectedRedirectPage, setSelectedRedirectPage] = useState(null);

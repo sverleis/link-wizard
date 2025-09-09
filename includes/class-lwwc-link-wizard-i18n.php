@@ -165,6 +165,11 @@ class LWWC_Link_Wizard_I18n {
 			'recheckAddons'                       => __( 'Recheck', 'link-wizard-for-woocommerce' ),
 			'settingsAddon'                       => __( 'Settings', 'link-wizard-for-woocommerce' ),
 			'retry'                               => __( 'Retry', 'link-wizard-for-woocommerce' ),
+
+			// Grouped Products.
+			'groupedProducts'                     => __( 'Grouped Products:', 'link-wizard-for-woocommerce' ),
+			'groupedNotice'                       => __( 'Grouped products are only available for Add-to-Cart URLs. Checkout links are not supported for grouped products.', 'link-wizard-for-woocommerce' ),
+			'addGroupedProduct'                   => __( 'Add Grouped Product', 'link-wizard-for-woocommerce' ),
 		);
 
 		return isset( $texts[ $key ] ) ? $texts[ $key ] : $key;

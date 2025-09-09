@@ -3375,6 +3375,28 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     border-radius: 4px;
 }
 
+.lwwc-grouped-notice {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 12px;
+    background-color: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #1e40af;
+}
+
+.lwwc-grouped-notice-icon {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.lwwc-grouped-notice-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
 .lwwc-grouped-children-title {
     font-weight: 600;
     margin-bottom: 10px;
