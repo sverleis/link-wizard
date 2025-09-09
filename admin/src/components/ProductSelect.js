@@ -48,19 +48,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         if (!badgeInfo) {
             // Fallback for unknown product types
             console.log('LWWC getProductTypeTag: Using fallback for', productType);
-            return (
+            const fallbackElement = (
                 <span className={`product-type-badge product-type-${productType}`}>
                     {productType.charAt(0).toUpperCase() + productType.slice(1)}
                 </span>
             );
+            console.log('LWWC getProductTypeTag: Returning fallback element:', fallbackElement);
+            return fallbackElement;
         }
         
-        return (
+        const badgeElement = (
             <span className={`product-type-badge ${badgeInfo.className}`}>
                 {badgeInfo.label}
                 {badgeInfo.extra && <span className="product-type-extra"> {badgeInfo.extra}</span>}
             </span>
         );
+        console.log('LWWC getProductTypeTag: Returning badge element:', badgeElement);
+        return badgeElement;
     };
 
     // Initialize component with passed selected products.
