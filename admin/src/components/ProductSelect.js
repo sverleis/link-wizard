@@ -22,6 +22,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({});
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [replaceProduct, setReplaceProduct] = useState(null);
+    const [bundleQuantities, setBundleQuantities] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     // New state for fade-out animation.
@@ -266,6 +267,47 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         };
 
         setSelectedProducts(prev => [...prev, groupedProduct]);
+        
+        // Add to adding state for visual feedback
+        setAddingProducts(prev => new Set([...prev, product.id]));
+        setTimeout(() => {
+            setAddingProducts(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(product.id);
+                return newSet;
+            });
+        }, 1000);
+    };
+
+    // Handle bundle quantity change.
+    const handleBundleQuantityChange = (productId, childId, quantity) => {
+        setBundleQuantities(prev => ({
+            ...prev,
+            [productId]: {
+                ...prev[productId],
+                [childId]: quantity
+            }
+        }));
+    };
+
+    // Check if bundle product has any children selected.
+    const hasSelectedBundleChildren = (product) => {
+        if (!bundleQuantities[product.id]) return false;
+        return Object.values(bundleQuantities[product.id]).some(qty => qty > 0);
+    };
+
+    // Handle adding bundle product to selection.
+    const handleAddBundleProduct = (product) => {
+        if (!hasSelectedBundleChildren(product)) return;
+
+        // Create a bundle product entry with child quantities
+        const bundleProduct = {
+            ...product,
+            quantity: 1, // Bundle product itself has quantity 1
+            child_quantities: { ...bundleQuantities[product.id] }
+        };
+
+        setSelectedProducts(prev => [...prev, bundleProduct]);
         
         // Add to adding state for visual feedback
         setAddingProducts(prev => new Set([...prev, product.id]));
@@ -825,6 +867,59 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                             className="lwwc-add-grouped-product-btn"
                                                         >
                                                             {i18n.addGroupedProduct || 'Add Grouped Product'}
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Bundle Product Children Selection. */}
+                                    {product.type === 'bundle' && product.children && product.children.length > 0 && (
+                                        <div className="lwwc-bundle-children-section">
+                                            {linkType === 'checkoutLink' ? (
+                                                <div className="lwwc-bundle-disabled-notice">
+                                                    <span className="lwwc-bundle-disabled-icon">⚠️</span>
+                                                    <span className="lwwc-bundle-disabled-text">
+                                                        {i18n.bundleDisabledNotice || 'Bundle products are not available for Checkout-Link URLs. Please switch to Add-to-Cart URL to use bundle products.'}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="lwwc-bundle-children-title">
+                                                        {i18n.bundleProducts || 'Bundle Products:'}
+                                                    </div>
+                                                    <div className="lwwc-bundle-children-list">
+                                                        {product.children.map((child, index) => (
+                                                            <div key={child.id} className="lwwc-bundle-child-item">
+                                                                <div className="lwwc-bundle-child-info">
+                                                                    <span className="lwwc-bundle-child-name">{child.name}</span>
+                                                                    {child.sku && (
+                                                                        <span className="lwwc-bundle-child-sku">({child.sku})</span>
+                                                                    )}
+                                                                    <span className="lwwc-bundle-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
+                                                                </div>
+                                                                <div className="lwwc-bundle-child-quantity">
+                                                                    <label>Qty:</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        min={child.min_quantity || 0}
+                                                                        max={child.max_quantity || 999}
+                                                                        value={bundleQuantities[product.id]?.[child.id] || child.quantity || 0}
+                                                                        onChange={(e) => handleBundleQuantityChange(product.id, child.id, parseInt(e.target.value) || 0)}
+                                                                        className="lwwc-bundle-child-qty-input"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div className="lwwc-bundle-add-button">
+                                                        <button
+                                                            onClick={() => handleAddBundleProduct(product)}
+                                                            disabled={!hasSelectedBundleChildren(product)}
+                                                            className="lwwc-add-bundle-product-btn"
+                                                        >
+                                                            {i18n.addBundleProduct || 'Add Bundle Product'}
                                                         </button>
                                                     </div>
                                                 </>
