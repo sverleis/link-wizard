@@ -33,38 +33,31 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
 
-    // Function to get product type tag information
-    const getProductTypeTag = (product) => {
+    // Simple Product Type Badge Component
+    const ProductTypeBadge = ({ product }) => {
+        console.log('LWWC ProductTypeBadge: Rendering badge for product:', product.name, 'type:', product.type);
+        
         const productType = product.type;
-        
-        console.log('LWWC getProductTypeTag: Product type:', productType);
-        console.log('LWWC getProductTypeTag: i18n.productTypeBadges:', i18n.productTypeBadges);
-        
-        // Get badge information from the server (passed via i18n)
         const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
         
-        console.log('LWWC getProductTypeTag: Badge info for', productType, ':', badgeInfo);
+        console.log('LWWC ProductTypeBadge: Badge info for', productType, ':', badgeInfo);
         
         if (!badgeInfo) {
-            // Fallback for unknown product types
-            console.log('LWWC getProductTypeTag: Using fallback for', productType);
-            const fallbackElement = (
-                <span className={`product-type-badge product-type-${productType}`}>
+            console.log('LWWC ProductTypeBadge: Using fallback for', productType);
+            return (
+                <span className={`product-type-badge product-type-${productType}`} style={{backgroundColor: 'red', color: 'white', padding: '2px 6px', borderRadius: '3px', marginLeft: '8px'}}>
                     {productType.charAt(0).toUpperCase() + productType.slice(1)}
                 </span>
             );
-            console.log('LWWC getProductTypeTag: Returning fallback element:', fallbackElement);
-            return fallbackElement;
         }
         
-        const badgeElement = (
-            <span className={`product-type-badge ${badgeInfo.className}`}>
+        console.log('LWWC ProductTypeBadge: Returning badge for', productType);
+        return (
+            <span className={`product-type-badge ${badgeInfo.className}`} style={{backgroundColor: 'blue', color: 'white', padding: '2px 6px', borderRadius: '3px', marginLeft: '8px'}}>
                 {badgeInfo.label}
                 {badgeInfo.extra && <span className="product-type-extra"> {badgeInfo.extra}</span>}
             </span>
         );
-        console.log('LWWC getProductTypeTag: Returning badge element:', badgeElement);
-        return badgeElement;
     };
 
     // Initialize component with passed selected products.
@@ -737,30 +730,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                         <div className="product-details">
                                             <div className="product-name">
                                                 {product.name}
-                                                {(() => {
-                                                    console.log('LWWC Inline Badge: Processing product:', product.name, 'type:', product.type);
-                                                    const productType = product.type;
-                                                    const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
-                                                    
-                                                    console.log('LWWC Inline Badge: Badge info for', productType, ':', badgeInfo);
-                                                    
-                                                    if (!badgeInfo) {
-                                                        console.log('LWWC Inline Badge: Using fallback for', productType);
-                                                        return (
-                                                            <span className={`product-type-badge product-type-${productType}`}>
-                                                                {productType.charAt(0).toUpperCase() + productType.slice(1)}
-                                                            </span>
-                                                        );
-                                                    }
-                                                    
-                                                    console.log('LWWC Inline Badge: Returning badge for', productType);
-                                                    return (
-                                                        <span className={`product-type-badge ${badgeInfo.className}`}>
-                                                            {badgeInfo.label}
-                                                            {badgeInfo.extra && <span className="product-type-extra"> {badgeInfo.extra}</span>}
-                                                        </span>
-                                                    );
-                                                })()}
+                                                <ProductTypeBadge product={product} />
                                             </div>
                                             {product.sku && (
                                                 <div className="product-sku">
