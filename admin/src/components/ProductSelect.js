@@ -292,7 +292,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
 
     // Check if bundle product has any children selected.
     const hasSelectedBundleChildren = (product) => {
-        if (!bundleQuantities[product.id]) return false;
+        if (!bundleQuantities[product.id]) {
+            // If no quantities set yet, check if product has default quantities
+            return product.default_quantities && Object.values(product.default_quantities).some(qty => qty > 0);
+        }
         return Object.values(bundleQuantities[product.id]).some(qty => qty > 0);
     };
 
@@ -301,10 +304,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
         if (!hasSelectedBundleChildren(product)) return;
 
         // Generate bundle add-to-cart URL with quantities
-        const quantities = bundleQuantities[product.id] || {};
+        const quantities = bundleQuantities[product.id] || product.default_quantities || {};
         const urlParams = new URLSearchParams();
         urlParams.set('add-to-cart', product.id);
-        
+
         // Add bundle quantities
         Object.entries(quantities).forEach(([childId, quantity]) => {
             if (quantity > 0) {
@@ -920,7 +923,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                                                         type="number"
                                                                         min={child.min_quantity || 0}
                                                                         max={child.max_quantity || 999}
-                                                                        value={bundleQuantities[product.id]?.[child.id] || child.quantity || 0}
+                                                                        value={bundleQuantities[product.id]?.[child.id] || product.default_quantities?.[child.id] || child.quantity || 0}
                                                                         onChange={(e) => handleBundleQuantityChange(product.id, child.id, parseInt(e.target.value) || 0)}
                                                                         className="lwwc-bundle-child-qty-input"
                                                                     />
