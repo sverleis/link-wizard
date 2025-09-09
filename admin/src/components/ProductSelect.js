@@ -37,11 +37,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const getProductTypeTag = (product) => {
         const productType = product.type;
         
+        console.log('LWWC getProductTypeTag: Product type:', productType);
+        console.log('LWWC getProductTypeTag: i18n.productTypeBadges:', i18n.productTypeBadges);
+        
         // Get badge information from the server (passed via i18n)
         const badgeInfo = i18n.productTypeBadges && i18n.productTypeBadges[productType];
         
+        console.log('LWWC getProductTypeTag: Badge info for', productType, ':', badgeInfo);
+        
         if (!badgeInfo) {
             // Fallback for unknown product types
+            console.log('LWWC getProductTypeTag: Using fallback for', productType);
             return (
                 <span className={`product-type-badge product-type-${productType}`}>
                     {productType.charAt(0).toUpperCase() + productType.slice(1)}
