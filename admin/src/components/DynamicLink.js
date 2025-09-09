@@ -72,7 +72,8 @@ const DynamicLink = ({
                                 }
                             });
                             // Add main product quantity
-                            params.append('quantity', '1');
+                            const bundleQuantity = product.quantity || 1;
+                            params.append('quantity', bundleQuantity.toString());
                         } else {
                             // Handle regular products
                             params.append('add-to-cart', product.id);
