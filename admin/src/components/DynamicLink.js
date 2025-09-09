@@ -60,6 +60,19 @@ const DynamicLink = ({
                                     params.append(`quantity[${childId}]`, quantity);
                                 }
                             });
+                        } else if (product.type === 'bundle' && product.child_quantities) {
+                            // Handle bundle products with child quantities
+                            params.append('add-to-cart', product.id);
+                            // Add bundle quantities in the format: bundle_quantity_1, bundle_quantity_2, etc.
+                            let quantityIndex = 1;
+                            Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                                if (quantity > 0) {
+                                    params.append(`bundle_quantity_${quantityIndex}`, quantity);
+                                    quantityIndex++;
+                                }
+                            });
+                            // Add main product quantity
+                            params.append('quantity', '1');
                         } else {
                             // Handle regular products
                             params.append('add-to-cart', product.id);

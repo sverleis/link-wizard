@@ -335,7 +335,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         const bundleProduct = {
             ...product,
             quantity: 1, // Bundle product itself has quantity 1
-            child_quantities: { ...bundleQuantities[product.id] },
+            child_quantities: { ...(bundleQuantities[product.id] || product.default_quantities || {}) },
             add_to_cart_url: bundleUrl
         };
 
