@@ -109,6 +109,7 @@ const DynamicLink = ({
                     }
                     
                     finalUrl = `${baseUrl}${path}?${params.toString()}`;
+                    console.log('🔗 Final Generated URL:', finalUrl);
                 }
             } else {
                 // Checkout link format: https://store.local/checkout-link/?products=18:2,19:1&coupon=TEST
@@ -139,6 +140,7 @@ const DynamicLink = ({
                     }
                     // If 'encoded', keep the default URLSearchParams encoding.
                     finalUrl = `${baseUrl}/checkout-link/?${urlString}`;
+                    console.log('🔗 Final Generated Checkout URL:', finalUrl);
                 }
             }
             
@@ -259,12 +261,24 @@ const DynamicLink = ({
                                     );
                                 }
                             });
-                        } else if (product.quantity > 1) {
-                            // Handle regular products
-                            parts.push(
-                                <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
-                                <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
-                            );
+                        } else {
+                            // Check for addon-specific URL display handlers
+                            const addonHandlers = window.lwwcAddonUrlDisplayHandlers || {};
+                            const handler = addonHandlers[product.type];
+                            
+                            if (handler && typeof handler === 'function') {
+                                // Use addon-specific handler for URL display
+                                const addonParts = handler(product, index);
+                                if (addonParts && Array.isArray(addonParts)) {
+                                    parts.push(...addonParts);
+                                }
+                            } else if (product.quantity > 1) {
+                                // Handle regular products
+                                parts.push(
+                                    <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
+                                    <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
+                                );
+                            }
                         }
                     });
             } else {
