@@ -32,7 +32,11 @@ class LWWC_Simple_Product_Handler implements LWWC_Product_Handler_Interface {
 	 * @return bool
 	 */
 	public function can_handle( $product ) {
-		return $product && $product->is_type( 'simple' );
+		$can_handle = $product && $product->is_type( 'simple' );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Simple Handler: Product ID ' . ( $product ? $product->get_id() : 'null' ) . ' type ' . ( $product ? $product->get_type() : 'null' ) . ' can_handle: ' . ( $can_handle ? 'true' : 'false' ) );
+		}
+		return $can_handle;
 	}
 
 	/**
@@ -46,7 +50,11 @@ class LWWC_Simple_Product_Handler implements LWWC_Product_Handler_Interface {
 			return array();
 		}
 
-		return array( $this->get_product_data( $product ) );
+		$result = $this->get_product_data( $product );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Simple Handler: Returning search result for product ID ' . $product->get_id() . ': ' . print_r( $result, true ) );
+		}
+		return array( $result );
 	}
 
 	/**
