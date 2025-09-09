@@ -403,7 +403,7 @@ const DynamicLink = ({
                 <button
                     onClick={copyToClipboard}
                     disabled={!generatedLink || isGenerating || isDisabled}
-                    className={`dynamic-link-button ${copySuccess ? 'success' : ''} ${isDisabled ? 'disabled' : ''}`}
+                    className={`dynamic-link-button copy ${copySuccess ? 'success' : ''} ${isDisabled ? 'disabled' : ''}`}
                 >
                     {copySuccess ? (
                         <>
@@ -421,7 +421,7 @@ const DynamicLink = ({
                 <button
                     onClick={openLink}
                     disabled={!canOpenLink}
-                    className="lwwc-dynamic-link-open-button"
+                    className="dynamic-link-button open"
                 >
                     <span className="dashicons dashicons-external" />
                     Open
