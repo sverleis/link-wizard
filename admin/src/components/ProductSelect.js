@@ -386,7 +386,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             return entities[entity] || entity;
         });
         
-        return cleanText.trim();
+        // Extract only the current price (look for patterns like "R90,00" or "R18,00")
+        const priceMatch = cleanText.match(/R[\d,]+\.?\d*/);
+        if (priceMatch) {
+            return priceMatch[0];
+        }
+        
+        // If no price pattern found, return the cleaned text but limit length
+        return cleanText.trim().substring(0, 20);
     };
 
     // Handle adding composite product to selection.

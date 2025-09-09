@@ -3775,13 +3775,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-composite-option-dropdown {
+    width: 100%;
     padding: 6px 8px;
     border: 1px solid var(--wp-admin-border-color);
     border-radius: 3px;
     font-size: 13px;
     background-color: var(--wp-admin-background-color);
     color: var(--wp-admin-text-color);
-    min-width: 200px;
 }
 
 .lwwc-composite-option-dropdown:focus {
