@@ -52,9 +52,20 @@ const DynamicLink = ({
                     // Step 2+: Build actual URL.
                     const params = new URLSearchParams();
                     selectedProducts.forEach(product => {
-                        params.append('add-to-cart', product.id);
-                        if (product.quantity > 1) {
-                            params.append('quantity', product.quantity);
+                        if (product.type === 'grouped' && product.child_quantities) {
+                            // Handle grouped products with child quantities
+                            params.append('add-to-cart', product.id);
+                            Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                                if (quantity > 0) {
+                                    params.append(`quantity[${childId}]`, quantity);
+                                }
+                            });
+                        } else {
+                            // Handle regular products
+                            params.append('add-to-cart', product.id);
+                            if (product.quantity > 1) {
+                                params.append('quantity', product.quantity);
+                            }
                         }
                     });
                     
@@ -224,7 +235,19 @@ const DynamicLink = ({
                         parts.push(
                             <span key={`add-to-cart-${product.id}`} className="dynamic-link-product-param">add-to-cart={product.id}</span>
                         );
-                        if (product.quantity > 1) {
+                        
+                        if (product.type === 'grouped' && product.child_quantities) {
+                            // Handle grouped products with child quantities
+                            Object.entries(product.child_quantities).forEach(([childId, quantity], childIndex) => {
+                                if (quantity > 0) {
+                                    parts.push(
+                                        <span key={`amp-qty-${product.id}-${childId}`} className="dynamic-link-separator">&</span>,
+                                        <span key={`quantity-${product.id}-${childId}`} className="dynamic-link-product-param">quantity[{childId}]={quantity}</span>
+                                    );
+                                }
+                            });
+                        } else if (product.quantity > 1) {
+                            // Handle regular products
                             parts.push(
                                 <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
                                 <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
