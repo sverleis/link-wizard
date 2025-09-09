@@ -100,12 +100,23 @@ class LWWC_Product_Handler_Manager {
 			return null;
 		}
 
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Handler Manager: Looking for handler for product ID ' . $product->get_id() . ' type ' . $product->get_type() );
+			error_log( 'LWWC Handler Manager: Available handlers: ' . implode( ', ', array_keys( $this->handlers ) ) );
+		}
+
 		foreach ( $this->handlers as $handler ) {
 			if ( $handler->can_handle( $product ) ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'LWWC Handler Manager: Found handler ' . get_class( $handler ) . ' for product ID ' . $product->get_id() );
+				}
 				return $handler;
 			}
 		}
 
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'LWWC Handler Manager: No handler found for product ID ' . $product->get_id() . ' type ' . $product->get_type() );
+		}
 		return null;
 	}
 
