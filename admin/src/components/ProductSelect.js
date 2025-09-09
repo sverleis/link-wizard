@@ -8,6 +8,48 @@ if (typeof window.lwwcApiSettings !== 'undefined') {
     apiFetch.use(apiFetch.createRootURLMiddleware(window.lwwcApiSettings.root));
 }
 
+// Function to get product type tag information
+const getProductTypeTag = (product) => {
+    const productType = product.type;
+    
+    // Define product type display information
+    const typeInfo = {
+        'simple': {
+            label: 'Simple',
+            className: 'product-type-simple'
+        },
+        'variable': {
+            label: 'Variable',
+            className: 'product-type-variable',
+            extra: product.variation_count ? `(${product.variation_count} ${i18n.variations || 'variations'})` : ''
+        },
+        'grouped': {
+            label: 'Grouped',
+            className: 'product-type-grouped',
+            extra: product.children && product.children.length ? `(${product.children.length} products)` : ''
+        },
+        'subscription': {
+            label: 'Subscription',
+            className: 'product-type-subscription'
+        },
+        'variable-subscription': {
+            label: 'Variable Subscription',
+            className: 'product-type-variable-subscription',
+            extra: product.variation_count ? `(${product.variation_count} ${i18n.variations || 'variations'})` : ''
+        }
+    };
+    
+    const info = typeInfo[productType];
+    if (!info) return null;
+    
+    return (
+        <span className={`product-type-badge ${info.className}`}>
+            {info.label}
+            {info.extra && <span className="product-type-extra"> {info.extra}</span>}
+        </span>
+    );
+};
+
 const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
@@ -656,11 +698,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                         <div className="product-details">
                                             <div className="product-name">
                                                 {product.name}
-                                                {product.type === 'variable' && (
-                                                    <span className="product-type-badge">
-                                                        {i18n.variableProduct} ({product.variation_count} {i18n.variations})
-                                                    </span>
-                                                )}
+                                                {getProductTypeTag(product)}
                                             </div>
                                             {product.sku && (
                                                 <div className="product-sku">

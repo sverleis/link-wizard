@@ -3318,6 +3318,51 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     to { transform: rotate(360deg); }
 }
 
+/* =============================================================================
+   Product Type Tags
+   ============================================================================= */
+
+.product-type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    margin-left: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 3px;
+    background-color: var(--wp-admin-theme-color, #0073aa);
+    color: #fff;
+    vertical-align: middle;
+    line-height: 1.4;
+}
+
+.product-type-extra {
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* Product Type Specific Colors */
+.product-type-simple {
+    background-color: var(--wp-admin-theme-color, #0073aa);
+}
+
+.product-type-variable {
+    background-color: #00a32a;
+}
+
+.product-type-grouped {
+    background-color: #d63638;
+}
+
+.product-type-subscription {
+    background-color: #8c8f94;
+}
+
+.product-type-variable-subscription {
+    background-color: #996633;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .lwwc-addons-grid {
