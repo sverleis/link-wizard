@@ -147,9 +147,16 @@ const AddonsSection = ({ onAddonSelect }) => {
             let statusIcon, statusClass, tooltipText, linkUrl = null;
 
             if (isEnabled) {
-                statusIcon = <span className="dashicons dashicons-yes"></span>;
-                statusClass = 'enabled';
-                tooltipText = 'Products of this type exist in your store';
+                if (item.type === 'grouped') {
+                    // Special handling for grouped products - show warning icon
+                    statusIcon = <span className="dashicons dashicons-warning"></span>;
+                    statusClass = 'enabled-with-limitation';
+                    tooltipText = 'Products of this type exist in your store. Note: Grouped products only work with Add-to-Cart URLs, not Checkout-Link URLs.';
+                } else {
+                    statusIcon = <span className="dashicons dashicons-yes"></span>;
+                    statusClass = 'enabled';
+                    tooltipText = 'Products of this type exist in your store';
+                }
             } else {
                 if (item.type === 'subscription') {
                     const subscriptionStatus = window.lwwcCoreProductTypes?.subscription_status || { installed: false, active: false };
