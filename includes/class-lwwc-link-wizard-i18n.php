@@ -168,7 +168,7 @@ class LWWC_Link_Wizard_I18n {
 
 			// Grouped Products.
 			'groupedProducts'                     => __( 'Grouped Products:', 'link-wizard-for-woocommerce' ),
-			'groupedNotice'                       => __( 'Grouped products are only available for Add-to-Cart URLs. Checkout links are not supported for grouped products.', 'link-wizard-for-woocommerce' ),
+			'groupedDisabledNotice'               => __( 'Grouped products are not available for Checkout-Link URLs. Please switch to Add-to-Cart URL to use grouped products.', 'link-wizard-for-woocommerce' ),
 			'addGroupedProduct'                   => __( 'Add Grouped Product', 'link-wizard-for-woocommerce' ),
 		);
 

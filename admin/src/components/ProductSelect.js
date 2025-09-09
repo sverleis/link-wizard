@@ -797,51 +797,56 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts }) => {
                                     {/* Grouped Product Children Selection. */}
                                     {product.type === 'grouped' && product.children && product.children.length > 0 && (
                                         <div className="lwwc-grouped-children-section">
-                                            <div className="lwwc-grouped-notice">
-                                                <span className="lwwc-grouped-notice-icon">ℹ️</span>
-                                                <span className="lwwc-grouped-notice-text">
-                                                    {i18n.groupedNotice || 'Grouped products are only available for Add-to-Cart URLs. Checkout links are not supported for grouped products.'}
-                                                </span>
-                                            </div>
-                                            <div className="lwwc-grouped-children-title">
-                                                {i18n.groupedProducts || 'Grouped Products:'}
-                                            </div>
-                                            <div className="lwwc-grouped-children-list">
-                                                {product.children.map((child, index) => (
-                                                    <div key={child.id} className="lwwc-grouped-child-item">
-                                                        <div className="lwwc-grouped-child-info">
-                                                            <span className="lwwc-grouped-child-name">{child.name}</span>
-                                                            {child.sku && (
-                                                                <span className="lwwc-grouped-child-sku">({child.sku})</span>
-                                                            )}
-                                                            <span className="lwwc-grouped-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
-                                                        </div>
-                                                        <div className="lwwc-grouped-child-quantity">
-                                                            <label className="lwwc-grouped-child-qty-label">{i18n.qty || 'Qty'}:</label>
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                max="99"
-                                                                value={product.child_quantities?.[child.id] || 0}
-                                                                onChange={(e) => {
-                                                                    const newQuantity = parseInt(e.target.value) || 0;
-                                                                    handleGroupedChildQuantityChange(product.id, child.id, newQuantity);
-                                                                }}
-                                                                className="lwwc-grouped-child-qty-input"
-                                                            />
-                                                        </div>
+                                            {linkType === 'checkoutLink' ? (
+                                                <div className="lwwc-grouped-disabled-notice">
+                                                    <span className="lwwc-grouped-disabled-icon">⚠️</span>
+                                                    <span className="lwwc-grouped-disabled-text">
+                                                        {i18n.groupedDisabledNotice || 'Grouped products are not available for Checkout-Link URLs. Please switch to Add-to-Cart URL to use grouped products.'}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="lwwc-grouped-children-title">
+                                                        {i18n.groupedProducts || 'Grouped Products:'}
                                                     </div>
-                                                ))}
-                                            </div>
-                                            <div className="lwwc-grouped-add-button">
-                                                <button
-                                                    onClick={() => handleAddGroupedProduct(product)}
-                                                    disabled={!hasSelectedGroupedChildren(product)}
-                                                    className="lwwc-add-grouped-product-btn"
-                                                >
-                                                    {i18n.addGroupedProduct || 'Add Grouped Product'}
-                                                </button>
-                                            </div>
+                                                    <div className="lwwc-grouped-children-list">
+                                                        {product.children.map((child, index) => (
+                                                            <div key={child.id} className="lwwc-grouped-child-item">
+                                                                <div className="lwwc-grouped-child-info">
+                                                                    <span className="lwwc-grouped-child-name">{child.name}</span>
+                                                                    {child.sku && (
+                                                                        <span className="lwwc-grouped-child-sku">({child.sku})</span>
+                                                                    )}
+                                                                    <span className="lwwc-grouped-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
+                                                                </div>
+                                                                <div className="lwwc-grouped-child-quantity">
+                                                                    <label className="lwwc-grouped-child-qty-label">{i18n.qty || 'Qty'}:</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        min="0"
+                                                                        max="99"
+                                                                        value={product.child_quantities?.[child.id] || 0}
+                                                                        onChange={(e) => {
+                                                                            const newQuantity = parseInt(e.target.value) || 0;
+                                                                            handleGroupedChildQuantityChange(product.id, child.id, newQuantity);
+                                                                        }}
+                                                                        className="lwwc-grouped-child-qty-input"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div className="lwwc-grouped-add-button">
+                                                        <button
+                                                            onClick={() => handleAddGroupedProduct(product)}
+                                                            disabled={!hasSelectedGroupedChildren(product)}
+                                                            className="lwwc-add-grouped-product-btn"
+                                                        >
+                                                            {i18n.addGroupedProduct || 'Add Grouped Product'}
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     )}
 

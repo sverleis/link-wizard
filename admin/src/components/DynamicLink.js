@@ -260,6 +260,52 @@ const DynamicLink = ({
                     <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">?add-to-cart=PRODUCT_ID&quantity=1</span>
                 );
             }
+        } else {
+            // Checkout link format.
+            // Always show base URL.
+            parts.push(
+                <span key="base" className="dynamic-link-base-url">{baseUrl}/</span>
+            );
+            
+            if (currentStep === 1) {
+                // Step 1: Show placeholder with highlighting.
+                parts.push(
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                );
+            } else if (selectedProducts && selectedProducts.length > 0) {
+                // Step 2+: Show actual parameters with individual highlighting.
+                parts.push(
+                    <span key="checkout-link" className="lwwc-dynamic-link-checkout-text">checkout-link/</span>,
+                    <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
+                );
+                
+                // Add products parameter with highlighting.
+                let productsParam = selectedProducts.map(product => 
+                    `${product.id}:${product.quantity}`
+                ).join(',');
+                
+                // Apply URL encoding based on user preference for display.
+                if (urlEncoding === 'encoded') {
+                    productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
+                }
+                
+                parts.push(
+                    <span key="products" className="lwwc-dynamic-link-products-highlight">products={productsParam}</span>
+                );
+                
+                // Add coupon if selected with individual highlighting.
+                if (selectedCoupon) {
+                    parts.push(
+                        <span key="amp-coupon" className="lwwc-dynamic-link-checkout-text">&</span>,
+                        <span key="coupon" className="lwwc-dynamic-link-coupon-highlight">coupon={selectedCoupon.code}</span>
+                    );
+                }
+            } else {
+                // Step 2+ but no products: Show placeholder.
+                parts.push(
+                    <span key="highlight" className="lwwc-dynamic-link-highlight-placeholder">checkout-link/?products=PRODUCT_ID:QUANTITY</span>
+                );
+            }
         }
         
         return parts;
