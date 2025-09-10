@@ -1,7 +1,7 @@
 # Link Wizard for WooCommerce - Development Documentation
 
 ## Overview
-Link Wizard for WooCommerce is a plugin that allows administrators to generate direct add-to-cart and checkout links for WooCommerce products. The plugin features a React-based admin interface with product search, quantity controls, coupon support, and extensible product type support.
+Link Wizard for WooCommerce is a plugin that provides a user-friendly interface for generating shareable checkout URLs, complementing WooCommerce 10.0's native shareable checkout URL functionality. While WooCommerce 10.0 introduced the backend support for these URLs, it requires manual URL construction. This plugin provides the missing UI layer, allowing administrators to easily generate direct add-to-cart and checkout links through a React-based admin interface with product search, quantity controls, coupon support, and extensible product type support.
 
 ## Today's Development Session (August 9, 2025)
 
@@ -440,6 +440,7 @@ link-wizard-for-woocommerce/
 - **WooCommerce Integration**: Uses native `WC_Coupon` class when available
 - **State Persistence**: Product selections now persist between navigation steps
 - **API Standardization**: Coupon search uses same REST API pattern as product search
+- **WooCommerce 10.0 Compatibility**: Plugin leverages WooCommerce 10.0's native shareable checkout URL functionality
 
 ### Next Steps
 1. **Test Frontend Authentication**: Verify coupon search works in browser for logged-in users
@@ -475,6 +476,27 @@ link-wizard-for-woocommerce/
 4. **Search Indexing**: Optimize search performance
 5. **CSS Optimization**: Minified CSS files with proper caching
 6. **Image Optimization**: WebP support and responsive images
+
+### WooCommerce 10.0 Shareable Checkout URLs
+**Reference**: [WooCommerce 10.0: Investing in Accessibility - Shareable Checkout URLs](https://developer.woocommerce.com/2025/07/14/woocommerce-10-0-investing-in-accessibility/#h-shareable-checkout-urls)
+**GitHub PR**: [#58140 - Support for shareable checkout URLs which pre-populate the cart/coupons](https://github.com/woocommerce/woocommerce/pull/58140)
+
+**Documentation**: WooCommerce 10.0 introduced native support for shareable checkout URLs that automatically populate the cart with specific products and product variations, redirecting customers straight to checkout. This feature enables merchants to create custom links for email campaigns, social media, or landing pages.
+
+**URL Format Example**:
+```
+https://yourstore.com/checkout-link/?products=123:2,456:1&coupon=SPRING10
+```
+
+**Implementation Notes**:
+- Product ID `123` will be added with quantity 2
+- Product ID `456` with quantity 1  
+- The coupon code `SPRING10` will be applied
+- Customer is taken directly to the checkout page
+- Links need to be created manually (no UI provided by WooCommerce core)
+
+**Relationship to Link Wizard Plugin**:
+This plugin essentially provides the missing UI for creating these shareable checkout URLs, making the WooCommerce 10.0 feature more accessible to merchants who need an easy way to generate these links without manual URL construction.
 
 ### Facebook Commerce Platform Integration
 **Reference**: [Meta Commerce Platform - Set Up Checkout URL](https://developers.facebook.com/docs/commerce-platform/setup-checkout-url)
