@@ -707,6 +707,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         setSelectedImage(null);
     };
 
+
     // Load variations for a variable product.
     const loadVariations = (product) => {
         if (product.type !== 'variable') {
@@ -1516,7 +1517,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                         </h3>
                         <ul className="selected-products-list">
                             {selectedProducts.map(product => (
-                                                                <li key={product.id} className="lwwc-selected-product-item">
+                                                                <li key={product.id} className="lwwc-selected-product-item" data-product-type={product.type}>
                                     <div className="lwwc-selected-product-content">
                                         <div className="lwwc-selected-product-info">
                                             <div className="lwwc-selected-product-icon">
