@@ -426,8 +426,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 
                 // Fallback to default selection or first option
                 if (!selectedOption) {
+                    // Try to find default option from component data
+                    if (component.default_option_id) {
+                        selectedOption = component.options.find(opt => opt.id === component.default_option_id);
+                    }
+                    
                     // Try to find default selection from product data
-                    if (product.default_selections && product.default_selections[component.id]) {
+                    if (!selectedOption && product.default_selections && product.default_selections[component.id]) {
                         const defaultProductId = product.default_selections[component.id].product_id;
                         selectedOption = component.options.find(opt => opt.id === defaultProductId);
                     }
@@ -1178,7 +1183,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                                 <select
                                                                                     id={`component-${component.id}-select`}
                                                                                     className="lwwc-composite-option-dropdown"
-                                                                                    defaultValue={component.options[0]?.id || ''}
+                                                                                    defaultValue={component.default_option_id || component.options[0]?.id || ''}
                                                                                 >
                                                                                     {component.options
                                                                                         .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
