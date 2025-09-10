@@ -8,7 +8,7 @@ if (typeof window.lwwcApiSettings !== 'undefined') {
     apiFetch.use(apiFetch.createRootURLMiddleware(window.lwwcApiSettings.root));
 }
 
-const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLinkType, onStepChange }) => {
+const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLinkType, onStepChange, redirectOption, selectedRedirectPage }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +33,28 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
+
+    // Regenerate composite product URLs when redirect options change
+    useEffect(() => {
+        if (selectedProducts && selectedProducts.length > 0) {
+            const updatedProducts = selectedProducts.map(product => {
+                if (product.type === 'composite' && product.components) {
+                    // Regenerate the composite product URL with new redirect options
+                    return regenerateCompositeProductUrl(product);
+                }
+                return product;
+            });
+            
+            // Only update if there are changes
+            const hasChanges = updatedProducts.some((product, index) => 
+                product.type === 'composite' && product.url !== selectedProducts[index].url
+            );
+            
+            if (hasChanges) {
+                setSelectedProducts(updatedProducts);
+            }
+        }
+    }, [redirectOption, selectedRedirectPage]);
 
     // Simple Product Type Badge Component
     const ProductTypeBadge = ({ product }) => {
@@ -474,7 +496,27 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         });
         
         // Create URL with parameters in the correct order
-        const baseUrl = `${window.location.origin}/cart/`;
+        let baseUrl = `${window.location.origin}/cart/`;
+        
+        // Update base URL based on redirect option
+        if (redirectOption === 'checkout') {
+            baseUrl = `${window.location.origin}/checkout/`;
+        } else if (redirectOption === 'product' && selectedProducts.length > 0) {
+            const product = selectedProducts[0];
+            const slug = product.parent_slug || product.slug;
+            if (slug) {
+                baseUrl = `${window.location.origin}/product/${slug}/`;
+            } else {
+                baseUrl = `${window.location.origin}/product/${product.id}/`;
+            }
+        } else if (redirectOption === 'page' && selectedRedirectPage) {
+            const urlParts = selectedRedirectPage.url.split('/');
+            const slug = urlParts[urlParts.length - 2];
+            if (slug) {
+                baseUrl = `${window.location.origin}/${slug}/`;
+            }
+        }
+        
         const orderedParams = new URLSearchParams();
         
         // Add add-to-cart parameter first
@@ -529,6 +571,129 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 return newSet;
             });
         }, 1000);
+    };
+
+    // Regenerate composite product URL with current redirect options
+    const regenerateCompositeProductUrl = (product) => {
+        if (!product.components || product.components.length === 0) {
+            return product;
+        }
+
+        // Generate composite add-to-cart URL with component selections
+        const urlParams = new URLSearchParams();
+        
+        // Add component selections using compressed format (wccps_c0, wccpq_c0, etc.)
+        let componentIndex = 0;
+        const componentMapping = {};
+        
+        // Sort components by ID for consistent ordering
+        const sortedComponents = [...product.components].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+        
+        sortedComponents.forEach((component) => {
+            if (component.options && component.options.length > 0) {
+                // Use default selection or first option if no default
+                let selectedOption = null;
+                let selectedQuantity = component.default_quantity || component.min_quantity || 1;
+                
+                // Try to find default option from component data
+                if (component.default_option_id) {
+                    selectedOption = component.options.find(opt => opt.id === component.default_option_id);
+                }
+                
+                // Fallback to first option
+                if (!selectedOption) {
+                    selectedOption = component.options[0];
+                }
+                
+                if (selectedOption) {
+                    // Use compressed format: wccps_c0, wccpq_c0, etc.
+                    urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                    urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                    
+                    // Add variation ID and attributes if it's a variable product
+                    if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
+                        // Use the first variation (which should be the default after sorting)
+                        const defaultVariation = selectedOption.variations[0];
+                        urlParams.set(`wccpv_c${componentIndex}`, defaultVariation.id);
+                        
+                        // Add variation attributes
+                        if (defaultVariation.attributes) {
+                            Object.entries(defaultVariation.attributes).forEach(([attrName, attrValue]) => {
+                                if (attrValue) {
+                                    // Convert attribute name to proper format (remove 'pa_' prefix if present)
+                                    const cleanAttrName = attrName.startsWith('pa_') ? attrName.substring(3) : attrName;
+                                    urlParams.set(`wccp_attribute_${cleanAttrName}_c${componentIndex}`, attrValue);
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Map compressed index to actual component ID
+                    componentMapping[componentIndex] = component.id;
+                    componentIndex++;
+                }
+            }
+        });
+        
+        // Create URL with parameters in the correct order
+        let baseUrl = `${window.location.origin}/cart/`;
+        
+        // Update base URL based on redirect option
+        if (redirectOption === 'checkout') {
+            baseUrl = `${window.location.origin}/checkout/`;
+        } else if (redirectOption === 'product' && selectedProducts.length > 0) {
+            const product = selectedProducts[0];
+            const slug = product.parent_slug || product.slug;
+            if (slug) {
+                baseUrl = `${window.location.origin}/product/${slug}/`;
+            } else {
+                baseUrl = `${window.location.origin}/product/${product.id}/`;
+            }
+        } else if (redirectOption === 'page' && selectedRedirectPage) {
+            const urlParts = selectedRedirectPage.url.split('/');
+            const slug = urlParts[urlParts.length - 2];
+            if (slug) {
+                baseUrl = `${window.location.origin}/${slug}/`;
+            }
+        }
+        
+        const orderedParams = new URLSearchParams();
+        
+        // Add add-to-cart parameter first
+        orderedParams.set('add-to-cart', product.id);
+        
+        // Add component selections (wccps_c0, wccpq_c0, etc.) in order
+        for (let i = 0; i < componentIndex; i++) {
+            const wccpsKey = `wccps_c${i}`;
+            const wccpqKey = `wccpq_c${i}`;
+            if (urlParams.has(wccpsKey)) {
+                orderedParams.set(wccpsKey, urlParams.get(wccpsKey));
+            }
+            if (urlParams.has(wccpqKey)) {
+                orderedParams.set(wccpqKey, urlParams.get(wccpqKey));
+            }
+        }
+        
+        // Add main product quantity
+        orderedParams.set('quantity', '1');
+        
+        // Add component mapping (wccpm0, wccpm1, etc.)
+        Object.entries(componentMapping).forEach(([compressedIndex, actualComponentId]) => {
+            orderedParams.set(`wccpm${compressedIndex}`, actualComponentId);
+        });
+        
+        // Add component count
+        orderedParams.set('wccpl', componentIndex);
+
+        // Use the appropriate base URL
+        const compositeUrl = `${baseUrl}?${orderedParams.toString()}`;
+        
+        return {
+            ...product,
+            url: compositeUrl,
+            quantity: 1,
+            child_quantities: {}, // Not used for composite products
+        };
     };
 
     // Handling of the image modal.

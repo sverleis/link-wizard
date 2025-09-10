@@ -251,6 +251,8 @@ function App() {
                             linkType={linkType} 
                             selectedProducts={selectedProducts}
                             setSelectedProducts={setSelectedProducts}
+                            redirectOption={redirectOption}
+                            selectedRedirectPage={selectedRedirectPage}
                         />
                         {/* Duplicate navigation below each step for better UX. */}
                         <div className="form-step-navigation form-step-navigation-bottom">
