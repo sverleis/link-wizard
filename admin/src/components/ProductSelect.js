@@ -1307,12 +1307,56 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                     {(product.type === 'composite' || product.type === 'bundle') && isProductExpanded(product.id) && (
                                         <div className="lwwc-product-accordion">
                                             <div className="lwwc-accordion-content">
-                                                <div className="lwwc-accordion-message">
-                                                    {product.type === 'composite' 
-                                                        ? (i18n.compositeConfigMessage || 'Select components below and click the + button to add to selection.')
-                                                        : (i18n.bundleConfigMessage || 'Set quantities below and click the + button to add to selection.')
-                                                    }
-                                                </div>
+                                                {/* Bundle Product Children Selection */}
+                                                {product.type === 'bundle' && product.children && product.children.length > 0 && (
+                                                    <div className="lwwc-bundle-children-section">
+                                                        {linkType === 'checkoutLink' ? (
+                                                            <div className="lwwc-bundle-disabled-notice">
+                                                                <span className="lwwc-bundle-disabled-icon">⚠️</span>
+                                                                <span className="lwwc-bundle-disabled-text">
+                                                                    Bundle products work with Checkout-Link URLs using default options only. 
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={handleSwitchToAddToCart}
+                                                                        className="lwwc-switch-link-btn"
+                                                                    >
+                                                                        Switch to Add-to-Cart URL for full customization options.
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="lwwc-bundle-children-title">
+                                                                    {i18n.bundleProducts || 'Bundle Products:'}
+                                                                </div>
+                                                                <div className="lwwc-bundle-children-list">
+                                                                    {product.children.map((child, index) => (
+                                                                        <div key={child.id} className="lwwc-bundle-child-item">
+                                                                            <div className="lwwc-bundle-child-info">
+                                                                                <span className="lwwc-bundle-child-name">{child.name}</span>
+                                                                                {child.sku && (
+                                                                                    <span className="lwwc-bundle-child-sku">({child.sku})</span>
+                                                                                )}
+                                                                                <span className="lwwc-bundle-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
+                                                                            </div>
+                                                                            <div className="lwwc-bundle-child-quantity">
+                                                                                <label>Qty:</label>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    min={child.min_quantity || 0}
+                                                                                    max={child.max_quantity || 999}
+                                                                                    value={bundleQuantities[product.id]?.[child.id] || product.default_quantities?.[child.id] || child.quantity || 0}
+                                                                                    onChange={(e) => handleBundleQuantityChange(product.id, child.id, parseInt(e.target.value) || 0)}
+                                                                                    className="lwwc-bundle-child-qty-input"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
                                                 
                                                 {/* Composite Product Components Selection */}
                                                 {product.type === 'composite' && product.components && product.components.length > 0 && (
@@ -1402,6 +1446,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                         </div>
                                                                     ))}
                                                                 </div>
+                                                                <div className="lwwc-composite-add-button">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleAddCompositeProduct(product);
+                                                                        }}
+                                                                        className="lwwc-add-composite-product-btn"
+                                                                    >
+                                                                        <span className="dashicons dashicons-plus-alt2" />
+                                                                        {i18n.add || 'Add'}
+                                                                    </button>
+                                                                </div>
                                                             </>
                                                         )}
                                                     </div>
@@ -1489,56 +1545,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         </div>
                                     )}
 
-                                    {/* Bundle Product Children Selection. */}
-                                    {product.type === 'bundle' && product.children && product.children.length > 0 && (
-                                        <div className="lwwc-bundle-children-section">
-                                            {linkType === 'checkoutLink' ? (
-                                                <div className="lwwc-bundle-disabled-notice">
-                                                    <span className="lwwc-bundle-disabled-icon">⚠️</span>
-                                                    <span className="lwwc-bundle-disabled-text">
-                                                        Bundle products work with Checkout-Link URLs using default options only. 
-                                                        <button 
-                                                            type="button"
-                                                            onClick={handleSwitchToAddToCart}
-                                                            className="lwwc-switch-link-btn"
-                                                        >
-                                                            Switch to Add-to-Cart URL for full customization options.
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <div className="lwwc-bundle-children-title">
-                                                        {i18n.bundleProducts || 'Bundle Products:'}
-                                                    </div>
-                                                    <div className="lwwc-bundle-children-list">
-                                                        {product.children.map((child, index) => (
-                                                            <div key={child.id} className="lwwc-bundle-child-item">
-                                                                <div className="lwwc-bundle-child-info">
-                                                                    <span className="lwwc-bundle-child-name">{child.name}</span>
-                                                                    {child.sku && (
-                                                                        <span className="lwwc-bundle-child-sku">({child.sku})</span>
-                                                                    )}
-                                                                    <span className="lwwc-bundle-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
-                                                                </div>
-                                                                <div className="lwwc-bundle-child-quantity">
-                                                                    <label>Qty:</label>
-                                                                    <input
-                                                                        type="number"
-                                                                        min={child.min_quantity || 0}
-                                                                        max={child.max_quantity || 999}
-                                                                        value={bundleQuantities[product.id]?.[child.id] || product.default_quantities?.[child.id] || child.quantity || 0}
-                                                                        onChange={(e) => handleBundleQuantityChange(product.id, child.id, parseInt(e.target.value) || 0)}
-                                                                        className="lwwc-bundle-child-qty-input"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
 
 
                                     {/* Filtered Variations for Variable Products. */}
