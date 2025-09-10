@@ -31,9 +31,33 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [addingProducts, setAddingProducts] = useState(new Set());
     // State for variation error modal.
     const [variationErrorModal, setVariationErrorModal] = useState(null);
+    // State for accordion expansion
+    const [expandedProducts, setExpandedProducts] = useState(new Set());
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
+
+    // Handle accordion expansion
+    const toggleProductExpansion = (productId) => {
+        setExpandedProducts(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(productId)) {
+                newSet.delete(productId);
+            } else {
+                newSet.add(productId);
+            }
+            return newSet;
+        });
+    };
+
+    const isProductExpanded = (productId) => {
+        return expandedProducts.has(productId);
+    };
+
+    // Check if a product is currently selected
+    const isProductSelected = (productId) => {
+        return selectedProducts.some(p => p.id === productId);
+    };
 
     // Regenerate composite product URLs when redirect options change
     useEffect(() => {
@@ -965,15 +989,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     // Create stable handlers using useCallback
     const handleSimpleProduct = useCallback((product) => {
         setSelectedProducts([{ ...product, quantity: 1 }]);
+        // Only remove simple products from search results
         setResults(prev => prev.filter(p => p.id !== product.id));
     }, [setSelectedProducts, setResults]);
 
     const handleCompositeProductStable = useCallback((product) => {
         addCompositeProductDirect(product);
+        // Don't remove complex products from search results - keep them for editing
     }, []);
 
     const handleBundleProductStable = useCallback((product) => {
         addBundleProductDirect(product);
+        // Don't remove complex products from search results - keep them for editing
     }, []);
 
     // Initialize product replacement hook
@@ -1232,6 +1259,33 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         )}
                                     </div>
 
+                                    {/* Selected Product Accordion for Complex Products */}
+                                    {isProductSelected(product.id) && (product.type === 'composite' || product.type === 'bundle') && (
+                                        <div className="lwwc-selected-product-accordion">
+                                            <div 
+                                                className="lwwc-accordion-header"
+                                                onClick={() => toggleProductExpansion(product.id)}
+                                            >
+                                                <span className="lwwc-accordion-title">
+                                                    {i18n.editConfiguration || 'Edit Configuration'}
+                                                </span>
+                                                <span className={`lwwc-accordion-icon ${isProductExpanded(product.id) ? 'expanded' : ''}`}>
+                                                    <span className="dashicons dashicons-arrow-down-alt2" />
+                                                </span>
+                                            </div>
+                                            {isProductExpanded(product.id) && (
+                                                <div className="lwwc-accordion-content">
+                                                    <div className="lwwc-accordion-message">
+                                                        {product.type === 'composite' 
+                                                            ? (i18n.compositeEditMessage || 'This composite product is currently selected. You can modify the component selections below and click "Update Composite Product" to apply changes.')
+                                                            : (i18n.bundleEditMessage || 'This bundle product is currently selected. You can modify the quantities below and click "Update Bundle Product" to apply changes.')
+                                                        }
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {/* Attribute Filters for Variable Products. */}
                                     {product.type === 'variable' && (
                                         <AttributeFilters product={product} />
@@ -1366,7 +1420,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             disabled={!hasSelectedBundleChildren(product)}
                                                             className="lwwc-add-bundle-product-btn"
                                                         >
-                                                            {i18n.addBundleProduct || 'Add Bundle Product'}
+                                                            {isProductSelected(product.id) 
+                                                                ? (i18n.updateBundleProduct || 'Update Bundle Product')
+                                                                : (i18n.addBundleProduct || 'Add Bundle Product')
+                                                            }
                                                         </button>
                                                     </div>
                                                 </>
@@ -1470,7 +1527,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             }}
                                                             className="lwwc-add-composite-product-btn"
                                                         >
-                                                            {i18n.addCompositeProduct || 'Add Composite Product'}
+                                                            {isProductSelected(product.id) 
+                                                                ? (i18n.updateCompositeProduct || 'Update Composite Product')
+                                                                : (i18n.addCompositeProduct || 'Add Composite Product')
+                                                            }
                                                         </button>
                                                     </div>
                                                 </>
