@@ -1353,6 +1353,19 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                         </div>
                                                                     ))}
                                                                 </div>
+                                                                <div className="lwwc-bundle-add-button">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleAddBundleProduct(product);
+                                                                        }}
+                                                                        disabled={!hasSelectedBundleChildren(product)}
+                                                                        className="lwwc-add-bundle-product-btn"
+                                                                    >
+                                                                        <span className="dashicons dashicons-plus-alt2" />
+                                                                        {i18n.add || 'Add'}
+                                                                    </button>
+                                                                </div>
                                                             </>
                                                         )}
                                                     </div>
