@@ -961,215 +961,25 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 />
                                             </div>
                                         )}
-                                        {/* Complex Product Action Buttons */}
-                                        {(product.type === 'composite' || product.type === 'bundle') && (
-                                            <div className="product-action-buttons">
-                                                <button
-                                                    type="button"
-                                                    className="lwwc-configure-button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        toggleProductExpansion(product.id);
-                                                    }}
-                                                >
-                                                    <span className="dashicons dashicons-admin-generic" />
-                                                    {i18n.configure || 'Configure'}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="lwwc-add-button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (product.type === 'bundle') {
-                                                            handleAddBundleProduct(product);
-                                                        } else if (product.type === 'composite') {
-                                                            handleAddCompositeProduct(product);
-                                                        }
-                                                    }}
-                                                    disabled={product.type === 'bundle' && !hasSelectedBundleChildren(product)}
-                                                >
-                                                    <span className="dashicons dashicons-plus-alt2" />
-                                                    {i18n.add || 'Add'}
-                                                </button>
-                                            </div>
+                                        {/* Complex Product UI from Addon */}
+                                        {(product.type === 'composite' || product.type === 'bundle') && window.LWWCAddons?.ComplexProductUI && (
+                                            <window.LWWCAddons.ComplexProductUI
+                                                product={product}
+                                                linkType={linkType}
+                                                i18n={i18n}
+                                                complexProducts={complexProducts}
+                                                handleBundleQuantityChange={handleBundleQuantityChange}
+                                                hasSelectedBundleChildren={hasSelectedBundleChildren}
+                                                handleAddBundleProduct={handleAddBundleProduct}
+                                                handleAddCompositeProduct={handleAddCompositeProduct}
+                                                handleSwitchToAddToCart={handleSwitchToAddToCart}
+                                                cleanPriceText={cleanPriceText}
+                                                isProductExpanded={isProductExpanded}
+                                                toggleProductExpansion={toggleProductExpansion}
+                                            />
                                         )}
                                     </div>
 
-                                    {/* Hidden Accordion for Complex Products */}
-                                    {(product.type === 'composite' || product.type === 'bundle') && isProductExpanded(product.id) && (
-                                        <div className="lwwc-product-accordion">
-                                            <div className="lwwc-accordion-content">
-                                                {/* Bundle Product Children Selection */}
-                                                {product.type === 'bundle' && product.children && product.children.length > 0 && (
-                                                    <div className="lwwc-bundle-children-section">
-                                                        {linkType === 'checkoutLink' ? (
-                                                            <div className="lwwc-bundle-disabled-notice">
-                                                                <span className="lwwc-bundle-disabled-icon">⚠️</span>
-                                                                <span className="lwwc-bundle-disabled-text">
-                                                                    Bundle products work with Checkout-Link URLs using default options only. 
-                                                                    <button 
-                                                                        type="button"
-                                                                        onClick={handleSwitchToAddToCart}
-                                                                        className="lwwc-switch-link-btn"
-                                                                    >
-                                                                        Switch to Add-to-Cart URL for full customization options.
-                                                                    </button>
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            <>
-                                                                <div className="lwwc-bundle-children-title">
-                                                                    {i18n.bundleProducts || 'Bundle Products:'}
-                                                                </div>
-                                                                <div className="lwwc-bundle-children-list">
-                                                                    {product.children.map((child, index) => (
-                                                                        <div key={child.id} className="lwwc-bundle-child-item">
-                                                                            <div className="lwwc-bundle-child-info">
-                                                                                <span className="lwwc-bundle-child-name">{child.name}</span>
-                                                                                {child.sku && (
-                                                                                    <span className="lwwc-bundle-child-sku">({child.sku})</span>
-                                                                                )}
-                                                                                <span className="lwwc-bundle-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
-                                                                            </div>
-                                                                            <div className="lwwc-bundle-child-quantity">
-                                                                                <label>Qty:</label>
-                                                                                <input
-                                                                                    type="number"
-                                                                                    min={child.min_quantity || 0}
-                                                                                    max={child.max_quantity || 999}
-                                                                                    value={bundleQuantities[product.id]?.[child.id] || product.default_quantities?.[child.id] || child.quantity || 0}
-                                                                                    onChange={(e) => handleBundleQuantityChange(product.id, child.id, parseInt(e.target.value) || 0)}
-                                                                                    className="lwwc-bundle-child-qty-input"
-                                                                                />
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                                <div className="lwwc-bundle-add-button">
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            handleAddBundleProduct(product);
-                                                                        }}
-                                                                        disabled={!hasSelectedBundleChildren(product)}
-                                                                        className="lwwc-add-bundle-product-btn"
-                                                                    >
-                                                                        <span className="dashicons dashicons-plus-alt2" />
-                                                                        {i18n.add || 'Add'}
-                                                                    </button>
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                
-                                                {/* Composite Product Components Selection */}
-                                                {product.type === 'composite' && product.components && product.components.length > 0 && (
-                                                    <div className="lwwc-composite-components-section">
-                                                        {linkType === 'checkoutLink' ? (
-                                                            <div className="lwwc-composite-disabled-notice">
-                                                                <span className="lwwc-composite-disabled-icon">⚠️</span>
-                                                                <span className="lwwc-composite-disabled-text">
-                                                                    Composite products cannot be used with Checkout-Link URLs due to their complex configuration requirements. 
-                                                                    <button 
-                                                                        type="button"
-                                                                        onClick={handleSwitchToAddToCart}
-                                                                        className="lwwc-switch-link-btn"
-                                                                    >
-                                                                        Please switch to Add-to-Cart URL to use composite products.
-                                                                    </button>
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            <>
-                                                                <div className="lwwc-composite-components-title">
-                                                                    {i18n.compositeComponents || 'Composite Components:'}
-                                                                </div>
-                                                                <div className="lwwc-composite-components-list">
-                                                                    {product.components.map((component, componentIndex) => (
-                                                                        <div key={component.id} className="lwwc-composite-component-item">
-                                                                            <div className="lwwc-composite-component-header">
-                                                                                <span className="lwwc-composite-component-title">
-                                                                                    {component.title}
-                                                                                    {component.required && (
-                                                                                        <span className="lwwc-composite-component-required"> *</span>
-                                                                                    )}
-                                                                                </span>
-                                                                                {component.description && (
-                                                                                    <span className="lwwc-composite-component-description">
-                                                                                        {component.description}
-                                                                                    </span>
-                                                                                )}
-                                                                            </div>
-                                                                            <div className="lwwc-composite-component-options">
-                                                                                {component.options && component.options.length > 0 ? (
-                                                                                    <div className="lwwc-composite-component-selection">
-                                                                                        <div className="lwwc-composite-option-selector">
-                                                                                            <label htmlFor={`component-${component.id}-select`}>
-                                                                                                Select Product:
-                                                                                            </label>
-                                                                                            <select
-                                                                                                id={`component-${component.id}-select`}
-                                                                                                className="lwwc-composite-option-dropdown"
-                                                                                                defaultValue={component.default_option_id || component.options[0]?.id || ''}
-                                                                                            >
-                                                                                                {component.options
-                                                                                                    .sort((a, b) => {
-                                                                                                        // Put default option first
-                                                                                                        if (a.id === component.default_option_id) return -1;
-                                                                                                        if (b.id === component.default_option_id) return 1;
-                                                                                                        // Then sort alphabetically
-                                                                                                        return String(a.name || '').localeCompare(String(b.name || ''));
-                                                                                                    })
-                                                                                                    .map((option) => (
-                                                                                                        <option key={option.id} value={option.id}>
-                                                                                                            {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
-                                                                                                        </option>
-                                                                                                    ))}
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <div className="lwwc-composite-option-quantity">
-                                                                                            <label htmlFor={`component-${component.id}-quantity`}>
-                                                                                                Quantity:
-                                                                                            </label>
-                                                                                            <input
-                                                                                                id={`component-${component.id}-quantity`}
-                                                                                                type="number"
-                                                                                                min={component.min_quantity || 0}
-                                                                                                max={component.max_quantity || 999}
-                                                                                                defaultValue={component.default_quantity || 1}
-                                                                                                className="lwwc-composite-option-qty-input"
-                                                                                            />
-                                                                                        </div>
-                                                                                    </div>
-                                                                                ) : (
-                                                                                    <div className="lwwc-composite-component-no-options">
-                                                                                        No options available for this component.
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                                <div className="lwwc-composite-add-button">
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            handleAddCompositeProduct(product);
-                                                                        }}
-                                                                        className="lwwc-add-composite-product-btn"
-                                                                    >
-                                                                        <span className="dashicons dashicons-plus-alt2" />
-                                                                        {i18n.add || 'Add'}
-                                                                    </button>
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
 
                                     {/* Attribute Filters for Variable Products. */}
                                     {product.type === 'variable' && (
