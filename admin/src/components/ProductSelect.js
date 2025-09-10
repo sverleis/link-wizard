@@ -84,6 +84,24 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // This ensures the component shows previously selected products when navigating back.
     }, [selectedProducts]);
 
+    // Listen for edit events from addons
+    useEffect(() => {
+        const handleEditEvent = (event) => {
+            console.log('LWWC: Received edit event:', event.detail);
+            if (event.detail && event.detail.productType) {
+                // Clear selected products to allow reconfiguration
+                setSelectedProducts([]);
+                console.log('LWWC: Cleared selected products for editing');
+            }
+        };
+
+        document.addEventListener('lwwc:editProduct', handleEditEvent);
+        
+        return () => {
+            document.removeEventListener('lwwc:editProduct', handleEditEvent);
+        };
+    }, []);
+
     // Debounce search term to avoid excessive API calls.
     useEffect(() => {
         // If the search term is too short, clear results and do nothing.
