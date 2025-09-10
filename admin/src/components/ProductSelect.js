@@ -1269,34 +1269,68 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 />
                                             </div>
                                         )}
-                                    </div>
-
-                                    {/* Product Configuration for Complex Products */}
-                                    {(product.type === 'composite' || product.type === 'bundle') && (
-                                        <div className="lwwc-product-config">
-                                            <div className="lwwc-config-header">
+                                        {/* Complex Product Action Buttons */}
+                                        {(product.type === 'composite' || product.type === 'bundle') && (
+                                            <div className="product-action-buttons">
                                                 <button
                                                     type="button"
-                                                    className="lwwc-configure-button"
+                                                    className="lwwc-configure-button-small"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleProductExpansion(product.id);
                                                     }}
+                                                    title={i18n.configure || 'Configure'}
                                                 >
                                                     <span className="dashicons dashicons-admin-generic" />
-                                                    {i18n.configure || 'Configure'}
                                                 </button>
-                                            </div>
-                                            {isProductExpanded(product.id) && (
-                                                <div className="lwwc-config-content">
-                                                    <div className="lwwc-config-message">
-                                                        {product.type === 'composite' 
-                                                            ? (i18n.compositeConfigMessage || 'Select components below and click "Add Composite Product" to add to selection.')
-                                                            : (i18n.bundleConfigMessage || 'Set quantities below and click "Add Product Bundle" to add to selection.')
+                                                {product.type === 'bundle' && (
+                                                    <button
+                                                        type="button"
+                                                        className="lwwc-add-button-small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAddBundleProduct(product);
+                                                        }}
+                                                        disabled={!hasSelectedBundleChildren(product)}
+                                                        title={isProductSelected(product.id) 
+                                                            ? (i18n.updateBundleProduct || 'Update Product Bundle')
+                                                            : (i18n.addBundleProduct || 'Add Product Bundle')
                                                         }
-                                                    </div>
+                                                    >
+                                                        <span className="dashicons dashicons-plus-alt2" />
+                                                    </button>
+                                                )}
+                                                {product.type === 'composite' && (
+                                                    <button
+                                                        type="button"
+                                                        className="lwwc-add-button-small"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAddCompositeProduct(product);
+                                                        }}
+                                                        title={isProductSelected(product.id) 
+                                                            ? (i18n.updateCompositeProduct || 'Update Composite Product')
+                                                            : (i18n.addCompositeProduct || 'Add Composite Product')
+                                                        }
+                                                    >
+                                                        <span className="dashicons dashicons-plus-alt2" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Hidden Accordion for Complex Products */}
+                                    {(product.type === 'composite' || product.type === 'bundle') && isProductExpanded(product.id) && (
+                                        <div className="lwwc-product-accordion">
+                                            <div className="lwwc-accordion-content">
+                                                <div className="lwwc-accordion-message">
+                                                    {product.type === 'composite' 
+                                                        ? (i18n.compositeConfigMessage || 'Select components below and click the + button to add to selection.')
+                                                        : (i18n.bundleConfigMessage || 'Set quantities below and click the + button to add to selection.')
+                                                    }
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
                                     )}
 

@@ -1433,52 +1433,69 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     min-height: 24px;
 }
 
-/* Product Configuration */
-.lwwc-product-config {
-    margin: 10px 0;
+/* Product Action Buttons */
+.product-action-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.lwwc-configure-button-small,
+.lwwc-add-button-small {
+    background: var(--wp-admin-theme-color, #0073aa);
+    border: 1px solid var(--wp-admin-theme-color, #0073aa);
+    color: white;
+    padding: 6px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    transition: all 0.2s ease;
+}
+
+.lwwc-configure-button-small:hover {
+    background: var(--wp-admin-theme-color-darker, #005a87);
+    border-color: var(--wp-admin-theme-color-darker, #005a87);
+}
+
+.lwwc-add-button-small:hover {
+    background: var(--wp-admin-theme-color-darker, #005a87);
+    border-color: var(--wp-admin-theme-color-darker, #005a87);
+}
+
+.lwwc-add-button-small:disabled {
+    background: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.lwwc-configure-button-small .dashicons,
+.lwwc-add-button-small .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Product Accordion */
+.lwwc-product-accordion {
+    margin: 8px 0;
     border: 1px solid var(--wp-admin-theme-color, #0073aa);
     border-radius: 4px;
     background: var(--wp-admin-theme-color-light, #f0f6fc);
 }
 
-.lwwc-config-header {
-    padding: 8px 12px;
-    background: var(--wp-admin-theme-color, #0073aa);
-    border-radius: 3px 3px 0 0;
-}
-
-.lwwc-configure-button {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s ease;
-}
-
-.lwwc-configure-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.lwwc-configure-button .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-}
-
-.lwwc-config-content {
+.lwwc-accordion-content {
     padding: 12px;
     background: white;
-    border-radius: 0 0 3px 3px;
+    border-radius: 3px;
 }
 
-.lwwc-config-message {
+.lwwc-accordion-message {
     color: #666;
     font-style: italic;
     font-size: 13px;
