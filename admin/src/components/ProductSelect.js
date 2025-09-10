@@ -449,8 +449,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         
         // Add component count
         urlParams.set('wccpl', componentIndex);
+        
+        // Add the add-to-cart parameter (following official process)
+        urlParams.set('add-to-cart', product.id);
 
-        const compositeUrl = `${window.location.origin}/cart/?${urlParams.toString()}`;
+        // Use product permalink as base URL (following official WooCommerce Composite Products process)
+        const compositeUrl = `${window.location.origin}/product/${product.slug}/?${urlParams.toString()}`;
 
         const compositeProduct = {
             ...product,
