@@ -141,15 +141,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 path: `link-wizard/v1/products?search=${encodeURIComponent(searchTerm)}&limit=20`
             })
                 .then((products) => {
-                    // Filter out products that are already selected, but allow bundle products to be re-selected
+                    // Filter out products that are already selected, but allow complex products to be re-selected
                     const newResults = products.filter(
                         (product) => {
                             const isAlreadySelected = selectedProducts.some(
                                 selected => selected.id === product.id
                             );
                             
-                            // Allow bundle products to be re-selected for quantity adjustment
-                            if (product.type === 'bundle' && isAlreadySelected) {
+                            // Allow complex products (bundle/composite) to be re-selected for configuration
+                            if ((product.type === 'bundle' || product.type === 'composite') && isAlreadySelected) {
                                 return true;
                             }
                             
@@ -962,21 +962,66 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                             </div>
                                         )}
                                         {/* Complex Product UI from Addon */}
-                                        {(product.type === 'composite' || product.type === 'bundle') && window.LWWCAddons?.ComplexProductUI && (
-                                            <window.LWWCAddons.ComplexProductUI
-                                                product={product}
-                                                linkType={linkType}
-                                                i18n={i18n}
-                                                complexProducts={complexProducts}
-                                                handleBundleQuantityChange={handleBundleQuantityChange}
-                                                hasSelectedBundleChildren={hasSelectedBundleChildren}
-                                                handleAddBundleProduct={handleAddBundleProduct}
-                                                handleAddCompositeProduct={handleAddCompositeProduct}
-                                                handleSwitchToAddToCart={handleSwitchToAddToCart}
-                                                cleanPriceText={cleanPriceText}
-                                                isProductExpanded={isProductExpanded}
-                                                toggleProductExpansion={toggleProductExpansion}
-                                            />
+                                        {(product.type === 'composite' || product.type === 'bundle') && (
+                                            <>
+                                                {window.LWWCAddons?.ComplexProductUI ? (
+                                                    <window.LWWCAddons.ComplexProductUI
+                                                        product={product}
+                                                        linkType={linkType}
+                                                        i18n={i18n}
+                                                        complexProducts={complexProducts}
+                                                        handleBundleQuantityChange={handleBundleQuantityChange}
+                                                        hasSelectedBundleChildren={hasSelectedBundleChildren}
+                                                        handleAddBundleProduct={handleAddBundleProduct}
+                                                        handleAddCompositeProduct={handleAddCompositeProduct}
+                                                        handleSwitchToAddToCart={handleSwitchToAddToCart}
+                                                        cleanPriceText={cleanPriceText}
+                                                        isProductExpanded={isProductExpanded}
+                                                        toggleProductExpansion={toggleProductExpansion}
+                                                    />
+                                                ) : (
+                                                    <div className="product-action-buttons">
+                                                        <button
+                                                            type="button"
+                                                            className="lwwc-configure-button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                toggleProductExpansion(product.id);
+                                                            }}
+                                                        >
+                                                            <span className="dashicons dashicons-admin-generic" />
+                                                            {i18n.configure || 'Configure'}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="lwwc-add-button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (product.type === 'bundle') {
+                                                                    handleAddBundleProduct(product);
+                                                                } else if (product.type === 'composite') {
+                                                                    handleAddCompositeProduct(product);
+                                                                }
+                                                            }}
+                                                            disabled={product.type === 'bundle' && !hasSelectedBundleChildren(product)}
+                                                        >
+                                                            <span className="dashicons dashicons-plus-alt2" />
+                                                            {i18n.add || 'Add'}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                
+                                                {/* Fallback Accordion for Complex Products */}
+                                                {isProductExpanded(product.id) && (
+                                                    <div className="lwwc-product-accordion">
+                                                        <div className="lwwc-accordion-content">
+                                                            <div className="lwwc-fallback-notice">
+                                                                Addon component not loaded. Please refresh the page.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
                                     </div>
 
