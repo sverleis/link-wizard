@@ -1436,46 +1436,45 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 /* Product Action Buttons */
 .product-action-buttons {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
 }
 
-.lwwc-configure-button-small,
-.lwwc-add-button-small {
+.lwwc-configure-button,
+.lwwc-add-button {
     background: var(--wp-admin-theme-color, #0073aa);
     border: 1px solid var(--wp-admin-theme-color, #0073aa);
     color: white;
-    padding: 6px 8px;
+    padding: 6px 12px;
     border-radius: 3px;
     cursor: pointer;
     font-size: 12px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
+    gap: 6px;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
-.lwwc-configure-button-small:hover {
+.lwwc-configure-button:hover {
     background: var(--wp-admin-theme-color-darker, #005a87);
     border-color: var(--wp-admin-theme-color-darker, #005a87);
 }
 
-.lwwc-add-button-small:hover {
+.lwwc-add-button:hover {
     background: var(--wp-admin-theme-color-darker, #005a87);
     border-color: var(--wp-admin-theme-color-darker, #005a87);
 }
 
-.lwwc-add-button-small:disabled {
+.lwwc-add-button:disabled {
     background: #ccc;
     border-color: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-.lwwc-configure-button-small .dashicons,
-.lwwc-add-button-small .dashicons {
+.lwwc-configure-button .dashicons,
+.lwwc-add-button .dashicons {
     font-size: 14px;
     width: 14px;
     height: 14px;

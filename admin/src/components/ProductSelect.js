@@ -1274,48 +1274,31 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                             <div className="product-action-buttons">
                                                 <button
                                                     type="button"
-                                                    className="lwwc-configure-button-small"
+                                                    className="lwwc-configure-button"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleProductExpansion(product.id);
                                                     }}
-                                                    title={i18n.configure || 'Configure'}
                                                 >
                                                     <span className="dashicons dashicons-admin-generic" />
+                                                    {i18n.configure || 'Configure'}
                                                 </button>
-                                                {product.type === 'bundle' && (
-                                                    <button
-                                                        type="button"
-                                                        className="lwwc-add-button-small"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
+                                                <button
+                                                    type="button"
+                                                    className="lwwc-add-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (product.type === 'bundle') {
                                                             handleAddBundleProduct(product);
-                                                        }}
-                                                        disabled={!hasSelectedBundleChildren(product)}
-                                                        title={isProductSelected(product.id) 
-                                                            ? (i18n.updateBundleProduct || 'Update Product Bundle')
-                                                            : (i18n.addBundleProduct || 'Add Product Bundle')
-                                                        }
-                                                    >
-                                                        <span className="dashicons dashicons-plus-alt2" />
-                                                    </button>
-                                                )}
-                                                {product.type === 'composite' && (
-                                                    <button
-                                                        type="button"
-                                                        className="lwwc-add-button-small"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
+                                                        } else if (product.type === 'composite') {
                                                             handleAddCompositeProduct(product);
-                                                        }}
-                                                        title={isProductSelected(product.id) 
-                                                            ? (i18n.updateCompositeProduct || 'Update Composite Product')
-                                                            : (i18n.addCompositeProduct || 'Add Composite Product')
                                                         }
-                                                    >
-                                                        <span className="dashicons dashicons-plus-alt2" />
-                                                    </button>
-                                                )}
+                                                    }}
+                                                    disabled={product.type === 'bundle' && !hasSelectedBundleChildren(product)}
+                                                >
+                                                    <span className="dashicons dashicons-plus-alt2" />
+                                                    {i18n.add || 'Add'}
+                                                </button>
                                             </div>
                                         )}
                                     </div>
@@ -1551,21 +1534,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                 </div>
                                                             </div>
                                                         ))}
-                                                    </div>
-                                                    <div className="lwwc-bundle-add-button">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleAddBundleProduct(product);
-                                                            }}
-                                                            disabled={!hasSelectedBundleChildren(product)}
-                                                            className="lwwc-add-bundle-product-btn"
-                                                        >
-                                                            {isProductSelected(product.id) 
-                                                                ? (i18n.updateBundleProduct || 'Update Product Bundle')
-                                                                : (i18n.addBundleProduct || 'Add Product Bundle')
-                                                            }
-                                                        </button>
                                                     </div>
                                                 </>
                                             )}
