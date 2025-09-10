@@ -401,7 +401,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Generate composite add-to-cart URL with component selections
         const urlParams = new URLSearchParams();
         
-        // Add component selections in the format: wccps_c0, wccps_c1, etc.
+        // Add component selections using actual component IDs (WooCommerce Composite Products format)
         let componentIndex = 0;
         product.components.forEach((component) => {
             if (component.options && component.options.length > 0) {
@@ -417,12 +417,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                     const selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
                     
                     if (selectedOption) {
-                        urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
-                        urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                        // Use the correct WooCommerce Composite Products parameter format
+                        urlParams.set(`wccp_component_selection[${component.id}]`, selectedOption.id);
+                        urlParams.set(`wccp_component_quantity[${component.id}]`, selectedQuantity);
                         
                         // Add variation ID if it's a variable product
                         if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
-                            urlParams.set(`wccpv_c${componentIndex}`, selectedOption.variations[0].id);
+                            urlParams.set(`wccp_variation_id[${component.id}]`, selectedOption.variations[0].id);
                         }
                         
                         componentIndex++;
@@ -434,7 +435,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Add main product quantity
         urlParams.set('quantity', '1');
         
-        // Add timestamps for each component
+        // Add timestamps for each component (using sequential numbering for timestamps)
         for (let i = 0; i < componentIndex; i++) {
             urlParams.set(`wccpm${i}`, Date.now() + i);
         }
