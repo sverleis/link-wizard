@@ -278,45 +278,73 @@ const DynamicLink = ({
                         <span key="question" className="dynamic-link-separator">?</span>
                     );
                     
-                    // Add products with individual highlighting.
-                    selectedProducts.forEach((product, index) => {
-                        if (index > 0) {
-                            parts.push(<span key={`amp-${index}`} className="dynamic-link-separator">&</span>);
+                    // Check if we have a composite product with a pre-generated URL
+                    const compositeProduct = selectedProducts.find(p => p.type === 'composite' && p.url);
+                    if (compositeProduct) {
+                        // For composite products, parse and display the pre-generated URL
+                        try {
+                            const url = new URL(compositeProduct.url);
+                            const urlParams = new URLSearchParams(url.search);
+                            
+                            // Display each parameter individually
+                            let paramIndex = 0;
+                            for (const [key, value] of urlParams.entries()) {
+                                if (paramIndex > 0) {
+                                    parts.push(<span key={`amp-${paramIndex}`} className="dynamic-link-separator">&</span>);
+                                }
+                                parts.push(
+                                    <span key={`param-${paramIndex}`} className="dynamic-link-product-param">{key}={value}</span>
+                                );
+                                paramIndex++;
+                            }
+                        } catch (error) {
+                            console.error('Error parsing composite product URL:', error);
+                            // Fallback to basic display
+                            parts.push(
+                                <span key="add-to-cart" className="dynamic-link-product-param">add-to-cart={compositeProduct.id}</span>
+                            );
                         }
-                        parts.push(
-                            <span key={`add-to-cart-${product.id}`} className="dynamic-link-product-param">add-to-cart={product.id}</span>
-                        );
-                        
-                        if (product.type === 'grouped' && product.child_quantities) {
-                            // Handle grouped products with child quantities
-                            Object.entries(product.child_quantities).forEach(([childId, quantity], childIndex) => {
-                                if (quantity > 0) {
+                    } else {
+                        // Add products with individual highlighting.
+                        selectedProducts.forEach((product, index) => {
+                            if (index > 0) {
+                                parts.push(<span key={`amp-${index}`} className="dynamic-link-separator">&</span>);
+                            }
+                            parts.push(
+                                <span key={`add-to-cart-${product.id}`} className="dynamic-link-product-param">add-to-cart={product.id}</span>
+                            );
+                            
+                            if (product.type === 'grouped' && product.child_quantities) {
+                                // Handle grouped products with child quantities
+                                Object.entries(product.child_quantities).forEach(([childId, quantity], childIndex) => {
+                                    if (quantity > 0) {
+                                        parts.push(
+                                            <span key={`amp-qty-${product.id}-${childId}`} className="dynamic-link-separator">&</span>,
+                                            <span key={`quantity-${product.id}-${childId}`} className="dynamic-link-product-param">quantity[{childId}]={quantity}</span>
+                                        );
+                                    }
+                                });
+                            } else {
+                                // Check for addon-specific URL display handlers
+                                const addonHandlers = window.lwwcAddonUrlDisplayHandlers || {};
+                                const handler = addonHandlers[product.type];
+                                
+                                if (handler && typeof handler === 'function') {
+                                    // Use addon-specific handler for URL display
+                                    const addonParts = handler(product, index);
+                                    if (addonParts && Array.isArray(addonParts)) {
+                                        parts.push(...addonParts);
+                                    }
+                                } else if (product.quantity > 1) {
+                                    // Handle regular products
                                     parts.push(
-                                        <span key={`amp-qty-${product.id}-${childId}`} className="dynamic-link-separator">&</span>,
-                                        <span key={`quantity-${product.id}-${childId}`} className="dynamic-link-product-param">quantity[{childId}]={quantity}</span>
+                                        <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
+                                        <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
                                     );
                                 }
-                            });
-                        } else {
-                            // Check for addon-specific URL display handlers
-                            const addonHandlers = window.lwwcAddonUrlDisplayHandlers || {};
-                            const handler = addonHandlers[product.type];
-                            
-                            if (handler && typeof handler === 'function') {
-                                // Use addon-specific handler for URL display
-                                const addonParts = handler(product, index);
-                                if (addonParts && Array.isArray(addonParts)) {
-                                    parts.push(...addonParts);
-                                }
-                            } else if (product.quantity > 1) {
-                                // Handle regular products
-                                parts.push(
-                                    <span key={`amp-qty-${product.id}`} className="dynamic-link-separator">&</span>,
-                                    <span key={`quantity-${product.id}`} className="dynamic-link-product-param">quantity={product.quantity}</span>
-                                );
                             }
-                        }
-                    });
+                        });
+                    }
             } else {
                 // Step 2+ but no products: Show placeholder.
                 parts.push(
