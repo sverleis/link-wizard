@@ -405,7 +405,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         let componentIndex = 0;
         const componentMapping = {};
         
-        product.components.forEach((component) => {
+        // Sort components by ID to ensure consistent ordering
+        const sortedComponents = [...product.components].sort((a, b) => a.id.localeCompare(b.id));
+        
+        sortedComponents.forEach((component) => {
             if (component.options && component.options.length > 0) {
                 // Get selected option from dropdown
                 const selectElement = document.getElementById(`component-${component.id}-select`);
