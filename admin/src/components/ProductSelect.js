@@ -1330,6 +1330,99 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         : (i18n.bundleConfigMessage || 'Set quantities below and click the + button to add to selection.')
                                                     }
                                                 </div>
+                                                
+                                                {/* Composite Product Components Selection */}
+                                                {product.type === 'composite' && product.components && product.components.length > 0 && (
+                                                    <div className="lwwc-composite-components-section">
+                                                        {linkType === 'checkoutLink' ? (
+                                                            <div className="lwwc-composite-disabled-notice">
+                                                                <span className="lwwc-composite-disabled-icon">⚠️</span>
+                                                                <span className="lwwc-composite-disabled-text">
+                                                                    Composite products cannot be used with Checkout-Link URLs due to their complex configuration requirements. 
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={handleSwitchToAddToCart}
+                                                                        className="lwwc-switch-link-btn"
+                                                                    >
+                                                                        Please switch to Add-to-Cart URL to use composite products.
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                <div className="lwwc-composite-components-title">
+                                                                    {i18n.compositeComponents || 'Composite Components:'}
+                                                                </div>
+                                                                <div className="lwwc-composite-components-list">
+                                                                    {product.components.map((component, componentIndex) => (
+                                                                        <div key={component.id} className="lwwc-composite-component-item">
+                                                                            <div className="lwwc-composite-component-header">
+                                                                                <span className="lwwc-composite-component-title">
+                                                                                    {component.title}
+                                                                                    {component.required && (
+                                                                                        <span className="lwwc-composite-component-required"> *</span>
+                                                                                    )}
+                                                                                </span>
+                                                                                {component.description && (
+                                                                                    <span className="lwwc-composite-component-description">
+                                                                                        {component.description}
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                            <div className="lwwc-composite-component-options">
+                                                                                {component.options && component.options.length > 0 ? (
+                                                                                    <div className="lwwc-composite-component-selection">
+                                                                                        <div className="lwwc-composite-option-selector">
+                                                                                            <label htmlFor={`component-${component.id}-select`}>
+                                                                                                Select Product:
+                                                                                            </label>
+                                                                                            <select
+                                                                                                id={`component-${component.id}-select`}
+                                                                                                className="lwwc-composite-option-dropdown"
+                                                                                                defaultValue={component.default_option_id || component.options[0]?.id || ''}
+                                                                                            >
+                                                                                                {component.options
+                                                                                                    .sort((a, b) => {
+                                                                                                        // Put default option first
+                                                                                                        if (a.id === component.default_option_id) return -1;
+                                                                                                        if (b.id === component.default_option_id) return 1;
+                                                                                                        // Then sort alphabetically
+                                                                                                        return String(a.name || '').localeCompare(String(b.name || ''));
+                                                                                                    })
+                                                                                                    .map((option) => (
+                                                                                                        <option key={option.id} value={option.id}>
+                                                                                                            {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
+                                                                                                        </option>
+                                                                                                    ))}
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div className="lwwc-composite-option-quantity">
+                                                                                            <label htmlFor={`component-${component.id}-quantity`}>
+                                                                                                Quantity:
+                                                                                            </label>
+                                                                                            <input
+                                                                                                id={`component-${component.id}-quantity`}
+                                                                                                type="number"
+                                                                                                min={component.min_quantity || 0}
+                                                                                                max={component.max_quantity || 999}
+                                                                                                defaultValue={component.default_quantity || 1}
+                                                                                                className="lwwc-composite-option-qty-input"
+                                                                                            />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="lwwc-composite-component-no-options">
+                                                                                        No options available for this component.
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -1479,112 +1572,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         </div>
                                     )}
 
-                                    {/* Composite Product Components Selection. */}
-                                    {product.type === 'composite' && product.components && product.components.length > 0 && (
-                                        <div className="lwwc-composite-components-section">
-                                            {linkType === 'checkoutLink' ? (
-                                                <div className="lwwc-composite-disabled-notice">
-                                                    <span className="lwwc-composite-disabled-icon">⚠️</span>
-                                                    <span className="lwwc-composite-disabled-text">
-                                                        Composite products cannot be used with Checkout-Link URLs due to their complex configuration requirements. 
-                                                        <button 
-                                                            type="button"
-                                                            onClick={handleSwitchToAddToCart}
-                                                            className="lwwc-switch-link-btn"
-                                                        >
-                                                            Please switch to Add-to-Cart URL to use composite products.
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <div className="lwwc-composite-components-title">
-                                                        {i18n.compositeComponents || 'Composite Components:'}
-                                                    </div>
-                                                    <div className="lwwc-composite-components-list">
-                                                        {product.components.map((component, componentIndex) => (
-                                                            <div key={component.id} className="lwwc-composite-component-item">
-                                                                <div className="lwwc-composite-component-header">
-                                                                    <span className="lwwc-composite-component-title">
-                                                                        {component.title}
-                                                                        {component.required && (
-                                                                            <span className="lwwc-composite-component-required"> *</span>
-                                                                        )}
-                                                                    </span>
-                                                                    {component.description && (
-                                                                        <span className="lwwc-composite-component-description">
-                                                                            {component.description}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                                <div className="lwwc-composite-component-options">
-                                                                    {component.options && component.options.length > 0 ? (
-                                                                        <div className="lwwc-composite-component-selection">
-                                                                            <div className="lwwc-composite-option-selector">
-                                                                                <label htmlFor={`component-${component.id}-select`}>
-                                                                                    Select Product:
-                                                                                </label>
-                                                                                <select
-                                                                                    id={`component-${component.id}-select`}
-                                                                                    className="lwwc-composite-option-dropdown"
-                                                                                    defaultValue={component.default_option_id || component.options[0]?.id || ''}
-                                                                                >
-                                                                                    {component.options
-                                                                                        .sort((a, b) => {
-                                                                                            // Put default option first
-                                                                                            if (a.id === component.default_option_id) return -1;
-                                                                                            if (b.id === component.default_option_id) return 1;
-                                                                                            // Then sort alphabetically
-                                                                                            return String(a.name || '').localeCompare(String(b.name || ''));
-                                                                                        })
-                                                                                        .map((option) => (
-                                                                                            <option key={option.id} value={option.id}>
-                                                                                                {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
-                                                                                            </option>
-                                                                                        ))}
-                                                                                </select>
-                                                                            </div>
-                                                                            <div className="lwwc-composite-option-quantity">
-                                                                                <label htmlFor={`component-${component.id}-quantity`}>
-                                                                                    Quantity:
-                                                                                </label>
-                                                                                <input
-                                                                                    id={`component-${component.id}-quantity`}
-                                                                                    type="number"
-                                                                                    min={component.min_quantity || 0}
-                                                                                    max={component.max_quantity || 999}
-                                                                                    defaultValue={component.default_quantity || 1}
-                                                                                    className="lwwc-composite-option-qty-input"
-                                                                                />
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className="lwwc-composite-component-no-options">
-                                                                            No options available for this component.
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    <div className="lwwc-composite-add-button">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleAddCompositeProduct(product);
-                                                            }}
-                                                            className="lwwc-add-composite-product-btn"
-                                                        >
-                                                            {isProductSelected(product.id) 
-                                                                ? (i18n.updateCompositeProduct || 'Update Composite Product')
-                                                                : (i18n.addCompositeProduct || 'Add Composite Product')
-                                                            }
-                                                        </button>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
 
                                     {/* Filtered Variations for Variable Products. */}
                                     {product.type === 'variable' && (
