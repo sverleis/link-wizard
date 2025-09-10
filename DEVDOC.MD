@@ -477,16 +477,34 @@ link-wizard-for-woocommerce/
 5. **CSS Optimization**: Minified CSS files with proper caching
 6. **Image Optimization**: WebP support and responsive images
 
-### WooCommerce 10.0 Shareable Checkout URLs
-**Reference**: [WooCommerce 10.0: Investing in Accessibility - Shareable Checkout URLs](https://developer.woocommerce.com/2025/07/14/woocommerce-10-0-investing-in-accessibility/#h-shareable-checkout-urls)
+### WooCommerce Shareable Checkout URLs
+**Official Documentation**: [WooCommerce Developer Docs - Shareable Checkout URLs](https://developer.woocommerce.com/docs/best-practices/urls-and-routing/checkout-urls/)
+**Release Announcement**: [WooCommerce 10.0: Investing in Accessibility - Shareable Checkout URLs](https://developer.woocommerce.com/2025/07/14/woocommerce-10-0-investing-in-accessibility/#h-shareable-checkout-urls)
 **GitHub PR**: [#58140 - Support for shareable checkout URLs which pre-populate the cart/coupons](https://github.com/woocommerce/woocommerce/pull/58140)
 
-**Documentation**: WooCommerce 10.0 introduced native support for shareable checkout URLs that automatically populate the cart with specific products and product variations, redirecting customers straight to checkout. This feature enables merchants to create custom links for email campaigns, social media, or landing pages.
+**Technical Specification**:
+WooCommerce 10.0 introduced native support for shareable checkout URLs that automatically populate the cart with specific products and product variations, redirecting customers straight to checkout. The custom checkout link path is `/checkout-link/` and is not customizable.
+
+**Supported Parameters**:
+
+1. **Products**: `products=123:2,456:1`
+   - Comma-separated list of product IDs and quantities
+   - Supports simple products with no additional options
+   - Individual variations can be added using correct variation ID
+
+2. **Coupon**: `coupon=SPRING10`
+   - Coupon code to apply to the cart
 
 **URL Format Example**:
 ```
 https://yourstore.com/checkout-link/?products=123:2,456:1&coupon=SPRING10
 ```
+
+**Session Management**:
+- Once redirected to checkout, cart is populated with products and coupon
+- Final URL includes `session` parameter storing the session ID
+- Future checkout changes are persisted in the session
+- Enables persistent and shareable carts
 
 **Implementation Notes**:
 - Product ID `123` will be added with quantity 2
@@ -496,7 +514,7 @@ https://yourstore.com/checkout-link/?products=123:2,456:1&coupon=SPRING10
 - Links need to be created manually (no UI provided by WooCommerce core)
 
 **Relationship to Link Wizard Plugin**:
-This plugin essentially provides the missing UI for creating these shareable checkout URLs, making the WooCommerce 10.0 feature more accessible to merchants who need an easy way to generate these links without manual URL construction.
+This plugin provides the missing UI for creating these shareable checkout URLs, making the WooCommerce 10.0 feature accessible to merchants who need an easy way to generate these links without manual URL construction. The plugin handles the complexity of product selection, quantity management, and URL generation while leveraging WooCommerce's native backend functionality.
 
 ### Facebook Commerce Platform Integration
 **Reference**: [Meta Commerce Platform - Set Up Checkout URL](https://developers.facebook.com/docs/commerce-platform/setup-checkout-url)
