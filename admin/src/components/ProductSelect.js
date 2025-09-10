@@ -1271,9 +1271,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         )}
                                     </div>
 
-                                    {/* Selected Product Configuration for Complex Products */}
-                                    {isProductSelected(product.id) && (product.type === 'composite' || product.type === 'bundle') && (
-                                        <div className="lwwc-selected-product-config">
+                                    {/* Product Configuration for Complex Products */}
+                                    {(product.type === 'composite' || product.type === 'bundle') && (
+                                        <div className="lwwc-product-config">
                                             <div className="lwwc-config-header">
                                                 <button
                                                     type="button"
@@ -1291,8 +1291,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <div className="lwwc-config-content">
                                                     <div className="lwwc-config-message">
                                                         {product.type === 'composite' 
-                                                            ? (i18n.compositeConfigMessage || 'Modify component selections below and click "Update Composite Product" to apply changes.')
-                                                            : (i18n.bundleConfigMessage || 'Modify quantities below and click "Update Product Bundle" to apply changes.')
+                                                            ? (i18n.compositeConfigMessage || 'Select components below and click "Add Composite Product" to add to selection.')
+                                                            : (i18n.bundleConfigMessage || 'Set quantities below and click "Add Product Bundle" to add to selection.')
                                                         }
                                                     </div>
                                                 </div>
