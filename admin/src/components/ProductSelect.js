@@ -1019,7 +1019,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     </div>
                                                     <div className="lwwc-grouped-add-button">
                                                         <button
-                                                            onClick={() => handleAddGroupedProduct(product)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAddGroupedProduct(product);
+                                                            }}
                                                             disabled={!hasSelectedGroupedChildren(product)}
                                                             className="lwwc-add-grouped-product-btn"
                                                         >
@@ -1079,7 +1082,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     </div>
                                                     <div className="lwwc-bundle-add-button">
                                                         <button
-                                                            onClick={() => handleAddBundleProduct(product)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAddBundleProduct(product);
+                                                            }}
                                                             disabled={!hasSelectedBundleChildren(product)}
                                                             className="lwwc-add-bundle-product-btn"
                                                         >
@@ -1175,7 +1181,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     </div>
                                                     <div className="lwwc-composite-add-button">
                                                         <button
-                                                            onClick={() => handleAddCompositeProduct(product)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAddCompositeProduct(product);
+                                                            }}
                                                             className="lwwc-add-composite-product-btn"
                                                         >
                                                             {i18n.addCompositeProduct || 'Add Composite Product'}
