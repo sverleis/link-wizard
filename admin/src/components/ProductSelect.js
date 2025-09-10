@@ -1079,13 +1079,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <div className="lwwc-bundle-disabled-notice">
                                                     <span className="lwwc-bundle-disabled-icon">⚠️</span>
                                                     <span className="lwwc-bundle-disabled-text">
-                                                        Bundle products are not available for Checkout-Link URLs. 
+                                                        Bundle products work with Checkout-Link URLs using default options only. 
                                                         <button 
                                                             type="button"
                                                             onClick={handleSwitchToAddToCart}
                                                             className="lwwc-switch-link-btn"
                                                         >
-                                                            Please switch to Add-to-Cart URL to use bundle products.
+                                                            Switch to Add-to-Cart URL for full customization options.
                                                         </button>
                                                     </span>
                                                 </div>
@@ -1142,7 +1142,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <div className="lwwc-composite-disabled-notice">
                                                     <span className="lwwc-composite-disabled-icon">⚠️</span>
                                                     <span className="lwwc-composite-disabled-text">
-                                                        Composite products are not available for Checkout-Link URLs. 
+                                                        Composite products cannot be used with Checkout-Link URLs due to their complex configuration requirements. 
                                                         <button 
                                                             type="button"
                                                             onClick={handleSwitchToAddToCart}
