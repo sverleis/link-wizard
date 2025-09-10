@@ -468,6 +468,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             }
         });
         
+        // Add the add-to-cart parameter first (following official process)
+        urlParams.set('add-to-cart', product.id);
+        
         // Add main product quantity
         urlParams.set('quantity', '1');
         
@@ -478,12 +481,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         
         // Add component count
         urlParams.set('wccpl', componentIndex);
-        
-        // Add the add-to-cart parameter (following official process)
-        urlParams.set('add-to-cart', product.id);
 
-        // Use product permalink as base URL (following official WooCommerce Composite Products process)
-        const compositeUrl = `${window.location.origin}/product/${product.slug}/?${urlParams.toString()}`;
+        // Use checkout URL as base (following your example)
+        const compositeUrl = `${window.location.origin}/checkout/?${urlParams.toString()}`;
+        
+        // Log the generated URL for debugging
+        console.log('🔗 Generated Composite Product URL:', compositeUrl);
+        console.log('🔗 URL Parameters:', Object.fromEntries(urlParams.entries()));
 
         const compositeProduct = {
             ...product,
