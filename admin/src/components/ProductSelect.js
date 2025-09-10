@@ -31,28 +31,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [addingProducts, setAddingProducts] = useState(new Set());
     // State for variation error modal.
     const [variationErrorModal, setVariationErrorModal] = useState(null);
-    // State for accordion expansion
-    const [expandedProducts, setExpandedProducts] = useState(new Set());
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
-
-    // Handle accordion expansion
-    const toggleProductExpansion = (productId) => {
-        setExpandedProducts(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(productId)) {
-                newSet.delete(productId);
-            } else {
-                newSet.add(productId);
-            }
-            return newSet;
-        });
-    };
-
-    const isProductExpanded = (productId) => {
-        return expandedProducts.has(productId);
-    };
 
     // Check if a product is currently selected
     const isProductSelected = (productId) => {
@@ -170,9 +151,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             return;
         }
         
-        // Only start animation if no replacement modal is needed.
-        // Add product to adding state for animation.
-        setAddingProducts(prev => new Set(prev).add(product.id));
+            // Only start animation if no replacement modal is needed.
+            // Add product to adding state for animation.
+            setAddingProducts(prev => new Set(prev).add(product.id));
+            
+            // Notify addons about product selection
+            if (window.lwwcTriggerProductSelected) {
+                window.lwwcTriggerProductSelected(product);
+            }
         
         // After a brief delay to show the "Added" message, complete the selection.
         setTimeout(() => {
@@ -214,6 +200,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         setSelectedProducts(prev =>
             prev.filter(product => product.id !== productToRemove.id)
         );
+        
+        // Notify addons about product deselection
+        if (window.lwwcTriggerProductDeselected) {
+            window.lwwcTriggerProductDeselected(productToRemove);
+        }
         
         // Add the product back to search results if it was removed.
         if (linkType === 'checkoutLink') {
@@ -1168,6 +1159,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                 <li
                                     key={product.id}
                                     className={`product-search-result ${addingProducts.has(product.id) ? 'adding' : ''}`}
+                                    data-product-id={product.id}
+                                    data-product-type={product.type}
                                 >
                                     {/* Show "Added" message when product is being added. */}
                                     {addingProducts.has(product.id) ? (
@@ -1258,33 +1251,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* Selected Product Accordion for Complex Products */}
-                                    {isProductSelected(product.id) && (product.type === 'composite' || product.type === 'bundle') && (
-                                        <div className="lwwc-selected-product-accordion">
-                                            <div 
-                                                className="lwwc-accordion-header"
-                                                onClick={() => toggleProductExpansion(product.id)}
-                                            >
-                                                <span className="lwwc-accordion-title">
-                                                    {i18n.editConfiguration || 'Edit Configuration'}
-                                                </span>
-                                                <span className={`lwwc-accordion-icon ${isProductExpanded(product.id) ? 'expanded' : ''}`}>
-                                                    <span className="dashicons dashicons-arrow-down-alt2" />
-                                                </span>
-                                            </div>
-                                            {isProductExpanded(product.id) && (
-                                                <div className="lwwc-accordion-content">
-                                                    <div className="lwwc-accordion-message">
-                                                        {product.type === 'composite' 
-                                                            ? (i18n.compositeEditMessage || 'This composite product is currently selected. You can modify the component selections below and click "Update Composite Product" to apply changes.')
-                                                            : (i18n.bundleEditMessage || 'This bundle product is currently selected. You can modify the quantities below and click "Update Bundle Product" to apply changes.')
-                                                        }
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
 
                                     {/* Attribute Filters for Variable Products. */}
                                     {product.type === 'variable' && (
