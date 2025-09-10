@@ -42,6 +42,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     // Complex product functionality from addon
     const complexProducts = window.LWWCAddons?.complexProducts || {};
     
+    // State for addon integration
+    const [addonState, setAddonState] = useState(0);
+    
+    // Set up addon state change callback
+    useEffect(() => {
+        if (complexProducts.onStateChange === null) {
+            complexProducts.onStateChange = () => {
+                setAddonState(prev => prev + 1);
+            };
+        }
+    }, [complexProducts]);
+    
     // Handle accordion expansion
     const toggleProductExpansion = (productId) => {
         if (complexProducts.toggleProductExpansion) {
