@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
+import useProductReplacement from '../hooks/useProductReplacement';
+import ReplaceModal from './ReplaceModal';
 
 // Set up API authentication with nonce if available.
 if (typeof window.lwwcApiSettings !== 'undefined') {
@@ -21,7 +23,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [showingAllVariations, setShowingAllVariations] = useState({});
     const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({});
     const [selectedAttributes, setSelectedAttributes] = useState({});
-    const [replaceProduct, setReplaceProduct] = useState(null);
     const [bundleQuantities, setBundleQuantities] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -141,9 +142,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }
         
         // For add-to-cart, check if we need to show replacement modal FIRST - NO animations until confirmed.
-        if (linkType === 'addToCart' && selectedProducts.length > 0 && selectedProducts[0].id !== product.id) {
-            // Show replacement modal immediately, no animation or changes yet.
-            setReplaceProduct({ old: selectedProducts[0], new: product });
+        if (showReplaceModal(product)) {
             return;
         }
         
@@ -343,14 +342,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         if (!hasSelectedBundleChildren(product)) return;
 
         // For add-to-cart, check if we need to show replacement modal FIRST
-        if (linkType === 'addToCart' && selectedProducts.length > 0) {
-            // Check if this is a different product (different ID or different type)
-            const currentProduct = selectedProducts[0];
-            if (currentProduct.id !== product.id || currentProduct.type !== product.type) {
-                // Show replacement modal immediately, no changes yet
-                setReplaceProduct({ old: currentProduct, new: product });
-                return;
-            }
+        if (showReplaceModal(product)) {
+            return;
         }
 
         // Generate bundle add-to-cart URL with quantities
@@ -433,14 +426,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     // Handle adding composite product to selection.
     const handleAddCompositeProduct = (product) => {
         // For add-to-cart, check if we need to show replacement modal FIRST
-        if (linkType === 'addToCart' && selectedProducts.length > 0) {
-            // Check if this is a different product (different ID or different type)
-            const currentProduct = selectedProducts[0];
-            if (currentProduct.id !== product.id || currentProduct.type !== product.type) {
-                // Show replacement modal immediately, no changes yet
-                setReplaceProduct({ old: currentProduct, new: product });
-                return;
-            }
+        if (showReplaceModal(product)) {
+            return;
         }
 
         // Generate composite add-to-cart URL with component selections
@@ -961,6 +948,29 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             </div>
         );
     };
+
+    // Initialize product replacement hook
+    const {
+        replaceProduct,
+        showReplaceModal,
+        handleReplaceConfirmation,
+        cancelReplace,
+        getReplaceMessage
+    } = useProductReplacement({
+        linkType,
+        selectedProducts,
+        setSelectedProducts,
+        setResults,
+        setAddingProducts,
+        handlers: {
+            handleCompositeProduct: handleAddCompositeProduct,
+            handleBundleProduct: handleAddBundleProduct,
+            handleSimpleProduct: (product) => {
+                setSelectedProducts([{ ...product, quantity: 1 }]);
+                setResults(prev => prev.filter(p => p.id !== product.id));
+            }
+        }
+    });
 
     return (
         <div>
@@ -1627,64 +1637,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 )}
 
                 {/* Replace Confirmation Modal. */}
-                {replaceProduct && (
-                    <div className="confirmation-modal" onClick={() => setReplaceProduct(null)}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h3>{i18n.replaceConfirmationTitle || 'Replace Confirmation'}</h3>
-                            <p>
-                                {replaceProduct.new.type === 'composite' || replaceProduct.new.type === 'bundle' 
-                                    ? (i18n.replaceComplexProductMessage || 'You are about to replace the current product with a different composite/bundle product. This will clear your current selection and allow you to configure the new product.')
-                                    : (i18n.replaceConfirmationMessage || 'You are about to replace the current product with a different one. This action cannot be undone.')
-                                }
-                            </p>
-                            <div className="modal-buttons">
-                                <button
-                                    onClick={() => {
-                                        // Now perform the replacement with animation.
-                                        setAddingProducts(prev => new Set(prev).add(replaceProduct.new.id));
-                                        setReplaceProduct(null);
-                                        
-                                        setTimeout(() => {
-                                            // Handle different product types
-                                            if (replaceProduct.new.type === 'composite') {
-                                                // For composite products, call the composite handler
-                                                handleAddCompositeProduct(replaceProduct.new);
-                                            } else if (replaceProduct.new.type === 'bundle') {
-                                                // For bundle products, call the bundle handler
-                                                handleAddBundleProduct(replaceProduct.new);
-                                            } else {
-                                                // For simple products, use the standard logic
-                                                setSelectedProducts([{ ...replaceProduct.new, quantity: 1 }]);
-                                                
-                                                // Remove new product from search results.
-                                                setResults(prev => prev.filter(p => p.id !== replaceProduct.new.id));
-                                                
-                                                // Add old product back to search results.
-                                                setResults(prev => [...prev, replaceProduct.old]);
-                                            }
-                                            
-                                            // Clear adding state.
-                                            setAddingProducts(prev => {
-                                                const newSet = new Set(prev);
-                                                newSet.delete(replaceProduct.new.id);
-                                                return newSet;
-                                            });
-                                        }, 800);
-                                    }}
-                                    className="button button-primary"
-                                >
-                                    {i18n.replaceConfirm || 'Replace'}
-                                </button>
-                                <button
-                                    onClick={() => setReplaceProduct(null)}
-                                    className="button"
-                                >
-                                    {i18n.cancelReplace || 'Cancel'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <ReplaceModal
+                    replaceProduct={replaceProduct}
+                    onConfirm={handleReplaceConfirmation}
+                    onCancel={cancelReplace}
+                    getMessage={getReplaceMessage}
+                    i18n={i18n}
+                />
 
                 {/* Variation Error Modal. */}
                 {variationErrorModal && (
