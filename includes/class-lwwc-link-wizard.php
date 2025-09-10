@@ -174,26 +174,6 @@ class LWWC_Link_Wizard {
 	}
 
 	/**
-	 * Handle add to cart redirect for checkout redirects.
-	 *
-	 * @since   1.0.0
-	 * @param   string $url The redirect URL.
-	 * @param   string $product_id The product ID.
-	 * @return  string The modified redirect URL.
-	 */
-	public function handle_add_to_cart_redirect( $url, $product_id ) {
-		// Check if redirect=checkout parameter is present.
-		if ( isset( $_GET['redirect'] ) && $_GET['redirect'] === 'checkout' ) {
-			$checkout_url = wc_get_checkout_url();
-			if ( $checkout_url ) {
-				return $checkout_url;
-			}
-		}
-		
-		return $url;
-	}
-
-	/**
 	 * The name of the plugin to uniquely identify it.
 	 *
 	 * @since   1.0.0

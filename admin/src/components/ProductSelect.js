@@ -473,22 +473,38 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             }
         });
         
-        // Add the add-to-cart parameter first (following official process)
-        urlParams.set('add-to-cart', product.id);
+        // Create URL with parameters in the correct order
+        const baseUrl = `${window.location.origin}/cart/`;
+        const orderedParams = new URLSearchParams();
+        
+        // Add add-to-cart parameter first
+        orderedParams.set('add-to-cart', product.id);
+        
+        // Add component selections (wccps_c0, wccpq_c0, etc.) in order
+        for (let i = 0; i < componentIndex; i++) {
+            const wccpsKey = `wccps_c${i}`;
+            const wccpqKey = `wccpq_c${i}`;
+            if (urlParams.has(wccpsKey)) {
+                orderedParams.set(wccpsKey, urlParams.get(wccpsKey));
+            }
+            if (urlParams.has(wccpqKey)) {
+                orderedParams.set(wccpqKey, urlParams.get(wccpqKey));
+            }
+        }
         
         // Add main product quantity
-        urlParams.set('quantity', '1');
+        orderedParams.set('quantity', '1');
         
         // Add component mapping (wccpm0, wccpm1, etc.)
         Object.entries(componentMapping).forEach(([compressedIndex, actualComponentId]) => {
-            urlParams.set(`wccpm${compressedIndex}`, actualComponentId);
+            orderedParams.set(`wccpm${compressedIndex}`, actualComponentId);
         });
         
         // Add component count
-        urlParams.set('wccpl', componentIndex);
+        orderedParams.set('wccpl', componentIndex);
 
         // Use cart URL as base
-        const compositeUrl = `${window.location.origin}/cart/?${urlParams.toString()}`;
+        const compositeUrl = `${baseUrl}?${orderedParams.toString()}`;
         
         // Log the generated URL for debugging
         console.log('🔗 Generated Composite Product URL:', compositeUrl);
