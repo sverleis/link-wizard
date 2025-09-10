@@ -342,6 +342,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const handleAddBundleProduct = (product) => {
         if (!hasSelectedBundleChildren(product)) return;
 
+        // For add-to-cart, check if we need to show replacement modal FIRST
+        if (linkType === 'addToCart' && selectedProducts.length > 0) {
+            // Check if this is a different product (different ID or different type)
+            const currentProduct = selectedProducts[0];
+            if (currentProduct.id !== product.id || currentProduct.type !== product.type) {
+                // Show replacement modal immediately, no changes yet
+                setReplaceProduct({ old: currentProduct, new: product });
+                return;
+            }
+        }
+
         // Generate bundle add-to-cart URL with quantities
         const quantities = bundleQuantities[product.id] || product.default_quantities || {};
         const urlParams = new URLSearchParams();
@@ -421,6 +432,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
 
     // Handle adding composite product to selection.
     const handleAddCompositeProduct = (product) => {
+        // For add-to-cart, check if we need to show replacement modal FIRST
+        if (linkType === 'addToCart' && selectedProducts.length > 0) {
+            // Check if this is a different product (different ID or different type)
+            const currentProduct = selectedProducts[0];
+            if (currentProduct.id !== product.id || currentProduct.type !== product.type) {
+                // Show replacement modal immediately, no changes yet
+                setReplaceProduct({ old: currentProduct, new: product });
+                return;
+            }
+        }
+
         // Generate composite add-to-cart URL with component selections
         const urlParams = new URLSearchParams();
         
@@ -1610,7 +1632,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <h3>{i18n.replaceConfirmationTitle || 'Replace Confirmation'}</h3>
                             <p>
-                                {i18n.replaceConfirmationMessage || 'You are about to replace the current product with a different one. This action cannot be undone.'}
+                                {replaceProduct.new.type === 'composite' || replaceProduct.new.type === 'bundle' 
+                                    ? (i18n.replaceComplexProductMessage || 'You are about to replace the current product with a different composite/bundle product. This will clear your current selection and allow you to configure the new product.')
+                                    : (i18n.replaceConfirmationMessage || 'You are about to replace the current product with a different one. This action cannot be undone.')
+                                }
                             </p>
                             <div className="modal-buttons">
                                 <button
@@ -1620,13 +1645,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         setReplaceProduct(null);
                                         
                                         setTimeout(() => {
-                                            setSelectedProducts([{ ...replaceProduct.new, quantity: 1 }]);
-                                            
-                                            // Remove new product from search results.
-                                            setResults(prev => prev.filter(p => p.id !== replaceProduct.new.id));
-                                            
-                                            // Add old product back to search results.
-                                            setResults(prev => [...prev, replaceProduct.old]);
+                                            // Handle different product types
+                                            if (replaceProduct.new.type === 'composite') {
+                                                // For composite products, call the composite handler
+                                                handleAddCompositeProduct(replaceProduct.new);
+                                            } else if (replaceProduct.new.type === 'bundle') {
+                                                // For bundle products, call the bundle handler
+                                                handleAddBundleProduct(replaceProduct.new);
+                                            } else {
+                                                // For simple products, use the standard logic
+                                                setSelectedProducts([{ ...replaceProduct.new, quantity: 1 }]);
+                                                
+                                                // Remove new product from search results.
+                                                setResults(prev => prev.filter(p => p.id !== replaceProduct.new.id));
+                                                
+                                                // Add old product back to search results.
+                                                setResults(prev => [...prev, replaceProduct.old]);
+                                            }
                                             
                                             // Clear adding state.
                                             setAddingProducts(prev => {
