@@ -80,6 +80,9 @@ const DynamicLink = ({
                             const url = new URL(product.url);
                             const compositeParams = new URLSearchParams(url.search);
                             
+                            // Add the add-to-cart parameter first
+                            params.append('add-to-cart', product.id);
+                            
                             // Add all composite parameters to the main params
                             for (const [key, value] of compositeParams.entries()) {
                                 params.append(key, value);
@@ -93,34 +96,42 @@ const DynamicLink = ({
                         }
                     });
                     
-                    // Build the URL with proper redirect paths.
-                    let path = '/';
-                    if (redirectOption === 'cart') {
-                        path = '/cart/';
-                    } else if (redirectOption === 'checkout') {
-                        path = '/checkout/';
-                    } else if (redirectOption === 'product' && selectedProducts.length > 0) {
-                        // For product redirect, use the product slug for better SEO and readability.
-                        const product = selectedProducts[0];
-                        // For variations, use parent_slug; for regular products, use slug.
-                        const slug = product.parent_slug || product.slug;
-                        if (slug) {
-                            path = `/product/${slug}/`;
-                        } else {
-                            // Fallback to ID if slug is not available
-                            path = `/product/${product.id}/`;
+                    // Check if we have a composite product with a pre-generated URL
+                    const compositeProduct = selectedProducts.find(p => p.type === 'composite' && p.url);
+                    if (compositeProduct) {
+                        // For composite products, use the pre-generated URL directly
+                        finalUrl = compositeProduct.url;
+                        console.log('🔗 Using Composite Product URL:', finalUrl);
+                    } else {
+                        // Build the URL with proper redirect paths for other products
+                        let path = '/';
+                        if (redirectOption === 'cart') {
+                            path = '/cart/';
+                        } else if (redirectOption === 'checkout') {
+                            path = '/checkout/';
+                        } else if (redirectOption === 'product' && selectedProducts.length > 0) {
+                            // For product redirect, use the product slug for better SEO and readability.
+                            const product = selectedProducts[0];
+                            // For variations, use parent_slug; for regular products, use slug.
+                            const slug = product.parent_slug || product.slug;
+                            if (slug) {
+                                path = `/product/${slug}/`;
+                            } else {
+                                // Fallback to ID if slug is not available
+                                path = `/product/${product.id}/`;
+                            }
+                        } else if (redirectOption === 'page' && selectedRedirectPage) {
+                            // Use the redirect page as the path (e.g., "/sample-page/")
+                            const urlParts = selectedRedirectPage.url.split('/');
+                            const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash).
+                            if (slug) {
+                                path = `/${slug}/`;
+                            }
                         }
-                    } else if (redirectOption === 'page' && selectedRedirectPage) {
-                        // Use the redirect page as the path (e.g., "/sample-page/")
-                        const urlParts = selectedRedirectPage.url.split('/');
-                        const slug = urlParts[urlParts.length - 2]; // Get second-to-last part (before trailing slash).
-                        if (slug) {
-                            path = `/${slug}/`;
-                        }
+                        
+                        finalUrl = `${baseUrl}${path}?${params.toString()}`;
+                        console.log('🔗 Final Generated URL:', finalUrl);
                     }
-                    
-                    finalUrl = `${baseUrl}${path}?${params.toString()}`;
-                    console.log('🔗 Final Generated URL:', finalUrl);
                 }
             } else {
                 // Checkout link format: https://store.local/checkout-link/?products=18:2,19:1&coupon=TEST
