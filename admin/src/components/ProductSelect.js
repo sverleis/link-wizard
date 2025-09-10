@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
 import useProductReplacement from '../hooks/useProductReplacement';
@@ -337,14 +337,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }
     };
 
-    // Handle adding bundle product to selection.
-    const handleAddBundleProduct = (product) => {
+    // Handle adding bundle product to selection (without replacement check)
+    const addBundleProductDirect = (product) => {
         if (!hasSelectedBundleChildren(product)) return;
-
-        // For add-to-cart, check if we need to show replacement modal FIRST
-        if (showReplaceModal(product)) {
-            return;
-        }
 
         // Generate bundle add-to-cart URL with quantities
         const quantities = bundleQuantities[product.id] || product.default_quantities || {};
@@ -388,6 +383,18 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }, 1000);
     };
 
+    // Handle adding bundle product to selection (with replacement check)
+    const handleAddBundleProduct = (product) => {
+        if (!hasSelectedBundleChildren(product)) return;
+
+        // For add-to-cart, check if we need to show replacement modal FIRST
+        if (showReplaceModal(product)) {
+            return;
+        }
+        
+        addBundleProductDirect(product);
+    };
+
     // Helper function to clean HTML entities and tags from price strings
     const cleanPriceText = (priceHtml) => {
         if (!priceHtml) return '';
@@ -423,12 +430,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         return cleanText.trim().substring(0, 20);
     };
 
-    // Handle adding composite product to selection.
-    const handleAddCompositeProduct = (product) => {
-        // For add-to-cart, check if we need to show replacement modal FIRST
-        if (showReplaceModal(product)) {
-            return;
-        }
+    // Handle adding composite product to selection (without replacement check)
+    const addCompositeProductDirect = (product) => {
 
         // Generate composite add-to-cart URL with component selections
         const urlParams = new URLSearchParams();
@@ -581,6 +584,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 return newSet;
             });
         }, 1000);
+    };
+
+    // Handle adding composite product to selection (with replacement check)
+    const handleAddCompositeProduct = (product) => {
+        // For add-to-cart, check if we need to show replacement modal FIRST
+        if (showReplaceModal(product)) {
+            return;
+        }
+        
+        addCompositeProductDirect(product);
     };
 
     // Regenerate composite product URL with current redirect options
@@ -949,6 +962,20 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         );
     };
 
+    // Create stable handlers using useCallback
+    const handleSimpleProduct = useCallback((product) => {
+        setSelectedProducts([{ ...product, quantity: 1 }]);
+        setResults(prev => prev.filter(p => p.id !== product.id));
+    }, [setSelectedProducts, setResults]);
+
+    const handleCompositeProductStable = useCallback((product) => {
+        addCompositeProductDirect(product);
+    }, []);
+
+    const handleBundleProductStable = useCallback((product) => {
+        addBundleProductDirect(product);
+    }, []);
+
     // Initialize product replacement hook
     const {
         replaceProduct,
@@ -963,12 +990,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         setResults,
         setAddingProducts,
         handlers: {
-            handleCompositeProduct: handleAddCompositeProduct,
-            handleBundleProduct: handleAddBundleProduct,
-            handleSimpleProduct: (product) => {
-                setSelectedProducts([{ ...product, quantity: 1 }]);
-                setResults(prev => prev.filter(p => p.id !== product.id));
-            }
+            handleCompositeProduct: handleCompositeProductStable,
+            handleBundleProduct: handleBundleProductStable,
+            handleSimpleProduct: handleSimpleProduct
         }
     });
 
