@@ -1186,7 +1186,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                                     defaultValue={component.default_option_id || component.options[0]?.id || ''}
                                                                                 >
                                                                                     {component.options
-                                                                                        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
+                                                                                        .sort((a, b) => {
+                                                                                            // Put default option first
+                                                                                            if (a.id === component.default_option_id) return -1;
+                                                                                            if (b.id === component.default_option_id) return 1;
+                                                                                            // Then sort alphabetically
+                                                                                            return String(a.name || '').localeCompare(String(b.name || ''));
+                                                                                        })
                                                                                         .map((option) => (
                                                                                             <option key={option.id} value={option.id}>
                                                                                                 {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
