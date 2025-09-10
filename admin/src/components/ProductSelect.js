@@ -410,31 +410,60 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         
         sortedComponents.forEach((component) => {
             if (component.options && component.options.length > 0) {
-                // Get selected option from dropdown
+                // Use default selection or first option if no default
+                let selectedOption = null;
+                let selectedQuantity = component.default_quantity || component.min_quantity || 1;
+                
+                // Try to get user selection from dropdown first
                 const selectElement = document.getElementById(`component-${component.id}-select`);
                 const quantityElement = document.getElementById(`component-${component.id}-quantity`);
                 
                 if (selectElement && quantityElement) {
                     const selectedOptionId = selectElement.value;
-                    const selectedQuantity = parseInt(quantityElement.value) || 1;
-                    
-                    // Find the selected option object
-                    const selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
-                    
-                    if (selectedOption) {
-                        // Use compressed format: wccps_c0, wccpq_c0, etc.
-                        urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
-                        urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
-                        
-                        // Add variation ID if it's a variable product
-                        if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
-                            urlParams.set(`wccpv_c${componentIndex}`, selectedOption.variations[0].id);
-                        }
-                        
-                        // Map compressed index to actual component ID
-                        componentMapping[componentIndex] = component.id;
-                        componentIndex++;
+                    selectedQuantity = parseInt(quantityElement.value) || selectedQuantity;
+                    selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
+                }
+                
+                // Fallback to default selection or first option
+                if (!selectedOption) {
+                    // Try to find default selection from product data
+                    if (product.default_selections && product.default_selections[component.id]) {
+                        const defaultProductId = product.default_selections[component.id].product_id;
+                        selectedOption = component.options.find(opt => opt.id === defaultProductId);
                     }
+                    
+                    // If still no selection, use first option
+                    if (!selectedOption) {
+                        selectedOption = component.options[0];
+                    }
+                }
+                
+                if (selectedOption) {
+                    // Use compressed format: wccps_c0, wccpq_c0, etc.
+                    urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                    urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                    
+                    // Add variation ID and attributes if it's a variable product
+                    if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
+                        // Use the first variation (which should be the default after sorting)
+                        const defaultVariation = selectedOption.variations[0];
+                        urlParams.set(`wccpv_c${componentIndex}`, defaultVariation.id);
+                        
+                        // Add variation attributes
+                        if (defaultVariation.attributes) {
+                            Object.entries(defaultVariation.attributes).forEach(([attrName, attrValue]) => {
+                                if (attrValue) {
+                                    // Convert attribute name to proper format (remove 'pa_' prefix if present)
+                                    const cleanAttrName = attrName.startsWith('pa_') ? attrName.substring(3) : attrName;
+                                    urlParams.set(`wccp_attribute_${cleanAttrName}_c${componentIndex}`, attrValue);
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Map compressed index to actual component ID
+                    componentMapping[componentIndex] = component.id;
+                    componentIndex++;
                 }
             }
         });
