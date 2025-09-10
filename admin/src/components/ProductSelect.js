@@ -31,6 +31,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [addingProducts, setAddingProducts] = useState(new Set());
     // State for variation error modal.
     const [variationErrorModal, setVariationErrorModal] = useState(null);
+    // State for complex product configuration
+    const [expandedProducts, setExpandedProducts] = useState(new Set());
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
@@ -38,6 +40,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     // Check if a product is currently selected
     const isProductSelected = (productId) => {
         return selectedProducts.some(p => p.id === productId);
+    };
+
+    // Handle accordion expansion
+    const toggleProductExpansion = (productId) => {
+        setExpandedProducts(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(productId)) {
+                newSet.delete(productId);
+            } else {
+                newSet.add(productId);
+            }
+            return newSet;
+        });
+    };
+
+    const isProductExpanded = (productId) => {
+        return expandedProducts.has(productId);
     };
 
     // Regenerate composite product URLs when redirect options change
@@ -1252,6 +1271,35 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         )}
                                     </div>
 
+                                    {/* Selected Product Configuration for Complex Products */}
+                                    {isProductSelected(product.id) && (product.type === 'composite' || product.type === 'bundle') && (
+                                        <div className="lwwc-selected-product-config">
+                                            <div className="lwwc-config-header">
+                                                <button
+                                                    type="button"
+                                                    className="lwwc-configure-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleProductExpansion(product.id);
+                                                    }}
+                                                >
+                                                    <span className="dashicons dashicons-admin-generic" />
+                                                    {i18n.configure || 'Configure'}
+                                                </button>
+                                            </div>
+                                            {isProductExpanded(product.id) && (
+                                                <div className="lwwc-config-content">
+                                                    <div className="lwwc-config-message">
+                                                        {product.type === 'composite' 
+                                                            ? (i18n.compositeConfigMessage || 'Modify component selections below and click "Update Composite Product" to apply changes.')
+                                                            : (i18n.bundleConfigMessage || 'Modify quantities below and click "Update Product Bundle" to apply changes.')
+                                                        }
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {/* Attribute Filters for Variable Products. */}
                                     {product.type === 'variable' && (
                                         <AttributeFilters product={product} />
@@ -1387,8 +1435,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             className="lwwc-add-bundle-product-btn"
                                                         >
                                                             {isProductSelected(product.id) 
-                                                                ? (i18n.updateBundleProduct || 'Update Bundle Product')
-                                                                : (i18n.addBundleProduct || 'Add Bundle Product')
+                                                                ? (i18n.updateBundleProduct || 'Update Product Bundle')
+                                                                : (i18n.addBundleProduct || 'Add Product Bundle')
                                                             }
                                                         </button>
                                                     </div>
