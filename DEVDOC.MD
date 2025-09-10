@@ -479,6 +479,8 @@ link-wizard-for-woocommerce/
 ### Facebook Commerce Platform Integration
 **Reference**: [Meta Commerce Platform - Set Up Checkout URL](https://developers.facebook.com/docs/commerce-platform/setup-checkout-url)
 
+**Documentation**: This section references the official Facebook Developer documentation for setting up checkout URLs that can receive cart information from Facebook and Instagram shops. The documentation covers URL parameter handling, product and coupon processing, and best practices for creating a seamless checkout experience.
+
 **Requirements**:
 1. **Checkout URL Endpoint**: Create dedicated endpoint for Meta/Facebook shops
 2. **Product Parameter Handling**: Parse comma-separated products with quantities (format: `products=12345:3,23456:1`)
