@@ -162,9 +162,6 @@ class LWWC_Link_Wizard {
 
 		// Hook the search functionality to register REST API routes.
 		$this->loader->add_action( 'rest_api_init', $this->get_search(), 'register_routes' );
-		
-		// Add redirect handler for checkout redirects.
-		$this->loader->add_action( 'woocommerce_add_to_cart_redirect', $this, 'handle_add_to_cart_redirect', 10, 2 );
 	}
 
 	/**
