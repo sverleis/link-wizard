@@ -406,7 +406,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         const componentMapping = {};
         
         // Sort components by ID to ensure consistent ordering
-        const sortedComponents = [...product.components].sort((a, b) => a.id.localeCompare(b.id));
+        const sortedComponents = [...product.components].sort((a, b) => String(a.id).localeCompare(String(b.id)));
         
         sortedComponents.forEach((component) => {
             if (component.options && component.options.length > 0) {
@@ -1148,7 +1148,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                                     defaultValue={component.options[0]?.id || ''}
                                                                                 >
                                                                                     {component.options
-                                                                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                                                                        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
                                                                                         .map((option) => (
                                                                                             <option key={option.id} value={option.id}>
                                                                                                 {option.name} {option.sku && `(${option.sku})`} - {cleanPriceText(option.price)}
