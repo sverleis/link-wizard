@@ -129,30 +129,72 @@ const DynamicLink = ({
                     // Step 1: Show placeholder with base structure.
                     finalUrl = `${baseUrl}/checkout-link/?products=PRODUCT_ID:QUANTITY`;
                 } else if (selectedProducts && selectedProducts.length > 0) {
-                    // Step 2+: Build actual URL.
-                    const params = new URLSearchParams();
+                    // Check if we have composite products that need custom checkout links
+                    const hasCompositeProducts = selectedProducts.some(product => product.type === 'composite');
                     
-                    // Build products parameter in format: 18:2,19:1.
-                    const productsParam = selectedProducts.map(product => 
-                        `${product.id}:${product.quantity}`
-                    ).join(',');
-                    params.append('products', productsParam);
-                    
-                    // Add coupon if selected.
-                    if (selectedCoupon) {
-                        params.append('coupon', selectedCoupon.code);
+                    if (hasCompositeProducts) {
+                        // Use custom checkout link for composite products
+                        const compositeProduct = selectedProducts.find(p => p.type === 'composite');
+                        if (compositeProduct && compositeProduct.url) {
+                            // Extract parameters from the composite product URL
+                            const url = new URL(compositeProduct.url);
+                            const params = new URLSearchParams();
+                            
+                            // Add product ID and quantity
+                            params.append('product_id', compositeProduct.id);
+                            params.append('quantity', compositeProduct.quantity || 1);
+                            
+                            // Add all composite-specific parameters
+                            for (const [key, value] of url.searchParams) {
+                                if (key.startsWith('wccp') || key === 'add-to-cart') {
+                                    params.append(key, value);
+                                }
+                            }
+                            
+                            // Add coupon if selected
+                            if (selectedCoupon) {
+                                params.append('coupon', selectedCoupon.code);
+                            }
+                            
+                            let urlString = params.toString();
+                            
+                            // Apply URL encoding based on user preference
+                            if (urlEncoding === 'decoded') {
+                                urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
+                            }
+                            
+                            finalUrl = `${baseUrl}/custom-checkout-link/?${urlString}`;
+                            console.log('🔗 Final Generated Custom Checkout URL:', finalUrl);
+                        } else {
+                            // Fallback to regular checkout link if no composite URL available
+                            finalUrl = `${baseUrl}/checkout-link/?products=${compositeProduct.id}:${compositeProduct.quantity || 1}`;
+                        }
+                    } else {
+                        // Regular checkout link for simple products
+                        const params = new URLSearchParams();
+                        
+                        // Build products parameter in format: 18:2,19:1.
+                        const productsParam = selectedProducts.map(product => 
+                            `${product.id}:${product.quantity}`
+                        ).join(',');
+                        params.append('products', productsParam);
+                        
+                        // Add coupon if selected.
+                        if (selectedCoupon) {
+                            params.append('coupon', selectedCoupon.code);
+                        }
+                        
+                        let urlString = params.toString();
+                        
+                        // Apply URL encoding based on user preference.
+                        if (urlEncoding === 'decoded') {
+                            // Decode the URL parameters for cleaner display.
+                            urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
+                        }
+                        // If 'encoded', keep the default URLSearchParams encoding.
+                        finalUrl = `${baseUrl}/checkout-link/?${urlString}`;
+                        console.log('🔗 Final Generated Checkout URL:', finalUrl);
                     }
-                    
-                    let urlString = params.toString();
-                    
-                    // Apply URL encoding based on user preference.
-                    if (urlEncoding === 'decoded') {
-                        // Decode the URL parameters for cleaner display.
-                        urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
-                    }
-                    // If 'encoded', keep the default URLSearchParams encoding.
-                    finalUrl = `${baseUrl}/checkout-link/?${urlString}`;
-                    console.log('🔗 Final Generated Checkout URL:', finalUrl);
                 }
             }
             
