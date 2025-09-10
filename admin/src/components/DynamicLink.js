@@ -133,38 +133,20 @@ const DynamicLink = ({
                     const hasCompositeProducts = selectedProducts.some(product => product.type === 'composite');
                     
                     if (hasCompositeProducts) {
-                        // Use custom checkout link for composite products
+                        // For composite products, use add-to-cart URL with checkout redirect
                         const compositeProduct = selectedProducts.find(p => p.type === 'composite');
                         if (compositeProduct && compositeProduct.url) {
-                            // Extract parameters from the composite product URL
+                            // Use the composite product URL and add checkout redirect
                             const url = new URL(compositeProduct.url);
-                            const params = new URLSearchParams();
-                            
-                            // Add product ID and quantity
-                            params.append('product_id', compositeProduct.id);
-                            params.append('quantity', compositeProduct.quantity || 1);
-                            
-                            // Add all composite-specific parameters
-                            for (const [key, value] of url.searchParams) {
-                                if (key.startsWith('wccp') || key === 'add-to-cart') {
-                                    params.append(key, value);
-                                }
-                            }
+                            url.searchParams.set('redirect', 'checkout');
                             
                             // Add coupon if selected
                             if (selectedCoupon) {
-                                params.append('coupon', selectedCoupon.code);
+                                url.searchParams.set('coupon', selectedCoupon.code);
                             }
                             
-                            let urlString = params.toString();
-                            
-                            // Apply URL encoding based on user preference
-                            if (urlEncoding === 'decoded') {
-                                urlString = urlString.replace(/%3A/g, ':').replace(/%2C/g, ',');
-                            }
-                            
-                            finalUrl = `${baseUrl}/custom-checkout-link/?${urlString}`;
-                            console.log('🔗 Final Generated Custom Checkout URL:', finalUrl);
+                            finalUrl = url.toString();
+                            console.log('🔗 Final Generated Composite Checkout URL:', finalUrl);
                         } else {
                             // Fallback to regular checkout link if no composite URL available
                             finalUrl = `${baseUrl}/checkout-link/?products=${compositeProduct.id}:${compositeProduct.quantity || 1}`;
