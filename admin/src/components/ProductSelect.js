@@ -401,8 +401,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Generate composite add-to-cart URL with component selections
         const urlParams = new URLSearchParams();
         
-        // Add component selections using actual component IDs (WooCommerce Composite Products format)
+        // Add component selections using compressed format (wccps_c0, wccpq_c0, etc.)
         let componentIndex = 0;
+        const componentMapping = {};
+        
         product.components.forEach((component) => {
             if (component.options && component.options.length > 0) {
                 // Get selected option from dropdown
@@ -417,15 +419,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                     const selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
                     
                     if (selectedOption) {
-                        // Use the correct WooCommerce Composite Products parameter format
-                        urlParams.set(`wccp_component_selection[${component.id}]`, selectedOption.id);
-                        urlParams.set(`wccp_component_quantity[${component.id}]`, selectedQuantity);
+                        // Use compressed format: wccps_c0, wccpq_c0, etc.
+                        urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                        urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
                         
                         // Add variation ID if it's a variable product
                         if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
-                            urlParams.set(`wccp_variation_id[${component.id}]`, selectedOption.variations[0].id);
+                            urlParams.set(`wccpv_c${componentIndex}`, selectedOption.variations[0].id);
                         }
                         
+                        // Map compressed index to actual component ID
+                        componentMapping[componentIndex] = component.id;
                         componentIndex++;
                     }
                 }
@@ -435,15 +439,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Add main product quantity
         urlParams.set('quantity', '1');
         
-        // Add timestamps for each component (using sequential numbering for timestamps)
-        for (let i = 0; i < componentIndex; i++) {
-            urlParams.set(`wccpm${i}`, Date.now() + i);
-        }
+        // Add component mapping (wccpm0, wccpm1, etc.)
+        Object.entries(componentMapping).forEach(([compressedIndex, actualComponentId]) => {
+            urlParams.set(`wccpm${compressedIndex}`, actualComponentId);
+        });
         
         // Add component count
         urlParams.set('wccpl', componentIndex);
 
-        const compositeUrl = `${window.location.origin}/product/${product.slug}/?${urlParams.toString()}`;
+        const compositeUrl = `${window.location.origin}/cart/?${urlParams.toString()}`;
 
         const compositeProduct = {
             ...product,
