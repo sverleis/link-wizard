@@ -487,8 +487,9 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         // Add component count
         urlParams.set('wccpl', componentIndex);
 
-        // Use checkout URL as base (following your example)
-        const compositeUrl = `${window.location.origin}/checkout/?${urlParams.toString()}`;
+        // Use cart URL as base and add redirect parameter for checkout
+        urlParams.set('redirect', 'checkout');
+        const compositeUrl = `${window.location.origin}/cart/?${urlParams.toString()}`;
         
         // Log the generated URL for debugging
         console.log('🔗 Generated Composite Product URL:', compositeUrl);

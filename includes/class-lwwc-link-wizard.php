@@ -162,6 +162,9 @@ class LWWC_Link_Wizard {
 
 		// Hook the search functionality to register REST API routes.
 		$this->loader->add_action( 'rest_api_init', $this->get_search(), 'register_routes' );
+		
+		// Add redirect handler for checkout redirects.
+		$this->loader->add_action( 'woocommerce_add_to_cart_redirect', $this, 'handle_add_to_cart_redirect', 10, 2 );
 	}
 
 	/**
@@ -171,6 +174,26 @@ class LWWC_Link_Wizard {
 	 */
 	public function run() {
 		$this->loader->run();
+	}
+
+	/**
+	 * Handle add to cart redirect for checkout redirects.
+	 *
+	 * @since   1.0.0
+	 * @param   string $url The redirect URL.
+	 * @param   string $product_id The product ID.
+	 * @return  string The modified redirect URL.
+	 */
+	public function handle_add_to_cart_redirect( $url, $product_id ) {
+		// Check if redirect=checkout parameter is present.
+		if ( isset( $_GET['redirect'] ) && $_GET['redirect'] === 'checkout' ) {
+			$checkout_url = wc_get_checkout_url();
+			if ( $checkout_url ) {
+				return $checkout_url;
+			}
+		}
+		
+		return $url;
 	}
 
 	/**
