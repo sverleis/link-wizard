@@ -23,6 +23,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [showingAllVariations, setShowingAllVariations] = useState({});
     const [isLoadingFilteredVariations, setIsLoadingFilteredVariations] = useState({});
     const [selectedAttributes, setSelectedAttributes] = useState({});
+    const [bundleQuantities, setBundleQuantities] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     // New state for fade-out animation.
@@ -30,6 +31,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const [addingProducts, setAddingProducts] = useState(new Set());
     // State for variation error modal.
     const [variationErrorModal, setVariationErrorModal] = useState(null);
+    // State for complex product configuration
+    const [expandedProducts, setExpandedProducts] = useState(new Set());
 
     // Get i18n translations from PHP.
     const i18n = window.lwwcI18n || {};
@@ -39,50 +42,44 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         return selectedProducts.some(p => p.id === productId);
     };
 
-    // Complex product functionality from addon
-    const complexProducts = window.LWWCAddons?.complexProducts || {};
-    
     // Handle accordion expansion
     const toggleProductExpansion = (productId) => {
-        if (complexProducts.toggleProductExpansion) {
-            complexProducts.toggleProductExpansion(productId);
-        }
+        setExpandedProducts(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(productId)) {
+                newSet.delete(productId);
+            } else {
+                newSet.add(productId);
+            }
+            return newSet;
+        });
     };
 
     const isProductExpanded = (productId) => {
-        return complexProducts.isProductExpanded ? complexProducts.isProductExpanded(productId) : false;
+        return expandedProducts.has(productId);
     };
 
-    // Regenerate complex product URLs when redirect options change
+    // Regenerate composite product URLs when redirect options change
     useEffect(() => {
         if (selectedProducts && selectedProducts.length > 0) {
-            const updatedProducts = selectedProducts.map(async product => {
-                if (product.type === 'composite' && product.components && complexProducts.generateCompositeUrl) {
+            const updatedProducts = selectedProducts.map(product => {
+                if (product.type === 'composite' && product.components) {
                     // Regenerate the composite product URL with new redirect options
-                    try {
-                        const url = await complexProducts.generateCompositeUrl(product);
-                        return { ...product, url };
-                    } catch (error) {
-                        console.error('Error regenerating composite URL:', error);
-                        return product;
-                    }
+                    return regenerateCompositeProductUrl(product);
                 }
                 return product;
             });
             
-            // Wait for all async operations to complete
-            Promise.all(updatedProducts).then(products => {
-                // Only update if there are changes
-                const hasChanges = products.some((product, index) => 
-                    product.type === 'composite' && product.url !== selectedProducts[index].url
-                );
-                
-                if (hasChanges) {
-                    setSelectedProducts(products);
-                }
-            });
+            // Only update if there are changes
+            const hasChanges = updatedProducts.some((product, index) => 
+                product.type === 'composite' && product.url !== selectedProducts[index].url
+            );
+            
+            if (hasChanges) {
+                setSelectedProducts(updatedProducts);
+            }
         }
-    }, [redirectOption, selectedRedirectPage, complexProducts]);
+    }, [redirectOption, selectedRedirectPage]);
 
     // Simple Product Type Badge Component
     const ProductTypeBadge = ({ product }) => {
@@ -344,16 +341,24 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }, 1000);
     };
 
-    // Bundle quantity change handler using addon
+    // Handle bundle quantity change.
     const handleBundleQuantityChange = (productId, childId, quantity) => {
-        if (complexProducts.handleBundleQuantityChange) {
-            complexProducts.handleBundleQuantityChange(productId, childId, quantity);
-        }
+        setBundleQuantities(prev => ({
+            ...prev,
+            [productId]: {
+                ...prev[productId],
+                [childId]: quantity
+            }
+        }));
     };
 
-    // Check if bundle product has any children selected using addon
+    // Check if bundle product has any children selected.
     const hasSelectedBundleChildren = (product) => {
-        return complexProducts.hasSelectedBundleChildren ? complexProducts.hasSelectedBundleChildren(product) : false;
+        if (!bundleQuantities[product.id]) {
+            // If no quantities set yet, check if product has default quantities
+            return product.default_quantities && Object.values(product.default_quantities).some(qty => qty > 0);
+        }
+        return Object.values(bundleQuantities[product.id]).some(qty => qty > 0);
     };
 
     // Handle switching to Add-to-Cart URL for bundle products
@@ -366,7 +371,53 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         }
     };
 
-    // Handle adding bundle product to selection using addon
+    // Handle adding bundle product to selection (without replacement check)
+    const addBundleProductDirect = (product) => {
+        if (!hasSelectedBundleChildren(product)) return;
+
+        // Generate bundle add-to-cart URL with quantities
+        const quantities = bundleQuantities[product.id] || product.default_quantities || {};
+        const urlParams = new URLSearchParams();
+        
+        // Add bundle quantities in the format: bundle_quantity_1, bundle_quantity_2, etc.
+        let quantityIndex = 1;
+        Object.entries(quantities).forEach(([childId, quantity]) => {
+            if (quantity > 0) {
+                urlParams.set(`bundle_quantity_${quantityIndex}`, quantity);
+                quantityIndex++;
+            }
+        });
+        
+        // Add main product quantity
+        urlParams.set('quantity', '1');
+
+        const bundleUrl = `${window.location.origin}/cart/?add-to-cart=${product.id}&${urlParams.toString()}`;
+
+        // Create a bundle product entry with child quantities
+        const childQuantities = { ...(bundleQuantities[product.id] || product.default_quantities || {}) };
+        
+        const bundleProduct = {
+            ...product,
+            quantity: 1, // Bundle product itself has quantity 1
+            child_quantities: childQuantities,
+            add_to_cart_url: bundleUrl
+        };
+
+        // Replace all selected products with just the bundle product
+        setSelectedProducts([bundleProduct]);
+        
+        // Add to adding state for visual feedback
+        setAddingProducts(prev => new Set([...prev, product.id]));
+        setTimeout(() => {
+            setAddingProducts(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(product.id);
+                return newSet;
+            });
+        }, 1000);
+    };
+
+    // Handle adding bundle product to selection (with replacement check)
     const handleAddBundleProduct = (product) => {
         if (!hasSelectedBundleChildren(product)) return;
 
@@ -375,25 +426,21 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             return;
         }
         
-        // Use addon functionality
-        if (complexProducts.addBundleProduct) {
-            complexProducts.addBundleProduct(product, setSelectedProducts);
-        }
+        addBundleProductDirect(product);
     };
 
-    // Helper function to clean HTML entities and tags from price strings using addon
+    // Helper function to clean HTML entities and tags from price strings
     const cleanPriceText = (priceHtml) => {
-        if (complexProducts.cleanPriceText) {
-            return complexProducts.cleanPriceText(priceHtml);
-        }
-        
-        // Fallback implementation
         if (!priceHtml) return '';
         
+        // Create a temporary div to parse HTML
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = priceHtml;
+        
+        // Get text content and clean up
         let cleanText = tempDiv.textContent || tempDiv.innerText || '';
         
+        // Clean up any remaining entities
         cleanText = cleanText.replace(/&[^;]+;/g, (entity) => {
             const entities = {
                 '&#82;': 'R',
@@ -407,27 +454,304 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             return entities[entity] || entity;
         });
         
+        // Extract only the current price (look for patterns like "R90,00" or "R18,00")
         const priceMatch = cleanText.match(/R[\d,]+\.?\d*/);
         if (priceMatch) {
             return priceMatch[0];
         }
         
+        // If no price pattern found, return the cleaned text but limit length
         return cleanText.trim().substring(0, 20);
     };
 
-    // Handle adding composite product to selection using addon
+    // Handle adding composite product to selection (without replacement check)
+    const addCompositeProductDirect = (product) => {
+
+        // Generate composite add-to-cart URL with component selections
+        const urlParams = new URLSearchParams();
+        
+        // Add component selections using compressed format (wccps_c0, wccpq_c0, etc.)
+        let componentIndex = 0;
+        const componentMapping = {};
+        
+        // Sort components by ID to ensure consistent ordering
+        const sortedComponents = [...product.components].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+        
+        sortedComponents.forEach((component) => {
+            if (component.options && component.options.length > 0) {
+                // Use default selection or first option if no default
+                let selectedOption = null;
+                let selectedQuantity = component.default_quantity || component.min_quantity || 1;
+                
+                // Try to get user selection from dropdown first
+                const selectElement = document.getElementById(`component-${component.id}-select`);
+                const quantityElement = document.getElementById(`component-${component.id}-quantity`);
+                
+                if (selectElement && quantityElement) {
+                    const selectedOptionId = selectElement.value;
+                    selectedQuantity = parseInt(quantityElement.value) || selectedQuantity;
+                    selectedOption = component.options.find(opt => opt.id.toString() === selectedOptionId);
+                }
+                
+                // Fallback to default selection or first option
+                if (!selectedOption) {
+                    // Try to find default option from component data
+                    if (component.default_option_id) {
+                        selectedOption = component.options.find(opt => opt.id === component.default_option_id);
+                    }
+                    
+                    // Try to find default selection from product data
+                    if (!selectedOption && product.default_selections && product.default_selections[component.id]) {
+                        const defaultProductId = product.default_selections[component.id].product_id;
+                        selectedOption = component.options.find(opt => opt.id === defaultProductId);
+                    }
+                    
+                    // If still no selection, use first option
+                    if (!selectedOption) {
+                        selectedOption = component.options[0];
+                    }
+                }
+                
+                if (selectedOption) {
+                    // Use compressed format: wccps_c0, wccpq_c0, etc.
+                    urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                    urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                    
+                    // Add variation ID and attributes if it's a variable product
+                    if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
+                        // Use the first variation (which should be the default after sorting)
+                        const defaultVariation = selectedOption.variations[0];
+                        urlParams.set(`wccpv_c${componentIndex}`, defaultVariation.id);
+                        
+                        // Add variation attributes
+                        if (defaultVariation.attributes) {
+                            Object.entries(defaultVariation.attributes).forEach(([attrName, attrValue]) => {
+                                if (attrValue) {
+                                    // Convert attribute name to proper format (remove 'pa_' prefix if present)
+                                    const cleanAttrName = attrName.startsWith('pa_') ? attrName.substring(3) : attrName;
+                                    urlParams.set(`wccp_attribute_${cleanAttrName}_c${componentIndex}`, attrValue);
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Map compressed index to actual component ID
+                    componentMapping[componentIndex] = component.id;
+                    componentIndex++;
+                }
+            }
+        });
+        
+        // Create URL with parameters in the correct order
+        let baseUrl = `${window.location.origin}/cart/`;
+        
+        // Update base URL based on redirect option
+        if (redirectOption === 'checkout') {
+            baseUrl = `${window.location.origin}/checkout/`;
+        } else if (redirectOption === 'product' && selectedProducts.length > 0) {
+            const product = selectedProducts[0];
+            const slug = product.parent_slug || product.slug;
+            if (slug) {
+                baseUrl = `${window.location.origin}/product/${slug}/`;
+            } else {
+                baseUrl = `${window.location.origin}/product/${product.id}/`;
+            }
+        } else if (redirectOption === 'page' && selectedRedirectPage) {
+            const urlParts = selectedRedirectPage.url.split('/');
+            const slug = urlParts[urlParts.length - 2];
+            if (slug) {
+                baseUrl = `${window.location.origin}/${slug}/`;
+            }
+        }
+        
+        const orderedParams = new URLSearchParams();
+        
+        // Add add-to-cart parameter first
+        orderedParams.set('add-to-cart', product.id);
+        
+        // Add component selections (wccps_c0, wccpq_c0, etc.) in order
+        for (let i = 0; i < componentIndex; i++) {
+            const wccpsKey = `wccps_c${i}`;
+            const wccpqKey = `wccpq_c${i}`;
+            if (urlParams.has(wccpsKey)) {
+                orderedParams.set(wccpsKey, urlParams.get(wccpsKey));
+            }
+            if (urlParams.has(wccpqKey)) {
+                orderedParams.set(wccpqKey, urlParams.get(wccpqKey));
+            }
+        }
+        
+        // Add main product quantity
+        orderedParams.set('quantity', '1');
+        
+        // Add component mapping (wccpm0, wccpm1, etc.)
+        Object.entries(componentMapping).forEach(([compressedIndex, actualComponentId]) => {
+            orderedParams.set(`wccpm${compressedIndex}`, actualComponentId);
+        });
+        
+        // Add component count
+        orderedParams.set('wccpl', componentIndex);
+
+        // Use cart URL as base
+        const compositeUrl = `${baseUrl}?${orderedParams.toString()}`;
+        
+        // Log the generated URL for debugging
+        console.log('🔗 Generated Composite Product URL:', compositeUrl);
+        console.log('🔗 URL Parameters:', Object.fromEntries(urlParams.entries()));
+
+        const compositeProduct = {
+            ...product,
+            url: compositeUrl,
+            quantity: 1,
+            child_quantities: {}, // Not used for composite products
+        };
+
+        // Replace all selected products with just the composite product
+        setSelectedProducts([compositeProduct]);
+        
+        // Add to adding state for visual feedback
+        setAddingProducts(prev => new Set([...prev, product.id]));
+        setTimeout(() => {
+            setAddingProducts(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(product.id);
+                return newSet;
+            });
+        }, 1000);
+    };
+
+    // Handle adding composite product to selection (with replacement check)
     const handleAddCompositeProduct = (product) => {
         // For add-to-cart, check if we need to show replacement modal FIRST
         if (showReplaceModal(product)) {
             return;
         }
         
-        // Use addon functionality
-        if (complexProducts.addCompositeProduct) {
-            complexProducts.addCompositeProduct(product, setSelectedProducts);
-        }
+        addCompositeProductDirect(product);
     };
 
+    // Regenerate composite product URL with current redirect options
+    const regenerateCompositeProductUrl = (product) => {
+        if (!product.components || product.components.length === 0) {
+            return product;
+        }
+
+        // Generate composite add-to-cart URL with component selections
+        const urlParams = new URLSearchParams();
+        
+        // Add component selections using compressed format (wccps_c0, wccpq_c0, etc.)
+        let componentIndex = 0;
+        const componentMapping = {};
+        
+        // Sort components by ID for consistent ordering
+        const sortedComponents = [...product.components].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+        
+        sortedComponents.forEach((component) => {
+            if (component.options && component.options.length > 0) {
+                // Use default selection or first option if no default
+                let selectedOption = null;
+                let selectedQuantity = component.default_quantity || component.min_quantity || 1;
+                
+                // Try to find default option from component data
+                if (component.default_option_id) {
+                    selectedOption = component.options.find(opt => opt.id === component.default_option_id);
+                }
+                
+                // Fallback to first option
+                if (!selectedOption) {
+                    selectedOption = component.options[0];
+                }
+                
+                if (selectedOption) {
+                    // Use compressed format: wccps_c0, wccpq_c0, etc.
+                    urlParams.set(`wccps_c${componentIndex}`, selectedOption.id);
+                    urlParams.set(`wccpq_c${componentIndex}`, selectedQuantity);
+                    
+                    // Add variation ID and attributes if it's a variable product
+                    if (selectedOption.type === 'variable' && selectedOption.variations && selectedOption.variations.length > 0) {
+                        // Use the first variation (which should be the default after sorting)
+                        const defaultVariation = selectedOption.variations[0];
+                        urlParams.set(`wccpv_c${componentIndex}`, defaultVariation.id);
+                        
+                        // Add variation attributes
+                        if (defaultVariation.attributes) {
+                            Object.entries(defaultVariation.attributes).forEach(([attrName, attrValue]) => {
+                                if (attrValue) {
+                                    // Convert attribute name to proper format (remove 'pa_' prefix if present)
+                                    const cleanAttrName = attrName.startsWith('pa_') ? attrName.substring(3) : attrName;
+                                    urlParams.set(`wccp_attribute_${cleanAttrName}_c${componentIndex}`, attrValue);
+                                }
+                            });
+                        }
+                    }
+                    
+                    // Map compressed index to actual component ID
+                    componentMapping[componentIndex] = component.id;
+                    componentIndex++;
+                }
+            }
+        });
+        
+        // Create URL with parameters in the correct order
+        let baseUrl = `${window.location.origin}/cart/`;
+        
+        // Update base URL based on redirect option
+        if (redirectOption === 'checkout') {
+            baseUrl = `${window.location.origin}/checkout/`;
+        } else if (redirectOption === 'product' && selectedProducts.length > 0) {
+            const product = selectedProducts[0];
+            const slug = product.parent_slug || product.slug;
+            if (slug) {
+                baseUrl = `${window.location.origin}/product/${slug}/`;
+            } else {
+                baseUrl = `${window.location.origin}/product/${product.id}/`;
+            }
+        } else if (redirectOption === 'page' && selectedRedirectPage) {
+            const urlParts = selectedRedirectPage.url.split('/');
+            const slug = urlParts[urlParts.length - 2];
+            if (slug) {
+                baseUrl = `${window.location.origin}/${slug}/`;
+            }
+        }
+        
+        const orderedParams = new URLSearchParams();
+        
+        // Add add-to-cart parameter first
+        orderedParams.set('add-to-cart', product.id);
+        
+        // Add component selections (wccps_c0, wccpq_c0, etc.) in order
+        for (let i = 0; i < componentIndex; i++) {
+            const wccpsKey = `wccps_c${i}`;
+            const wccpqKey = `wccpq_c${i}`;
+            if (urlParams.has(wccpsKey)) {
+                orderedParams.set(wccpsKey, urlParams.get(wccpsKey));
+            }
+            if (urlParams.has(wccpqKey)) {
+                orderedParams.set(wccpqKey, urlParams.get(wccpqKey));
+            }
+        }
+        
+        // Add main product quantity
+        orderedParams.set('quantity', '1');
+        
+        // Add component mapping (wccpm0, wccpm1, etc.)
+        Object.entries(componentMapping).forEach(([compressedIndex, actualComponentId]) => {
+            orderedParams.set(`wccpm${compressedIndex}`, actualComponentId);
+        });
+        
+        // Add component count
+        orderedParams.set('wccpl', componentIndex);
+
+        // Use the appropriate base URL
+        const compositeUrl = `${baseUrl}?${orderedParams.toString()}`;
+        
+        return {
+            ...product,
+            url: compositeUrl,
+            quantity: 1,
+            child_quantities: {}, // Not used for composite products
+        };
+    };
 
     // Handling of the image modal.
     const handleImageClick = (imageUrl) => {
@@ -680,18 +1004,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     }, [setSelectedProducts, setResults]);
 
     const handleCompositeProductStable = useCallback((product) => {
-        if (complexProducts.addCompositeProduct) {
-            complexProducts.addCompositeProduct(product, setSelectedProducts);
-        }
+        addCompositeProductDirect(product);
         // Don't remove complex products from search results - keep them for editing
-    }, [complexProducts, setSelectedProducts]);
+    }, []);
 
     const handleBundleProductStable = useCallback((product) => {
-        if (complexProducts.addBundleProduct) {
-            complexProducts.addBundleProduct(product, setSelectedProducts);
-        }
+        addBundleProductDirect(product);
         // Don't remove complex products from search results - keep them for editing
-    }, [complexProducts, setSelectedProducts]);
+    }, []);
 
     // Initialize product replacement hook
     const {
