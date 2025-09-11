@@ -75,7 +75,10 @@ export const useProductReplacement = ({
         setTimeout(() => {
             // Call appropriate handler based on product type
             if (newProduct.type === 'composite' && handlers.handleCompositeProduct) {
-                handlers.handleCompositeProduct(newProduct);
+                // For composite products, add a small delay to ensure DOM is rendered
+                setTimeout(() => {
+                    handlers.handleCompositeProduct(newProduct);
+                }, 100);
             } else if (newProduct.type === 'bundle' && handlers.handleBundleProduct) {
                 handlers.handleBundleProduct(newProduct);
             } else if (handlers.handleSimpleProduct) {
