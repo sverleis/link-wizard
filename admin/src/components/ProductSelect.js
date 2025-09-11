@@ -47,7 +47,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     
     // Set up addon state change callback
     useEffect(() => {
-        if (complexProducts.onStateChange === null) {
+        if (complexProducts && !complexProducts.onStateChange) {
             complexProducts.onStateChange = () => {
                 console.log('ProductSelect: onStateChange callback triggered, updating addonState');
                 setAddonState(prev => prev + 1);
@@ -58,8 +58,20 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     // Handle accordion expansion
     const toggleProductExpansion = (productId) => {
         console.log('ProductSelect: toggleProductExpansion called for product', productId);
-        if (complexProducts.toggleProductExpansion) {
+        console.log('ProductSelect: complexProducts available?', !!complexProducts);
+        console.log('ProductSelect: toggleProductExpansion function available?', !!complexProducts?.toggleProductExpansion);
+        
+        if (complexProducts?.toggleProductExpansion) {
+            // Ensure callback is set up
+            if (!complexProducts.onStateChange) {
+                complexProducts.onStateChange = () => {
+                    console.log('ProductSelect: onStateChange callback triggered, updating addonState');
+                    setAddonState(prev => prev + 1);
+                };
+            }
             complexProducts.toggleProductExpansion(productId);
+        } else {
+            console.error('ProductSelect: complexProducts.toggleProductExpansion not available');
         }
     };
 
