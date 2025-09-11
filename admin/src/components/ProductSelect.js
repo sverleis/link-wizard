@@ -961,58 +961,61 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 />
                                             </div>
                                         )}
-                                        {/* Complex Product UI from Addon */}
+                                        {/* Complex Product Action Buttons - inside product header */}
                                         {(product.type === 'composite' || product.type === 'bundle') && (
-                                            <>
-                                                {window.LWWCAddons?.ComplexProductUI ? (
-                                                    <window.LWWCAddons.ComplexProductUI
-                                                        product={product}
-                                                        linkType={linkType}
-                                                        i18n={i18n}
-                                                        complexProducts={complexProducts}
-                                                        handleBundleQuantityChange={handleBundleQuantityChange}
-                                                        hasSelectedBundleChildren={hasSelectedBundleChildren}
-                                                        handleAddBundleProduct={handleAddBundleProduct}
-                                                        handleAddCompositeProduct={handleAddCompositeProduct}
-                                                        handleSwitchToAddToCart={handleSwitchToAddToCart}
-                                                        cleanPriceText={cleanPriceText}
-                                                        isProductExpanded={isProductExpanded}
-                                                        toggleProductExpansion={toggleProductExpansion}
-                                                    />
-                                                ) : (
-                                                    <div className="product-action-buttons">
-                                                        <button
-                                                            type="button"
-                                                            className="lwwc-configure-button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                toggleProductExpansion(product.id);
-                                                            }}
-                                                        >
-                                                            <span className="dashicons dashicons-admin-generic" />
-                                                            {i18n.configure || 'Configure'}
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="lwwc-add-button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (product.type === 'bundle') {
-                                                                    handleAddBundleProduct(product);
-                                                                } else if (product.type === 'composite') {
-                                                                    handleAddCompositeProduct(product);
-                                                                }
-                                                            }}
-                                                            disabled={product.type === 'bundle' && !hasSelectedBundleChildren(product)}
-                                                        >
-                                                            <span className="dashicons dashicons-plus-alt2" />
-                                                            {i18n.add || 'Add'}
-                                                        </button>
-                                                    </div>
-                                                )}
-                                                
-                                                {/* Fallback Accordion for Complex Products */}
-                                                {isProductExpanded(product.id) && (
+                                            <div className="product-action-buttons">
+                                                <button
+                                                    type="button"
+                                                    className="lwwc-configure-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleProductExpansion(product.id);
+                                                    }}
+                                                >
+                                                    <span className="dashicons dashicons-admin-generic" />
+                                                    {i18n.configure || 'Configure'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="lwwc-add-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (product.type === 'bundle') {
+                                                            handleAddBundleProduct(product);
+                                                        } else if (product.type === 'composite') {
+                                                            handleAddCompositeProduct(product);
+                                                        }
+                                                    }}
+                                                    disabled={product.type === 'bundle' && !hasSelectedBundleChildren(product)}
+                                                >
+                                                    <span className="dashicons dashicons-plus-alt2" />
+                                                    {i18n.add || 'Add'}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Complex Product UI from Addon - outside product header */}
+                                    {(product.type === 'composite' || product.type === 'bundle') && (
+                                        <>
+                                            {window.LWWCAddons?.ComplexProductUI ? (
+                                                <window.LWWCAddons.ComplexProductUI
+                                                    product={product}
+                                                    linkType={linkType}
+                                                    i18n={i18n}
+                                                    complexProducts={complexProducts}
+                                                    handleBundleQuantityChange={handleBundleQuantityChange}
+                                                    hasSelectedBundleChildren={hasSelectedBundleChildren}
+                                                    handleAddBundleProduct={handleAddBundleProduct}
+                                                    handleAddCompositeProduct={handleAddCompositeProduct}
+                                                    handleSwitchToAddToCart={handleSwitchToAddToCart}
+                                                    cleanPriceText={cleanPriceText}
+                                                    isProductExpanded={isProductExpanded}
+                                                    toggleProductExpansion={toggleProductExpansion}
+                                                />
+                                            ) : (
+                                                /* Fallback Accordion for Complex Products - only show if addon component is not available */
+                                                isProductExpanded(product.id) && (
                                                     <div className="lwwc-product-accordion">
                                                         <div className="lwwc-accordion-content">
                                                             <div className="lwwc-fallback-notice">
@@ -1020,11 +1023,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
-
+                                                )
+                                            )}
+                                        </>
+                                    )}
 
                                     {/* Attribute Filters for Variable Products. */}
                                     {product.type === 'variable' && (
