@@ -899,11 +899,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     } else if (product.type === 'grouped') {
                                                         // For grouped products, we'll handle selection differently.
                                                         // Don't do anything on click - let user select child products.
+                                                    } else if (product.type === 'composite' && linkType === 'checkoutLink') {
+                                                        // Composite products cannot be used with checkout links.
+                                                        // Don't do anything on click - show warning instead.
                                                     } else {
                                                         handleSelectProduct(product);
                                                     }
                                                 }}
-                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' || product.type === 'grouped' ? product.type : 'clickable')}`}
+                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' || product.type === 'grouped' || (product.type === 'composite' && linkType === 'checkoutLink') ? product.type : 'clickable')}`}
                                             >
                                         <div className="product-icon">
                                             {product.image ? (
