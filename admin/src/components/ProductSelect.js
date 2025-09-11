@@ -49,6 +49,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     useEffect(() => {
         if (complexProducts.onStateChange === null) {
             complexProducts.onStateChange = () => {
+                console.log('ProductSelect: onStateChange callback triggered, updating addonState');
                 setAddonState(prev => prev + 1);
             };
         }
@@ -56,6 +57,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     
     // Handle accordion expansion
     const toggleProductExpansion = (productId) => {
+        console.log('ProductSelect: toggleProductExpansion called for product', productId);
         if (complexProducts.toggleProductExpansion) {
             complexProducts.toggleProductExpansion(productId);
         }
@@ -1012,6 +1014,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     cleanPriceText={cleanPriceText}
                                                     isProductExpanded={isProductExpanded}
                                                     toggleProductExpansion={toggleProductExpansion}
+                                                    isProductSelected={isProductSelected(product.id)}
                                                 />
                                             ) : (
                                                 /* Fallback Accordion for Complex Products - only show if addon component is not available */
