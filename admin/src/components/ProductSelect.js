@@ -911,14 +911,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     } else if (product.type === 'grouped') {
                                                         // For grouped products, we'll handle selection differently.
                                                         // Don't do anything on click - let user select child products.
-                                                    } else if (product.type === 'composite' && linkType === 'checkoutLink') {
-                                                        // Composite products cannot be used with checkout links.
-                                                        // Don't do anything on click - show warning instead.
+                                                    } else if (product.type === 'composite') {
+                                                        // For composite products, we'll handle selection differently.
+                                                        // Don't do anything on click - let user configure components.
                                                     } else {
                                                         handleSelectProduct(product);
                                                     }
                                                 }}
-                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' || product.type === 'grouped' || (product.type === 'composite' && linkType === 'checkoutLink') ? product.type : 'clickable')}`}
+                                                className={`product-header ${product.disabled ? 'disabled' : (product.type === 'variable' || product.type === 'grouped' || product.type === 'composite' ? product.type : 'clickable')}`}
                                             >
                                         <div className="product-icon">
                                             {product.image ? (
@@ -1004,15 +1004,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         }
                                                     }}
                                                     disabled={
-                                                        (product.type === 'bundle' && !hasSelectedBundleChildren(product)) ||
-                                                        (product.type === 'composite' && linkType === 'checkoutLink')
+                                                        (product.type === 'bundle' && !hasSelectedBundleChildren(product))
                                                     }
                                                 >
                                                     <span className="dashicons dashicons-plus-alt2" />
-                                                    {product.type === 'composite' && linkType === 'checkoutLink' 
-                                                        ? (i18n.notAvailableForCheckout || 'Not Available for Checkout')
-                                                        : (i18n.add || 'Add')
-                                                    }
+                                                    {i18n.add || 'Add'}
                                                 </button>
                                             </div>
                                         )}

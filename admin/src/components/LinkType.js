@@ -20,7 +20,7 @@ const LinkType = ({ linkType, setLinkType }) => {
 
                     <p className="description">
                         Creates a link that takes the customer directly to the checkout page with prefilled product(s) 
-                        and an optional coupon. Note: Grouped products are not supported.
+                        and an optional coupon. Supports composite products. Note: Grouped products are not supported.
                     </p>
                 </div>
 
