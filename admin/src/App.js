@@ -50,6 +50,14 @@ function App() {
         return () => clearTimeout(t);
     }, []);
 
+    // Expose linkType and redirectOption to global scope for addons
+    useEffect(() => {
+        console.log('React App: Setting global variables - linkType:', linkType, 'redirectOption:', redirectOption);
+        window.lwwcLinkType = linkType;
+        window.lwwcRedirectOption = redirectOption;
+        console.log('React App: Global variables set - window.lwwcLinkType:', window.lwwcLinkType, 'window.lwwcRedirectOption:', window.lwwcRedirectOption);
+    }, [linkType, redirectOption]);
+
     // Check for addon parameter in URL on component mount.
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);

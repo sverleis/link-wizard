@@ -3,6 +3,10 @@
 ## Overview
 Link Wizard for WooCommerce is a plugin that provides a user-friendly interface for generating shareable checkout URLs, complementing WooCommerce 10.0's native shareable checkout URL functionality. While WooCommerce 10.0 introduced the backend support for these URLs, it requires manual URL construction. This plugin provides the missing UI layer, allowing administrators to easily generate direct add-to-cart and checkout links through a React-based admin interface with product search, quantity controls, coupon support, and extensible product type support.
 
+## TODO
+- Add WooCommerce.com documentation link: https://woocommerce.com/document/creating-sharable-checkout-urls-in-woocommerce/
+- Facebook Developer Link?: https://developers.facebook.com/docs/commerce-platform/setup-checkout-url
+
 ## Today's Development Session (August 9, 2025)
 
 ### 1. Coupon System Implementation & Refactoring

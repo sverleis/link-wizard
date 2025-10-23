@@ -442,7 +442,10 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     };
 
     // Handle adding composite product to selection using addon
-    const handleAddCompositeProduct = (product) => {
+    const handleAddCompositeProduct = (product, componentSelections = []) => {
+        console.log('LWWC ProductSelect: handleAddCompositeProduct called with product:', product.id);
+        console.log('LWWC ProductSelect: componentSelections received:', componentSelections);
+        
         // For add-to-cart, check if we need to show replacement modal FIRST
         if (showReplaceModal(product)) {
             return;
@@ -450,7 +453,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         
         // Use addon functionality
         if (complexProducts.addCompositeProduct) {
-            complexProducts.addCompositeProduct(product, setSelectedProducts);
+            console.log('LWWC ProductSelect: Calling complexProducts.addCompositeProduct with componentSelections:', componentSelections);
+            complexProducts.addCompositeProduct(product, componentSelections, setSelectedProducts);
         }
     };
 
@@ -1000,7 +1004,77 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         if (product.type === 'bundle') {
                                                             handleAddBundleProduct(product);
                                                         } else if (product.type === 'composite') {
-                                                            handleAddCompositeProduct(product);
+                                                            // For composite products, collect component selections from the DOM
+                                                            const componentSelections = [];
+                                                            
+                                                            // Always try to collect component selections, regardless of expansion state
+                                                            console.log('LWWC ProductSelect: Looking for component elements...');
+                                                            console.log('LWWC ProductSelect: Product expanded state:', isProductExpanded(product.id));
+                                                            
+                                                            // Add a small delay to ensure DOM elements are rendered
+                                                            setTimeout(() => {
+                                                                // Look for component selection elements in the DOM
+                                                                // The component elements are structured with IDs like component-{componentId}-select
+                                                                const selectElements = document.querySelectorAll('select[id^="component-"][id$="-select"]');
+                                                                console.log('LWWC ProductSelect: Found select elements:', selectElements.length);
+                                                                
+                                                                selectElements.forEach((selectElement, index) => {
+                                                                    console.log(`LWWC ProductSelect: Processing select element ${index}:`, selectElement.id, 'value:', selectElement.value);
+                                                                    
+                                                                    const id = selectElement.id;
+                                                                    const componentId = id.replace('component-', '').replace('-select', '');
+                                                                    const quantityElement = document.getElementById(`component-${componentId}-quantity`);
+                                                                    
+                                                                    console.log(`LWWC ProductSelect: Component ID: ${componentId}, Quantity element:`, quantityElement);
+                                                                    
+                                                                    if (selectElement.value && quantityElement) {
+                                                                        const selectedOptionId = selectElement.value;
+                                                                        const quantity = parseInt(quantityElement.value) || 1;
+                                                                        
+                                                                        console.log(`LWWC ProductSelect: Selected option ID: ${selectedOptionId}, Quantity: ${quantity}`);
+                                                                        
+                                                                        // Try to get component data from the global addon state
+                                                                        let selectedOption = null;
+                                                                        
+                                                                        // First, try to get from the global addon state
+                                                                        if (window.lwwcAddonState && window.lwwcAddonState.components) {
+                                                                            const componentData = window.lwwcAddonState.components.find(comp => comp.id === componentId);
+                                                                            if (componentData && componentData.options) {
+                                                                                selectedOption = componentData.options.find(opt => opt.id === selectedOptionId);
+                                                                            }
+                                                                        }
+                                                                        
+                                                                        // If not found, try to get from the product data
+                                                                        if (!selectedOption && product.components) {
+                                                                            const componentData = product.components.find(comp => comp.id === componentId);
+                                                                            if (componentData && componentData.options) {
+                                                                                selectedOption = componentData.options.find(opt => opt.id === selectedOptionId);
+                                                                            }
+                                                                        }
+                                                                        
+                                                                        // If still not found, create a basic option object
+                                                                        if (!selectedOption) {
+                                                                            selectedOption = {
+                                                                                id: selectedOptionId,
+                                                                                name: `Product ${selectedOptionId}`,
+                                                                                type: 'simple'
+                                                                            };
+                                                                        }
+                                                                        
+                                                                        console.log(`LWWC ProductSelect: Found selected option:`, selectedOption);
+                                                                        componentSelections.push({
+                                                                            id: componentId,
+                                                                            selected_option: selectedOption,
+                                                                            quantity: quantity
+                                                                        });
+                                                                    }
+                                                                });
+                                                                
+                                                                console.log('LWWC ProductSelect: Final component selections:', componentSelections);
+                                                                
+                                                                // Call handleAddCompositeProduct with the collected selections
+                                                                handleAddCompositeProduct(product, componentSelections);
+                                                            }, 100); // 100ms delay
                                                         }
                                                     }}
                                                     disabled={

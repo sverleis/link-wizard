@@ -23,6 +23,8 @@ const DynamicLink = ({
 
     // Generate the link whenever any of the dependencies change.
     useEffect(() => {
+        console.log('DynamicLink: useEffect triggered, selectedProducts:', selectedProducts);
+        console.log('DynamicLink: selectedProducts details:', selectedProducts.map(p => ({ id: p.id, type: p.type, url: p.url, name: p.name })));
         generateLink();
     }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
@@ -88,6 +90,7 @@ const DynamicLink = ({
                     
                     // Check if we have a composite product with a pre-generated URL
                     const compositeProduct = selectedProducts.find(p => p.type === 'composite' && p.url);
+                    console.log('DynamicLink: Looking for composite product, found:', compositeProduct);
                     if (compositeProduct) {
                         // For composite products, use the pre-generated URL directly
                         finalUrl = compositeProduct.url;
@@ -131,14 +134,20 @@ const DynamicLink = ({
                 } else if (selectedProducts && selectedProducts.length > 0) {
                     // Check if we have composite products that need custom checkout links
                     const hasCompositeProducts = selectedProducts.some(product => product.type === 'composite');
+                    console.log('DynamicLink: hasCompositeProducts:', hasCompositeProducts);
+                    console.log('DynamicLink: selectedProducts:', selectedProducts);
                     
                     if (hasCompositeProducts) {
                         // For composite products, use the new checkout-link URL (Facebook-compatible)
                         const compositeProduct = selectedProducts.find(p => p.type === 'composite');
-                        if (compositeProduct && compositeProduct.checkout_url) {
+                        console.log('DynamicLink: compositeProduct found:', compositeProduct);
+                        console.log('DynamicLink: compositeProduct.checkout_url:', compositeProduct?.checkout_url);
+                        console.log('DynamicLink: compositeProduct.url:', compositeProduct?.url);
+                        
+                        if (compositeProduct && (compositeProduct.checkout_url || compositeProduct.url)) {
                             // Use the composite product checkout URL
                             // This URL format is compatible with Facebook Commerce requirements
-                            finalUrl = compositeProduct.checkout_url;
+                            finalUrl = compositeProduct.checkout_url || compositeProduct.url;
                             
                             // If coupon is selected, it needs to be encoded in the configuration
                             // Note: The checkout_url should be regenerated with the coupon
@@ -490,6 +499,80 @@ const DynamicLink = ({
             <div className={`dynamic-link-display ${isDisabled ? 'disabled' : ''}`}>
                 {renderHighlightedUrl()}
             </div>
+
+            {/* Facebook-Compatible URL Display */}
+            {!isDisabled && currentStep > 1 && selectedProducts && selectedProducts.length > 0 && selectedProducts.some(product => product.type === 'composite') && (
+                <div className="facebook-compatible-url-container" style={{
+                    marginTop: '15px',
+                    marginBottom: '20px',
+                    padding: '15px',
+                    backgroundColor: '#f0f8ff',
+                    border: '1px solid #0073aa',
+                    borderRadius: '6px',
+                    borderLeft: '4px solid #0073aa'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '10px'
+                    }}>
+                        <span className="dashicons dashicons-facebook" style={{
+                            color: '#1877f2',
+                            fontSize: '18px',
+                            marginRight: '8px'
+                        }} />
+                        <strong style={{ color: '#0073aa', fontSize: '14px' }}>
+                            Non-Default Composite Product URL:
+                        </strong>
+                    </div>
+                    <div style={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        padding: '12px',
+                        fontFamily: 'monospace',
+                        fontSize: '13px',
+                        wordBreak: 'break-all',
+                        color: '#333'
+                    }}>
+                        {(() => {
+                            // Build Facebook-compatible URL with multiple products
+                            const baseUrl = window.location.origin;
+                            const products = [];
+                            
+                            selectedProducts.forEach(product => {
+                                if (product.type === 'composite' && (product.checkout_url || product.url)) {
+                                    // For composite products, extract the products parameter from the URL
+                                    const compositeUrl = product.checkout_url || product.url;
+                                    const url = new URL(compositeUrl);
+                                    const productsParam = url.searchParams.get('products');
+                                    if (productsParam) {
+                                        products.push(productsParam);
+                                    }
+                                } else {
+                                    // For regular products, use standard format
+                                    products.push(`${product.id}:${product.quantity || 1}`);
+                                }
+                            });
+                            
+                            if (products.length > 0) {
+                                const productsString = products.join(',');
+                                return `${baseUrl}/checkout-link/?products=${productsString}`;
+                            }
+                            
+                            return 'No Facebook-compatible URL available';
+                        })()}
+                    </div>
+                    <div style={{
+                        marginTop: '8px',
+                        fontSize: '12px',
+                        color: '#666',
+                        fontStyle: 'italic'
+                    }}>
+                        This URL uses the mapped composite product ID and includes your selected component quantities.
+                    </div>
+                </div>
+            )}
 
             {/* Copy and Open Buttons - Now below the input field */}
             <div className="dynamic-link-button-container">
