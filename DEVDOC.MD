@@ -582,8 +582,9 @@ This plugin provides the missing UI for creating these shareable checkout URLs, 
 - **Version History**: Track changes made to existing links
 - **Bulk Link Processing**: Import multiple links for batch editing
 - **Link Validation**: Check if links are still functional and products are in stock
+- **Composite Product Price Calculator Mini-Plugin**: A standalone mini-plugin that provides real-time cart calculation for composite products, showing dynamic pricing based on component selections and quantities. This would be a nice-to-have enhancement for better user experience when configuring composite product links.
 
 ---
 
-*Last Updated: August 9, 2025*
-*Version: 1.0.0*
+*Last Updated: October 23, 2025*
+*Version: 1.1.6*

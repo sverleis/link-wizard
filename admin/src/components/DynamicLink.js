@@ -170,10 +170,39 @@ const DynamicLink = ({
                         const params = new URLSearchParams();
                         
                         // Build products parameter in format: 18:2,19:1.
-                        const productsParam = selectedProducts.map(product => 
-                            `${product.id}:${product.quantity}`
-                        ).join(',');
-                        params.append('products', productsParam);
+                        // Handle bundle products differently - only add the bundle product itself
+                        const products = [];
+                        const bundleConfigs = [];
+                        
+                        selectedProducts.forEach(product => {
+                            if (product.type === 'bundle' && product.checkout_url) {
+                                // For bundle products, use the pre-generated checkout URL
+                                // Extract the products parameter from the bundle's checkout URL
+                                const bundleUrl = new URL(product.checkout_url);
+                                const bundleProducts = bundleUrl.searchParams.get('products');
+                                if (bundleProducts) {
+                                    products.push(bundleProducts);
+                                }
+                                
+                                // Extract bundle configuration if available
+                                const bundleConfig = bundleUrl.searchParams.get('bundle_config');
+                                if (bundleConfig) {
+                                    bundleConfigs.push(bundleConfig);
+                                }
+                            } else {
+                                // Regular products
+                                products.push(`${product.id}:${product.quantity || 1}`);
+                            }
+                        });
+                        
+                        if (products.length > 0) {
+                            params.append('products', products.join(','));
+                        }
+                        
+                        // Add bundle configurations if any
+                        if (bundleConfigs.length > 0) {
+                            params.append('bundle_config', bundleConfigs.join('|'));
+                        }
                         
                         // Add coupon if selected.
                         if (selectedCoupon) {
