@@ -26,14 +26,14 @@ const DynamicLink = ({
         generateLink();
     }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
-    // Auto-select composite URL format when composite products are selected.
+    // Auto-select composite URL format when composite or bundle products are selected.
     useEffect(() => {
-        if (selectedProducts && selectedProducts.some(product => product.type === 'composite')) {
+        if (selectedProducts && selectedProducts.some(product => (product.type === 'composite' || product.type === 'bundle') && (product.checkout_url || product.url))) {
             if (urlEncoding !== 'composite') {
                 setUrlEncoding('composite');
             }
         } else if (urlEncoding === 'composite') {
-            // If no composite products, switch back to decoded
+            // If no mapped products, switch back to decoded
             setUrlEncoding('decoded');
         }
     }, [selectedProducts, urlEncoding]);
@@ -411,20 +411,24 @@ const DynamicLink = ({
                 if (urlEncoding === 'encoded') {
                     productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
                 } else if (urlEncoding === 'composite') {
-                    // For composite products, use the Facebook-compatible format
-                    const compositeProducts = selectedProducts.filter(p => p.type === 'composite');
-                    const regularProducts = selectedProducts.filter(p => p.type !== 'composite');
+                    // For composite and bundle products, use the Facebook-compatible format
+                    const mappedProducts = selectedProducts.filter(p => (p.type === 'composite' || p.type === 'bundle') && (p.checkout_url || p.url));
+                    const regularProducts = selectedProducts.filter(p => !((p.type === 'composite' || p.type === 'bundle') && (p.checkout_url || p.url)));
                     
                     const products = [];
                     
-                    // Add composite products with their mapped URLs
-                    compositeProducts.forEach(product => {
+                    // Add mapped products (composite and bundle) with their mapped URLs
+                    mappedProducts.forEach(product => {
                         if (product.checkout_url || product.url) {
-                            const compositeUrl = product.checkout_url || product.url;
-                            const url = new URL(compositeUrl);
-                            const productsParam = url.searchParams.get('products');
-                            if (productsParam) {
-                                products.push(productsParam);
+                            try {
+                                const mappedUrl = new URL(product.checkout_url || product.url);
+                                const productsParam = mappedUrl.searchParams.get('products');
+                                if (productsParam) {
+                                    products.push(productsParam);
+                                }
+                            } catch (e) {
+                                console.error('Error parsing mapped product URL:', e, product.checkout_url || product.url);
+                                products.push(`${product.id}:${product.quantity || 1}`); // Fallback
                             }
                         }
                     });
