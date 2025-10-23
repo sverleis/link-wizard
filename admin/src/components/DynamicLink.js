@@ -26,6 +26,18 @@ const DynamicLink = ({
         generateLink();
     }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
+    // Auto-select composite URL format when composite products are selected.
+    useEffect(() => {
+        if (selectedProducts && selectedProducts.some(product => product.type === 'composite')) {
+            if (urlEncoding !== 'composite') {
+                setUrlEncoding('composite');
+            }
+        } else if (urlEncoding === 'composite') {
+            // If no composite products, switch back to decoded
+            setUrlEncoding('decoded');
+        }
+    }, [selectedProducts, urlEncoding]);
+
     const generateLink = async () => {
         setIsGenerating(true);
 
@@ -380,6 +392,31 @@ const DynamicLink = ({
                 // Apply URL encoding based on user preference for display.
                 if (urlEncoding === 'encoded') {
                     productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
+                } else if (urlEncoding === 'composite') {
+                    // For composite products, use the Facebook-compatible format
+                    const compositeProducts = selectedProducts.filter(p => p.type === 'composite');
+                    const regularProducts = selectedProducts.filter(p => p.type !== 'composite');
+                    
+                    const products = [];
+                    
+                    // Add composite products with their mapped URLs
+                    compositeProducts.forEach(product => {
+                        if (product.checkout_url || product.url) {
+                            const compositeUrl = product.checkout_url || product.url;
+                            const url = new URL(compositeUrl);
+                            const productsParam = url.searchParams.get('products');
+                            if (productsParam) {
+                                products.push(productsParam);
+                            }
+                        }
+                    });
+                    
+                    // Add regular products
+                    regularProducts.forEach(product => {
+                        products.push(`${product.id}:${product.quantity}`);
+                    });
+                    
+                    productsParam = products.join(',');
                 }
                 
                 parts.push(
@@ -482,6 +519,26 @@ const DynamicLink = ({
                                 </span>
                             </span>
                         </label>
+
+                        {/* Composite Product URL Format - Only show when composite products are selected */}
+                        {selectedProducts && selectedProducts.some(product => product.type === 'composite') && (
+                            <label className="lwwc-url-encoding-label">
+                                <input
+                                    type="radio"
+                                    name="urlEncoding"
+                                    value="composite"
+                                    checked={urlEncoding === 'composite'}
+                                    onChange={(e) => setUrlEncoding(e.target.value)}
+                                    className="lwwc-url-encoding-radio"
+                                />
+                                <span>
+                                    <strong className="lwwc-url-encoding-label-text">Composite Product URLs</strong>
+                                    <span className="lwwc-url-encoding-description">
+                                        Facebook-compatible format with mapped composite product IDs
+                                    </span>
+                                </span>
+                            </label>
+                        )}
                     </div>
                 </div>
             )}
