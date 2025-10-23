@@ -393,7 +393,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     };
 
     // Handle adding bundle product to selection using addon
-    const handleAddBundleProduct = (product) => {
+    const handleAddBundleProduct = (product, quantities = {}, setSelectedProductsParam = null) => {
         if (!hasSelectedBundleChildren(product)) return;
 
         // For add-to-cart, check if we need to show replacement modal FIRST
@@ -401,9 +401,16 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             return;
         }
         
+        console.log('LWWC ProductSelect: handleAddBundleProduct called with product:', product.id);
+        console.log('LWWC ProductSelect: quantities received:', quantities);
+        console.log('LWWC ProductSelect: setSelectedProductsParam received:', typeof setSelectedProductsParam);
+        
+        // Use the passed setSelectedProductsParam or fall back to the local setSelectedProducts
+        const selectedProductsFunction = setSelectedProductsParam || setSelectedProducts;
+        
         // Use addon functionality
         if (complexProducts.addBundleProduct) {
-            complexProducts.addBundleProduct(product, setSelectedProducts);
+            complexProducts.addBundleProduct(product, quantities, selectedProductsFunction);
         }
     };
 
@@ -1106,6 +1113,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     isProductExpanded={isProductExpanded}
                                                     toggleProductExpansion={toggleProductExpansion}
                                                     isProductSelected={isProductSelected(product.id)}
+                                                    setSelectedProducts={setSelectedProducts}
                                                 />
                                             ) : (
                                                 /* Fallback Accordion for Complex Products - only show if addon component is not available */
