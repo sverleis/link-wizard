@@ -22,6 +22,15 @@ function App() {
     const [pendingLinkType, setPendingLinkType] = useState(null);
     // Add validation state for step navigation.
     const [showValidationModal, setShowValidationModal] = useState(false);
+    
+    // Automatically set redirectOption based on linkType.
+    useEffect(() => {
+        if (linkType === 'checkoutLink') {
+            setRedirectOption('checkoutLink');
+        } else if (linkType === 'addToCart') {
+            setRedirectOption('cart');
+        }
+    }, [linkType]);
     // Add state to track attempted navigation.
     const [attemptedStep, setAttemptedStep] = useState(null);
     // Add state for addon management.
