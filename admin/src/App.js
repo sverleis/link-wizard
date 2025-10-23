@@ -58,6 +58,13 @@ function App() {
         console.log('React App: Global variables set - window.lwwcLinkType:', window.lwwcLinkType, 'window.lwwcRedirectOption:', window.lwwcRedirectOption);
     }, [linkType, redirectOption]);
 
+    // Expose selectedProducts to global scope for addons
+    useEffect(() => {
+        console.log('React App: Setting selectedProducts - selectedProducts:', selectedProducts);
+        window.lwwcSelectedProducts = selectedProducts;
+        console.log('React App: Global selectedProducts set - window.lwwcSelectedProducts:', window.lwwcSelectedProducts);
+    }, [selectedProducts]);
+
     // Check for addon parameter in URL on component mount.
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
