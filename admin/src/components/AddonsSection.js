@@ -242,7 +242,7 @@ const AddonsSection = ({ onAddonSelect }) => {
                             rel="noopener noreferrer"
                             className={`button ${isAlert ? 'button-secondary' : 'button-primary'} lwwc-addon-advertising-button`}
                         >
-                            {isAlert ? 'Get Link Wizard Composite' : 'Get Link Wizard Composite'}
+                            {isAlert ? 'Get Link Wizard for Composites' : 'Get Link Wizard for Composites'}
                         </a>
                     </div>
                 </div>
