@@ -602,4 +602,19 @@ class LWWC_Variable_Product_Handler implements LWWC_Product_Handler_Interface {
 			'disabled_reason'   => LWWC_Link_Wizard_I18n::get_admin_text( 'variation_has_any_attributes' ),
 		);
 	}
+
+	/**
+	 * Generate URL for this product type.
+	 *
+	 * Variable products use the default URL logic, so we return null.
+	 *
+	 * @param WC_Product $product      The product.
+	 * @param string     $link_type    'addToCart' or 'checkoutLink'.
+	 * @param array      $options      Additional options (redirect, quantity, etc.).
+	 * @return string|null The generated URL, or null to use default logic.
+	 */
+	public function generate_url( $product, $link_type, $options = array() ) {
+		// Variable products use the default URL logic.
+		return null;
+	}
 }

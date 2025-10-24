@@ -26,18 +26,6 @@ const DynamicLink = ({
         generateLink();
     }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
-    // Auto-select composite URL format when composite or bundle products are selected (only on first load).
-    useEffect(() => {
-        if (selectedProducts && selectedProducts.some(product => (product.type === 'composite' || product.type === 'bundle') && (product.checkout_url || product.url))) {
-            // Only auto-select if user hasn't explicitly chosen an encoding yet
-            if (urlEncoding === 'decoded' && selectedProducts.length === 1) {
-                setUrlEncoding('composite');
-            }
-        } else if (urlEncoding === 'composite') {
-            // If no mapped products, switch back to decoded
-            setUrlEncoding('decoded');
-        }
-    }, [selectedProducts]);
 
     const generateLink = async () => {
         setIsGenerating(true);
@@ -286,20 +274,18 @@ const DynamicLink = ({
         const parts = [];
         const baseUrl = window.location.origin;
         
-        // For composite products, show the full generated URL (already constructed)
+        // For composite products with custom URLs, show the full generated URL
         // instead of trying to build it piece by piece
-        const hasCompositeProduct = selectedProducts && selectedProducts.some(p => p.type === 'composite' && (p.checkout_url || p.url));
-        if (hasCompositeProduct && generatedLink && currentStep > 1) {
+        const compositeProduct = selectedProducts && selectedProducts.find(p => p.type === 'composite' && (p.checkout_url || p.url));
+        if (compositeProduct && generatedLink && currentStep > 1) {
             // Apply encoding based on user preference
             let displayUrl = generatedLink;
             
             if (urlEncoding === 'decoded') {
-                // Decode for display (convert %5B to [ and %5D to ], %3A to :, %2C to ,)
+                // Decode for display (convert %5B to [ and %5D to ])
                 displayUrl = displayUrl
                     .replace(/%5B/g, '[')
-                    .replace(/%5D/g, ']')
-                    .replace(/%3A/g, ':')
-                    .replace(/%2C/g, ',');
+                    .replace(/%5D/g, ']');
             }
             // If urlEncoding === 'encoded', keep the URL as-is with encoded characters
             
@@ -458,15 +444,6 @@ const DynamicLink = ({
                 // Apply URL encoding based on user preference for display.
                 if (urlEncoding === 'encoded') {
                     productsParam = productsParam.replace(/:/g, '%3A').replace(/,/g, '%2C');
-                } else if (urlEncoding === 'composite') {
-                    // For composite products, the URL is already fully constructed in generateLink()
-                    // Just format it for display (decode brackets)
-                    // We don't need to rebuild it here
-                    const products = [];
-                    selectedProducts.forEach(product => {
-                        products.push(`${product.id}:${product.quantity || 1}`);
-                    });
-                    productsParam = products.join(',');
                 }
                 
                 parts.push(
@@ -569,26 +546,6 @@ const DynamicLink = ({
                                 </span>
                             </span>
                         </label>
-
-                        {/* Composite Product URL Format - Only show when composite products are selected */}
-                        {selectedProducts && selectedProducts.some(product => product.type === 'composite') && (
-                            <label className="lwwc-url-encoding-label">
-                                <input
-                                    type="radio"
-                                    name="urlEncoding"
-                                    value="composite"
-                                    checked={urlEncoding === 'composite'}
-                                    onChange={(e) => setUrlEncoding(e.target.value)}
-                                    className="lwwc-url-encoding-radio"
-                                />
-                                <span>
-                                    <strong className="lwwc-url-encoding-label-text">Composite Product URLs</strong>
-                                    <span className="lwwc-url-encoding-description">
-                                        Facebook-compatible format with mapped composite product IDs
-                                    </span>
-                                </span>
-                            </label>
-                        )}
                     </div>
                 </div>
             )}

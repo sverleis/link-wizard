@@ -71,4 +71,20 @@ interface LWWC_Product_Handler_Interface {
 	 * @return array Validation data including errors and warnings.
 	 */
 	public function get_validation_data( $product );
+
+	/**
+	 * Generate URL for this product type.
+	 *
+	 * This allows each product handler to define its own URL format.
+	 * For example:
+	 * - Simple products: /?add-to-cart=ID
+	 * - Composite products: /?add-to-cart=ID&wccp_component_selection[X]=Y
+	 * - Subscriptions: /?add-to-cart=ID (with subscription meta)
+	 *
+	 * @param WC_Product $product      The product.
+	 * @param string     $link_type    'addToCart' or 'checkoutLink'.
+	 * @param array      $options      Additional options (redirect, quantity, etc.).
+	 * @return string|null The generated URL, or null if this handler doesn't generate custom URLs.
+	 */
+	public function generate_url( $product, $link_type, $options = array() );
 }

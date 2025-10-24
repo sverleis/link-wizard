@@ -209,4 +209,19 @@ class LWWC_Subscription_Product_Handler implements LWWC_Product_Handler_Interfac
 
 		return $validation_data;
 	}
+
+	/**
+	 * Generate URL for this product type.
+	 *
+	 * Subscription products use the default URL logic, so we return null.
+	 *
+	 * @param WC_Product $product      The product.
+	 * @param string     $link_type    'addToCart' or 'checkoutLink'.
+	 * @param array      $options      Additional options (redirect, quantity, etc.).
+	 * @return string|null The generated URL, or null to use default logic.
+	 */
+	public function generate_url( $product, $link_type, $options = array() ) {
+		// Subscription products use the default URL logic.
+		return null;
+	}
 }
