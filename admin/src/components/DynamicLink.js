@@ -26,17 +26,18 @@ const DynamicLink = ({
         generateLink();
     }, [linkType, selectedProducts, selectedCoupon, redirectOption, selectedRedirectPage, currentStep, urlEncoding]);
 
-    // Auto-select composite URL format when composite or bundle products are selected.
+    // Auto-select composite URL format when composite or bundle products are selected (only on first load).
     useEffect(() => {
         if (selectedProducts && selectedProducts.some(product => (product.type === 'composite' || product.type === 'bundle') && (product.checkout_url || product.url))) {
-            if (urlEncoding !== 'composite') {
+            // Only auto-select if user hasn't explicitly chosen an encoding yet
+            if (urlEncoding === 'decoded' && selectedProducts.length === 1) {
                 setUrlEncoding('composite');
             }
         } else if (urlEncoding === 'composite') {
             // If no mapped products, switch back to decoded
             setUrlEncoding('decoded');
         }
-    }, [selectedProducts, urlEncoding]);
+    }, [selectedProducts]);
 
     const generateLink = async () => {
         setIsGenerating(true);
@@ -289,8 +290,19 @@ const DynamicLink = ({
         // instead of trying to build it piece by piece
         const hasCompositeProduct = selectedProducts && selectedProducts.some(p => p.type === 'composite' && (p.checkout_url || p.url));
         if (hasCompositeProduct && generatedLink && currentStep > 1) {
-            // Decode for display (convert %5B to [ and %5D to ])
-            const displayUrl = generatedLink.replace(/%5B/g, '[').replace(/%5D/g, ']');
+            // Apply encoding based on user preference
+            let displayUrl = generatedLink;
+            
+            if (urlEncoding === 'decoded') {
+                // Decode for display (convert %5B to [ and %5D to ], %3A to :, %2C to ,)
+                displayUrl = displayUrl
+                    .replace(/%5B/g, '[')
+                    .replace(/%5D/g, ']')
+                    .replace(/%3A/g, ':')
+                    .replace(/%2C/g, ',');
+            }
+            // If urlEncoding === 'encoded', keep the URL as-is with encoded characters
+            
             return (
                 <div className="lwwc-dynamic-link-url">
                     <span className="lwwc-dynamic-link-full-url">{displayUrl}</span>
