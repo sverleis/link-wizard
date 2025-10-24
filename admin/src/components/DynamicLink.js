@@ -101,9 +101,31 @@ const DynamicLink = ({
                     // Check if we have a composite product with a pre-generated URL
                     const compositeProduct = selectedProducts.find(p => p.type === 'composite' && p.url);
                     if (compositeProduct) {
-                        // For composite products, use the pre-generated URL directly
-                        finalUrl = compositeProduct.url;
-                        console.log('🔗 Using Composite Product URL:', finalUrl);
+                        // For composite products, apply the redirect path to the URL
+                        let path = '/';
+                        if (redirectOption === 'cart') {
+                            path = '/cart/';
+                        } else if (redirectOption === 'checkout') {
+                            path = '/checkout/';
+                        } else if (redirectOption === 'product') {
+                            const slug = compositeProduct.slug;
+                            if (slug) {
+                                path = `/product/${slug}/`;
+                            }
+                        } else if (redirectOption === 'page' && selectedRedirectPage) {
+                            const urlParts = selectedRedirectPage.url.split('/');
+                            const slug = urlParts[urlParts.length - 2];
+                            if (slug) {
+                                path = `/${slug}/`;
+                            }
+                        }
+                        
+                        // Extract query parameters from composite URL
+                        const compositeUrl = new URL(compositeProduct.url);
+                        const queryParams = compositeUrl.searchParams.toString();
+                        
+                        finalUrl = `${baseUrl}${path}?${queryParams}`;
+                        console.log('🔗 Using Composite Product URL with redirect:', finalUrl);
                     } else {
                         // Build the URL with proper redirect paths for other products
                         let path = '/';
