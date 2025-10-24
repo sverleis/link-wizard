@@ -229,10 +229,11 @@ const AddonsSection = ({ onAddonSelect }) => {
                                 }
                             </strong>
                             <p>
-                                {isAlert 
-                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
-                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
-                                }
+                                {isAlert ? (
+                                    <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
+                                ) : (
+                                    <>You have active WooCommerce extensions. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
+                                )}
                             </p>
                         </div>
                         <a 
