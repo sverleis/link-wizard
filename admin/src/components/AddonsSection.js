@@ -230,8 +230,8 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </strong>
                             <p>
                                 {isAlert 
-                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to get full support for Composite Products with custom component selections. <em>Note: Product Bundles can be added in their default form without additional plugins.</em></>
-                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Composite</strong> to get full support for Composite Products with custom component selections. <em>Note: Product Bundles can be added in their default form without additional plugins.</em></>
+                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
+                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
                                 }
                             </p>
                         </div>
