@@ -274,26 +274,81 @@ const DynamicLink = ({
         const parts = [];
         const baseUrl = window.location.origin;
         
-        // For composite products with custom URLs, show the full generated URL
-        // instead of trying to build it piece by piece
+        // For composite products with custom URLs, parse and highlight the URL components
         const compositeProduct = selectedProducts && selectedProducts.find(p => p.type === 'composite' && (p.checkout_url || p.url));
         if (compositeProduct && generatedLink && currentStep > 1) {
-            // Apply encoding based on user preference
-            let displayUrl = generatedLink;
-            
-            if (urlEncoding === 'decoded') {
-                // Decode for display (convert %5B to [ and %5D to ])
-                displayUrl = displayUrl
-                    .replace(/%5B/g, '[')
-                    .replace(/%5D/g, ']');
+            // Parse the generated URL to highlight different parts
+            try {
+                const urlObj = new URL(generatedLink);
+                const pathname = urlObj.pathname;
+                const searchParams = urlObj.searchParams;
+                
+                // Add base URL
+                parts.push(
+                    <span key="base" className="dynamic-link-base-url">{baseUrl}</span>
+                );
+                
+                // Add path (e.g., /cart/, /checkout/, /)
+                if (pathname !== '/') {
+                    parts.push(
+                        <span key="path" className="dynamic-link-highlight">{pathname}</span>
+                    );
+                }
+                
+                // Add question mark
+                parts.push(
+                    <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
+                );
+                
+                // Parse and highlight parameters
+                const paramParts = [];
+                searchParams.forEach((value, key) => {
+                    // Decode for display if needed
+                    let displayKey = key;
+                    let displayValue = value;
+                    
+                    if (urlEncoding === 'decoded') {
+                        displayKey = key.replace(/%5B/g, '[').replace(/%5D/g, ']');
+                        displayValue = value.replace(/%5B/g, '[').replace(/%5D/g, ']');
+                    }
+                    
+                    paramParts.push(
+                        <span key={`param-${key}`}>
+                            <span className="lwwc-dynamic-link-param-key">{displayKey}</span>
+                            <span className="lwwc-dynamic-link-checkout-text">=</span>
+                            <span className="lwwc-dynamic-link-param-value">{displayValue}</span>
+                        </span>
+                    );
+                });
+                
+                // Join parameters with & separator
+                paramParts.forEach((part, index) => {
+                    if (index > 0) {
+                        parts.push(
+                            <span key={`amp-${index}`} className="lwwc-dynamic-link-checkout-text">&</span>
+                        );
+                    }
+                    parts.push(part);
+                });
+                
+                return (
+                    <div className="lwwc-dynamic-link-url">
+                        {parts}
+                    </div>
+                );
+            } catch (e) {
+                console.error('Error parsing composite URL:', e);
+                // Fallback to simple display
+                let displayUrl = generatedLink;
+                if (urlEncoding === 'decoded') {
+                    displayUrl = displayUrl.replace(/%5B/g, '[').replace(/%5D/g, ']');
+                }
+                return (
+                    <div className="lwwc-dynamic-link-url">
+                        <span className="lwwc-dynamic-link-full-url">{displayUrl}</span>
+                    </div>
+                );
             }
-            // If urlEncoding === 'encoded', keep the URL as-is with encoded characters
-            
-            return (
-                <div className="lwwc-dynamic-link-url">
-                    <span className="lwwc-dynamic-link-full-url">{displayUrl}</span>
-                </div>
-            );
         }
         
                     if (linkType === 'addToCart') {
