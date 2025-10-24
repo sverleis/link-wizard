@@ -230,18 +230,18 @@ const AddonsSection = ({ onAddonSelect }) => {
                             </strong>
                             <p>
                                 {isAlert 
-                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</>
-                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Addons</strong> to get full support for Product Bundles and Composite Products.</>
+                                    ? <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to get full support for Composite Products with custom component selections. <em>Note: Product Bundles can be added in their default form without additional plugins.</em></>
+                                    : <>You have active WooCommerce extensions. Install <strong>Link Wizard Composite</strong> to get full support for Composite Products with custom component selections. <em>Note: Product Bundles can be added in their default form without additional plugins.</em></>
                                 }
                             </p>
                         </div>
                         <a 
-                            href="https://wordpress.org/plugins/link-wizard-addons/" 
+                            href="https://wordpress.org/plugins/link-wizard-composite/" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className={`button ${isAlert ? 'button-secondary' : 'button-primary'} lwwc-addon-advertising-button`}
                         >
-                            {isAlert ? 'Get Link Wizard Addons' : 'Get Link Wizard Addons'}
+                            {isAlert ? 'Get Link Wizard Composite' : 'Get Link Wizard Composite'}
                         </a>
                     </div>
                 </div>
