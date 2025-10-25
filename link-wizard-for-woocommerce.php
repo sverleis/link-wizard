@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /* Current plugin version. */
-define( 'LWWC_VERSION', '1.3.1' );
+define( 'LWWC_VERSION', '1.3.2' );
 
 /* The absolute path to the plugin directory. */
 define( 'LWWC_PATH', plugin_dir_path( __FILE__ ) );

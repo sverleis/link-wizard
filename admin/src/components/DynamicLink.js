@@ -281,7 +281,13 @@ const DynamicLink = ({
             try {
                 const urlObj = new URL(generatedLink);
                 const pathname = urlObj.pathname;
-                const searchParams = urlObj.searchParams;
+                let queryString = urlObj.search.substring(1); // Remove the leading ?
+                
+                // Apply encoding preference to the entire query string for display
+                if (urlEncoding === 'decoded') {
+                    queryString = decodeURIComponent(queryString);
+                }
+                // For 'encoded', keep the URL-encoded format as-is
                 
                 // Add base URL
                 parts.push(
@@ -300,35 +306,36 @@ const DynamicLink = ({
                     <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
                 );
                 
-                // Parse and highlight parameters
-                const paramParts = [];
-                searchParams.forEach((value, key) => {
-                    // Decode for display if needed
-                    let displayKey = key;
-                    let displayValue = value;
-                    
-                    if (urlEncoding === 'decoded') {
-                        displayKey = key.replace(/%5B/g, '[').replace(/%5D/g, ']');
-                        displayValue = value.replace(/%5B/g, '[').replace(/%5D/g, ']');
-                    }
-                    
-                    paramParts.push(
-                        <span key={`param-${key}`}>
-                            <span className="lwwc-dynamic-link-param-key">{displayKey}</span>
-                            <span className="lwwc-dynamic-link-checkout-text">=</span>
-                            <span className="lwwc-dynamic-link-param-value">{displayValue}</span>
-                        </span>
-                    );
-                });
-                
-                // Join parameters with & separator
-                paramParts.forEach((part, index) => {
+                // Split query string into parameters and highlight each one
+                const params = queryString.split('&');
+                params.forEach((param, index) => {
                     if (index > 0) {
                         parts.push(
                             <span key={`amp-${index}`} className="lwwc-dynamic-link-checkout-text">&</span>
                         );
                     }
-                    parts.push(part);
+                    
+                    const [key, value] = param.split('=');
+                    
+                    // Highlight based on parameter type
+                    let keyClass = 'lwwc-dynamic-link-param-key';
+                    let valueClass = 'lwwc-dynamic-link-param-value';
+                    
+                    if (key === 'add-to-cart') {
+                        keyClass = 'lwwc-dynamic-link-products-highlight';
+                    } else if (key === 'quantity') {
+                        valueClass = 'lwwc-dynamic-link-products-highlight';
+                    } else if (key.includes('wccp_component')) {
+                        keyClass = 'lwwc-dynamic-link-coupon-highlight';
+                    }
+                    
+                    parts.push(
+                        <span key={`param-${index}`}>
+                            <span className={keyClass}>{key}</span>
+                            <span className="lwwc-dynamic-link-checkout-text">=</span>
+                            <span className={valueClass}>{value}</span>
+                        </span>
+                    );
                 });
                 
                 return parts;
