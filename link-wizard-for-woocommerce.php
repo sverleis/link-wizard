@@ -46,16 +46,17 @@ function lwwc_deactivate_plugin() {
 register_activation_hook( __FILE__, 'lwwc_activate_plugin' );
 register_deactivation_hook( __FILE__, 'lwwc_deactivate_plugin' );
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-
-require plugin_dir_path( __FILE__ ) . 'includes/class-lwwc-link-wizard.php';
-
-/**
  * Begin execution of the plugin.
+ *
+ * We load the class file and run the plugin inside the init hook
+ * to avoid translation loading warnings in WordPress 6.7+.
  */
 function lwwc_run_plugin() {
+	/**
+	 * The core plugin class that is used to define internationalization,
+	 * admin-specific hooks, and public-facing site hooks.
+	 */
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-lwwc-link-wizard.php';
 
 	$plugin = new LWWC_Link_Wizard();
 	$plugin->run();
