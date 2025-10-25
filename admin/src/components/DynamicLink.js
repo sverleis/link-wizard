@@ -274,86 +274,7 @@ const DynamicLink = ({
         const parts = [];
         const baseUrl = window.location.origin;
         
-        // For composite products with custom URLs, parse and highlight the URL components
-        const compositeProduct = selectedProducts && selectedProducts.find(p => p.type === 'composite' && (p.checkout_url || p.url));
-        if (compositeProduct && generatedLink && currentStep > 1) {
-            // Parse the generated URL to highlight different parts
-            try {
-                const urlObj = new URL(generatedLink);
-                const pathname = urlObj.pathname;
-                let queryString = urlObj.search.substring(1); // Remove the leading ?
-                
-                // Apply encoding preference to the entire query string for display
-                if (urlEncoding === 'decoded') {
-                    queryString = decodeURIComponent(queryString);
-                }
-                // For 'encoded', keep the URL-encoded format as-is
-                
-                // Add base URL
-                parts.push(
-                    <span key="base" className="dynamic-link-base-url">{baseUrl}</span>
-                );
-                
-                // Add path (e.g., /cart/, /checkout/, /)
-                if (pathname !== '/') {
-                    parts.push(
-                        <span key="path" className="dynamic-link-highlight">{pathname}</span>
-                    );
-                }
-                
-                // Add question mark
-                parts.push(
-                    <span key="question" className="lwwc-dynamic-link-checkout-text">?</span>
-                );
-                
-                // Split query string into parameters and highlight each one
-                const params = queryString.split('&');
-                params.forEach((param, index) => {
-                    if (index > 0) {
-                        parts.push(
-                            <span key={`amp-${index}`} className="lwwc-dynamic-link-checkout-text">&</span>
-                        );
-                    }
-                    
-                    const [key, value] = param.split('=');
-                    
-                    // Highlight based on parameter type
-                    let keyClass = 'lwwc-dynamic-link-param-key';
-                    let valueClass = 'lwwc-dynamic-link-param-value';
-                    
-                    if (key === 'add-to-cart') {
-                        keyClass = 'lwwc-dynamic-link-products-highlight';
-                    } else if (key === 'quantity') {
-                        valueClass = 'lwwc-dynamic-link-products-highlight';
-                    } else if (key.includes('wccp_component')) {
-                        keyClass = 'lwwc-dynamic-link-coupon-highlight';
-                    }
-                    
-                    parts.push(
-                        <span key={`param-${index}`}>
-                            <span className={keyClass}>{key}</span>
-                            <span className="lwwc-dynamic-link-checkout-text">=</span>
-                            <span className={valueClass}>{value}</span>
-                        </span>
-                    );
-                });
-                
-                return parts;
-            } catch (e) {
-                console.error('Error parsing composite URL:', e);
-                // Fallback to simple display
-                let displayUrl = generatedLink;
-                if (urlEncoding === 'decoded') {
-                    displayUrl = displayUrl.replace(/%5B/g, '[').replace(/%5D/g, ']');
-                }
-                parts.push(
-                    <span key="full-url" className="lwwc-dynamic-link-full-url">{displayUrl}</span>
-                );
-                return parts;
-            }
-        }
-        
-                    if (linkType === 'addToCart') {
+        if (linkType === 'addToCart') {
                 // Always show base URL.
                 parts.push(
                     <span key="base" className="dynamic-link-base-url">{baseUrl}</span>
@@ -407,19 +328,25 @@ const DynamicLink = ({
                         // For composite products, parse and display the pre-generated URL
                         try {
                             const url = new URL(compositeProduct.url);
-                            const urlParams = new URLSearchParams(url.search);
+                            let queryString = url.search.substring(1); // Remove leading ?
                             
-                            // Display each parameter individually
-                            let paramIndex = 0;
-                            for (const [key, value] of urlParams.entries()) {
+                            // Apply encoding preference
+                            if (urlEncoding === 'decoded') {
+                                queryString = decodeURIComponent(queryString);
+                            }
+                            
+                            // Split into parameters and display each one
+                            const params = queryString.split('&');
+                            params.forEach((param, paramIndex) => {
                                 if (paramIndex > 0) {
                                     parts.push(<span key={`amp-${paramIndex}`} className="dynamic-link-separator">&</span>);
                                 }
+                                
+                                const [key, value] = param.split('=');
                                 parts.push(
                                     <span key={`param-${paramIndex}`} className="dynamic-link-product-param">{key}={value}</span>
                                 );
-                                paramIndex++;
-                            }
+                            });
                         } catch (error) {
                             console.error('Error parsing composite product URL:', error);
                             // Fallback to basic display
