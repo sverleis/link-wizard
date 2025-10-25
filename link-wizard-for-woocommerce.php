@@ -2,11 +2,13 @@
 /**
  * Plugin Name: Link Wizard for WooCommerce
  * Plugin URI: https://github.com/sverleis/link-wizard
- * Description: A plugin to generate add-to-cart and checkout links for WooCommerce products.
+ * Description: A plugin to generate add-to-cart and checkout links for WooCommerce products. Requires WooCommerce 10.0+ for checkout-link functionality.
  * Version: 1.0.4
  * Requires at least: 6.0
  * Tested up to: 6.8
  * Requires PHP: 7.4
+ * WC requires at least: 10.0
+ * WC tested up to: 10.3.3
  * Author: Mags Industries
  * Author URI: https://magsindustries.wordpress.com
  * License: GPL v2 or later
@@ -46,17 +48,61 @@ function lwwc_deactivate_plugin() {
 register_activation_hook( __FILE__, 'lwwc_activate_plugin' );
 register_deactivation_hook( __FILE__, 'lwwc_deactivate_plugin' );
 /**
- * Begin execution of the plugin.
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path( __FILE__ ) . 'includes/class-lwwc-link-wizard.php';
+
+/**
+ * Check if WooCommerce version meets minimum requirements.
  *
- * We load the class file and run the plugin inside the init hook
- * to avoid translation loading warnings in WordPress 6.7+.
+ * @return bool True if WooCommerce version is 10.0 or higher.
+ */
+function lwwc_check_woocommerce_version() {
+	if ( ! defined( 'WC_VERSION' ) ) {
+		return false;
+	}
+	return version_compare( WC_VERSION, '10.0', '>=' );
+}
+
+/**
+ * Display admin notice if WooCommerce version is too old.
+ */
+function lwwc_woocommerce_version_notice() {
+	$current_version = defined( 'WC_VERSION' ) ? WC_VERSION : __( 'unknown', 'link-wizard-for-woocommerce' );
+	?>
+	<div class="notice notice-error">
+		<p>
+			<strong><?php esc_html_e( 'Link Wizard for WooCommerce', 'link-wizard-for-woocommerce' ); ?></strong>
+		</p>
+		<p>
+			<?php
+			printf(
+				/* translators: 1: Current WooCommerce version, 2: Required WooCommerce version */
+				esc_html__( 'Link Wizard requires WooCommerce version %2$s or higher. You are currently running version %1$s. Please update WooCommerce to use checkout-link functionality.', 'link-wizard-for-woocommerce' ),
+				'<strong>' . esc_html( $current_version ) . '</strong>',
+				'<strong>10.0</strong>'
+			);
+			?>
+		</p>
+		<p>
+			<a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>" class="button button-primary">
+				<?php esc_html_e( 'Go to Plugins', 'link-wizard-for-woocommerce' ); ?>
+			</a>
+		</p>
+	</div>
+	<?php
+}
+
+/**
+ * Begin execution of the plugin.
  */
 function lwwc_run_plugin() {
-	/**
-	 * The core plugin class that is used to define internationalization,
-	 * admin-specific hooks, and public-facing site hooks.
-	 */
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-lwwc-link-wizard.php';
+	// Check WooCommerce version first.
+	if ( ! lwwc_check_woocommerce_version() ) {
+		add_action( 'admin_notices', 'lwwc_woocommerce_version_notice' );
+		return; // Don't run the plugin if WooCommerce version is too old.
+	}
 
 	$plugin = new LWWC_Link_Wizard();
 	$plugin->run();
