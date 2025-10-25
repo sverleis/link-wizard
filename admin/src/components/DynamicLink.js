@@ -331,11 +331,7 @@ const DynamicLink = ({
                     parts.push(part);
                 });
                 
-                return (
-                    <div className="lwwc-dynamic-link-url">
-                        {parts}
-                    </div>
-                );
+                return parts;
             } catch (e) {
                 console.error('Error parsing composite URL:', e);
                 // Fallback to simple display
@@ -343,11 +339,10 @@ const DynamicLink = ({
                 if (urlEncoding === 'decoded') {
                     displayUrl = displayUrl.replace(/%5B/g, '[').replace(/%5D/g, ']');
                 }
-                return (
-                    <div className="lwwc-dynamic-link-url">
-                        <span className="lwwc-dynamic-link-full-url">{displayUrl}</span>
-                    </div>
+                parts.push(
+                    <span key="full-url" className="lwwc-dynamic-link-full-url">{displayUrl}</span>
                 );
+                return parts;
             }
         }
         
