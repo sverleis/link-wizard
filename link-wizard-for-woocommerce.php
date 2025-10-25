@@ -47,6 +47,15 @@ function lwwc_deactivate_plugin() {
 // Register activation and deactivation hooks.
 register_activation_hook( __FILE__, 'lwwc_activate_plugin' );
 register_deactivation_hook( __FILE__, 'lwwc_deactivate_plugin' );
+
+/**
+ * Declare compatibility with WooCommerce features.
+ */
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
