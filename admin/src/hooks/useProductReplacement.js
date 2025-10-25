@@ -74,8 +74,18 @@ export const useProductReplacement = ({
         // Handle replacement after animation delay
         setTimeout(() => {
             // Call appropriate handler based on product type
-            if (newProduct.type === 'composite' && handlers.handleCompositeProduct) {
-                // For composite products, add a small delay to ensure DOM is rendered
+            // For composite products with checkout_url, treat like simple products
+            if (newProduct.type === 'composite' && (newProduct.checkout_url || newProduct.url)) {
+                // Composite with default configuration - treat like simple product
+                setSelectedProducts([{ ...newProduct, quantity: 1 }]);
+                
+                // Remove new product from search results
+                setResults(prev => prev.filter(p => p.id !== newProduct.id));
+                
+                // Add old product back to search results
+                setResults(prev => [...prev, oldProduct]);
+            } else if (newProduct.type === 'composite' && handlers.handleCompositeProduct) {
+                // Composite without checkout_url - needs custom configuration
                 setTimeout(() => {
                     handlers.handleCompositeProduct(newProduct);
                 }, 100);
