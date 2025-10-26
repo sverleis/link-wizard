@@ -3,6 +3,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
 import useProductReplacement from '../hooks/useProductReplacement';
 import ReplaceModal from './ReplaceModal';
+import VariableProductSelector from './VariableProductSelector';
 
 // Set up API authentication with nonce if available.
 if (typeof window.lwwcApiSettings !== 'undefined') {
@@ -1170,24 +1171,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         </>
                                     )}
 
-                                    {/* Attribute Filters for Variable Products. */}
+                                    {/* Variable Product Selector (Attribute Filters + Variations) */}
                                     {product.type === 'variable' && (
-                                        <AttributeFilters product={product} />
-                                    )}
-
-                                    {/* Show All Variations Button. */}
-                                    {product.type === 'variable' && (
-                                        <div className="lwwc-show-all-variations-button">
-                                            <button
-                                                onClick={() => toggleAllVariations(product)}
-                                                className={showingAllVariations[product.id] ? 'showing' : ''}
-                                            >
-                                                {showingAllVariations[product.id] 
-                                                    ? (i18n.hideAllVariations || 'Hide All Variations')
-                                                    : (i18n.showAllVariations || 'Show All Variations')
-                                                }
-                                            </button>
-                                        </div>
+                                        <VariableProductSelector
+                                            product={product}
+                                            onVariationSelect={(variation) => {
+                                                // Variation object is passed directly from the component
+                                                handleSelectProduct(variation);
+                                            }}
+                                            componentId={product.id}
+                                            i18n={i18n}
+                                        />
                                     )}
 
                                     {/* Grouped Product Children Selection. */}
@@ -1251,56 +1245,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
 
 
 
-                                    {/* Filtered Variations for Variable Products. */}
-                                    {product.type === 'variable' && (
-                                        filteredVariations[product.id]?.length > 0 || showingAllVariations[product.id]
-                                    ) && (
-                                        <div className="lwwc-variations-section">
-                                            <div className="lwwc-variations-section-title">
-                                                {showingAllVariations[product.id] 
-                                                    ? (i18n.allVariations || 'All Variations:')
-                                                    : (i18n.availableVariations || 'Available Variations:')
-                                                }
-                                            </div>
-                                            <div className="lwwc-variations-list">
-                                                {filteredVariations[product.id]?.filter(variation => !variation.disabled).map(variation => (
-                                                    <div
-                                                        key={variation.id}
-                                                        onClick={() => handleSelectProduct(variation)}
-                                                        className={`lwwc-variation-item ${addingProducts.has(variation.id) ? 'adding' : ''}`}
-                                                    >
-                                                        {/* Show "Added" message when variation is being added. */}
-                                                        {addingProducts.has(variation.id) ? (
-                                                            <div className="lwwc-added-message">
-                                                                <span className="dashicons dashicons-yes-alt" />
-                                                                {i18n.added || 'Added!'}
-                                                            </div>
-                                                        ) : (
-                                                            <>
-                                                                <div className="lwwc-variation-item-icon">
-                                                                    <span className="dashicons dashicons-products" />
-                                                                </div>
-                                                                <div className="lwwc-variation-item-details">
-                                                                    <div className="lwwc-variation-item-name">
-                                                                        {variation.name}
-                                                                    </div>
-                                                                    {variation.sku && (
-                                                                        <div className="lwwc-variation-item-sku">
-                                                                            {i18n.sku || 'SKU'}: {variation.sku}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                                <div className="lwwc-variation-item-price">
-                                                                    <span dangerouslySetInnerHTML={{ __html: variation.price }} />
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
                                     {/* Grouped Invalid Variations Button - Using new validation system. */}
                                     {product.type === 'variable' && 
                                      product.validation_data && 
@@ -1323,12 +1267,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         </div>
                                     )}
 
-                                    {/* No Variations Available Notice. */}
-                                    {product.type === 'variable' && 
-                                     filteredVariations[product.id]?.length === 0 && 
-                                     !isLoadingFilteredVariations[product.id] && (
-                                        <NoVariationsNotice product={product} />
-                                    )}
                                         </>
                                     )}
                                 </li>
