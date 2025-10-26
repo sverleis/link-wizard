@@ -150,6 +150,10 @@ class VariableProductSelector extends Component {
         const attributesKey = JSON.stringify(attributes);
         if (this.lastLoadedAttributesRef === attributesKey) {
             console.log('VariableProductSelector: Skipping duplicate load for same attributes:', attributesKey);
+            // Make sure loading state is cleared if we're skipping
+            if (this.state.isLoadingVariations) {
+                this.setState({ isLoadingVariations: false });
+            }
             return Promise.resolve(this.state.filteredVariations);
         }
         
