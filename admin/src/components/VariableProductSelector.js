@@ -240,8 +240,7 @@ class VariableProductSelector extends Component {
      * Handle attribute selection change.
      */
     handleAttributeChange = (attributeName, attributeValue) => {
-        const { selectedAttributes, incompleteAttributes, pendingVariation } = this.state;
-        const { onVariationSelect } = this.props;
+        const { selectedAttributes, incompleteAttributes } = this.state;
         const newAttributes = { ...selectedAttributes };
         
         if (attributeValue) {
@@ -253,13 +252,9 @@ class VariableProductSelector extends Component {
         // Remove this attribute from incomplete list if it's now filled
         const newIncompleteAttributes = incompleteAttributes.filter(attr => attr !== attributeName);
         
-        // Check if all incomplete attributes are now filled AND we have a pending variation
-        const shouldAutoSelect = newIncompleteAttributes.length === 0 && pendingVariation;
-        
         this.setState({
             selectedAttributes: newAttributes,
             incompleteAttributes: newIncompleteAttributes,
-            isLoadingVariations: !shouldAutoSelect, // Only set loading if we're NOT auto-selecting
             currentPage: 1, // Reset to first page when filtering
         });
         
@@ -269,24 +264,24 @@ class VariableProductSelector extends Component {
             this.setState({ showingAllVariations: true });
         }
         
-        if (shouldAutoSelect) {
-            // All attributes filled! Set flag to prevent reloads
-            this.setState({ isAutoSelecting: true }, () => {
-                if (onVariationSelect) {
-                    onVariationSelect(pendingVariation, newAttributes);
-                }
-                
-                // Clear the pending variation and flag after a short delay
-                setTimeout(() => {
-                    this.setState({ 
-                        pendingVariation: null,
-                        isAutoSelecting: false
-                    });
-                }, 100);
+        // Reload variations with new attributes
+        this.loadFilteredVariations(newAttributes);
+    };
+    
+    /**
+     * Handle manual selection of the pending variation.
+     */
+    handleSelectPendingVariation = () => {
+        const { pendingVariation } = this.state;
+        const { selectedAttributes } = this.state;
+        const { onVariationSelect } = this.props;
+        
+        if (pendingVariation && onVariationSelect) {
+            onVariationSelect(pendingVariation, selectedAttributes);
+            this.setState({ 
+                pendingVariation: null,
+                incompleteAttributes: []
             });
-        } else {
-            // Only reload variations if we're not auto-selecting
-            this.loadFilteredVariations(newAttributes);
         }
     };
     
@@ -514,7 +509,7 @@ class VariableProductSelector extends Component {
     render() {
         const { product, onVariationSelect, allowAnyAttributes } = this.props;
         const i18n = this.props.i18n || window.lwwcI18n || {};
-        const { selectedAttributes, displayedVariations, isLoadingVariations, error, filteredVariations, incompleteAttributes } = this.state;
+        const { selectedAttributes, displayedVariations, isLoadingVariations, error, filteredVariations, incompleteAttributes, pendingVariation } = this.state;
         
         // Render nothing if not a variable product
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
@@ -567,6 +562,15 @@ class VariableProductSelector extends Component {
                     >
                         {i18n.resetFilters || 'Reset Filters'}
                     </button>
+                    {/* Select Button - Only show if we have a pending variation with incomplete attributes */}
+                    {pendingVariation && incompleteAttributes.length === 0 && (
+                        <button
+                            onClick={this.handleSelectPendingVariation}
+                            className="attribute-filter-select-button"
+                        >
+                            {i18n.selectVariation || 'Select'}
+                        </button>
+                    )}
                 </div>
                 {isLoadingVariations && (
                     <div className="attribute-filter-spinner">
