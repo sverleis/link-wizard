@@ -239,6 +239,7 @@ class VariableProductSelector extends Component {
             path: `${basePath}/variations/${product.id}`
         })
             .then((variationData) => {
+                console.log('VariableProductSelector: Loaded variations:', variationData);
                 this.setState({
                     filteredVariations: variationData,
                     showingAllVariations: true,
@@ -246,6 +247,9 @@ class VariableProductSelector extends Component {
                 });
             })
             .catch((err) => {
+                console.error('VariableProductSelector: Error loading variations:', err);
+                console.error('VariableProductSelector: API path was:', `${basePath}/variations/${product.id}`);
+                
                 // Provide more specific error messages for variation loading failures.
                 let errorMessage = i18n.errorFetchingVariations || 'An error occurred while fetching variations.';
                 
