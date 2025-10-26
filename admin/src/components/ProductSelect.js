@@ -219,9 +219,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         setTimeout(() => {
             if (linkType === 'addToCart') {
                 // No replacement needed, just set the product.
+                // Preserve all product data including component_selections for composites
                 setSelectedProducts([{ ...product, quantity: 1 }]);
             } else {
                 // For checkout links, add the product.
+                // Preserve all product data including component_selections for composites
                 setSelectedProducts([...selectedProducts, { ...product, quantity: 1 }]);
             }
             
