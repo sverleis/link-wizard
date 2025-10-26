@@ -57,11 +57,15 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
     
     /**
      * Update displayed variations when filteredVariations or currentPage changes.
+     * Filter out disabled variations (those with "Any" attributes).
      */
     useEffect(() => {
+        // Filter out disabled variations (not fully configured)
+        const availableVariations = filteredVariations.filter(v => !v.disabled);
+        
         const startIndex = 0;
         const endIndex = currentPage * variationsPerPage;
-        setDisplayedVariations(filteredVariations.slice(startIndex, endIndex));
+        setDisplayedVariations(availableVariations.slice(startIndex, endIndex));
     }, [filteredVariations, currentPage, variationsPerPage]);
     
     /**
@@ -73,8 +77,10 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
     
     /**
      * Check if there are more variations to load.
+     * Only count available (non-disabled) variations.
      */
-    const hasMoreVariations = displayedVariations.length < filteredVariations.length;
+    const availableVariationsCount = filteredVariations.filter(v => !v.disabled).length;
+    const hasMoreVariations = displayedVariations.length < availableVariationsCount;
     
     /**
      * Load filtered variations based on selected attributes.
@@ -274,9 +280,9 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
             <div className="lwwc-variations-section">
                 <div className="lwwc-variations-section-title">
                     {i18n.availableVariations || 'Available Variations:'} 
-                    {filteredVariations.length > 0 && (
+                    {availableVariationsCount > 0 && (
                         <span className="lwwc-variations-count">
-                            ({displayedVariations.length} of {filteredVariations.length})
+                            ({displayedVariations.length} of {availableVariationsCount})
                         </span>
                     )}
                 </div>
@@ -320,7 +326,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                                         onClick={loadMore}
                                         className="lwwc-load-more-button"
                                     >
-                                        {i18n.loadMore || 'Load More'} ({filteredVariations.length - displayedVariations.length} remaining)
+                                        {i18n.loadMore || 'Load More'} ({availableVariationsCount - displayedVariations.length} remaining)
                                     </button>
                                 </div>
                             )}
