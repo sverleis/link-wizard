@@ -1119,6 +1119,32 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     color: var(--wp-admin-text-color);
 }
 
+/* Highlight incomplete attributes (those that need to be filled) */
+.lwwc-attribute-incomplete {
+    animation: lwwc-pulse-highlight 2s ease-in-out infinite;
+}
+
+.lwwc-attribute-required {
+    color: #dc3232;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.lwwc-select-incomplete {
+    border: 2px solid #dc3232 !important;
+    box-shadow: 0 0 4px rgba(220, 50, 50, 0.3);
+}
+
+@keyframes lwwc-pulse-highlight {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
 .attribute-filter-select {
     padding: 6px 8px;
     border: 1px solid var(--wp-admin-border-color-light);

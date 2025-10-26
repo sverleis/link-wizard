@@ -43,6 +43,7 @@ class VariableProductSelector extends Component {
             isLoadingVariations: false,
             showingAllVariations: false,
             error: null,
+            incompleteAttributes: [], // Track which attributes need to be filled
             // Pagination state
             displayedVariations: [],
             variationsPerPage: 3, // Show 3 variations at a time
@@ -166,7 +167,7 @@ class VariableProductSelector extends Component {
         
         console.log('VariableProductSelector: Loading filtered variations from:', apiPath);
         
-        apiFetch({
+        return apiFetch({
             path: apiPath
         })
             .then((variationData) => {
@@ -175,6 +176,7 @@ class VariableProductSelector extends Component {
                     filteredVariations: variationData,
                     isLoadingVariations: false
                 });
+                return variationData;
             })
             .catch((err) => {
                 console.error('VariableProductSelector: Error loading filtered variations:', err);
@@ -200,6 +202,7 @@ class VariableProductSelector extends Component {
                         isLoadingVariations: false
                     });
                 }
+                throw err;
             });
     };
     
@@ -207,7 +210,8 @@ class VariableProductSelector extends Component {
      * Handle attribute selection change.
      */
     handleAttributeChange = (attributeName, attributeValue) => {
-        const { selectedAttributes } = this.state;
+        const { selectedAttributes, incompleteAttributes } = this.state;
+        const { onVariationSelect } = this.props;
         const newAttributes = { ...selectedAttributes };
         
         if (attributeValue) {
@@ -216,8 +220,12 @@ class VariableProductSelector extends Component {
             delete newAttributes[attributeName];
         }
         
+        // Remove this attribute from incomplete list if it's now filled
+        const newIncompleteAttributes = incompleteAttributes.filter(attr => attr !== attributeName);
+        
         this.setState({
             selectedAttributes: newAttributes,
+            incompleteAttributes: newIncompleteAttributes,
             isLoadingVariations: true,
             currentPage: 1, // Reset to first page when filtering
         });
@@ -228,7 +236,23 @@ class VariableProductSelector extends Component {
             this.setState({ showingAllVariations: true });
         }
         
-        this.loadFilteredVariations(newAttributes);
+        // Check if all incomplete attributes are now filled
+        if (newIncompleteAttributes.length === 0 && incompleteAttributes.length > 0) {
+            // All attributes filled! Find and select the matching variation
+            console.log('VariableProductSelector: All attributes filled, finding matching variation...');
+            
+            // Wait for filtered variations to load, then select the match
+            this.loadFilteredVariations(newAttributes).then(() => {
+                const { filteredVariations } = this.state;
+                if (filteredVariations && filteredVariations.length === 1 && onVariationSelect) {
+                    // Exactly one match - select it automatically
+                    console.log('VariableProductSelector: Auto-selecting variation:', filteredVariations[0]);
+                    onVariationSelect(filteredVariations[0], newAttributes);
+                }
+            });
+        } else {
+            this.loadFilteredVariations(newAttributes);
+        }
     };
     
     /**
@@ -304,16 +328,60 @@ class VariableProductSelector extends Component {
         this.setState({
             selectedAttributes: {},
             currentPage: 1,
-            isLoadingVariations: false
+            isLoadingVariations: false,
+            incompleteAttributes: [] // Clear incomplete attributes highlight
         });
         // Reload all variations
         this.loadAllVariations();
     };
     
+    /**
+     * Handle clicking a variation from the list.
+     * Populates attribute dropdowns and highlights incomplete attributes.
+     */
+    handleVariationClick = (variation) => {
+        const { product, onVariationSelect } = this.props;
+        
+        // Extract the variation's attributes
+        const variationAttributes = {};
+        const incompleteAttributes = [];
+        
+        // Check each product attribute
+        if (product.attributes) {
+            product.attributes.forEach((attribute) => {
+                const attributeSlug = attribute.slug;
+                const variationValue = variation.attributes?.[attributeSlug];
+                
+                if (variationValue && variationValue !== '') {
+                    // This variation has a specific value for this attribute
+                    variationAttributes[attributeSlug] = variationValue;
+                } else {
+                    // This variation has "Any" for this attribute - needs to be filled
+                    incompleteAttributes.push(attributeSlug);
+                }
+            });
+        }
+        
+        console.log('VariableProductSelector: Clicked variation:', variation);
+        console.log('VariableProductSelector: Variation attributes:', variationAttributes);
+        console.log('VariableProductSelector: Incomplete attributes:', incompleteAttributes);
+        
+        // Update state with the variation's attributes
+        this.setState({
+            selectedAttributes: variationAttributes,
+            incompleteAttributes: incompleteAttributes
+        });
+        
+        // If all attributes are filled, select this variation immediately
+        if (incompleteAttributes.length === 0 && onVariationSelect) {
+            onVariationSelect(variation, variationAttributes);
+        }
+    };
+    
     render() {
         const { product, onVariationSelect, allowAnyAttributes } = this.props;
         const i18n = this.props.i18n || window.lwwcI18n || {};
-        const { selectedAttributes, displayedVariations, isLoadingVariations, error, filteredVariations } = this.state;
+        const { selectedAttributes, displayedVariations, isLoadingVariations, error, filteredVariations, incompleteAttributes } = this.state;
         
         // Render nothing if not a variable product
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
@@ -336,15 +404,18 @@ class VariableProductSelector extends Component {
                     {i18n.filterByAttributes || 'Filter by Attributes:'}
                 </div>
                 <div className="attribute-filter-options">
-                    {product.attributes.map((attribute) => (
-                        <div key={attribute.slug} className="attribute-filter-option">
+                    {product.attributes.map((attribute) => {
+                        const isIncomplete = incompleteAttributes.includes(attribute.slug);
+                        return (
+                        <div key={attribute.slug} className={`attribute-filter-option ${isIncomplete ? 'lwwc-attribute-incomplete' : ''}`}>
                             <label className="attribute-filter-label">
                                 {attribute.name}:
+                                {isIncomplete && <span className="lwwc-attribute-required" title="This attribute must be specified">*</span>}
                             </label>
                             <select
                                 value={selectedAttributes[attribute.slug] || ''}
                                 onChange={(e) => this.handleAttributeChange(attribute.slug, e.target.value)}
-                                className="attribute-filter-select"
+                                className={`attribute-filter-select ${isIncomplete ? 'lwwc-select-incomplete' : ''}`}
                             >
                                 <option value="">{(i18n.anyAttribute || 'Any') + ' ' + attribute.name}</option>
                                 {attribute.values.map((value) => (
@@ -354,7 +425,8 @@ class VariableProductSelector extends Component {
                                 ))}
                             </select>
                         </div>
-                    ))}
+                        );
+                    })}
                     {/* Reset Filters Button */}
                     <button
                         onClick={this.resetFilters}
@@ -392,7 +464,7 @@ class VariableProductSelector extends Component {
                                 <div 
                                     key={variation.id} 
                                     className="lwwc-variation-item"
-                                    onClick={() => onVariationSelect && onVariationSelect(variation, selectedAttributes)}
+                                    onClick={() => this.handleVariationClick(variation)}
                                 >
                                     <div className="lwwc-variation-item-icon">
                                         <span className="dashicons dashicons-products"></span>
