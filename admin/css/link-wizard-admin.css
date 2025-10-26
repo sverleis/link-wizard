@@ -2323,6 +2323,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     color: var(--wp-admin-secondary-text-color-light);
 }
 
+.lwwc-variations-count {
+    font-weight: normal;
+    font-size: 12px;
+    color: var(--wp-admin-secondary-text-color);
+    margin-left: 8px;
+}
+
 .lwwc-variations-list {
     display: flex;
     flex-direction: column;
@@ -2386,6 +2393,28 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     color: var(--wp-admin-theme-color);
     font-weight: 500;
     font-size: 14px;
+}
+
+/* Load More Variations Button */
+.lwwc-load-more-variations {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.lwwc-load-more-button {
+    padding: 8px 16px;
+    background-color: var(--wp-admin-theme-color);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.lwwc-load-more-button:hover {
+    background-color: var(--wp-admin-theme-color-darker);
 }
 
 /* Invalid Variations Button */

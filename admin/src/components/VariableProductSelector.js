@@ -42,6 +42,40 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
     const [showingAllVariations, setShowingAllVariations] = useState(false);
     const [error, setError] = useState(null);
     
+    // Pagination state
+    const [displayedVariations, setDisplayedVariations] = useState([]);
+    const [variationsPerPage] = useState(5); // Show 5 variations at a time
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    /**
+     * Auto-load variations on mount.
+     */
+    useEffect(() => {
+        // Auto-load first page of variations when component mounts
+        loadAllVariations();
+    }, []); // Empty dependency array = run once on mount
+    
+    /**
+     * Update displayed variations when filteredVariations or currentPage changes.
+     */
+    useEffect(() => {
+        const startIndex = 0;
+        const endIndex = currentPage * variationsPerPage;
+        setDisplayedVariations(filteredVariations.slice(startIndex, endIndex));
+    }, [filteredVariations, currentPage, variationsPerPage]);
+    
+    /**
+     * Load more variations (increase page count).
+     */
+    const loadMore = () => {
+        setCurrentPage(prev => prev + 1);
+    };
+    
+    /**
+     * Check if there are more variations to load.
+     */
+    const hasMoreVariations = displayedVariations.length < filteredVariations.length;
+    
     /**
      * Load filtered variations based on selected attributes.
      */
@@ -114,6 +148,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
         
         setSelectedAttributes(newAttributes);
         setIsLoadingVariations(true);
+        setCurrentPage(1); // Reset to first page when filtering
         
         // If we have valid attributes, show the variations section
         const hasValidAttributes = Object.keys(newAttributes).some(key => newAttributes[key]);
@@ -177,9 +212,10 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
      */
     const resetFilters = () => {
         setSelectedAttributes({});
-        setFilteredVariations([]);
-        setShowingAllVariations(false);
+        setCurrentPage(1);
         setIsLoadingVariations(false);
+        // Reload all variations
+        loadAllVariations();
     };
     
     // Render nothing if not a variable product
@@ -234,30 +270,25 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                 )}
             </div>
             
-            {/* Show All Variations Button */}
-            <div className="lwwc-show-all-variations-button">
-                <button 
-                    onClick={toggleAllVariations}
-                    disabled={isLoadingVariations}
-                >
-                    {showingAllVariations ? (i18n.hideVariations || 'Hide Variations') : (i18n.showAllVariations || 'Show All Variations')}
-                </button>
-            </div>
-            
-            {/* Variations List */}
-            {showingAllVariations && (
-                <div className="lwwc-variations-section">
-                    <div className="lwwc-variations-section-title">
-                        {i18n.availableVariations || 'Available Variations:'}
-                    </div>
-                    <div className="lwwc-variations-list">
-                        {isLoadingVariations ? (
-                            <div className="lwwc-variations-loading">
-                                <Spinner />
-                                {i18n.loadingVariations || 'Loading variations...'}
-                            </div>
-                        ) : filteredVariations.length > 0 ? (
-                            filteredVariations.map((variation) => (
+            {/* Variations List (Auto-shown, Paginated) */}
+            <div className="lwwc-variations-section">
+                <div className="lwwc-variations-section-title">
+                    {i18n.availableVariations || 'Available Variations:'} 
+                    {filteredVariations.length > 0 && (
+                        <span className="lwwc-variations-count">
+                            ({displayedVariations.length} of {filteredVariations.length})
+                        </span>
+                    )}
+                </div>
+                <div className="lwwc-variations-list">
+                    {isLoadingVariations ? (
+                        <div className="lwwc-variations-loading">
+                            <Spinner />
+                            {i18n.loadingVariations || 'Loading variations...'}
+                        </div>
+                    ) : displayedVariations.length > 0 ? (
+                        <>
+                            {displayedVariations.map((variation) => (
                                 <div 
                                     key={variation.id} 
                                     className="lwwc-variation-item"
@@ -280,23 +311,35 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                                         <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="lwwc-no-variations-notice">
-                                <div className="lwwc-no-variations-notice-header">
-                                    <span className="dashicons dashicons-warning lwwc-no-variations-notice-icon" />
-                                    <span className="lwwc-no-variations-notice-title">
-                                        {i18n.noVariationsAvailable || 'No variations available'}
-                                    </span>
+                            ))}
+                            
+                            {/* Load More Button */}
+                            {hasMoreVariations && (
+                                <div className="lwwc-load-more-variations">
+                                    <button 
+                                        onClick={loadMore}
+                                        className="lwwc-load-more-button"
+                                    >
+                                        {i18n.loadMore || 'Load More'} ({filteredVariations.length - displayedVariations.length} remaining)
+                                    </button>
                                 </div>
-                                <div className="lwwc-no-variations-notice-description">
-                                    {i18n.noVariationsDescription || 'This product has no purchasable variations. Please check the product configuration.'}
-                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="lwwc-no-variations-notice">
+                            <div className="lwwc-no-variations-notice-header">
+                                <span className="dashicons dashicons-warning lwwc-no-variations-notice-icon" />
+                                <span className="lwwc-no-variations-notice-title">
+                                    {i18n.noVariationsAvailable || 'No variations available'}
+                                </span>
                             </div>
-                        )}
-                    </div>
+                            <div className="lwwc-no-variations-notice-description">
+                                {i18n.noVariationsDescription || 'This product has no purchasable variations. Please check the product configuration.'}
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
             
             {/* Error Display */}
             {error && (
