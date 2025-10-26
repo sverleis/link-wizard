@@ -311,9 +311,9 @@ class VariableProductSelector extends Component {
     };
     
     render() {
-        const { product, onVariationSelect } = this.props;
+        const { product, onVariationSelect, allowAnyAttributes } = this.props;
         const i18n = this.props.i18n || window.lwwcI18n || {};
-        const { selectedAttributes, displayedVariations, isLoadingVariations, error } = this.state;
+        const { selectedAttributes, displayedVariations, isLoadingVariations, error, filteredVariations } = this.state;
         
         // Render nothing if not a variable product
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
@@ -328,9 +328,18 @@ class VariableProductSelector extends Component {
         const availableVariationsCount = this.getAvailableVariationsCount();
         const hasMoreVariations = this.hasMoreVariations();
         
+        // For composite products with "Any" attribute variations, hide filters
+        // because filtering by specific attributes will return no results
+        const allVariationsHaveAnyAttributes = allowAnyAttributes && 
+            filteredVariations.length > 0 && 
+            filteredVariations.every(v => v.disabled);
+        
+        const shouldShowFilters = !allVariationsHaveAnyAttributes;
+        
         return (
         <div className="lwwc-variable-product-selector">
-            {/* Attribute Filters */}
+            {/* Attribute Filters - Only show if variations are fully configured */}
+            {shouldShowFilters && (
             <div className="attribute-filter-container">
                 <div className="attribute-filter-header">
                     {i18n.filterByAttributes || 'Filter by Attributes:'}
@@ -369,6 +378,7 @@ class VariableProductSelector extends Component {
                     </div>
                 )}
             </div>
+            )}
             
             {/* Variations List (Auto-shown, Paginated) */}
             <div className="lwwc-variations-section">
