@@ -1096,7 +1096,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     }
                                                 >
                                                     <span className="dashicons dashicons-plus-alt2" />
-                                                    {i18n.add || 'Add'}
+                                                    {product.type === 'composite' ? (i18n.add_default || 'Default Option') : (i18n.add || 'Add')}
                                                 </button>
                                             </div>
                                         )}
