@@ -269,18 +269,50 @@ class VariableProductSelector extends Component {
     };
     
     /**
-     * Handle manual selection of the pending variation.
+     * Handle manual selection of a variation.
+     * Called when user clicks the "Select" button on a variation item.
      */
-    handleSelectPendingVariation = () => {
-        const { pendingVariation } = this.state;
+    handleSelectVariation = (variation) => {
+        const { product, onVariationSelect } = this.props;
         const { selectedAttributes } = this.state;
-        const { onVariationSelect } = this.props;
         
-        if (pendingVariation && onVariationSelect) {
-            onVariationSelect(pendingVariation, selectedAttributes);
-            this.setState({ 
-                pendingVariation: null,
-                incompleteAttributes: []
+        // Extract the variation's attributes and check if any are incomplete
+        const variationAttributes = {};
+        const incompleteAttributes = [];
+        
+        if (product.attributes) {
+            product.attributes.forEach((attribute) => {
+                const attributeSlug = attribute.slug;
+                // Try both formats: 'pa_color' and 'attribute_pa_color'
+                let variationValue = variation.attributes?.[attributeSlug];
+                if (!variationValue && variation.attributes && !variation.attributes.hasOwnProperty(attributeSlug)) {
+                    variationValue = variation.attributes['attribute_' + attributeSlug];
+                }
+                
+                if (variationValue && variationValue !== '') {
+                    // Defined attribute - use variation value
+                    variationAttributes[attributeSlug] = variationValue;
+                } else {
+                    // "Any" attribute - use selected value or mark as incomplete
+                    const selectedValue = selectedAttributes[attributeSlug];
+                    if (selectedValue) {
+                        variationAttributes[attributeSlug] = selectedValue;
+                    } else {
+                        incompleteAttributes.push(attributeSlug);
+                    }
+                }
+            });
+        }
+        
+        // If all attributes are filled, select the variation
+        if (incompleteAttributes.length === 0 && onVariationSelect) {
+            onVariationSelect(variation, variationAttributes);
+        } else {
+            // Highlight incomplete attributes and store pending variation
+            this.setState({
+                selectedAttributes: variationAttributes,
+                incompleteAttributes: incompleteAttributes,
+                pendingVariation: variation
             });
         }
     };
@@ -456,55 +488,6 @@ class VariableProductSelector extends Component {
         return details.length > 0 ? details : null;
     };
     
-    /**
-     * Handle clicking a variation from the list.
-     * Populates attribute dropdowns and highlights incomplete attributes.
-     */
-    handleVariationClick = (variation) => {
-        const { product, onVariationSelect } = this.props;
-        
-        // Extract the variation's attributes
-        const variationAttributes = {};
-        const incompleteAttributes = [];
-        
-        // Check each product attribute
-        if (product.attributes) {
-            product.attributes.forEach((attribute) => {
-                const attributeSlug = attribute.slug;
-                // Try both formats: 'pa_color' and 'attribute_pa_color'
-                let variationValue = variation.attributes?.[attributeSlug];
-                if (!variationValue && variation.attributes && !variation.attributes.hasOwnProperty(attributeSlug)) {
-                    // Try with 'attribute_' prefix
-                    variationValue = variation.attributes['attribute_' + attributeSlug];
-                }
-                
-                if (variationValue && variationValue !== '') {
-                    // This variation has a specific value for this attribute
-                    variationAttributes[attributeSlug] = variationValue;
-                } else {
-                    // This variation has "Any" for this attribute - needs to be filled
-                    incompleteAttributes.push(attributeSlug);
-                }
-            });
-        }
-        
-        // Update state with the variation's attributes and store the pending variation
-        this.setState({
-            selectedAttributes: variationAttributes,
-            incompleteAttributes: incompleteAttributes,
-            pendingVariation: incompleteAttributes.length > 0 ? variation : null // Store for later if incomplete
-        });
-        
-        // If all attributes are filled, select this variation immediately
-        if (incompleteAttributes.length === 0 && onVariationSelect) {
-            onVariationSelect(variation, variationAttributes);
-        } else {
-            // Reload variations to filter by the selected attributes
-            // Clear the lastLoadedAttributesRef to force a fresh load
-            this.lastLoadedAttributesRef = null;
-            this.loadFilteredVariations(variationAttributes);
-        }
-    };
     
     render() {
         const { product, onVariationSelect, allowAnyAttributes } = this.props;
@@ -562,15 +545,6 @@ class VariableProductSelector extends Component {
                     >
                         {i18n.resetFilters || 'Reset Filters'}
                     </button>
-                    {/* Select Button - Only show if we have a pending variation with incomplete attributes */}
-                    {pendingVariation && incompleteAttributes.length === 0 && (
-                        <button
-                            onClick={this.handleSelectPendingVariation}
-                            className="attribute-filter-select-button"
-                        >
-                            {i18n.selectVariation || 'Select'}
-                        </button>
-                    )}
                 </div>
                 {isLoadingVariations && (
                     <div className="attribute-filter-spinner">
@@ -604,7 +578,6 @@ class VariableProductSelector extends Component {
                                 <div 
                                     key={variation.id} 
                                     className="lwwc-variation-item"
-                                    onClick={() => this.handleVariationClick(variation)}
                                 >
                                     <div className="lwwc-variation-item-icon">
                                         <span className="dashicons dashicons-products"></span>
@@ -643,7 +616,7 @@ class VariableProductSelector extends Component {
                                             className="lwwc-variation-select-button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                this.handleVariationClick(variation);
+                                                this.handleSelectVariation(variation);
                                             }}
                                         >
                                             {i18n.selectVariation || 'Select'}
