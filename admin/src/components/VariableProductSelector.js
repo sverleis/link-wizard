@@ -352,10 +352,21 @@ class VariableProductSelector extends Component {
             return null;
         }
         
+        console.log('VariableProductSelector: getVariationAttributeDetails for variation:', variation);
+        console.log('VariableProductSelector: product.attributes:', product.attributes);
+        console.log('VariableProductSelector: variation.attributes:', variation.attributes);
+        
         product.attributes.forEach((attribute) => {
             const attributeSlug = attribute.slug;
-            const variationValue = variation.attributes[attributeSlug];
+            // Try both formats: 'pa_color' and 'attribute_pa_color'
+            let variationValue = variation.attributes[attributeSlug];
+            if (!variationValue && !variation.attributes.hasOwnProperty(attributeSlug)) {
+                // Try with 'attribute_' prefix
+                variationValue = variation.attributes['attribute_' + attributeSlug];
+            }
             const selectedValue = selectedAttributes[attributeSlug];
+            
+            console.log(`VariableProductSelector: Checking attribute ${attributeSlug}: variationValue=${variationValue}, selectedValue=${selectedValue}`);
             
             if (!variationValue || variationValue === '') {
                 // This is an "Any" attribute - needs user selection
@@ -410,7 +421,12 @@ class VariableProductSelector extends Component {
         if (product.attributes) {
             product.attributes.forEach((attribute) => {
                 const attributeSlug = attribute.slug;
-                const variationValue = variation.attributes?.[attributeSlug];
+                // Try both formats: 'pa_color' and 'attribute_pa_color'
+                let variationValue = variation.attributes?.[attributeSlug];
+                if (!variationValue && variation.attributes && !variation.attributes.hasOwnProperty(attributeSlug)) {
+                    // Try with 'attribute_' prefix
+                    variationValue = variation.attributes['attribute_' + attributeSlug];
+                }
                 
                 if (variationValue && variationValue !== '') {
                     // This variation has a specific value for this attribute
