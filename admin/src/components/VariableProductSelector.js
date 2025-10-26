@@ -45,6 +45,7 @@ class VariableProductSelector extends Component {
             error: null,
             incompleteAttributes: [], // Track which attributes need to be filled
             pendingVariation: null, // Store the clicked variation until all attributes are filled
+            isAutoSelecting: false, // Flag to prevent reloads during auto-selection
             // Pagination state
             displayedVariations: [],
             variationsPerPage: 3, // Show 3 variations at a time
@@ -127,11 +128,17 @@ class VariableProductSelector extends Component {
      */
     loadFilteredVariations = (attributes) => {
         const { product, apiBasePath } = this.props;
+        const { isAutoSelecting } = this.state;
         const i18n = this.props.i18n || window.lwwcI18n || {};
         const basePath = apiBasePath || 'link-wizard/v1';
         
+        // Don't load if we're in the middle of auto-selecting
+        if (isAutoSelecting) {
+            return Promise.resolve([]);
+        }
+        
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
-            return;
+            return Promise.resolve([]);
         }
         
         this.setState({ error: null });
@@ -241,13 +248,20 @@ class VariableProductSelector extends Component {
         }
         
         if (shouldAutoSelect) {
-            // All attributes filled! Select the pending variation
-            if (onVariationSelect) {
-                onVariationSelect(pendingVariation, newAttributes);
-            }
-            
-            // Clear the pending variation
-            this.setState({ pendingVariation: null });
+            // All attributes filled! Set flag to prevent reloads
+            this.setState({ isAutoSelecting: true }, () => {
+                if (onVariationSelect) {
+                    onVariationSelect(pendingVariation, newAttributes);
+                }
+                
+                // Clear the pending variation and flag after a short delay
+                setTimeout(() => {
+                    this.setState({ 
+                        pendingVariation: null,
+                        isAutoSelecting: false
+                    });
+                }, 100);
+            });
         } else {
             // Only reload variations if we're not auto-selecting
             this.loadFilteredVariations(newAttributes);
