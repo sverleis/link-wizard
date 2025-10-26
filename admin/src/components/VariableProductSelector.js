@@ -54,6 +54,8 @@ class VariableProductSelector extends Component {
         
         // Use a ref to track if we're currently loading to prevent duplicate calls
         this.isLoadingRef = false;
+        // Track the last attributes we loaded to prevent duplicate API calls
+        this.lastLoadedAttributesRef = null;
     }
     
     componentDidMount() {
@@ -144,8 +146,16 @@ class VariableProductSelector extends Component {
             return Promise.resolve([]);
         }
         
+        // Check if we're loading the same attributes we just loaded
+        const attributesKey = JSON.stringify(attributes);
+        if (this.lastLoadedAttributesRef === attributesKey) {
+            console.log('VariableProductSelector: Skipping duplicate load for same attributes:', attributesKey);
+            return Promise.resolve(this.state.filteredVariations);
+        }
+        
         // Set the ref to prevent duplicate calls
         this.isLoadingRef = true;
+        this.lastLoadedAttributesRef = attributesKey;
         
         this.setState({ error: null });
         
