@@ -991,7 +991,21 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     {Object.keys(product.component_selections).map(componentId => {
                                                         const selection = product.component_selections[componentId];
                                                         // Get the product name from the selection
-                                                        const optionName = selection.name || `Product ${selection.product_id}`;
+                                                        let optionName = selection.name || `Product ${selection.product_id}`;
+                                                        
+                                                        // Add selected attributes to the name (e.g., "Large", "Red")
+                                                        if (selection.attributes && Object.keys(selection.attributes).length > 0) {
+                                                            const attributeValues = Object.values(selection.attributes)
+                                                                .filter(value => value) // Remove empty values
+                                                                .map(value => {
+                                                                    // Capitalize first letter
+                                                                    return value.charAt(0).toUpperCase() + value.slice(1);
+                                                                });
+                                                            
+                                                            if (attributeValues.length > 0) {
+                                                                optionName += ' - ' + attributeValues.join(', ');
+                                                            }
+                                                        }
                                                         
                                                         return (
                                                             <span key={componentId} className="lwwc-composite-selection-pill">
@@ -1332,6 +1346,20 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             } else {
                                                                 // Fallback: try to get from selection if it has name property
                                                                 optionName = selection.name || `Product ${selection.product_id}`;
+                                                            }
+                                                            
+                                                            // Add selected attributes to the name (e.g., "Large", "Red")
+                                                            if (selection.attributes && Object.keys(selection.attributes).length > 0) {
+                                                                const attributeValues = Object.values(selection.attributes)
+                                                                    .filter(value => value) // Remove empty values
+                                                                    .map(value => {
+                                                                        // Capitalize first letter
+                                                                        return value.charAt(0).toUpperCase() + value.slice(1);
+                                                                    });
+                                                                
+                                                                if (attributeValues.length > 0) {
+                                                                    optionName += ' - ' + attributeValues.join(', ');
+                                                                }
                                                             }
                                                             
                                                             return (
