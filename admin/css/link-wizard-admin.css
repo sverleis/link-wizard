@@ -2493,40 +2493,39 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 14px;
 }
 
-/* Composite product component selections summary */
-.lwwc-composite-selections-summary {
+/* Composite product component selections as pills (WooCommerce style) */
+.lwwc-composite-selections-pills {
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid #e0e0e0;
-    font-size: 12px;
-}
-
-.lwwc-composite-selection-item {
     display: flex;
-    gap: 5px;
-    align-items: baseline;
-    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lwwc-composite-selection-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f0f1;
+    color: #2c3338;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 12px;
     line-height: 1.4;
+    white-space: nowrap;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
-.lwwc-composite-selection-item:last-child {
-    margin-bottom: 0;
+.lwwc-composite-selection-pill:hover {
+    background-color: #e8e8e9;
+    border-color: #a7aaad;
 }
 
-.lwwc-composite-component-name {
-    color: #666;
+.lwwc-composite-pill-qty {
+    color: #646970;
     font-weight: 500;
-}
-
-.lwwc-composite-option-name {
-    color: #333;
-    flex: 1;
-}
-
-.lwwc-composite-option-qty {
-    color: #999;
-    font-size: 11px;
-    font-style: italic;
+    margin-left: 2px;
 }
 
 .lwwc-selected-product-controls {

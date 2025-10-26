@@ -1355,26 +1355,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <div className="lwwc-selected-product-price">
                                                     <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                                 </div>
-                                                {/* Show component selections for composite products */}
+                                                {/* Show component selections for composite products as pills */}
                                                 {product.type === 'composite' && product.component_selections && (
-                                                    <div className="lwwc-composite-selections-summary">
+                                                    <div className="lwwc-composite-selections-pills">
                                                         {Object.keys(product.component_selections).map(componentId => {
                                                             const selection = product.component_selections[componentId];
-                                                            // Find component name from the product's components array
+                                                            // Find the selected option (product/variation) name
                                                             const component = product.components?.find(c => c.id === componentId);
-                                                            const componentName = component?.title || `Component ${componentId}`;
-                                                            // Find the selected option name
                                                             const selectedOption = component?.options?.find(o => o.id === selection.product_id);
-                                                            const optionName = selectedOption?.name || `Option ${selection.product_id}`;
+                                                            const optionName = selectedOption?.name || `Product ${selection.product_id}`;
                                                             
                                                             return (
-                                                                <div key={componentId} className="lwwc-composite-selection-item">
-                                                                    <span className="lwwc-composite-component-name">{componentName}:</span>
-                                                                    <span className="lwwc-composite-option-name">{optionName}</span>
+                                                                <span key={componentId} className="lwwc-composite-selection-pill">
+                                                                    {optionName}
                                                                     {selection.quantity > 1 && (
-                                                                        <span className="lwwc-composite-option-qty">× {selection.quantity}</span>
+                                                                        <span className="lwwc-composite-pill-qty"> × {selection.quantity}</span>
                                                                     )}
-                                                                </div>
+                                                                </span>
                                                             );
                                                         })}
                                                     </div>
