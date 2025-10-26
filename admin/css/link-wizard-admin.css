@@ -2513,6 +2513,51 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     transform: translateY(-1px);
 }
 
+/* Pending state - attributes being filled */
+.lwwc-variation-select-button.lwwc-variation-pending {
+    background-color: #ff9800;
+}
+
+.lwwc-variation-select-button.lwwc-variation-pending:hover {
+    background-color: #f57c00;
+    box-shadow: 0 3px 6px rgba(255, 152, 0, 0.3);
+}
+
+/* Ready state - all attributes filled, ready to select */
+.lwwc-variation-select-button.lwwc-variation-ready {
+    background-color: #2271b1;
+    animation: lwwc-pulse-button 2s ease-in-out infinite;
+}
+
+.lwwc-variation-select-button.lwwc-variation-ready:hover {
+    background-color: #135e96;
+}
+
+/* Selected state - variation has been selected */
+.lwwc-variation-select-button.lwwc-variation-selected {
+    background-color: #4caf50;
+    cursor: not-allowed;
+}
+
+.lwwc-variation-select-button.lwwc-variation-selected:hover {
+    background-color: #45a049;
+    transform: none;
+}
+
+.lwwc-variation-select-button:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+@keyframes lwwc-pulse-button {
+    0%, 100% {
+        box-shadow: 0 2px 4px rgba(34, 113, 177, 0.2);
+    }
+    50% {
+        box-shadow: 0 2px 12px rgba(34, 113, 177, 0.5);
+    }
+}
+
 /* Load More Variations Button */
 .lwwc-load-more-variations {
     margin-top: 12px;

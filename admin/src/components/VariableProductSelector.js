@@ -46,6 +46,7 @@ class VariableProductSelector extends Component {
             incompleteAttributes: [], // Track which attributes need to be filled
             pendingVariation: null, // Store the clicked variation until all attributes are filled
             isAutoSelecting: false, // Flag to prevent reloads during auto-selection
+            selectedVariationId: null, // Track which variation has been selected
             // Pagination state
             displayedVariations: [],
             variationsPerPage: 3, // Show 3 variations at a time
@@ -269,16 +270,33 @@ class VariableProductSelector extends Component {
     };
     
     /**
-     * Handle manual selection of a variation.
-     * Called when user clicks the "Select" button on a variation item.
+     * Handle button click on a variation.
+     * Button flow: "Filter" → fills attributes → "Select" → finalizes
      */
-    handleSelectVariation = (variation) => {
+    handleVariationButtonClick = (variation) => {
         const { product, onVariationSelect } = this.props;
-        const { selectedAttributes } = this.state;
+        const { selectedAttributes, incompleteAttributes, pendingVariation, selectedVariationId } = this.state;
+        
+        // If this variation is already selected, do nothing
+        if (selectedVariationId === variation.id) {
+            return;
+        }
+        
+        // If we have incomplete attributes, try to finalize the pending variation
+        if (incompleteAttributes.length === 0 && pendingVariation && onVariationSelect) {
+            // All attributes are filled - finalize the selection
+            onVariationSelect(pendingVariation, selectedAttributes);
+            this.setState({
+                selectedVariationId: pendingVariation.id,
+                pendingVariation: null,
+                incompleteAttributes: []
+            });
+            return;
+        }
         
         // Extract the variation's attributes and check if any are incomplete
         const variationAttributes = {};
-        const incompleteAttributes = [];
+        const newIncompleteAttributes = [];
         
         if (product.attributes) {
             product.attributes.forEach((attribute) => {
@@ -298,20 +316,25 @@ class VariableProductSelector extends Component {
                     if (selectedValue) {
                         variationAttributes[attributeSlug] = selectedValue;
                     } else {
-                        incompleteAttributes.push(attributeSlug);
+                        newIncompleteAttributes.push(attributeSlug);
                     }
                 }
             });
         }
         
-        // If all attributes are filled, select the variation
-        if (incompleteAttributes.length === 0 && onVariationSelect) {
+        // If all attributes are filled immediately (no "Any" attributes), select directly
+        if (newIncompleteAttributes.length === 0 && onVariationSelect) {
             onVariationSelect(variation, variationAttributes);
+            this.setState({
+                selectedVariationId: variation.id,
+                pendingVariation: null,
+                incompleteAttributes: []
+            });
         } else {
             // Highlight incomplete attributes and store pending variation
             this.setState({
                 selectedAttributes: variationAttributes,
-                incompleteAttributes: incompleteAttributes,
+                incompleteAttributes: newIncompleteAttributes,
                 pendingVariation: variation
             });
         }
@@ -612,15 +635,39 @@ class VariableProductSelector extends Component {
                                         <div className="lwwc-variation-item-price">
                                             <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                         </div>
-                                        <button
-                                            className="lwwc-variation-select-button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                this.handleSelectVariation(variation);
-                                            }}
-                                        >
-                                            {i18n.selectVariation || 'Select'}
-                                        </button>
+                                        {(() => {
+                                            const { selectedVariationId, incompleteAttributes, pendingVariation } = this.state;
+                                            const isSelected = selectedVariationId === variation.id;
+                                            const isPending = pendingVariation?.id === variation.id;
+                                            const isComplete = incompleteAttributes.length === 0 && isPending;
+                                            
+                                            let buttonText = 'Filter';
+                                            let buttonClass = 'lwwc-variation-select-button';
+                                            
+                                            if (isSelected) {
+                                                buttonText = '✓ Selected';
+                                                buttonClass = 'lwwc-variation-select-button lwwc-variation-selected';
+                                            } else if (isPending && isComplete) {
+                                                buttonText = 'Select';
+                                                buttonClass = 'lwwc-variation-select-button lwwc-variation-ready';
+                                            } else if (isPending && !isComplete) {
+                                                buttonText = 'Filter';
+                                                buttonClass = 'lwwc-variation-select-button lwwc-variation-pending';
+                                            }
+                                            
+                                            return (
+                                                <button
+                                                    className={buttonClass}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        this.handleVariationButtonClick(variation);
+                                                    }}
+                                                    disabled={isSelected}
+                                                >
+                                                    {buttonText}
+                                                </button>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
                                 );
