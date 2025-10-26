@@ -982,6 +982,25 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                             <div className="product-price">
                                                 <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                             </div>
+                                            {/* Show component selections for composite products with default configuration */}
+                                            {product.type === 'composite' && product.component_selections && (
+                                                <div className="lwwc-composite-selections-pills">
+                                                    {Object.keys(product.component_selections).map(componentId => {
+                                                        const selection = product.component_selections[componentId];
+                                                        // Get the product name from the selection
+                                                        const optionName = selection.name || `Product ${selection.product_id}`;
+                                                        
+                                                        return (
+                                                            <span key={componentId} className="lwwc-composite-selection-pill">
+                                                                {optionName}
+                                                                {selection.quantity > 1 && (
+                                                                    <span className="lwwc-composite-pill-qty"> × {selection.quantity}</span>
+                                                                )}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
                                             {product.disabled && (
                                                 <div className="product-disabled-message lwwc-product-disabled-message">
                                                     <div className="lwwc-product-disabled-message-header">
