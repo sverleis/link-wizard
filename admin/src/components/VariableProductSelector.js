@@ -224,10 +224,6 @@ class VariableProductSelector extends Component {
         // Remove this attribute from incomplete list if it's now filled
         const newIncompleteAttributes = incompleteAttributes.filter(attr => attr !== attributeName);
         
-        console.log('VariableProductSelector: Attribute changed:', attributeName, '=', attributeValue);
-        console.log('VariableProductSelector: Remaining incomplete attributes:', newIncompleteAttributes);
-        console.log('VariableProductSelector: Pending variation:', pendingVariation);
-        
         // Check if all incomplete attributes are now filled AND we have a pending variation
         const shouldAutoSelect = newIncompleteAttributes.length === 0 && pendingVariation;
         
@@ -246,8 +242,6 @@ class VariableProductSelector extends Component {
         
         if (shouldAutoSelect) {
             // All attributes filled! Select the pending variation
-            console.log('VariableProductSelector: All attributes filled, selecting pending variation:', pendingVariation);
-            
             if (onVariationSelect) {
                 onVariationSelect(pendingVariation, newAttributes);
             }
@@ -383,10 +377,6 @@ class VariableProductSelector extends Component {
             return null;
         }
         
-        console.log('VariableProductSelector: getVariationAttributeDetails for variation:', variation);
-        console.log('VariableProductSelector: product.attributes:', product.attributes);
-        console.log('VariableProductSelector: variation.attributes:', variation.attributes);
-        
         product.attributes.forEach((attribute) => {
             const attributeSlug = attribute.slug;
             // Try both formats: 'pa_color' and 'attribute_pa_color'
@@ -396,8 +386,6 @@ class VariableProductSelector extends Component {
                 variationValue = variation.attributes['attribute_' + attributeSlug];
             }
             const selectedValue = selectedAttributes[attributeSlug];
-            
-            console.log(`VariableProductSelector: Checking attribute ${attributeSlug}: variationValue=${variationValue}, selectedValue=${selectedValue}`);
             
             if (!variationValue || variationValue === '') {
                 // This is an "Any" attribute - needs user selection
@@ -469,10 +457,6 @@ class VariableProductSelector extends Component {
             });
         }
         
-        console.log('VariableProductSelector: Clicked variation:', variation);
-        console.log('VariableProductSelector: Variation attributes:', variationAttributes);
-        console.log('VariableProductSelector: Incomplete attributes:', incompleteAttributes);
-        
         // Update state with the variation's attributes and store the pending variation
         this.setState({
             selectedAttributes: variationAttributes,
@@ -482,10 +466,7 @@ class VariableProductSelector extends Component {
         
         // If all attributes are filled, select this variation immediately
         if (incompleteAttributes.length === 0 && onVariationSelect) {
-            console.log('VariableProductSelector: All attributes complete, selecting variation immediately');
             onVariationSelect(variation, variationAttributes);
-        } else {
-            console.log('VariableProductSelector: Waiting for user to fill incomplete attributes:', incompleteAttributes);
         }
     };
     
