@@ -156,16 +156,29 @@ class VariableProductSelector extends Component {
         
         this.setState({ isLoadingVariations: true });
         
+        // Determine the correct API path based on the base path
+        // Core plugin uses: /products/{id}/filtered-variations
+        // Composite plugin uses: /variations/{id} (same endpoint with attributes param)
+        const isCompositePlugin = basePath.includes('composite');
+        const apiPath = isCompositePlugin 
+            ? `${basePath}/variations/${product.id}?attributes=${encodeURIComponent(attributesJson)}`
+            : `${basePath}/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`;
+        
+        console.log('VariableProductSelector: Loading filtered variations from:', apiPath);
+        
         apiFetch({
-            path: `${basePath}/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`
+            path: apiPath
         })
             .then((variationData) => {
+                console.log('VariableProductSelector: Loaded filtered variations:', variationData);
                 this.setState({
                     filteredVariations: variationData,
                     isLoadingVariations: false
                 });
             })
             .catch((err) => {
+                console.error('VariableProductSelector: Error loading filtered variations:', err);
+                
                 // Handle the case where no variations are found (this is not really an error).
                 if (err.code === 'no_valid_variations') {
                     this.setState({
