@@ -2314,6 +2314,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 /* Variations Section */
 .lwwc-variations-section {
     margin-top: 10px;
+    width: 100%; /* Full width below dropdowns */
+}
+
+/* Variable Product Selector Container */
+.lwwc-variable-product-selector {
+    width: 100%; /* Full width */
+    margin-top: 10px;
 }
 
 .lwwc-variations-section-title {
@@ -2334,6 +2341,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: 100%; /* Full width */
 }
 
 /* Variation Item */
@@ -2397,24 +2405,32 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 /* Load More Variations Button */
 .lwwc-load-more-variations {
-    margin-top: 10px;
+    margin-top: 12px;
+    padding: 10px;
     text-align: center;
+    width: 100%; /* Full width */
+    display: block; /* Ensure visibility */
 }
 
 .lwwc-load-more-button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background-color: var(--wp-admin-theme-color);
     color: white;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    min-height: 40px; /* Ensure button has height */
+    display: inline-block;
+    width: auto;
 }
 
 .lwwc-load-more-button:hover {
     background-color: var(--wp-admin-theme-color-darker);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Invalid Variations Button */
