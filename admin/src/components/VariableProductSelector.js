@@ -228,10 +228,13 @@ class VariableProductSelector extends Component {
         console.log('VariableProductSelector: Remaining incomplete attributes:', newIncompleteAttributes);
         console.log('VariableProductSelector: Pending variation:', pendingVariation);
         
+        // Check if all incomplete attributes are now filled AND we have a pending variation
+        const shouldAutoSelect = newIncompleteAttributes.length === 0 && pendingVariation;
+        
         this.setState({
             selectedAttributes: newAttributes,
             incompleteAttributes: newIncompleteAttributes,
-            isLoadingVariations: true,
+            isLoadingVariations: !shouldAutoSelect, // Only set loading if we're NOT auto-selecting
             currentPage: 1, // Reset to first page when filtering
         });
         
@@ -241,8 +244,7 @@ class VariableProductSelector extends Component {
             this.setState({ showingAllVariations: true });
         }
         
-        // Check if all incomplete attributes are now filled AND we have a pending variation
-        if (newIncompleteAttributes.length === 0 && pendingVariation) {
+        if (shouldAutoSelect) {
             // All attributes filled! Select the pending variation
             console.log('VariableProductSelector: All attributes filled, selecting pending variation:', pendingVariation);
             
@@ -250,11 +252,8 @@ class VariableProductSelector extends Component {
                 onVariationSelect(pendingVariation, newAttributes);
             }
             
-            // Clear the pending variation and DON'T reload variations (to avoid infinite loop)
-            this.setState({ 
-                pendingVariation: null,
-                isLoadingVariations: false  // Stop the loading state
-            });
+            // Clear the pending variation
+            this.setState({ pendingVariation: null });
         } else {
             // Only reload variations if we're not auto-selecting
             this.loadFilteredVariations(newAttributes);
