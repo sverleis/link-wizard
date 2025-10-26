@@ -328,18 +328,9 @@ class VariableProductSelector extends Component {
         const availableVariationsCount = this.getAvailableVariationsCount();
         const hasMoreVariations = this.hasMoreVariations();
         
-        // For composite products with "Any" attribute variations, hide filters
-        // because filtering by specific attributes will return no results
-        const allVariationsHaveAnyAttributes = allowAnyAttributes && 
-            filteredVariations.length > 0 && 
-            filteredVariations.every(v => v.disabled);
-        
-        const shouldShowFilters = !allVariationsHaveAnyAttributes;
-        
         return (
         <div className="lwwc-variable-product-selector">
-            {/* Attribute Filters - Only show if variations are fully configured */}
-            {shouldShowFilters && (
+            {/* Attribute Filters - For composite products, these specify attributes even for "Any" variations */}
             <div className="attribute-filter-container">
                 <div className="attribute-filter-header">
                     {i18n.filterByAttributes || 'Filter by Attributes:'}
@@ -378,7 +369,6 @@ class VariableProductSelector extends Component {
                     </div>
                 )}
             </div>
-            )}
             
             {/* Variations List (Auto-shown, Paginated) */}
             <div className="lwwc-variations-section">
@@ -402,7 +392,7 @@ class VariableProductSelector extends Component {
                                 <div 
                                     key={variation.id} 
                                     className="lwwc-variation-item"
-                                    onClick={() => onVariationSelect && onVariationSelect(variation)}
+                                    onClick={() => onVariationSelect && onVariationSelect(variation, selectedAttributes)}
                                 >
                                     <div className="lwwc-variation-item-icon">
                                         <span className="dashicons dashicons-products"></span>
