@@ -31,6 +31,7 @@ import { Spinner } from '@wordpress/components';
  * @param {String} componentId - Optional ID for state management (useful when multiple instances)
  * @param {Object} i18n - Optional i18n translations object
  * @param {Boolean} allowAnyAttributes - If true, don't filter out disabled variations (for composite products)
+ * @param {String} apiBasePath - Optional custom API base path (default: 'link-wizard/v1')
  */
 class VariableProductSelector extends Component {
     constructor(props) {
@@ -123,8 +124,9 @@ class VariableProductSelector extends Component {
      * Load filtered variations based on selected attributes.
      */
     loadFilteredVariations = (attributes) => {
-        const { product } = this.props;
+        const { product, apiBasePath } = this.props;
         const i18n = this.props.i18n || window.lwwcI18n || {};
+        const basePath = apiBasePath || 'link-wizard/v1';
         
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
             return;
@@ -155,7 +157,7 @@ class VariableProductSelector extends Component {
         this.setState({ isLoadingVariations: true });
         
         apiFetch({
-            path: `link-wizard/v1/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`
+            path: `${basePath}/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`
         })
             .then((variationData) => {
                 this.setState({
@@ -220,8 +222,9 @@ class VariableProductSelector extends Component {
      * Load all variations for the variable product.
      */
     loadAllVariations = () => {
-        const { product } = this.props;
+        const { product, apiBasePath } = this.props;
         const i18n = this.props.i18n || window.lwwcI18n || {};
+        const basePath = apiBasePath || 'link-wizard/v1';
         
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
             return;
@@ -233,7 +236,7 @@ class VariableProductSelector extends Component {
         });
         
         apiFetch({
-            path: `link-wizard/v1/products/${product.id}/variations`
+            path: `${basePath}/variations/${product.id}`
         })
             .then((variationData) => {
                 this.setState({
