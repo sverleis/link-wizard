@@ -442,9 +442,20 @@ const DynamicLink = ({
                 );
                 
                 // Add products parameter with highlighting.
-                let productsParam = selectedProducts.map(product => 
-                    `${product.id}:${product.quantity}`
-                ).join(',');
+                // For composite products, extract the mapped ID from checkout_url
+                let productsParam = selectedProducts.map(product => {
+                    if (product.type === 'composite' && product.checkout_url) {
+                        // Extract the products parameter from the checkout URL (e.g., "cp139_HASH:1")
+                        try {
+                            const url = new URL(product.checkout_url);
+                            const productsFromUrl = url.searchParams.get('products');
+                            return productsFromUrl || `${product.id}:${product.quantity || 1}`;
+                        } catch (e) {
+                            return `${product.id}:${product.quantity || 1}`;
+                        }
+                    }
+                    return `${product.id}:${product.quantity || 1}`;
+                }).join(',');
                 
                 // Apply URL encoding based on user preference for display.
                 if (urlEncoding === 'encoded') {
