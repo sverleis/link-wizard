@@ -250,12 +250,15 @@ class VariableProductSelector extends Component {
                 onVariationSelect(pendingVariation, newAttributes);
             }
             
-            // Clear the pending variation
-            this.setState({ pendingVariation: null });
+            // Clear the pending variation and DON'T reload variations (to avoid infinite loop)
+            this.setState({ 
+                pendingVariation: null,
+                isLoadingVariations: false  // Stop the loading state
+            });
+        } else {
+            // Only reload variations if we're not auto-selecting
+            this.loadFilteredVariations(newAttributes);
         }
-        
-        // Always reload variations to show updated list
-        this.loadFilteredVariations(newAttributes);
     };
     
     /**
