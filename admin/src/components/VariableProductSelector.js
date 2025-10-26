@@ -51,6 +51,9 @@ class VariableProductSelector extends Component {
             variationsPerPage: 3, // Show 3 variations at a time
             currentPage: 1,
         };
+        
+        // Use a ref to track if we're currently loading to prevent duplicate calls
+        this.isLoadingRef = false;
     }
     
     componentDidMount() {
@@ -132,14 +135,17 @@ class VariableProductSelector extends Component {
         const i18n = this.props.i18n || window.lwwcI18n || {};
         const basePath = apiBasePath || 'link-wizard/v1';
         
-        // Don't load if we're in the middle of auto-selecting
-        if (isAutoSelecting) {
+        // Don't load if we're in the middle of auto-selecting OR already loading
+        if (isAutoSelecting || this.isLoadingRef) {
             return Promise.resolve([]);
         }
         
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
             return Promise.resolve([]);
         }
+        
+        // Set the ref to prevent duplicate calls
+        this.isLoadingRef = true;
         
         this.setState({ error: null });
         
@@ -180,6 +186,7 @@ class VariableProductSelector extends Component {
         })
             .then((variationData) => {
                 console.log('VariableProductSelector: Loaded filtered variations:', variationData);
+                this.isLoadingRef = false; // Clear the loading ref
                 this.setState({
                     filteredVariations: variationData,
                     isLoadingVariations: false
@@ -188,6 +195,7 @@ class VariableProductSelector extends Component {
             })
             .catch((err) => {
                 console.error('VariableProductSelector: Error loading filtered variations:', err);
+                this.isLoadingRef = false; // Clear the loading ref even on error
                 
                 // Handle the case where no variations are found (this is not really an error).
                 if (err.code === 'no_valid_variations') {
