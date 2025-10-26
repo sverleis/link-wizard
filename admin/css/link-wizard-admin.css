@@ -2418,29 +2418,39 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin-bottom: 2px;
 }
 
-/* "Any" attribute display in variation list */
-.lwwc-variation-any-attribute {
+/* Attribute display in variation list */
+.lwwc-variation-any-attribute,
+.lwwc-variation-defined-attribute {
     font-weight: normal;
     font-size: 13px;
 }
 
-.lwwc-variation-any-attribute-name {
+.lwwc-variation-attribute-name {
     font-weight: 500;
     color: var(--wp-admin-text-color);
 }
 
-.lwwc-variation-any-attribute-any {
+/* "(Any)" label */
+.lwwc-variation-any-label {
     color: #72aee6;
     font-style: italic;
     font-weight: 500;
 }
 
-.lwwc-variation-any-attribute-value-filled {
+/* Defined attribute value (will auto-populate when clicked) */
+.lwwc-variation-attribute-defined {
+    color: #72aee6;
+    font-weight: 600;
+}
+
+/* "Any" attribute value - user filled */
+.lwwc-variation-attribute-filled {
     color: #2c9e37;
     font-weight: 600;
 }
 
-.lwwc-variation-any-attribute-value-empty {
+/* "Any" attribute value - needs to be filled */
+.lwwc-variation-attribute-empty {
     color: #d63638;
     font-style: italic;
     font-weight: 500;

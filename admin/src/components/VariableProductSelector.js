@@ -358,7 +358,7 @@ class VariableProductSelector extends Component {
             const selectedValue = selectedAttributes[attributeSlug];
             
             if (!variationValue || variationValue === '') {
-                // This is an "Any" attribute
+                // This is an "Any" attribute - needs user selection
                 if (selectedValue) {
                     // User has selected a value for this "Any" attribute
                     const valueName = attribute.values.find(v => v.slug === selectedValue)?.name || selectedValue;
@@ -366,6 +366,7 @@ class VariableProductSelector extends Component {
                         name: attribute.name,
                         value: valueName,
                         isAny: true,
+                        isDefined: false,
                         isFilled: true
                     });
                 } else {
@@ -374,9 +375,20 @@ class VariableProductSelector extends Component {
                         name: attribute.name,
                         value: 'Click to select',
                         isAny: true,
+                        isDefined: false,
                         isFilled: false
                     });
                 }
+            } else {
+                // This attribute is DEFINED in the variation (will auto-populate)
+                const valueName = attribute.values.find(v => v.slug === variationValue)?.name || variationValue;
+                details.push({
+                    name: attribute.name,
+                    value: valueName,
+                    isAny: false,
+                    isDefined: true,
+                    isFilled: true
+                });
             }
         });
         
@@ -527,13 +539,17 @@ class VariableProductSelector extends Component {
                                         <div className="lwwc-variation-item-name">
                                             {variation.name}
                                             {attributeDetails && attributeDetails.map((detail, idx) => (
-                                                <span key={idx} className="lwwc-variation-any-attribute">
+                                                <span key={idx} className={detail.isDefined ? 'lwwc-variation-defined-attribute' : 'lwwc-variation-any-attribute'}>
                                                     {' | '}
-                                                    <span className="lwwc-variation-any-attribute-name">{detail.name}:</span>
+                                                    <span className="lwwc-variation-attribute-name">{detail.name}:</span>
                                                     {' '}
-                                                    <span className="lwwc-variation-any-attribute-any">(Any)</span>
-                                                    {' → '}
-                                                    <span className={detail.isFilled ? 'lwwc-variation-any-attribute-value-filled' : 'lwwc-variation-any-attribute-value-empty'}>
+                                                    {detail.isAny && <span className="lwwc-variation-any-label">(Any)</span>}
+                                                    {detail.isAny && ' → '}
+                                                    <span className={
+                                                        detail.isDefined ? 'lwwc-variation-attribute-defined' :
+                                                        detail.isFilled ? 'lwwc-variation-attribute-filled' : 
+                                                        'lwwc-variation-attribute-empty'
+                                                    }>
                                                         {detail.value}
                                                     </span>
                                                 </span>
