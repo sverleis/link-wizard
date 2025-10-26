@@ -1359,13 +1359,31 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     handleQuantityChange(product.id, finalQuantity);
                                                 }}
                                                 className="lwwc-selected-product-qty-input"
-                                                disabled={product.sold_individually}
-                                                title={product.sold_individually ? (i18n.soldIndividually || 'This product is sold individually') : ''}
+                                                disabled={product.sold_individually || product.type === 'composite'}
+                                                title={
+                                                    product.type === 'composite' 
+                                                        ? (i18n.compositeQuantityFixed || 'Composite products have fixed quantity of 1') 
+                                                        : product.sold_individually 
+                                                            ? (i18n.soldIndividually || 'This product is sold individually') 
+                                                            : ''
+                                                }
                                             />
                                             {product.sold_individually && (
                                                 <span className="lwwc-sold-individually-note">
                                                     {i18n.soldIndividually || 'Sold individually'}
                                                 </span>
+                                            )}
+                                            {product.type === 'composite' && (
+                                                <button
+                                                    onClick={() => {
+                                                        // Open configuration panel for this composite
+                                                        toggleProductExpansion(product.id);
+                                                    }}
+                                                    className="lwwc-selected-product-edit-button"
+                                                    title={i18n.editConfiguration || 'Edit configuration'}
+                                                >
+                                                    {i18n.edit || 'Edit'}
+                                                </button>
                                             )}
                                             <button
                                                 onClick={() => handleQuantityChange(product.id, 0)}
