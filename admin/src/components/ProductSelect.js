@@ -1363,7 +1363,17 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                             // Find the selected option (product/variation) name
                                                             const component = product.components?.find(c => c.id === componentId);
                                                             const selectedOption = component?.options?.find(o => o.id === selection.product_id);
-                                                            const optionName = selectedOption?.name || `Product ${selection.product_id}`;
+                                                            
+                                                            // Get the product name, handle variations too
+                                                            let optionName = '';
+                                                            if (selectedOption) {
+                                                                optionName = selectedOption.name;
+                                                                // For variations, the name might include attributes
+                                                                // WooCommerce formats them as "Product Name - Attribute: Value"
+                                                            } else {
+                                                                // Fallback: try to get from selection if it has name property
+                                                                optionName = selection.name || `Product ${selection.product_id}`;
+                                                            }
                                                             
                                                             return (
                                                                 <span key={componentId} className="lwwc-composite-selection-pill">
