@@ -340,6 +340,35 @@ class VariableProductSelector extends Component {
     };
     
     /**
+     * Get the parent product name from a variation name.
+     * Strips out attribute-specific suffixes (e.g., "V-Neck T-Shirt - Red" → "V-Neck T-Shirt")
+     */
+    getParentProductName = (variation, product) => {
+        let name = variation.name;
+        
+        // If we have product attributes, try to strip them from the variation name
+        if (product.attributes && product.attributes.length > 0) {
+            // Get all possible attribute values
+            const attributeValues = [];
+            product.attributes.forEach((attribute) => {
+                if (attribute.values) {
+                    attribute.values.forEach((value) => {
+                        attributeValues.push(value.name);
+                    });
+                }
+            });
+            
+            // Remove attribute values from the name (e.g., " - Red", " - Green", " - Blue")
+            attributeValues.forEach((value) => {
+                const pattern = new RegExp(`\\s*[-–—]\\s*${value}\\s*`, 'gi');
+                name = name.replace(pattern, '');
+            });
+        }
+        
+        return name.trim();
+    };
+    
+    /**
      * Get formatted attribute details for a variation.
      * Shows which attributes are "Any" and which are specified.
      */
@@ -542,6 +571,7 @@ class VariableProductSelector extends Component {
                         <>
                             {displayedVariations.map((variation) => {
                                 const attributeDetails = this.getVariationAttributeDetails(variation);
+                                const parentProductName = this.getParentProductName(variation, product);
                                 return (
                                 <div 
                                     key={variation.id} 
@@ -553,7 +583,7 @@ class VariableProductSelector extends Component {
                                     </div>
                                     <div className="lwwc-variation-item-details">
                                         <div className="lwwc-variation-item-name">
-                                            {variation.name}
+                                            {parentProductName}
                                             {attributeDetails && attributeDetails.map((detail, idx) => (
                                                 <span key={idx} className={detail.isDefined ? 'lwwc-variation-defined-attribute' : 'lwwc-variation-any-attribute'}>
                                                     {' | '}
