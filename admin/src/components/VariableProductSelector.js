@@ -115,6 +115,12 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
         setSelectedAttributes(newAttributes);
         setIsLoadingVariations(true);
         
+        // If we have valid attributes, show the variations section
+        const hasValidAttributes = Object.keys(newAttributes).some(key => newAttributes[key]);
+        if (hasValidAttributes) {
+            setShowingAllVariations(true); // Show variations section when filtering
+        }
+        
         loadFilteredVariations(newAttributes);
     };
     
@@ -173,6 +179,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
         setSelectedAttributes({});
         setFilteredVariations([]);
         setShowingAllVariations(false);
+        setIsLoadingVariations(false);
     };
     
     // Render nothing if not a variable product
