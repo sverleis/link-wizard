@@ -35,8 +35,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const i18n = window.lwwcI18n || {};
 
     // Check if a product is currently selected
-    const isProductSelected = (productId) => {
-        return selectedProducts.some(p => p.id === productId);
+    const isProductSelected = (productId, uniqueId = null) => {
+        if (uniqueId) {
+            // For products with unique_id (like edited composite configurations), check exact unique_id match
+            return selectedProducts.some(p => p.unique_id === uniqueId);
+        }
+        // For regular products (or new composites without unique_id yet), check by product ID only
+        // and ensure we're only matching products that also don't have a unique_id
+        // This allows multiple composites with the same product ID but different configs
+        return selectedProducts.some(p => p.id === productId && !p.unique_id);
     };
 
     // Complex product functionality from addon
@@ -1124,7 +1131,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     cleanPriceText={cleanPriceText}
                                                     isProductExpanded={isProductExpanded}
                                                     toggleProductExpansion={toggleProductExpansion}
-                                                    isProductSelected={isProductSelected(product.id)}
+                                                    isProductSelected={isProductSelected(product.id, product.unique_id)}
                                                     setSelectedProducts={setSelectedProducts}
                                                 />
                                             ) : (
@@ -1348,6 +1355,30 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <div className="lwwc-selected-product-price">
                                                     <span dangerouslySetInnerHTML={{ __html: product.price }} />
                                                 </div>
+                                                {/* Show component selections for composite products */}
+                                                {product.type === 'composite' && product.component_selections && (
+                                                    <div className="lwwc-composite-selections-summary">
+                                                        {Object.keys(product.component_selections).map(componentId => {
+                                                            const selection = product.component_selections[componentId];
+                                                            // Find component name from the product's components array
+                                                            const component = product.components?.find(c => c.id === componentId);
+                                                            const componentName = component?.title || `Component ${componentId}`;
+                                                            // Find the selected option name
+                                                            const selectedOption = component?.options?.find(o => o.id === selection.product_id);
+                                                            const optionName = selectedOption?.name || `Option ${selection.product_id}`;
+                                                            
+                                                            return (
+                                                                <div key={componentId} className="lwwc-composite-selection-item">
+                                                                    <span className="lwwc-composite-component-name">{componentName}:</span>
+                                                                    <span className="lwwc-composite-option-name">{optionName}</span>
+                                                                    {selection.quantity > 1 && (
+                                                                        <span className="lwwc-composite-option-qty">× {selection.quantity}</span>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="lwwc-selected-product-controls">

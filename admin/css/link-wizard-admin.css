@@ -2493,6 +2493,42 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     font-size: 14px;
 }
 
+/* Composite product component selections summary */
+.lwwc-composite-selections-summary {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 12px;
+}
+
+.lwwc-composite-selection-item {
+    display: flex;
+    gap: 5px;
+    align-items: baseline;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.lwwc-composite-selection-item:last-child {
+    margin-bottom: 0;
+}
+
+.lwwc-composite-component-name {
+    color: #666;
+    font-weight: 500;
+}
+
+.lwwc-composite-option-name {
+    color: #333;
+    flex: 1;
+}
+
+.lwwc-composite-option-qty {
+    color: #999;
+    font-size: 11px;
+    font-style: italic;
+}
+
 .lwwc-selected-product-controls {
     display: flex;
     align-items: center;
