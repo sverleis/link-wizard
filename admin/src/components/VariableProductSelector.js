@@ -44,7 +44,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
     
     // Pagination state
     const [displayedVariations, setDisplayedVariations] = useState([]);
-    const [variationsPerPage] = useState(5); // Show 5 variations at a time
+    const [variationsPerPage] = useState(3); // Show 3 variations at a time
     const [currentPage, setCurrentPage] = useState(1);
     
     /**
