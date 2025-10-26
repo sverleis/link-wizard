@@ -2496,8 +2496,6 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 /* Composite product component selections as pills (WooCommerce style) */
 .lwwc-composite-selections-pills {
     margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #e0e0e0;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;

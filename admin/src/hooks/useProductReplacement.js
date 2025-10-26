@@ -76,8 +76,12 @@ export const useProductReplacement = ({
             // Call appropriate handler based on product type
             // For composite products with checkout_url, treat like simple products
             if (newProduct.type === 'composite' && (newProduct.checkout_url || newProduct.url)) {
-                // Composite with default configuration - treat like simple product
-                setSelectedProducts([{ ...newProduct, quantity: 1 }]);
+                // Composite with default configuration - preserve all product data including component_selections
+                setSelectedProducts([{ 
+                    ...newProduct, 
+                    quantity: 1,
+                    // Preserve component_selections, components, etc. from search results
+                }]);
                 
                 // Remove new product from search results
                 setResults(prev => prev.filter(p => p.id !== newProduct.id));
