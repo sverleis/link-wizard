@@ -44,6 +44,7 @@ class VariableProductSelector extends Component {
             showingAllVariations: false,
             error: null,
             incompleteAttributes: [], // Track which attributes need to be filled
+            pendingVariation: null, // Store the clicked variation until all attributes are filled
             // Pagination state
             displayedVariations: [],
             variationsPerPage: 3, // Show 3 variations at a time
@@ -210,7 +211,7 @@ class VariableProductSelector extends Component {
      * Handle attribute selection change.
      */
     handleAttributeChange = (attributeName, attributeValue) => {
-        const { selectedAttributes, incompleteAttributes } = this.state;
+        const { selectedAttributes, incompleteAttributes, pendingVariation } = this.state;
         const { onVariationSelect } = this.props;
         const newAttributes = { ...selectedAttributes };
         
@@ -222,6 +223,10 @@ class VariableProductSelector extends Component {
         
         // Remove this attribute from incomplete list if it's now filled
         const newIncompleteAttributes = incompleteAttributes.filter(attr => attr !== attributeName);
+        
+        console.log('VariableProductSelector: Attribute changed:', attributeName, '=', attributeValue);
+        console.log('VariableProductSelector: Remaining incomplete attributes:', newIncompleteAttributes);
+        console.log('VariableProductSelector: Pending variation:', pendingVariation);
         
         this.setState({
             selectedAttributes: newAttributes,
@@ -236,23 +241,21 @@ class VariableProductSelector extends Component {
             this.setState({ showingAllVariations: true });
         }
         
-        // Check if all incomplete attributes are now filled
-        if (newIncompleteAttributes.length === 0 && incompleteAttributes.length > 0) {
-            // All attributes filled! Find and select the matching variation
-            console.log('VariableProductSelector: All attributes filled, finding matching variation...');
+        // Check if all incomplete attributes are now filled AND we have a pending variation
+        if (newIncompleteAttributes.length === 0 && pendingVariation) {
+            // All attributes filled! Select the pending variation
+            console.log('VariableProductSelector: All attributes filled, selecting pending variation:', pendingVariation);
             
-            // Wait for filtered variations to load, then select the match
-            this.loadFilteredVariations(newAttributes).then(() => {
-                const { filteredVariations } = this.state;
-                if (filteredVariations && filteredVariations.length === 1 && onVariationSelect) {
-                    // Exactly one match - select it automatically
-                    console.log('VariableProductSelector: Auto-selecting variation:', filteredVariations[0]);
-                    onVariationSelect(filteredVariations[0], newAttributes);
-                }
-            });
-        } else {
-            this.loadFilteredVariations(newAttributes);
+            if (onVariationSelect) {
+                onVariationSelect(pendingVariation, newAttributes);
+            }
+            
+            // Clear the pending variation
+            this.setState({ pendingVariation: null });
         }
+        
+        // Always reload variations to show updated list
+        this.loadFilteredVariations(newAttributes);
     };
     
     /**
@@ -329,7 +332,8 @@ class VariableProductSelector extends Component {
             selectedAttributes: {},
             currentPage: 1,
             isLoadingVariations: false,
-            incompleteAttributes: [] // Clear incomplete attributes highlight
+            incompleteAttributes: [], // Clear incomplete attributes highlight
+            pendingVariation: null // Clear pending variation
         });
         // Reload all variations
         this.loadAllVariations();
@@ -366,15 +370,19 @@ class VariableProductSelector extends Component {
         console.log('VariableProductSelector: Variation attributes:', variationAttributes);
         console.log('VariableProductSelector: Incomplete attributes:', incompleteAttributes);
         
-        // Update state with the variation's attributes
+        // Update state with the variation's attributes and store the pending variation
         this.setState({
             selectedAttributes: variationAttributes,
-            incompleteAttributes: incompleteAttributes
+            incompleteAttributes: incompleteAttributes,
+            pendingVariation: incompleteAttributes.length > 0 ? variation : null // Store for later if incomplete
         });
         
         // If all attributes are filled, select this variation immediately
         if (incompleteAttributes.length === 0 && onVariationSelect) {
+            console.log('VariableProductSelector: All attributes complete, selecting variation immediately');
             onVariationSelect(variation, variationAttributes);
+        } else {
+            console.log('VariableProductSelector: Waiting for user to fill incomplete attributes:', incompleteAttributes);
         }
     };
     
