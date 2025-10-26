@@ -497,16 +497,16 @@ class VariableProductSelector extends Component {
         this.setState({
             selectedAttributes: variationAttributes,
             incompleteAttributes: incompleteAttributes,
-            pendingVariation: incompleteAttributes.length > 0 ? variation : null, // Store for later if incomplete
-            isLoadingVariations: true
+            pendingVariation: incompleteAttributes.length > 0 ? variation : null // Store for later if incomplete
         });
         
         // If all attributes are filled, select this variation immediately
         if (incompleteAttributes.length === 0 && onVariationSelect) {
             onVariationSelect(variation, variationAttributes);
-            this.setState({ isLoadingVariations: false });
         } else {
             // Reload variations to filter by the selected attributes
+            // Clear the lastLoadedAttributesRef to force a fresh load
+            this.lastLoadedAttributesRef = null;
             this.loadFilteredVariations(variationAttributes);
         }
     };
