@@ -635,8 +635,19 @@ class VariableProductSelector extends Component {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="lwwc-variation-item-price">
-                                        <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                    <div className="lwwc-variation-item-actions">
+                                        <div className="lwwc-variation-item-price">
+                                            <span dangerouslySetInnerHTML={{ __html: variation.price }} />
+                                        </div>
+                                        <button
+                                            className="lwwc-variation-select-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                this.handleVariationClick(variation);
+                                            }}
+                                        >
+                                            {i18n.selectVariation || 'Select'}
+                                        </button>
                                     </div>
                                 </div>
                                 );
