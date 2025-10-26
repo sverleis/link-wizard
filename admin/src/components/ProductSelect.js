@@ -287,8 +287,13 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const handleQuantityChange = (productId, newQuantity) => {
         if (newQuantity <= 0) {
             // Remove the product if the quantity is 0 or negative.
-            const productToRemove = selectedProducts.find(p => p.id === productId);
-            setSelectedProducts(prev => prev.filter(p => p.id !== productId));
+            // For composite products with unique_id, match by unique_id; otherwise match by id
+            const productToRemove = selectedProducts.find(p => 
+                (p.unique_id && p.unique_id === productId) || p.id === productId
+            );
+            setSelectedProducts(prev => prev.filter(p => 
+                (p.unique_id ? p.unique_id !== productId : p.id !== productId)
+            ));
             
             // Add the product back to search results if it was removed (for checkout links).
             if (linkType === 'checkoutLink' && productToRemove) {
@@ -1314,7 +1319,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                         </h3>
                         <ul className="selected-products-list">
                             {selectedProducts.map(product => (
-                                                                <li key={product.id} className="lwwc-selected-product-item" data-product-type={product.type}>
+                                                                <li key={product.unique_id || product.id} className="lwwc-selected-product-item" data-product-type={product.type}>
                                     <div className="lwwc-selected-product-content">
                                         <div className="lwwc-selected-product-info">
                                             <div className="lwwc-selected-product-icon">
@@ -1356,7 +1361,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     const newQuantity = parseInt(e.target.value) || 1;
                                                     // If sold individually, force quantity to 1.
                                                     const finalQuantity = product.sold_individually ? 1 : newQuantity;
-                                                    handleQuantityChange(product.id, finalQuantity);
+                                                    handleQuantityChange(product.unique_id || product.id, finalQuantity);
                                                 }}
                                                 className="lwwc-selected-product-qty-input"
                                                 disabled={product.sold_individually || product.type === 'composite'}
@@ -1386,7 +1391,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 </button>
                                             )}
                                             <button
-                                                onClick={() => handleQuantityChange(product.id, 0)}
+                                                onClick={() => handleQuantityChange(product.unique_id || product.id, 0)}
                                                 className="lwwc-selected-product-remove-button"
                                             >
                                                 {i18n.remove || 'Remove'}
