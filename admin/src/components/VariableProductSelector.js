@@ -340,6 +340,50 @@ class VariableProductSelector extends Component {
     };
     
     /**
+     * Get formatted attribute details for a variation.
+     * Shows which attributes are "Any" and which are specified.
+     */
+    getVariationAttributeDetails = (variation) => {
+        const { product } = this.props;
+        const { selectedAttributes } = this.state;
+        const details = [];
+        
+        if (!product.attributes || !variation.attributes) {
+            return null;
+        }
+        
+        product.attributes.forEach((attribute) => {
+            const attributeSlug = attribute.slug;
+            const variationValue = variation.attributes[attributeSlug];
+            const selectedValue = selectedAttributes[attributeSlug];
+            
+            if (!variationValue || variationValue === '') {
+                // This is an "Any" attribute
+                if (selectedValue) {
+                    // User has selected a value for this "Any" attribute
+                    const valueName = attribute.values.find(v => v.slug === selectedValue)?.name || selectedValue;
+                    details.push({
+                        name: attribute.name,
+                        value: valueName,
+                        isAny: true,
+                        isFilled: true
+                    });
+                } else {
+                    // Still needs to be selected
+                    details.push({
+                        name: attribute.name,
+                        value: 'Click to select',
+                        isAny: true,
+                        isFilled: false
+                    });
+                }
+            }
+        });
+        
+        return details.length > 0 ? details : null;
+    };
+    
+    /**
      * Handle clicking a variation from the list.
      * Populates attribute dropdowns and highlights incomplete attributes.
      */
@@ -468,7 +512,9 @@ class VariableProductSelector extends Component {
                         </div>
                     ) : displayedVariations.length > 0 ? (
                         <>
-                            {displayedVariations.map((variation) => (
+                            {displayedVariations.map((variation) => {
+                                const attributeDetails = this.getVariationAttributeDetails(variation);
+                                return (
                                 <div 
                                     key={variation.id} 
                                     className="lwwc-variation-item"
@@ -480,6 +526,18 @@ class VariableProductSelector extends Component {
                                     <div className="lwwc-variation-item-details">
                                         <div className="lwwc-variation-item-name">
                                             {variation.name}
+                                            {attributeDetails && attributeDetails.map((detail, idx) => (
+                                                <span key={idx} className="lwwc-variation-any-attribute">
+                                                    {' | '}
+                                                    <span className="lwwc-variation-any-attribute-name">{detail.name}:</span>
+                                                    {' '}
+                                                    <span className="lwwc-variation-any-attribute-any">(Any)</span>
+                                                    {' → '}
+                                                    <span className={detail.isFilled ? 'lwwc-variation-any-attribute-value-filled' : 'lwwc-variation-any-attribute-value-empty'}>
+                                                        {detail.value}
+                                                    </span>
+                                                </span>
+                                            ))}
                                         </div>
                                         {variation.sku && (
                                             <div className="lwwc-variation-item-sku">
@@ -491,7 +549,8 @@ class VariableProductSelector extends Component {
                                         <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                             
                             {/* Load More Button */}
                             {hasMoreVariations && (

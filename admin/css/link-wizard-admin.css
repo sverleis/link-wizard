@@ -2418,6 +2418,34 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin-bottom: 2px;
 }
 
+/* "Any" attribute display in variation list */
+.lwwc-variation-any-attribute {
+    font-weight: normal;
+    font-size: 13px;
+}
+
+.lwwc-variation-any-attribute-name {
+    font-weight: 500;
+    color: var(--wp-admin-text-color);
+}
+
+.lwwc-variation-any-attribute-any {
+    color: #72aee6;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.lwwc-variation-any-attribute-value-filled {
+    color: #2c9e37;
+    font-weight: 600;
+}
+
+.lwwc-variation-any-attribute-value-empty {
+    color: #d63638;
+    font-style: italic;
+    font-weight: 500;
+}
+
 .lwwc-variation-item-sku {
     color: var(--wp-admin-secondary-text-color-light);
     font-size: 11px;
