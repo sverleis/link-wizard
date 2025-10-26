@@ -156,26 +156,47 @@ const DynamicLink = ({
                     const hasCompositeProducts = selectedProducts.some(product => product.type === 'composite');
                     
                     if (hasCompositeProducts) {
-                        // For composite products, use the add-to-cart URL format with redirect
-                        const compositeProduct = selectedProducts.find(p => p.type === 'composite');
-                        if (compositeProduct && compositeProduct.checkout_url) {
-                            // Apply checkout redirect path to the composite URL
-                            const compositeUrl = new URL(compositeProduct.checkout_url);
-                            const queryParams = compositeUrl.searchParams.toString();
+                        // For composite products, use the checkout-link URL format
+                        const compositeProducts = selectedProducts.filter(p => p.type === 'composite');
+                        
+                        if (compositeProducts.length > 0 && compositeProducts.every(p => p.checkout_url)) {
+                            // All composite products have checkout URLs
+                            // Extract the products parameter from each checkout URL
+                            const productsParams = compositeProducts.map(product => {
+                                const compositeUrl = new URL(product.checkout_url);
+                                const productsParam = compositeUrl.searchParams.get('products');
+                                return productsParam; // e.g., "cp139_HASH:1"
+                            }).filter(Boolean);
                             
-                            // Always redirect to checkout for checkout-links
-                            finalUrl = `${baseUrl}/checkout/?${queryParams}`;
+                            // Combine with any simple products
+                            const simpleProducts = selectedProducts
+                                .filter(p => p.type !== 'composite')
+                                .map(p => `${p.id}:${p.quantity || 1}`);
                             
-                            // If coupon is selected, add it to the URL
-                            if (selectedCoupon) {
-                                finalUrl += `&coupon=${selectedCoupon.code}`;
+                            const allProducts = [...productsParams, ...simpleProducts];
+                            
+                            if (allProducts.length > 0) {
+                                let productsString = allProducts.join(',');
+                                
+                                // Apply URL encoding based on user preference
+                                if (urlEncoding === 'decoded') {
+                                    productsString = productsString.replace(/%3A/g, ':').replace(/%2C/g, ',');
+                                }
+                                
+                                finalUrl = `${baseUrl}/checkout-link/?products=${productsString}`;
+                                
+                                // If coupon is selected, add it
+                                if (selectedCoupon) {
+                                    finalUrl += `&coupon=${selectedCoupon.code}`;
+                                }
+                                
+                                console.log('🔗 Final Generated Composite Checkout-Link URL:', finalUrl);
                             }
-                            
-                            console.log('🔗 Final Generated Composite Checkout URL:', finalUrl);
                         } else {
-                            // Fallback: no checkout URL available, show a message
-                            console.warn('Composite product does not have a checkout_url field');
-                            finalUrl = `${baseUrl}/checkout-link/?products=${compositeProduct.id}:${compositeProduct.quantity || 1}`;
+                            // Fallback: composite without checkout URL
+                            const fallbackProducts = selectedProducts.map(p => `${p.id}:${p.quantity || 1}`).join(',');
+                            finalUrl = `${baseUrl}/checkout-link/?products=${fallbackProducts}`;
+                            console.warn('Some composite products missing checkout_url, using fallback');
                         }
                     } else {
                         // Regular checkout link for simple products and bundles
