@@ -31,22 +31,27 @@ The core `link-wizard-for-woocommerce` plugin has been refactored to extract the
 1. **Deactivate** the `link-wizard-composite` plugin
 2. **Test variable product functionality**:
    - Search for a variable product (e.g., "Hoodie")
+   - **NEW**: First 5 variations should auto-load immediately ✨
    - Verify attribute filters appear (Color, Logo, etc.)
-   - Select attributes and verify variations filter in real-time
-   - Click "Show All Variations" button
-   - Verify you can select a specific variation
+   - Click "Load More" button to see additional variations
+   - Select attributes and verify variations filter in real-time (pagination resets)
+   - Click a variation to select it
    - Confirm the variation is added to selected products
+   - Test "Reset Filters" button (should reload all variations)
    - Test both Add-to-Cart and Checkout-Link modes
 
-3. **Expected Result**: Everything should work **exactly** as before
-   - No visual changes
-   - No functional changes
-   - Same UI, same behavior
-   - Just cleaner code under the hood
+3. **Expected Result**: **IMPROVED UX** 🎉
+   - ✅ Variations auto-load (no manual "Show All" click needed)
+   - ✅ Pagination with "Load More" button
+   - ✅ Shows variation count: "(5 of 12)"
+   - ✅ Smooth filtering and browsing
+   - ✅ Same functionality, better experience
 
 4. **Look for**:
    - Console log: "Link Wizard: VariableProductSelector component exported globally"
    - No JavaScript errors in browser console
+   - First 5 variations appear automatically
+   - "Load More (X remaining)" button when >5 variations exist
    - Smooth variation selection
    - Proper filtering when attributes are selected
 
@@ -91,9 +96,11 @@ const { VariableProductSelector } = window.LWWCComponents || {};
 
 ### Features Included:
 
+- **Auto-load variations on mount** (first 5 variations) ✨ NEW
+- **Pagination system** with "Load More" button ✨ NEW
+- **Variation count display** (e.g., "5 of 12") ✨ NEW
 - Attribute filter dropdowns (Color, Size, Logo, etc.)
 - "Reset Filters" button
-- "Show All Variations" / "Hide Variations" toggle
 - Variation list with names, SKUs, and prices
 - Loading states with spinners
 - Error handling
