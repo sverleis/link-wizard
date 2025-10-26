@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
 
 /**
- * Reusable Variable Product Selector Component
+ * Reusable Variable Product Selector Component (Class Component)
  * 
  * This component handles attribute filtering and variation selection for any variable product.
  * Can be used in search results, modals, configuration panels, etc.
  * 
+ * Converted to Class Component to avoid React hooks context issues when used across plugins.
+ * 
  * WHAT IT DOES:
  * - Displays attribute filters (Color, Size, Logo, etc.)
  * - Loads and displays filtered variations based on selected attributes
- * - Provides "Show All Variations" functionality
+ * - Auto-loads first 3 variations on mount
+ * - Provides pagination with "Load More" button
  * - Handles variation selection with callback
  * 
  * HOW TO USE:
  * ```jsx
  * <VariableProductSelector
  *     product={variableProduct}
- *     onVariationSelect={(variationId) => console.log('Selected:', variationId)}
+ *     onVariationSelect={(variation) => console.log('Selected:', variation)}
  *     componentId="optional-id-for-state"
  * />
  * ```
@@ -28,69 +31,91 @@ import { Spinner } from '@wordpress/components';
  * @param {String} componentId - Optional ID for state management (useful when multiple instances)
  * @param {Object} i18n - Optional i18n translations object
  */
-const VariableProductSelector = ({ product, onVariationSelect, componentId = null, i18n: i18nProp = null }) => {
-    // Use provided i18n or fallback to global
-    const i18n = i18nProp || window.lwwcI18n || {};
+class VariableProductSelector extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            selectedAttributes: {},
+            filteredVariations: [],
+            isLoadingVariations: false,
+            showingAllVariations: false,
+            error: null,
+            // Pagination state
+            displayedVariations: [],
+            variationsPerPage: 3, // Show 3 variations at a time
+            currentPage: 1,
+        };
+    }
     
-    // Unique ID for this instance (use componentId if provided, otherwise product.id)
-    const instanceId = componentId || product.id;
-    
-    // State management
-    const [selectedAttributes, setSelectedAttributes] = useState({});
-    const [filteredVariations, setFilteredVariations] = useState([]);
-    const [isLoadingVariations, setIsLoadingVariations] = useState(false);
-    const [showingAllVariations, setShowingAllVariations] = useState(false);
-    const [error, setError] = useState(null);
-    
-    // Pagination state
-    const [displayedVariations, setDisplayedVariations] = useState([]);
-    const [variationsPerPage] = useState(3); // Show 3 variations at a time
-    const [currentPage, setCurrentPage] = useState(1);
-    
-    /**
-     * Auto-load variations on mount.
-     */
-    useEffect(() => {
+    componentDidMount() {
         // Auto-load first page of variations when component mounts
-        loadAllVariations();
-    }, []); // Empty dependency array = run once on mount
+        this.loadAllVariations();
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        // Update displayed variations when filteredVariations or currentPage changes
+        if (prevState.filteredVariations !== this.state.filteredVariations || 
+            prevState.currentPage !== this.state.currentPage) {
+            this.updateDisplayedVariations();
+        }
+    }
     
     /**
-     * Update displayed variations when filteredVariations or currentPage changes.
+     * Update displayed variations based on pagination.
      * Filter out disabled variations (those with "Any" attributes).
      */
-    useEffect(() => {
+    updateDisplayedVariations = () => {
+        const { filteredVariations, currentPage, variationsPerPage } = this.state;
+        
         // Filter out disabled variations (not fully configured)
         const availableVariations = filteredVariations.filter(v => !v.disabled);
         
         const startIndex = 0;
         const endIndex = currentPage * variationsPerPage;
-        setDisplayedVariations(availableVariations.slice(startIndex, endIndex));
-    }, [filteredVariations, currentPage, variationsPerPage]);
+        this.setState({
+            displayedVariations: availableVariations.slice(startIndex, endIndex)
+        });
+    };
     
     /**
      * Load more variations (increase page count).
      */
-    const loadMore = () => {
-        setCurrentPage(prev => prev + 1);
+    loadMore = () => {
+        this.setState(prevState => ({
+            currentPage: prevState.currentPage + 1
+        }));
     };
     
     /**
      * Check if there are more variations to load.
      * Only count available (non-disabled) variations.
      */
-    const availableVariationsCount = filteredVariations.filter(v => !v.disabled).length;
-    const hasMoreVariations = displayedVariations.length < availableVariationsCount;
+    hasMoreVariations = () => {
+        const { filteredVariations, displayedVariations } = this.state;
+        const availableVariationsCount = filteredVariations.filter(v => !v.disabled).length;
+        return displayedVariations.length < availableVariationsCount;
+    };
+    
+    /**
+     * Get available variations count.
+     */
+    getAvailableVariationsCount = () => {
+        return this.state.filteredVariations.filter(v => !v.disabled).length;
+    };
     
     /**
      * Load filtered variations based on selected attributes.
      */
-    const loadFilteredVariations = (attributes) => {
+    loadFilteredVariations = (attributes) => {
+        const { product } = this.props;
+        const i18n = this.props.i18n || window.lwwcI18n || {};
+        
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
             return;
         }
         
-        setError(null);
+        this.setState({ error: null });
         
         // Filter out any empty or falsy attribute values.
         const validAttributes = {};
@@ -102,28 +127,34 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
         
         // If no valid attributes, clear variations and return early.
         if (Object.keys(validAttributes).length === 0) {
-            setFilteredVariations([]);
-            setIsLoadingVariations(false);
+            this.setState({
+                filteredVariations: [],
+                isLoadingVariations: false
+            });
             return;
         }
         
         // Convert valid attributes object to JSON string for API.
         const attributesJson = JSON.stringify(validAttributes);
         
-        setIsLoadingVariations(true);
+        this.setState({ isLoadingVariations: true });
         
         apiFetch({
             path: `link-wizard/v1/products/${product.id}/filtered-variations?attributes=${encodeURIComponent(attributesJson)}`
         })
             .then((variationData) => {
-                setFilteredVariations(variationData);
-                setIsLoadingVariations(false);
+                this.setState({
+                    filteredVariations: variationData,
+                    isLoadingVariations: false
+                });
             })
             .catch((err) => {
                 // Handle the case where no variations are found (this is not really an error).
                 if (err.code === 'no_valid_variations') {
-                    setFilteredVariations([]);
-                    setIsLoadingVariations(false);
+                    this.setState({
+                        filteredVariations: [],
+                        isLoadingVariations: false
+                    });
                 } else {
                     // Provide more specific error messages for filtered variation loading failures.
                     let errorMessage = i18n.errorFetchingFilteredVariations || 'An error occurred while fetching filtered variations.';
@@ -134,8 +165,10 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                         errorMessage = err.message;
                     }
                     
-                    setError(errorMessage);
-                    setIsLoadingVariations(false);
+                    this.setState({
+                        error: errorMessage,
+                        isLoadingVariations: false
+                    });
                 }
             });
     };
@@ -143,7 +176,8 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
     /**
      * Handle attribute selection change.
      */
-    const handleAttributeChange = (attributeName, attributeValue) => {
+    handleAttributeChange = (attributeName, attributeValue) => {
+        const { selectedAttributes } = this.state;
         const newAttributes = { ...selectedAttributes };
         
         if (attributeValue) {
@@ -152,37 +186,46 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
             delete newAttributes[attributeName];
         }
         
-        setSelectedAttributes(newAttributes);
-        setIsLoadingVariations(true);
-        setCurrentPage(1); // Reset to first page when filtering
+        this.setState({
+            selectedAttributes: newAttributes,
+            isLoadingVariations: true,
+            currentPage: 1, // Reset to first page when filtering
+        });
         
         // If we have valid attributes, show the variations section
         const hasValidAttributes = Object.keys(newAttributes).some(key => newAttributes[key]);
         if (hasValidAttributes) {
-            setShowingAllVariations(true); // Show variations section when filtering
+            this.setState({ showingAllVariations: true });
         }
         
-        loadFilteredVariations(newAttributes);
+        this.loadFilteredVariations(newAttributes);
     };
     
     /**
      * Load all variations for the variable product.
      */
-    const loadAllVariations = () => {
+    loadAllVariations = () => {
+        const { product } = this.props;
+        const i18n = this.props.i18n || window.lwwcI18n || {};
+        
         if (product.type !== 'variable' && product.type !== 'variable-subscription') {
             return;
         }
         
-        setIsLoadingVariations(true);
-        setError(null);
+        this.setState({
+            isLoadingVariations: true,
+            error: null
+        });
         
         apiFetch({
             path: `link-wizard/v1/products/${product.id}/variations`
         })
             .then((variationData) => {
-                setFilteredVariations(variationData);
-                setShowingAllVariations(true);
-                setIsLoadingVariations(false);
+                this.setState({
+                    filteredVariations: variationData,
+                    showingAllVariations: true,
+                    isLoadingVariations: false
+                });
             })
             .catch((err) => {
                 // Provide more specific error messages for variation loading failures.
@@ -194,47 +237,63 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                     errorMessage = err.message;
                 }
                 
-                setError(errorMessage);
-                setIsLoadingVariations(false);
+                this.setState({
+                    error: errorMessage,
+                    isLoadingVariations: false
+                });
             });
     };
     
     /**
      * Toggle showing all variations.
      */
-    const toggleAllVariations = () => {
+    toggleAllVariations = () => {
+        const { showingAllVariations } = this.state;
+        
         if (showingAllVariations) {
             // Hide all variations.
-            setShowingAllVariations(false);
-            setFilteredVariations([]);
+            this.setState({
+                showingAllVariations: false,
+                filteredVariations: []
+            });
         } else {
             // Show all variations.
-            loadAllVariations();
+            this.loadAllVariations();
         }
     };
     
     /**
      * Reset all attribute filters.
      */
-    const resetFilters = () => {
-        setSelectedAttributes({});
-        setCurrentPage(1);
-        setIsLoadingVariations(false);
+    resetFilters = () => {
+        this.setState({
+            selectedAttributes: {},
+            currentPage: 1,
+            isLoadingVariations: false
+        });
         // Reload all variations
-        loadAllVariations();
+        this.loadAllVariations();
     };
     
-    // Render nothing if not a variable product
-    if (product.type !== 'variable' && product.type !== 'variable-subscription') {
-        return null;
-    }
-    
-    // Render nothing if no attributes
-    if (!product.attributes || product.attributes.length === 0) {
-        return null;
-    }
-    
-    return (
+    render() {
+        const { product, onVariationSelect } = this.props;
+        const i18n = this.props.i18n || window.lwwcI18n || {};
+        const { selectedAttributes, displayedVariations, isLoadingVariations, error } = this.state;
+        
+        // Render nothing if not a variable product
+        if (product.type !== 'variable' && product.type !== 'variable-subscription') {
+            return null;
+        }
+        
+        // Render nothing if no attributes
+        if (!product.attributes || product.attributes.length === 0) {
+            return null;
+        }
+        
+        const availableVariationsCount = this.getAvailableVariationsCount();
+        const hasMoreVariations = this.hasMoreVariations();
+        
+        return (
         <div className="lwwc-variable-product-selector">
             {/* Attribute Filters */}
             <div className="attribute-filter-container">
@@ -249,7 +308,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                             </label>
                             <select
                                 value={selectedAttributes[attribute.slug] || ''}
-                                onChange={(e) => handleAttributeChange(attribute.slug, e.target.value)}
+                                onChange={(e) => this.handleAttributeChange(attribute.slug, e.target.value)}
                                 className="attribute-filter-select"
                             >
                                 <option value="">{(i18n.anyAttribute || 'Any') + ' ' + attribute.name}</option>
@@ -263,7 +322,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                     ))}
                     {/* Reset Filters Button */}
                     <button
-                        onClick={resetFilters}
+                        onClick={this.resetFilters}
                         className="attribute-filter-reset"
                     >
                         {i18n.resetFilters || 'Reset Filters'}
@@ -323,7 +382,7 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                             {hasMoreVariations && (
                                 <div className="lwwc-load-more-variations">
                                     <button 
-                                        onClick={loadMore}
+                                        onClick={this.loadMore}
                                         className="lwwc-load-more-button"
                                     >
                                         {i18n.loadMore || 'Load More'} ({availableVariationsCount - displayedVariations.length} remaining)
@@ -355,8 +414,9 @@ const VariableProductSelector = ({ product, onVariationSelect, componentId = nul
                 </div>
             )}
         </div>
-    );
-};
+        );
+    }
+}
 
 export default VariableProductSelector;
 
