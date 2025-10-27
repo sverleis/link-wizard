@@ -161,11 +161,19 @@ const DynamicLink = ({
                         
                         if (compositeProducts.length > 0 && compositeProducts.every(p => p.checkout_url)) {
                             // All composite products have checkout URLs
-                            // Extract the products parameter from each checkout URL
+                            // Extract the products parameter from each checkout URL and update quantity
                             const productsParams = compositeProducts.map(product => {
                                 const compositeUrl = new URL(product.checkout_url);
-                                const productsParam = compositeUrl.searchParams.get('products');
-                                return productsParam; // e.g., "cp139_HASH:1"
+                                let productsParam = compositeUrl.searchParams.get('products'); // e.g., "cp139_HASH:1"
+                                
+                                // Replace the quantity in the URL with the actual product quantity
+                                // Format: cp139_HASH:1 → cp139_HASH:6 (if quantity is 6)
+                                // Match any number after the last colon and replace it
+                                if (productsParam && product.quantity) {
+                                    productsParam = productsParam.replace(/:(\d+)$/, `:${product.quantity}`);
+                                }
+                                
+                                return productsParam;
                             }).filter(Boolean);
                             
                             // Combine with any simple products
