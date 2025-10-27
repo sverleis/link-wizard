@@ -74,17 +74,14 @@ class VariableProductSelector extends Component {
     
     /**
      * Update displayed variations based on pagination.
-     * Filter out disabled variations (those with "Any" attributes) UNLESS allowAnyAttributes is true.
+     * Show ALL variations - we now handle "Any" attributes via the Filter → Select button flow.
      */
     updateDisplayedVariations = () => {
         const { filteredVariations, currentPage, variationsPerPage } = this.state;
-        const { allowAnyAttributes } = this.props;
         
-        // Filter out disabled variations ONLY if allowAnyAttributes is false
-        // Composite products can handle "Any" attributes, so don't filter them out
-        const availableVariations = allowAnyAttributes 
-            ? filteredVariations 
-            : filteredVariations.filter(v => !v.disabled);
+        // Show ALL variations - the Filter → Select → Selected button flow handles "Any" attributes now!
+        // No need to filter out disabled variations anymore.
+        const availableVariations = filteredVariations;
         
         const startIndex = 0;
         const endIndex = currentPage * variationsPerPage;
@@ -104,29 +101,20 @@ class VariableProductSelector extends Component {
     
     /**
      * Check if there are more variations to load.
-     * Only count available (non-disabled) variations UNLESS allowAnyAttributes is true.
      */
     hasMoreVariations = () => {
         const { filteredVariations, displayedVariations } = this.state;
-        const { allowAnyAttributes } = this.props;
         
-        const availableVariationsCount = allowAnyAttributes 
-            ? filteredVariations.length 
-            : filteredVariations.filter(v => !v.disabled).length;
-        
-        return displayedVariations.length < availableVariationsCount;
+        // Count ALL variations - we handle "Any" attributes now with Filter → Select flow
+        return displayedVariations.length < filteredVariations.length;
     };
     
     /**
      * Get available variations count.
-     * Only count non-disabled variations UNLESS allowAnyAttributes is true.
      */
     getAvailableVariationsCount = () => {
-        const { allowAnyAttributes } = this.props;
-        
-        return allowAnyAttributes 
-            ? this.state.filteredVariations.length 
-            : this.state.filteredVariations.filter(v => !v.disabled).length;
+        // Return ALL variations count - we handle "Any" attributes now
+        return this.state.filteredVariations.length;
     };
     
     /**
