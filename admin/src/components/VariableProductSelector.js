@@ -636,10 +636,32 @@ class VariableProductSelector extends Component {
                                             <span dangerouslySetInnerHTML={{ __html: variation.price }} />
                                         </div>
                                         {(() => {
-                                            const { selectedVariationId, incompleteAttributes, pendingVariation } = this.state;
+                                            const { selectedVariationId, incompleteAttributes, pendingVariation, selectedAttributes } = this.state;
+                                            const { product } = this.props;
                                             const isSelected = selectedVariationId === variation.id;
                                             const isPending = pendingVariation?.id === variation.id;
-                                            const isComplete = incompleteAttributes.length === 0 && isPending;
+                                            
+                                            // Check if THIS variation is ready to select
+                                            // A variation is ready if all its "Any" attributes have values in selectedAttributes
+                                            let isReadyToSelect = true;
+                                            if (product.attributes) {
+                                                product.attributes.forEach((attribute) => {
+                                                    const attributeSlug = attribute.slug;
+                                                    // Try both formats for variation attributes
+                                                    let variationValue = variation.attributes?.[attributeSlug];
+                                                    if (!variationValue && variation.attributes && !variation.attributes.hasOwnProperty(attributeSlug)) {
+                                                        variationValue = variation.attributes['attribute_' + attributeSlug];
+                                                    }
+                                                    
+                                                    // If this attribute is "Any" for this variation, check if we have a selected value
+                                                    if (!variationValue || variationValue === '') {
+                                                        // This is an "Any" attribute - check if we have a selected value
+                                                        if (!selectedAttributes[attributeSlug]) {
+                                                            isReadyToSelect = false;
+                                                        }
+                                                    }
+                                                });
+                                            }
                                             
                                             let buttonText = 'Filter';
                                             let buttonClass = 'lwwc-variation-select-button';
@@ -647,12 +669,14 @@ class VariableProductSelector extends Component {
                                             if (isSelected) {
                                                 buttonText = '✓ Selected';
                                                 buttonClass = 'lwwc-variation-select-button lwwc-variation-selected';
-                                            } else if (isPending && isComplete) {
+                                            } else if (isReadyToSelect) {
+                                                // All attributes filled - ready to select!
                                                 buttonText = 'Select';
                                                 buttonClass = 'lwwc-variation-select-button lwwc-variation-ready';
-                                            } else if (isPending && !isComplete) {
+                                            } else {
+                                                // Some attributes missing - need to filter
                                                 buttonText = 'Filter';
-                                                buttonClass = 'lwwc-variation-select-button lwwc-variation-pending';
+                                                buttonClass = isPending ? 'lwwc-variation-select-button lwwc-variation-pending' : 'lwwc-variation-select-button';
                                             }
                                             
                                             return (
