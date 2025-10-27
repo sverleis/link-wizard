@@ -57,9 +57,14 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             isProductExpanded(product.id)
         );
         
+        console.log('ProductSelect: enrichProductWithSelectedData');
+        console.log('  - product:', product);
+        console.log('  - isProductExpanded:', isProductExpanded(product.id));
+        console.log('  - selectedProduct:', selectedProduct);
+        
         if (selectedProduct && selectedProduct.unique_id) {
             // Merge the selected product's data (including unique_id) into the search result product
-            return {
+            const enriched = {
                 ...product,
                 unique_id: selectedProduct.unique_id,
                 component_selections: selectedProduct.component_selections,
@@ -67,8 +72,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 calculated_price: selectedProduct.calculated_price,
                 checkout_url: selectedProduct.checkout_url
             };
+            console.log('  - ENRICHED product:', enriched);
+            return enriched;
         }
         
+        console.log('  - NO ENRICHMENT (returning original product)');
         return product;
     };
 
