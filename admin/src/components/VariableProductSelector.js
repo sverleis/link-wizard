@@ -562,6 +562,17 @@ class VariableProductSelector extends Component {
                         <Spinner />
                     </div>
                 )}
+                {/* Warning for standalone variable products with "Any" attributes */}
+                {!allowAnyAttributes && filteredVariations.some(v => v.disabled) && (
+                    <div className="lwwc-any-attributes-warning">
+                        <span className="dashicons dashicons-warning"></span>
+                        <div className="lwwc-any-attributes-warning-content">
+                            <strong>{i18n.invalidVariationsWarning || 'Invalid Variations:'}</strong>
+                            {' '}
+                            {i18n.invalidVariationsMessage || 'Some variations have "Any" attributes and cannot be used in links. Please edit the product in WooCommerce to configure all variations properly.'}
+                        </div>
+                    </div>
+                )}
             </div>
             
             {/* Variations List (Auto-shown, Paginated) */}
@@ -637,16 +648,6 @@ class VariableProductSelector extends Component {
                                             // Check if variation is invalid (has "Any" attributes when not in composite)
                                             const isInvalid = !allowAnyAttributes && variation.disabled;
                                             
-                                            if (isInvalid) {
-                                                // Show "Invalid" badge instead of button
-                                                return (
-                                                    <div className="lwwc-variation-invalid-badge">
-                                                        <span className="dashicons dashicons-warning"></span>
-                                                        {i18n.invalidVariation || 'Invalid'}
-                                                    </div>
-                                                );
-                                            }
-                                            
                                             // Check if THIS variation is ready to select
                                             // A variation is ready if all its "Any" attributes have values in selectedAttributes
                                             let isReadyToSelect = true;
@@ -671,10 +672,17 @@ class VariableProductSelector extends Component {
                                             
                                             let buttonText = 'Filter';
                                             let buttonClass = 'lwwc-variation-select-button';
+                                            let isButtonDisabled = false;
                                             
-                                            if (isSelected) {
+                                            if (isInvalid) {
+                                                // Invalid variation - greyed out button
+                                                buttonText = 'Invalid';
+                                                buttonClass = 'lwwc-variation-select-button lwwc-variation-invalid-button';
+                                                isButtonDisabled = true;
+                                            } else if (isSelected) {
                                                 buttonText = '✓ Selected';
                                                 buttonClass = 'lwwc-variation-select-button lwwc-variation-selected';
+                                                isButtonDisabled = true;
                                             } else if (isReadyToSelect) {
                                                 // All attributes filled - ready to select!
                                                 buttonText = 'Select';
@@ -692,7 +700,7 @@ class VariableProductSelector extends Component {
                                                         e.stopPropagation();
                                                         this.handleVariationButtonClick(variation);
                                                     }}
-                                                    disabled={isSelected}
+                                                    disabled={isButtonDisabled}
                                                 >
                                                     {buttonText}
                                                 </button>
