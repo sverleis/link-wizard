@@ -450,13 +450,20 @@ const DynamicLink = ({
                 );
                 
                 // Add products parameter with highlighting.
-                // For composite products, extract the mapped ID from checkout_url
+                // For composite products, extract the mapped ID from checkout_url and update quantity
                 let productsParam = selectedProducts.map(product => {
                     if (product.type === 'composite' && product.checkout_url) {
                         // Extract the products parameter from the checkout URL (e.g., "cp139_HASH:1")
                         try {
                             const url = new URL(product.checkout_url);
-                            const productsFromUrl = url.searchParams.get('products');
+                            let productsFromUrl = url.searchParams.get('products');
+                            
+                            if (productsFromUrl && product.quantity) {
+                                // Replace the quantity in the URL with the actual product quantity
+                                // Format: cp139_HASH:1 → cp139_HASH:6 (if quantity is 6)
+                                productsFromUrl = productsFromUrl.replace(/:(\d+)$/, `:${product.quantity}`);
+                            }
+                            
                             return productsFromUrl || `${product.id}:${product.quantity || 1}`;
                         } catch (e) {
                             return `${product.id}:${product.quantity || 1}`;

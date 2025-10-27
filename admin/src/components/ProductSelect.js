@@ -1089,12 +1089,19 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                                 
                                                                 console.log('LWWC ProductSelect: Loaded composite data:', compositeData);
                                                                 
-                                                                // Build default selections from first option of each component
+                                                                // Build default selections using WooCommerce's default option for each component
                                                                 const defaultSelections = {};
                                                                 if (compositeData.components) {
                                                                     compositeData.components.forEach(component => {
                                                                         if (component.options && component.options.length > 0) {
-                                                                            const defaultOption = component.options[0];
+                                                                            // Find the option marked as default (is_default: true)
+                                                                            let defaultOption = component.options.find(opt => opt.is_default);
+                                                                            
+                                                                            // Fallback to first option if no default is marked
+                                                                            if (!defaultOption) {
+                                                                                defaultOption = component.options[0];
+                                                                            }
+                                                                            
                                                                             defaultSelections[component.id] = {
                                                                                 product_id: defaultOption.id,
                                                                                 name: defaultOption.name,
