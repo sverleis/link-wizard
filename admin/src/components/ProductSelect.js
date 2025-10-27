@@ -1315,7 +1315,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     {product.name}
                                                 </div>
                                                 <div className="lwwc-selected-product-price">
-                                                    <span dangerouslySetInnerHTML={{ __html: product.price }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: product.calculated_price || product.price }} />
                                                 </div>
                                                 {/* Show component selections for composite products as pills */}
                                                 {product.type === 'composite' && product.component_selections && (
