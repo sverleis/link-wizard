@@ -366,11 +366,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             }
         } else {
             // Update the quantity for the product.
-            setSelectedProducts(prev => prev.map(p =>
-                p.id === productId
-                    ? { ...p, quantity: newQuantity }
-                    : p
-            ))
+            // For products with unique_id (like composite products), match by unique_id
+            // Otherwise match by id
+            setSelectedProducts(prev => prev.map(p => {
+                const matches = p.unique_id 
+                    ? p.unique_id === productId 
+                    : p.id === productId;
+                
+                return matches ? { ...p, quantity: newQuantity } : p;
+            }));
         }
     };
 
