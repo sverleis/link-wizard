@@ -585,10 +585,15 @@ class VariableProductSelector extends Component {
                             {displayedVariations.map((variation) => {
                                 const attributeDetails = this.getVariationAttributeDetails(variation);
                                 const parentProductName = this.getParentProductName(variation, product);
+                                const { allowAnyAttributes } = this.props;
+                                
+                                // Check if this variation is invalid (has "Any" attributes when not allowed)
+                                const isInvalid = !allowAnyAttributes && variation.disabled;
+                                
                                 return (
                                 <div 
                                     key={variation.id} 
-                                    className="lwwc-variation-item"
+                                    className={`lwwc-variation-item ${isInvalid ? 'lwwc-variation-invalid' : ''}`}
                                 >
                                     <div className="lwwc-variation-item-icon">
                                         <span className="dashicons dashicons-products"></span>
@@ -625,9 +630,22 @@ class VariableProductSelector extends Component {
                                         </div>
                                         {(() => {
                                             const { selectedVariationId, incompleteAttributes, pendingVariation, selectedAttributes } = this.state;
-                                            const { product } = this.props;
+                                            const { product, allowAnyAttributes } = this.props;
                                             const isSelected = selectedVariationId === variation.id;
                                             const isPending = pendingVariation?.id === variation.id;
+                                            
+                                            // Check if variation is invalid (has "Any" attributes when not in composite)
+                                            const isInvalid = !allowAnyAttributes && variation.disabled;
+                                            
+                                            if (isInvalid) {
+                                                // Show "Invalid" badge instead of button
+                                                return (
+                                                    <div className="lwwc-variation-invalid-badge">
+                                                        <span className="dashicons dashicons-warning"></span>
+                                                        {i18n.invalidVariation || 'Invalid'}
+                                                    </div>
+                                                );
+                                            }
                                             
                                             // Check if THIS variation is ready to select
                                             // A variation is ready if all its "Any" attributes have values in selectedAttributes

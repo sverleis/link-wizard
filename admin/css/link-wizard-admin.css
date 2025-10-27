@@ -2558,6 +2558,32 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     }
 }
 
+/* Invalid variation styling (for standalone variable products with "Any" attributes) */
+.lwwc-variation-item.lwwc-variation-invalid {
+    opacity: 0.5;
+    background-color: var(--wp-admin-theme-color-lighter, #f0f0f1);
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.lwwc-variation-invalid-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #dc3232;
+    color: white;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.lwwc-variation-invalid-badge .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
 /* Load More Variations Button */
 .lwwc-load-more-variations {
     margin-top: 12px;
