@@ -49,22 +49,23 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
 
     // Helper function to enrich a search result product with its selected product data (for editing)
     const enrichProductWithSelectedData = (product) => {
-        // Find the selected product that matches this product ID
-        // For composites, we need to find the one that's currently expanded (being edited)
+        // If the product already has a unique_id, it's from the Edit button injection
+        // Just return it as-is since it already has all the selected product data
+        if (product.unique_id) {
+            console.log('ProductSelect: Product already enriched (has unique_id):', product.unique_id);
+            return product;
+        }
+        
+        // Otherwise, for expanded composites, try to find the selected product
         const selectedProduct = selectedProducts.find(p => 
             p.id === product.id && 
             p.type === 'composite' && 
             isProductExpanded(product.id)
         );
         
-        console.log('ProductSelect: enrichProductWithSelectedData');
-        console.log('  - product:', product);
-        console.log('  - isProductExpanded:', isProductExpanded(product.id));
-        console.log('  - selectedProduct:', selectedProduct);
-        
         if (selectedProduct && selectedProduct.unique_id) {
-            // Merge the selected product's data (including unique_id) into the search result product
-            const enriched = {
+            console.log('ProductSelect: Enriching product with selected data');
+            return {
                 ...product,
                 unique_id: selectedProduct.unique_id,
                 component_selections: selectedProduct.component_selections,
@@ -72,11 +73,8 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                 calculated_price: selectedProduct.calculated_price,
                 checkout_url: selectedProduct.checkout_url
             };
-            console.log('  - ENRICHED product:', enriched);
-            return enriched;
         }
         
-        console.log('  - NO ENRICHMENT (returning original product)');
         return product;
     };
 
@@ -1429,6 +1427,27 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <button
                                                     onClick={() => {
                                                         // Open configuration panel for this composite
+                                                        // CRITICAL: Inject the selected product into search results first
+                                                        // so the config component receives the full product with unique_id
+                                                        console.log('Edit clicked for product:', product);
+                                                        
+                                                        // Check if product is already in search results
+                                                        const existingIndex = results.findIndex(r => r.id === product.id);
+                                                        if (existingIndex === -1) {
+                                                            // Product not in search results - add it
+                                                            console.log('Adding selected product to search results for editing');
+                                                            setResults(prev => [product, ...prev]);
+                                                        } else {
+                                                            // Product is in search results - replace with selected version
+                                                            console.log('Replacing search result with selected product for editing');
+                                                            setResults(prev => {
+                                                                const newResults = [...prev];
+                                                                newResults[existingIndex] = product;
+                                                                return newResults;
+                                                            });
+                                                        }
+                                                        
+                                                        // Now toggle expansion - the product will have unique_id
                                                         toggleProductExpansion(product.id);
                                                     }}
                                                     className="lwwc-selected-product-edit-button"
