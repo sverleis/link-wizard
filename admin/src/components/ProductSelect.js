@@ -47,6 +47,31 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         return selectedProducts.some(p => p.id === productId && !p.unique_id);
     };
 
+    // Helper function to enrich a search result product with its selected product data (for editing)
+    const enrichProductWithSelectedData = (product) => {
+        // Find the selected product that matches this product ID
+        // For composites, we need to find the one that's currently expanded (being edited)
+        const selectedProduct = selectedProducts.find(p => 
+            p.id === product.id && 
+            p.type === 'composite' && 
+            isProductExpanded(product.id)
+        );
+        
+        if (selectedProduct && selectedProduct.unique_id) {
+            // Merge the selected product's data (including unique_id) into the search result product
+            return {
+                ...product,
+                unique_id: selectedProduct.unique_id,
+                component_selections: selectedProduct.component_selections,
+                components: selectedProduct.components,
+                calculated_price: selectedProduct.calculated_price,
+                checkout_url: selectedProduct.checkout_url
+            };
+        }
+        
+        return product;
+    };
+
     // Complex product functionality from addon
     const complexProducts = window.LWWCAddons?.complexProducts || {};
     
@@ -1144,7 +1169,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         <>
                                             {window.LWWCAddons?.ComplexProductUI ? (
                                                 <window.LWWCAddons.ComplexProductUI
-                                                    product={product}
+                                                    product={enrichProductWithSelectedData(product)}
                                                     linkType={linkType}
                                                     i18n={i18n}
                                                     complexProducts={complexProducts}
