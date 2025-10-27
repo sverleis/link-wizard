@@ -189,7 +189,8 @@ class VariableProductSelector extends Component {
         })
             .then((variationData) => {
                 console.log('VariableProductSelector: Loaded filtered variations:', variationData);
-                this.isLoadingRef = false; // Clear the loading ref
+                // CRITICAL: Reset the loading ref
+                this.isLoadingRef = false;
                 this.setState({
                     filteredVariations: variationData,
                     isLoadingVariations: false
