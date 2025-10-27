@@ -1018,17 +1018,6 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     })}
                                                 </div>
                                             )}
-                                            {product.disabled && (
-                                                <div className="product-disabled-message lwwc-product-disabled-message">
-                                                    <div className="lwwc-product-disabled-message-header">
-                                                        <span className="dashicons dashicons-warning lwwc-product-disabled-message-icon"></span>
-                                                        {i18n.variableProductHasAnyAttributes || 'Product has "Any" attributes'}
-                                                    </div>
-                                                    <div className="lwwc-product-disabled-message-text">
-                                                        Click to edit the product and configure variations properly.
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
                                         {product.type === 'variable' && (
                                             <div className="product-filter-icon">
