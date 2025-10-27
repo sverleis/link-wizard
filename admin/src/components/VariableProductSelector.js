@@ -346,8 +346,18 @@ class VariableProductSelector extends Component {
             error: null
         });
         
+        // Determine the correct API path based on the base path
+        // Core plugin uses: /products/{id}/variations
+        // Composite plugin uses: /variations/{id}
+        const isCompositePlugin = basePath.includes('composite');
+        const apiPath = isCompositePlugin 
+            ? `${basePath}/variations/${product.id}`
+            : `${basePath}/products/${product.id}/variations`;
+        
+        console.log('VariableProductSelector: Loading all variations from:', apiPath);
+        
         apiFetch({
-            path: `${basePath}/variations/${product.id}`
+            path: apiPath
         })
             .then((variationData) => {
                 console.log('VariableProductSelector: Loaded variations:', variationData);
