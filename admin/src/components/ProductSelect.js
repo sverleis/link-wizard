@@ -1409,13 +1409,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     handleQuantityChange(product.unique_id || product.id, finalQuantity);
                                                 }}
                                                 className="lwwc-selected-product-qty-input"
-                                                disabled={product.sold_individually || product.type === 'composite'}
+                                                disabled={product.sold_individually}
                                                 title={
-                                                    product.type === 'composite' 
-                                                        ? (i18n.compositeQuantityFixed || 'Composite products have fixed quantity of 1') 
-                                                        : product.sold_individually 
-                                                            ? (i18n.soldIndividually || 'This product is sold individually') 
-                                                            : ''
+                                                    product.sold_individually 
+                                                        ? (i18n.soldIndividually || 'This product is sold individually') 
+                                                        : ''
                                                 }
                                             />
                                             {product.sold_individually && (
