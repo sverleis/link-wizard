@@ -400,14 +400,30 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const handleAddGroupedProduct = (product) => {
         if (!hasSelectedGroupedChildren(product)) return;
 
+        // Check if this is an edit operation (product has unique_id)
+        const isEditing = !!product.unique_id;
+        
+        // Generate a unique ID for this configuration (always new, even when editing)
+        const uniqueId = `grouped_${product.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
         // Create a grouped product entry with child quantities
         const groupedProduct = {
             ...product,
-            quantity: 1, // Grouped product itself has quantity 1
+            unique_id: uniqueId,
+            quantity: product.quantity || 1, // Preserve existing quantity when editing
             child_quantities: { ...product.child_quantities }
         };
 
-        setSelectedProducts(prev => [...prev, groupedProduct]);
+        if (isEditing) {
+            // Replace the existing product with the updated one
+            console.log('Updating grouped product:', product.unique_id, '→', uniqueId);
+            setSelectedProducts(prev => 
+                prev.filter(p => p.unique_id !== product.unique_id).concat(groupedProduct)
+            );
+        } else {
+            // Add as new product
+            setSelectedProducts(prev => [...prev, groupedProduct]);
+        }
         
         // Add to adding state for visual feedback
         setAddingProducts(prev => new Set([...prev, product.id]));
@@ -1396,6 +1412,28 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         })}
                                                     </div>
                                                 )}
+                                                {/* Show child selections for grouped products as pills */}
+                                                {product.type === 'grouped' && product.child_quantities && (
+                                                    <div className="lwwc-grouped-selections-pills">
+                                                        {Object.entries(product.child_quantities).map(([childId, quantity]) => {
+                                                            if (quantity > 0) {
+                                                                // Find the child product name from product.children
+                                                                const child = product.children?.find(c => c.id === parseInt(childId));
+                                                                const childName = child ? child.name : `Product ${childId}`;
+                                                                
+                                                                return (
+                                                                    <span key={childId} className="lwwc-grouped-selection-pill">
+                                                                        {childName}
+                                                                        {quantity > 1 && (
+                                                                            <span className="lwwc-grouped-pill-qty"> × {quantity}</span>
+                                                                        )}
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="lwwc-selected-product-controls">
@@ -1441,6 +1479,38 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         } else {
                                                             // Product is in search results - replace with selected version
                                                             console.log('Replacing search result with selected product for editing');
+                                                            setResults(prev => {
+                                                                const newResults = [...prev];
+                                                                newResults[existingIndex] = product;
+                                                                return newResults;
+                                                            });
+                                                        }
+                                                        
+                                                        // Now toggle expansion - the product will have unique_id
+                                                        toggleProductExpansion(product.id);
+                                                    }}
+                                                    className="lwwc-selected-product-edit-button"
+                                                    title={i18n.editConfiguration || 'Edit configuration'}
+                                                >
+                                                    {i18n.edit || 'Edit'}
+                                                </button>
+                                            )}
+                                            {product.type === 'grouped' && (
+                                                <button
+                                                    onClick={() => {
+                                                        // Open configuration panel for this grouped product
+                                                        // Inject the selected product into search results first
+                                                        console.log('Edit clicked for grouped product:', product);
+                                                        
+                                                        // Check if product is already in search results
+                                                        const existingIndex = results.findIndex(r => r.id === product.id);
+                                                        if (existingIndex === -1) {
+                                                            // Product not in search results - add it
+                                                            console.log('Adding selected grouped product to search results for editing');
+                                                            setResults(prev => [product, ...prev]);
+                                                        } else {
+                                                            // Product is in search results - replace with selected version
+                                                            console.log('Replacing search result with selected grouped product for editing');
                                                             setResults(prev => {
                                                                 const newResults = [...prev];
                                                                 newResults[existingIndex] = product;

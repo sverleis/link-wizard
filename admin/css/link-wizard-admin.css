@@ -3856,7 +3856,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 
 .lwwc-add-grouped-product-btn {
     background-color: var(--wp-admin-theme-color);
-    color: var(--wp-admin-card-background);
+    color: #ffffff;
     border: none;
     padding: 8px 16px;
     border-radius: 3px;
@@ -3874,6 +3874,39 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     background-color: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+/* Grouped product pills in selected products list. */
+.lwwc-grouped-selections-pills {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lwwc-grouped-selection-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f0f1;
+    color: #2c3338;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.lwwc-grouped-selection-pill:hover {
+    background-color: #e8e8e9;
+    border-color: #a7aaad;
+}
+
+.lwwc-grouped-pill-qty {
+    color: #646970;
+    font-weight: 500;
+    margin-left: 2px;
 }
 
 /* =============================================================================
