@@ -3855,8 +3855,8 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-add-grouped-product-btn {
-    background-color: var(--wp-admin-theme-color);
-    color: var(--wp-admin-theme-color-text, #ffffff);
+    background-color: var(--lwwc-button-primary, var(--wp-admin-theme-color));
+    color: var(--lwwc-button-primary-text, white);
     border: none;
     padding: 8px 16px;
     border-radius: 3px;
@@ -3867,7 +3867,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-add-grouped-product-btn:hover:not(:disabled) {
-    background-color: var(--wp-admin-theme-color-darker-10, #005a87);
+    background-color: var(--lwwc-button-primary-hover, var(--wp-admin-theme-color-darker-10));
 }
 
 .lwwc-add-grouped-product-btn:disabled {
