@@ -176,10 +176,22 @@ const DynamicLink = ({
                                 return productsParam;
                             }).filter(Boolean);
                             
-                            // Combine with any simple products
-                            const simpleProducts = selectedProducts
+                            // Combine with any simple products (and expand grouped products)
+                            const simpleProducts = [];
+                            selectedProducts
                                 .filter(p => p.type !== 'composite')
-                                .map(p => `${p.id}:${p.quantity || 1}`);
+                                .forEach(p => {
+                                    if (p.type === 'grouped' && p.child_quantities) {
+                                        // Expand grouped products into their child products
+                                        Object.entries(p.child_quantities).forEach(([childId, quantity]) => {
+                                            if (quantity > 0) {
+                                                simpleProducts.push(`${childId}:${quantity}`);
+                                            }
+                                        });
+                                    } else {
+                                        simpleProducts.push(`${p.id}:${p.quantity || 1}`);
+                                    }
+                                });
                             
                             const allProducts = [...productsParams, ...simpleProducts];
                             
@@ -224,6 +236,13 @@ const DynamicLink = ({
                                 if (bundleProducts) {
                                     products.push(bundleProducts);
                                 }
+                            } else if (product.type === 'grouped' && product.child_quantities) {
+                                // For grouped products, expand to individual child products
+                                Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                                    if (quantity > 0) {
+                                        products.push(`${childId}:${quantity}`);
+                                    }
+                                });
                             } else {
                                 // Regular products (simple, variable, etc.)
                                 products.push(`${product.id}:${product.quantity || 1}`);
@@ -451,7 +470,9 @@ const DynamicLink = ({
                 
                 // Add products parameter with highlighting.
                 // For composite products, extract the mapped ID from checkout_url and update quantity
-                let productsParam = selectedProducts.map(product => {
+                // For grouped products, expand to child products
+                const productsArray = [];
+                selectedProducts.forEach(product => {
                     if (product.type === 'composite' && product.checkout_url) {
                         // Extract the products parameter from the checkout URL (e.g., "cp139_HASH:1")
                         try {
@@ -464,13 +485,23 @@ const DynamicLink = ({
                                 productsFromUrl = productsFromUrl.replace(/:(\d+)$/, `:${product.quantity}`);
                             }
                             
-                            return productsFromUrl || `${product.id}:${product.quantity || 1}`;
+                            productsArray.push(productsFromUrl || `${product.id}:${product.quantity || 1}`);
                         } catch (e) {
-                            return `${product.id}:${product.quantity || 1}`;
+                            productsArray.push(`${product.id}:${product.quantity || 1}`);
                         }
+                    } else if (product.type === 'grouped' && product.child_quantities) {
+                        // For grouped products, expand to child products
+                        Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                            if (quantity > 0) {
+                                productsArray.push(`${childId}:${quantity}`);
+                            }
+                        });
+                    } else {
+                        productsArray.push(`${product.id}:${product.quantity || 1}`);
                     }
-                    return `${product.id}:${product.quantity || 1}`;
-                }).join(',');
+                });
+                
+                let productsParam = productsArray.join(',');
                 
                 // Apply URL encoding based on user preference for display.
                 if (urlEncoding === 'encoded') {
