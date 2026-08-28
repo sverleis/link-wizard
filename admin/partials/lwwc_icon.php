@@ -4,6 +4,10 @@
  *
  * @package Link_Wizard_For_WooCommerce
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <!-- Link Wizard SVG Icon (themeable) -->
 <svg class="lwwc-header-icon lwwc-theme-colored" width="65" height="65" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
