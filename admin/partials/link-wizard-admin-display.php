@@ -6,6 +6,9 @@
  * @subpackage Link_Wizard_For_WooCommerce/admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="wrap">
 	<!-- The root element for the React app -->
