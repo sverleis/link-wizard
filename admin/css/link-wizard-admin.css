@@ -3405,7 +3405,6 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin: 16px 0;
     padding: 0 12px;
     color: var(--wp-admin-text-color, #1d2327);
-    border-left-color: var(--wp-admin-theme-color, #0073aa);
     box-shadow: none;
 }
 

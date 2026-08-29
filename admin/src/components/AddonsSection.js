@@ -131,7 +131,7 @@ const AddonsSection = () => {
             .join(', ');
 
         return (
-            <div className="notice notice-info inline lwwc-addon-advertising">
+            <div className="notice notice-warning inline lwwc-addon-advertising">
                 <p>
                     <strong>Link Wizard integration needed.</strong>{' '}
                     {extensionNames} {missingIntegrations.length === 1 ? 'is' : 'are'} active without a matching Link Wizard add-on.
