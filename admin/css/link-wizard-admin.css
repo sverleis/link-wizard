@@ -3058,47 +3058,74 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 .lwwc-dynamic-link-status-buttons {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    align-items: center;
+    display: inline-flex;
+    align-items: stretch;
+    max-width: 100%;
+    gap: 0;
+    overflow-x: auto;
+    background: var(--wp-admin-card-background, #fff);
+    border: 1px solid var(--wp-admin-border-color, #c3c4c7);
+    border-radius: 4px;
 }
 
 .lwwc-dynamic-link-status-button {
-    background: none;
-    border: none;
-    padding: 4px 8px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    min-width: auto !important;
+    gap: 4px;
+    margin: 0;
+    padding: 6px 10px;
+    background: transparent;
+    border: 0;
+    border-right: 1px solid var(--wp-admin-border-color, #c3c4c7);
+    border-radius: 0;
+    color: var(--wp-admin-text-color, #1d2327);
+    font-weight: 400;
+    text-decoration: none;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    color: var(--wp-admin-text-color);
-    text-decoration: underline;
-    font-weight: normal;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.lwwc-dynamic-link-status-button:last-child {
+    border-right: 0;
 }
 
 .lwwc-dynamic-link-status-button.active {
-    background: var(--wp-admin-info-background, #e7f3ff);
-    border: 2px solid var(--wp-admin-theme-color, #0073aa);
-    color: var(--wp-admin-theme-color);
-    text-decoration: none;
+    background: var(--wp-admin-theme-color, #0073aa);
+    color: var(--lwwc-button-primary-text, #fff);
     font-weight: 600;
 }
 
 .lwwc-dynamic-link-status-button:hover:not(.active) {
-    background-color: var(--wp-admin-background-color-lightest, #f8f9fa);
+    background: var(--wp-admin-background-color-lightest, #f6f7f7);
+}
+
+.lwwc-dynamic-link-status-button:focus-visible {
+    position: relative;
+    outline: 2px solid var(--wp-admin-theme-color, #0073aa);
+    outline-offset: -2px;
 }
 
 .lwwc-dynamic-link-status-step-number {
     display: inline-block;
-    width: 20px;
+    width: auto;
+    margin-right: 2px;
+    color: var(--wp-admin-secondary-text-color-light, #646970);
+    font-weight: 600;
     text-align: center;
-    margin-right: 8px;
-    font-weight: bold;
-    color: var(--wp-admin-text-color-muted, #666);
+}
+
+.lwwc-dynamic-link-status-label {
+    font-weight: 600;
+}
+
+.lwwc-dynamic-link-status-value {
+    white-space: nowrap;
 }
 
 .lwwc-dynamic-link-status-button.active .lwwc-dynamic-link-status-step-number {
-    color: var(--wp-admin-theme-color);
+    color: inherit;
 }
 
 /* =============================================================================
@@ -3378,6 +3405,7 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin: 16px 0;
     padding: 0 12px;
     color: var(--wp-admin-text-color, #1d2327);
+    border-left-color: var(--wp-admin-theme-color, #0073aa);
     box-shadow: none;
 }
 
@@ -4153,8 +4181,39 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .lwwc-addon-card {
+    .lwwc-addon-card,
+    .lwwc-dynamic-link-status-button {
         transition: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .lwwc-dynamic-link-status-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .lwwc-dynamic-link-status-button {
+        justify-content: center;
+        min-width: 0 !important;
+        padding: 6px 4px;
+        overflow: hidden;
+        font-size: 12px;
+    }
+
+    .lwwc-dynamic-link-status-label {
+        display: none;
+    }
+
+    .lwwc-dynamic-link-status-step-number {
+        margin-right: 0;
+    }
+
+    .lwwc-dynamic-link-status-value {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

@@ -655,47 +655,55 @@ const DynamicLink = ({
                 </div>
                 <div className="lwwc-dynamic-link-status-buttons">
                     <button
+                        type="button"
                         onClick={() => onNavigateToStep && onNavigateToStep(1)}
                         className={`lwwc-dynamic-link-status-button ${currentStep === 1 ? 'active' : ''}`}
                         title="Click to edit Link Type"
                     >
                         <span className="lwwc-dynamic-link-status-step-number">1</span>
-                        <strong>{i18n.linkType || 'Type'}:</strong> {linkType === 'addToCart' ? 'Add to Cart' : 'Checkout'}
+                        <span className="lwwc-dynamic-link-status-label">{i18n.linkType || 'Type'}</span>
+                        <span className="lwwc-dynamic-link-status-value">{linkType === 'addToCart' ? 'Add to Cart' : 'Checkout'}</span>
                     </button>
                     
                     <button
+                        type="button"
                         onClick={() => onNavigateToStep && onNavigateToStep(2)}
                         className={`lwwc-dynamic-link-status-button ${currentStep === 2 ? 'active' : ''}`}
                         title="Click to edit Products"
                     >
                         <span className="lwwc-dynamic-link-status-step-number">2</span>
-                        <strong>{i18n.products || 'Products'}:</strong> {selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}
+                        <span className="lwwc-dynamic-link-status-label">{i18n.products || 'Products'}</span>
+                        <span className="lwwc-dynamic-link-status-value">{selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}</span>
                     </button>
                     
                     {linkType === 'checkoutLink' && (
                         <button
+                            type="button"
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
                             className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Coupon"
                         >
                             <span className="lwwc-dynamic-link-status-step-number">3</span>
-                            <strong>{i18n.coupon || 'Coupon'}:</strong> {selectedCoupon ? selectedCoupon.code : 'None'}
+                            <span className="lwwc-dynamic-link-status-label">{i18n.coupon || 'Coupon'}</span>
+                            <span className="lwwc-dynamic-link-status-value">{selectedCoupon ? selectedCoupon.code : 'None'}</span>
                         </button>
                     )}
                     
                     {linkType === 'addToCart' && redirectOption && (
                         <button
+                            type="button"
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
                             className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Redirect"
                         >
                             <span className="lwwc-dynamic-link-status-step-number">3</span>
-                            <strong>{i18n.redirect || 'Redirect'}:</strong> {
+                            <span className="lwwc-dynamic-link-status-label">{i18n.redirect || 'Redirect'}</span>
+                            <span className="lwwc-dynamic-link-status-value">{
                                 redirectOption === 'cart' ? 'Cart Page' :
                                 redirectOption === 'checkout' ? 'Checkout Page' :
                                 redirectOption === 'product' ? 'Product Page' :
                                 redirectOption === 'page' && selectedRedirectPage ? selectedRedirectPage.post_title : 'None'
-                            }
+                            }</span>
                         </button>
                     )}
                 </div>
