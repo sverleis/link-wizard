@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AddonsSection = ({ onAddonSelect }) => {
+const AddonsSection = () => {
     const [addons, setAddons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,21 +21,14 @@ const AddonsSection = ({ onAddonSelect }) => {
             const addonData = window.lwwcAddons || {};
             const addonsList = addonData.addons || {};
 
-            // Debug: Log addon data received from backend.
-            console.log('LWWC Addons: Raw addon data:', addonData);
-            console.log('LWWC Addons: Addons list:', addonsList);
-
             // Convert object to array and filter for Link Wizard addons only.
             const activeAddons = Object.values(addonsList).filter(addon => 
                 addon.is_active && addon.type === 'link_wizard_addon'
             );
-            
-            console.log('LWWC Addons: Active addons after filtering:', activeAddons);
-            
+
             setAddons(activeAddons);
-        } catch (err) {
+        } catch {
             setError('Failed to load addons');
-            console.error('Error loading addons:', err);
         } finally {
             setLoading(false);
         }
@@ -44,12 +37,6 @@ const AddonsSection = ({ onAddonSelect }) => {
     const handleRecheck = async () => {
         // Force reload the page to refresh addon detection
         window.location.reload();
-    };
-
-    const handleAddonClick = (addon) => {
-        if (onAddonSelect) {
-            onAddonSelect(addon);
-        }
     };
 
     const getAddonIcon = (addon) => {
@@ -67,16 +54,6 @@ const AddonsSection = ({ onAddonSelect }) => {
         };
         
         return iconMap[addon.plugin_slug] || 'dashicons-admin-plugins';
-    };
-
-    const getAddonDescription = (addon) => {
-        // Show a simple description for addon cards.
-        if (addon.type === 'link_wizard_addon') {
-            return 'Extends Link Wizard with additional product types';
-        }
-        
-        // For WooCommerce plugins, show a brief description.
-        return addon.description || 'WooCommerce extension';
     };
 
     const getProductTypeBadges = (addon) => {
@@ -110,7 +87,6 @@ const AddonsSection = ({ onAddonSelect }) => {
             }
 
             if (isActive) {
-                statusIcon = <span className="dashicons dashicons-yes"></span>;
                 statusClass = 'enabled';
                 tooltipText = 'Plugin is installed and active';
                 linkUrl = null; // No link for active plugins
@@ -340,12 +316,7 @@ const AddonsSection = ({ onAddonSelect }) => {
             </div>
 
             {/* Addon Advertising Banner */}
-            {(() => {
-                console.log('🚀 LWWC: About to call getAddonAdvertising...');
-                const result = getAddonAdvertising();
-                console.log('🚀 LWWC: getAddonAdvertising result:', result);
-                return result;
-            })()}
+            {getAddonAdvertising()}
 
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">
@@ -371,16 +342,17 @@ const AddonsSection = ({ onAddonSelect }) => {
                         key={addon.plugin_slug}
                         className="lwwc-addon-card"
                     >
-                        <div className="lwwc-addon-icon">
-                            <span className={`dashicons ${getAddonIcon(addon)}`}></span>
+                        <div className="lwwc-addon-icon" aria-hidden="true">
+                            {getAddonIcon(addon).startsWith('dashicons-') ? (
+                                <span className={`dashicons ${getAddonIcon(addon)}`}></span>
+                            ) : (
+                                <span className="lwwc-addon-icon-symbol">{getAddonIcon(addon)}</span>
+                            )}
                         </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
                                 {addon.name}
                             </h4>
-                            <p className="lwwc-addon-description">
-                                {getAddonDescription(addon)}
-                            </p>
                             <div className="lwwc-addon-product-types">
                                 {getProductTypeBadges(addon)}
                             </div>
