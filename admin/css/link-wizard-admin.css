@@ -1512,6 +1512,14 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     border-color: var(--wp-admin-theme-color-darker, #005a87);
 }
 
+.lwwc-configure-button:disabled {
+    background: var(--wp-admin-card-background, #fff);
+    border-color: var(--wp-admin-border-color-light, #c3c4c7);
+    color: var(--wp-admin-secondary-text-color-light, #646970);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
 .lwwc-add-button:disabled {
     background: #ccc;
     border-color: #ccc;
