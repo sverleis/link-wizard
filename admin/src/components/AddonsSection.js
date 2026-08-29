@@ -126,16 +126,28 @@ const AddonsSection = () => {
             return null;
         }
 
-        const extensionNames = missingIntegrations
-            .map((integration) => integration.label)
-            .join(', ');
-
         return (
             <div className="notice notice-warning inline lwwc-addon-advertising">
-                <p>
-                    <strong>Link Wizard integration needed.</strong>{' '}
-                    {extensionNames} {missingIntegrations.length === 1 ? 'is' : 'are'} active without a matching Link Wizard add-on.
-                </p>
+                {missingIntegrations.map((integration) => {
+                    const addon = addonsList[integration.addon];
+                    const actionLabel = addon ? 'Activate' : 'Get';
+
+                    return (
+                        <p key={integration.addon}>
+                            <span>
+                                <strong>Link Wizard integration needed.</strong>{' '}
+                                {integration.label} is active without a matching Link Wizard add-on.
+                            </span>{' '}
+                            <span
+                                className="lwwc-addon-action-link disabled"
+                                role="link"
+                                aria-disabled="true"
+                            >
+                                {actionLabel}
+                            </span>
+                        </p>
+                    );
+                })}
             </div>
         );
     };

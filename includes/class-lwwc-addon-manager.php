@@ -93,6 +93,13 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
+		// Register installed but inactive Link Wizard addons for action messaging.
+		foreach ( array_keys( get_plugins() ) as $plugin_file ) {
+			if ( ! in_array( $plugin_file, $active_plugins, true ) && self::is_link_wizard_addon( $plugin_file ) ) {
+				self::register_addon( $plugin_file );
+			}
+		}
+
 		// Also check for installed but inactive WooCommerce extensions
 		foreach ( $woocommerce_extensions as $plugin_file ) {
 			if ( ! in_array( $plugin_file, $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
