@@ -131,6 +131,23 @@ const AddonsSection = () => {
                 {missingIntegrations.map((integration) => {
                     const addon = addonsList[integration.addon];
                     const actionLabel = addon ? 'Activate' : 'Get';
+                    const action = addon?.activate_url ? (
+                        <a
+                            className="lwwc-addon-action-link"
+                            href={addon.activate_url}
+                            aria-label={`Activate the ${integration.label} Link Wizard add-on`}
+                        >
+                            {actionLabel}
+                        </a>
+                    ) : (
+                        <span
+                            className="lwwc-addon-action-link disabled"
+                            role="link"
+                            aria-disabled="true"
+                        >
+                            {actionLabel}
+                        </span>
+                    );
 
                     return (
                         <p key={integration.addon}>
@@ -138,13 +155,7 @@ const AddonsSection = () => {
                                 <strong>Link Wizard integration needed.</strong>{' '}
                                 {integration.label} is active without a matching Link Wizard add-on.
                             </span>{' '}
-                            <span
-                                className="lwwc-addon-action-link disabled"
-                                role="link"
-                                aria-disabled="true"
-                            >
-                                {actionLabel}
-                            </span>
+                            {action}
                         </p>
                     );
                 })}

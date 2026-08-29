@@ -3420,10 +3420,13 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     margin-top: 6px;
 }
 
-.lwwc-addon-action-link.disabled {
+.lwwc-addon-action-link {
     flex-shrink: 0;
     color: var(--wp-admin-theme-color, #0073aa);
     text-decoration: underline;
+}
+
+.lwwc-addon-action-link.disabled {
     cursor: not-allowed;
     opacity: 0.6;
 }
