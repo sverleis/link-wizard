@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AddonsSection = ({ onAddonSelect }) => {
+const AddonsSection = () => {
     const [addons, setAddons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,21 +21,14 @@ const AddonsSection = ({ onAddonSelect }) => {
             const addonData = window.lwwcAddons || {};
             const addonsList = addonData.addons || {};
 
-            // Debug: Log addon data received from backend.
-            console.log('LWWC Addons: Raw addon data:', addonData);
-            console.log('LWWC Addons: Addons list:', addonsList);
-
             // Convert object to array and filter for Link Wizard addons only.
             const activeAddons = Object.values(addonsList).filter(addon => 
                 addon.is_active && addon.type === 'link_wizard_addon'
             );
-            
-            console.log('LWWC Addons: Active addons after filtering:', activeAddons);
-            
+
             setAddons(activeAddons);
-        } catch (err) {
+        } catch {
             setError('Failed to load addons');
-            console.error('Error loading addons:', err);
         } finally {
             setLoading(false);
         }
@@ -46,92 +39,14 @@ const AddonsSection = ({ onAddonSelect }) => {
         window.location.reload();
     };
 
-    const handleAddonClick = (addon) => {
-        if (onAddonSelect) {
-            onAddonSelect(addon);
-        }
-    };
-
-    const getAddonIcon = (addon) => {
-        // Check if addon has a custom icon defined.
-        if (addon.icon) {
-            return addon.icon;
-        }
-        
-        // Fallback to Dashicons based on addon slug.
-        const iconMap = {
-            'link-wizard-addons': 'dashicons-admin-plugins',
-            'link-wizard-bundles': 'dashicons-products',
-            'link-wizard-composite': 'dashicons-admin-links',
-            'link-wizard-grouped': 'dashicons-groups',
+    const getAddonDisplayName = (addon) => {
+        const productType = addon.capabilities?.product_types?.[0];
+        const productTypeLabels = {
+            bundle: 'Product Bundles',
+            composite: 'Composite Products',
         };
-        
-        return iconMap[addon.plugin_slug] || 'dashicons-admin-plugins';
-    };
 
-    const getAddonDescription = (addon) => {
-        // Show a simple description for addon cards.
-        if (addon.type === 'link_wizard_addon') {
-            return 'Extends Link Wizard with additional product types';
-        }
-        
-        // For WooCommerce plugins, show a brief description.
-        return addon.description || 'WooCommerce extension';
-    };
-
-    const getProductTypeBadges = (addon) => {
-        // Only show product type badges for Link Wizard Addons
-        if (addon.type !== 'link_wizard_addon') {
-            return null;
-        }
-        
-        const productTypes = addon.capabilities?.product_types || [];
-        
-        if (productTypes.length === 0) {
-            return null;
-        }
-        
-        return productTypes.map((type, index) => {
-            const status = addon.product_type_status?.[type] || { status: 'not_installed', active: false };
-            const isActive = status.active;
-            const isInstalled = status.installed;
-            let statusIcon = null;
-            let statusClass = 'disabled';
-            let displayName = type;
-            let linkUrl = null;
-            let tooltipText = '';
-
-            if (type === 'bundle') {
-                displayName = 'Product Bundles';
-                linkUrl = 'https://woocommerce.com/products/product-bundles/';
-            } else if (type === 'composite') {
-                displayName = 'Composite Products';
-                linkUrl = 'https://woocommerce.com/products/composite-products/';
-            }
-
-            if (isActive) {
-                statusIcon = <span className="dashicons dashicons-yes"></span>;
-                statusClass = 'enabled';
-                tooltipText = 'Plugin is installed and active';
-                linkUrl = null; // No link for active plugins
-            } else if (isInstalled) {
-                statusIcon = <span className="dashicons dashicons-warning"></span>;
-                statusClass = 'inactive';
-                tooltipText = 'Plugin is installed but inactive - click to activate';
-                linkUrl = '/wp-admin/plugins.php'; // Link to plugins page
-            } else {
-                statusIcon = <span className="dashicons dashicons-external"></span>;
-                statusClass = 'disabled';
-                tooltipText = 'Purchase this extension on WooCommerce.com';
-                // Keep existing linkUrl for purchase
-            }
-
-            const badgeContent = (<>{statusIcon} {displayName}</>);
-            if (linkUrl) {
-                return (<a key={index} href={linkUrl} target="_blank" rel="noopener noreferrer" className={`lwwc-addon-product-type-badge ${statusClass} lwwc-badge-link`} title={tooltipText}>{badgeContent}</a>);
-            }
-            return (<span key={index} className={`lwwc-addon-product-type-badge ${statusClass}`} title={tooltipText}>{badgeContent}</span>);
-        });
+        return productTypeLabels[productType] || addon.name.replace(/^Link Wizard for /, '');
     };
 
     const getCoreProductTypeBadges = () => {
@@ -187,62 +102,65 @@ const AddonsSection = ({ onAddonSelect }) => {
     };
 
     const getAddonAdvertising = () => {
-        // Check if WooCommerce extensions are active but Link Wizard Addons is not
-        const addonData = window.lwwcAddons || {};
-        const addonsList = addonData.addons || {};
-        
-        // Check if WooCommerce extensions are active or installed (but inactive)
-        const hasWooCommerceExtensions = Object.values(addonsList).some(addon => 
-            addon.type === 'external_plugin' && (addon.is_active || addon.installed)
-        );
-        
-        // Check if Link Wizard Addons is active
-        const hasLinkWizardAddons = Object.values(addonsList).some(addon => 
-            addon.type === 'link_wizard_addon' && addon.is_active
-        );
-        
-        // Show advertising if WooCommerce extensions are present but Link Wizard Addons is not
-        if (hasWooCommerceExtensions && !hasLinkWizardAddons) {
-            // Check if extensions are installed but inactive
-            const inactiveExtensions = Object.values(addonsList).filter(addon => 
-                addon.type === 'external_plugin' && addon.installed && !addon.is_active
-            );
-            
-            const isAlert = inactiveExtensions.length > 0;
-            
-            return (
-                <div className={`lwwc-addon-advertising ${isAlert ? 'lwwc-addon-alert' : ''}`}>
-                    <div className="lwwc-addon-advertising-content">
-                        <span className={`dashicons ${isAlert ? 'dashicons-warning' : 'dashicons-megaphone'}`}></span>
-                        <div className="lwwc-addon-advertising-text">
-                            <strong>
-                                {isAlert 
-                                    ? 'WooCommerce Extensions Detected!' 
-                                    : 'Enhance your WooCommerce extensions!'
-                                }
-                            </strong>
-                            <p>
-                                {isAlert ? (
-                                    <>You have {inactiveExtensions.length} WooCommerce extension{inactiveExtensions.length > 1 ? 's' : ''} installed but inactive. Install <strong>Link Wizard Composite</strong> to enable Composite Products with custom component selections and checkout-links.</>
-                                ) : (
-                                    <>You have active WooCommerce extensions. Install "Link Wizard for Composites" to enable Composite Products with custom component selections and checkout-links.</>
-                                )}
-                            </p>
-                        </div>
-                        <a 
-                            href="https://wordpress.org/plugins/link-wizard-composite/" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className={`button ${isAlert ? 'button-secondary' : 'button-primary'} lwwc-addon-advertising-button`}
-                        >
-                            {isAlert ? 'Get Link Wizard for Composites' : 'Get Link Wizard for Composites'}
-                        </a>
-                    </div>
-                </div>
-            );
+        const addonsList = window.lwwcAddons?.addons || {};
+        const integrations = [
+            {
+                extension: 'woocommerce-product-bundles',
+                addon: 'link-wizard-bundles',
+                label: 'Product Bundles',
+            },
+            {
+                extension: 'woocommerce-composite-products',
+                addon: 'link-wizard-composite',
+                label: 'Composite Products',
+            },
+        ];
+        const missingIntegrations = integrations.filter((integration) => {
+            const extension = addonsList[integration.extension];
+            const addon = addonsList[integration.addon];
+
+            return extension?.is_active && !addon?.is_active;
+        });
+
+        if (missingIntegrations.length === 0) {
+            return null;
         }
-        
-        return null;
+
+        return (
+            <div className="notice notice-warning inline lwwc-addon-advertising">
+                {missingIntegrations.map((integration) => {
+                    const addon = addonsList[integration.addon];
+                    const actionLabel = addon ? 'Activate' : 'Get';
+                    const action = addon?.activate_url ? (
+                        <a
+                            className="lwwc-addon-action-link"
+                            href={addon.activate_url}
+                            aria-label={`Activate the ${integration.label} Link Wizard add-on`}
+                        >
+                            {actionLabel}
+                        </a>
+                    ) : (
+                        <span
+                            className="lwwc-addon-action-link disabled"
+                            role="link"
+                            aria-disabled="true"
+                        >
+                            {actionLabel}
+                        </span>
+                    );
+
+                    return (
+                        <p key={integration.addon}>
+                            <span>
+                                <strong>Link Wizard integration needed.</strong>{' '}
+                                {integration.label} is active without a matching Link Wizard add-on.
+                            </span>{' '}
+                            {action}
+                        </p>
+                    );
+                })}
+            </div>
+        );
     };
 
     if (loading) {
@@ -340,12 +258,7 @@ const AddonsSection = ({ onAddonSelect }) => {
             </div>
 
             {/* Addon Advertising Banner */}
-            {(() => {
-                console.log('🚀 LWWC: About to call getAddonAdvertising...');
-                const result = getAddonAdvertising();
-                console.log('🚀 LWWC: getAddonAdvertising result:', result);
-                return result;
-            })()}
+            {getAddonAdvertising()}
 
             <div className="lwwc-addons-header">
                 <h3 className="lwwc-addons-heading">
@@ -361,29 +274,16 @@ const AddonsSection = ({ onAddonSelect }) => {
                     {i18n.recheckAddons || 'Recheck'}
                 </button>
             </div>
-            <p className="lwwc-addons-description">
-                {i18n.addonsDescription || 'Access additional product types and features through these addons:'}
-            </p>
-            
             <div className="lwwc-addons-grid">
                 {addons.map((addon) => (
                     <div 
                         key={addon.plugin_slug}
                         className="lwwc-addon-card"
                     >
-                        <div className="lwwc-addon-icon">
-                            <span className={`dashicons ${getAddonIcon(addon)}`}></span>
-                        </div>
                         <div className="lwwc-addon-content">
                             <h4 className="lwwc-addon-title">
-                                {addon.name}
+                                {getAddonDisplayName(addon)}
                             </h4>
-                            <p className="lwwc-addon-description">
-                                {getAddonDescription(addon)}
-                            </p>
-                            <div className="lwwc-addon-product-types">
-                                {getProductTypeBadges(addon)}
-                            </div>
                         </div>
                         <div className="lwwc-addon-action">
                             <span className={`lwwc-addon-status ${addon.is_active ? 'active' : ''}`}>

@@ -93,6 +93,13 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
+		// Register installed but inactive Link Wizard addons for action messaging.
+		foreach ( array_keys( get_plugins() ) as $plugin_file ) {
+			if ( ! in_array( $plugin_file, $active_plugins, true ) && self::is_link_wizard_addon( $plugin_file ) ) {
+				self::register_addon( $plugin_file );
+			}
+		}
+
 		// Also check for installed but inactive WooCommerce extensions
 		foreach ( $woocommerce_extensions as $plugin_file ) {
 			if ( ! in_array( $plugin_file, $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
@@ -172,8 +179,25 @@ class LWWC_Addon_Manager {
 		
 		// Check if plugin is active.
 		$is_active = is_plugin_active( $plugin_file );
-		
-		
+		$activate_url = '';
+
+		if ( ! $is_active && current_user_can( 'activate_plugins' ) ) {
+			$activate_url = html_entity_decode(
+				wp_nonce_url(
+					add_query_arg(
+						array(
+							'action' => 'activate',
+							'plugin' => $plugin_file,
+						),
+						self_admin_url( 'plugins.php' )
+					),
+					'activate-plugin_' . $plugin_file
+				),
+				ENT_QUOTES,
+				get_bloginfo( 'charset' )
+			);
+		}
+
 		// Extract addon info from plugin data.
 		$addon_info = array(
 			'plugin_file'    => $plugin_file,
@@ -185,6 +209,7 @@ class LWWC_Addon_Manager {
 			'plugin_uri'     => $plugin_data['PluginURI'] ?? '',
 			'text_domain'    => $plugin_data['TextDomain'] ?? '',
 			'is_active'      => $is_active,
+			'activate_url'   => $activate_url,
 			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
 			'capabilities'   => self::get_addon_capabilities( $plugin_slug ),
 			'icon'           => self::get_addon_icon( $plugin_slug ),
