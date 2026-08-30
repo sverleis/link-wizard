@@ -3,7 +3,7 @@ Contributors: magsindustries
 Tags: woocommerce, products
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.3.5-rc1
+Stable tag: 2.0.0-beta1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -19,6 +19,15 @@ This plugin adds a feature to the product menu, where an admin or store manager 
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
 == Changelog ==
+= 2.0.0-beta1 =
+* Introduce an extensible product-handler and add-on architecture.
+* Add grouped-product support and validation improvements.
+* Add discovery and activation states for Product Bundles and Composite Products integrations.
+* Add independent missing-integration notices for supported WooCommerce extensions.
+* Refresh the Link Wizard admin interface with WordPress admin color-scheme support.
+* Improve link-status controls, responsive behavior, and accessibility.
+* Prepare coordinated integrations with Link Wizard for Bundles 1.0.0-beta1 and Link Wizard for Composites 1.0.0-beta1.
+
 = 1.0.3 =
 * Enhanced UX with streamlined variation error display
 * Added modal for invalid variations with scrollable content
