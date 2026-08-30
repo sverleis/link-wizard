@@ -65,7 +65,11 @@ jobs:
             --exclude=".eslintrc*" \
             --exclude=".prettier*" \
             --exclude="phpcs.xml" \
+            --exclude="BUILDING-BLOCK-REFACTOR.md" \
             --exclude="DEVDOC.MD" \
+            --exclude="EXTENSIONS.md" \
+            --exclude="PRODUCT_HANDLER_GUIDE.md" \
+            --exclude="VALIDATION_SYSTEM.md" \
             --exclude="readme.md" \
             --exclude="admin/css/search-component-guide.md" \
             --exclude="assets/" \
