@@ -103,6 +103,7 @@ const AddonsSection = () => {
 
     const getAddonAdvertising = () => {
         const addonsList = window.lwwcAddons?.addons || {};
+        const catalog = window.lwwcAddons?.catalog || {};
         const integrations = [
             {
                 extension: 'woocommerce-product-bundles',
@@ -115,27 +116,42 @@ const AddonsSection = () => {
                 label: 'Composite Products',
             },
         ];
-        const missingIntegrations = integrations.filter((integration) => {
+        const integrationIssues = integrations.filter((integration) => {
             const extension = addonsList[integration.extension];
             const addon = addonsList[integration.addon];
 
-            return extension?.is_active && !addon?.is_active;
+            return extension?.is_active && (
+                !addon?.is_active || addon?.compatibility?.is_compatible === false
+            );
         });
 
-        if (missingIntegrations.length === 0) {
+        if (integrationIssues.length === 0) {
             return null;
         }
 
         return (
             <div className="notice notice-warning inline lwwc-addon-advertising">
-                {missingIntegrations.map((integration) => {
+                {integrationIssues.map((integration) => {
                     const addon = addonsList[integration.addon];
-                    const actionLabel = addon ? 'Activate' : 'Get';
-                    const action = addon?.activate_url ? (
+                    const releaseUrl = catalog[integration.addon]?.release_url;
+                    const isIncompatible = addon?.is_active && addon?.compatibility?.is_compatible === false;
+                    let actionLabel = addon ? 'Activate' : 'Get';
+                    let actionUrl = addon?.activate_url;
+
+                    if (isIncompatible) {
+                        actionLabel = 'Get';
+                        actionUrl = addon?.distribution_url || releaseUrl;
+                    } else if (!addon) {
+                        actionUrl = releaseUrl;
+                    }
+
+                    const action = actionUrl ? (
                         <a
                             className="lwwc-addon-action-link"
-                            href={addon.activate_url}
-                            aria-label={`Activate the ${integration.label} Link Wizard add-on`}
+                            href={actionUrl}
+                            target={actionLabel === 'Get' ? '_blank' : undefined}
+                            rel={actionLabel === 'Get' ? 'noopener noreferrer' : undefined}
+                            aria-label={`${actionLabel} the ${integration.label} Link Wizard add-on`}
                         >
                             {actionLabel}
                         </a>
@@ -152,8 +168,12 @@ const AddonsSection = () => {
                     return (
                         <p key={integration.addon}>
                             <span>
-                                <strong>Link Wizard integration needed.</strong>{' '}
-                                {integration.label} is active without a matching Link Wizard add-on.
+                                <strong>
+                                    {isIncompatible ? 'Link Wizard add-on update needed.' : 'Link Wizard integration needed.'}
+                                </strong>{' '}
+                                {isIncompatible
+                                    ? addon.compatibility.issues.join(' ')
+                                    : `${integration.label} is active without a matching Link Wizard add-on.`}
                             </span>{' '}
                             {action}
                         </p>
@@ -275,23 +295,34 @@ const AddonsSection = () => {
                 </button>
             </div>
             <div className="lwwc-addons-grid">
-                {addons.map((addon) => (
-                    <div 
-                        key={addon.plugin_slug}
-                        className="lwwc-addon-card"
-                    >
-                        <div className="lwwc-addon-content">
-                            <h4 className="lwwc-addon-title">
-                                {getAddonDisplayName(addon)}
-                            </h4>
+                {addons.map((addon) => {
+                    const isCompatible = addon.compatibility?.is_compatible !== false;
+                    const statusLabel = isCompatible ? 'Active' : 'Needs update';
+                    const statusTitle = isCompatible
+                        ? `${addon.name} ${addon.version}`
+                        : addon.compatibility.issues.join(' ');
+
+                    return (
+                        <div
+                            key={addon.plugin_slug}
+                            className="lwwc-addon-card"
+                        >
+                            <div className="lwwc-addon-content">
+                                <h4 className="lwwc-addon-title">
+                                    {getAddonDisplayName(addon)}
+                                </h4>
+                            </div>
+                            <div className="lwwc-addon-action">
+                                <span
+                                    className={`lwwc-addon-status ${isCompatible ? 'active' : ''}`}
+                                    title={statusTitle}
+                                >
+                                    {statusLabel}
+                                </span>
+                            </div>
                         </div>
-                        <div className="lwwc-addon-action">
-                            <span className={`lwwc-addon-status ${addon.is_active ? 'active' : ''}`}>
-                                {addon.is_active ? 'Active' : 'Inactive'}
-                            </span>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

@@ -28,6 +28,9 @@ if ( ! defined( 'WPINC' ) ) {
 /* Current plugin version. */
 define( 'LWWC_VERSION', '2.0.0-beta1' );
 
+/* Public compatibility contract implemented by Link Wizard add-ons. */
+define( 'LWWC_ADDON_API_VERSION', '2.0' );
+
 /* The absolute path to the plugin directory. */
 define( 'LWWC_PATH', plugin_dir_path( __FILE__ ) );
 
