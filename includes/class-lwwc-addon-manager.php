@@ -268,11 +268,13 @@ class LWWC_Addon_Manager {
 		);
 		$issues = array();
 
-		if ( empty( $headers['addon_api'] ) || LWWC_ADDON_API_VERSION !== $headers['addon_api'] ) {
+		$api_major          = absint( LWWC_ADDON_API_VERSION );
+		$declared_api_major = absint( $headers['addon_api'] );
+		if ( ! $declared_api_major || $api_major !== $declared_api_major ) {
 			$issues[] = sprintf(
-				/* translators: %s: required add-on API version. */
-				__( 'Requires Link Wizard add-on API %s.', 'link-wizard-for-woocommerce' ),
-				LWWC_ADDON_API_VERSION
+				/* translators: %s: required add-on API major version. */
+				__( 'Requires Link Wizard add-on API %s.x.', 'link-wizard-for-woocommerce' ),
+				(string) $api_major
 			);
 		}
 
