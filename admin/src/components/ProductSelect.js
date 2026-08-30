@@ -1087,6 +1087,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         e.stopPropagation();
                                                         toggleProductExpansion(product.id);
                                                     }}
+                                                    disabled={product.type === 'bundle' && linkType !== 'addToCart'}
+                                                    title={
+                                                        product.type === 'bundle' && linkType !== 'addToCart'
+                                                            ? 'Custom bundle quantities are available for Add-to-Cart links only.'
+                                                            : undefined
+                                                    }
                                                 >
                                                     <span className="dashicons dashicons-admin-generic" />
                                                     {i18n.configure || 'Configure'}

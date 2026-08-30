@@ -62,19 +62,19 @@ const DynamicLink = ({
                                 }
                             });
                         } else if (product.type === 'bundle' && product.child_quantities) {
-                            // Handle bundle products with child quantities
+                            // Product Bundles keys configuration by bundled-item ID.
                             params.append('add-to-cart', product.id);
-                            // Add bundle quantities in the format: bundle_quantity_1, bundle_quantity_2, etc.
-                            let quantityIndex = 1;
                             Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
-                                if (quantity > 0) {
-                                    params.append(`bundle_quantity_${quantityIndex}`, quantity);
-                                    quantityIndex++;
+                                params.append(`bundle_quantity_${childId}`, quantity);
+
+                                const bundledItem = product.bundled_items?.find(
+                                    item => String(item.bundled_item_id) === String(childId)
+                                );
+                                if (bundledItem?.optional && Number(quantity) > 0) {
+                                    params.append(`bundle_selected_optional_${childId}`, 'yes');
                                 }
                             });
-                            // Add main product quantity
-                            const bundleQuantity = product.quantity || 1;
-                            params.append('quantity', bundleQuantity.toString());
+                            params.append('quantity', String(product.quantity || 1));
                         } else if (product.type === 'composite' && product.url) {
                             // Handle composite products - use the pre-generated URL directly
                             // Don't add to params since we'll use the composite URL directly
