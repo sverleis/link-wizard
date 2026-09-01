@@ -1,7 +1,7 @@
 # Link Wizard for WooCommerce
 Contributors: sverleis
 
-Tags: woocommerce, products
+Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 
 
 - Requires at least: 6.5
@@ -10,11 +10,23 @@ Tags: woocommerce, products
 - Current beta: 2.0.0-beta1
 - License: GPL-2.0+
 - License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-- Generate add-to-cart or checkout-links within the WP Admin interface.
+- Create WooCommerce add-to-cart and direct checkout links for email, Facebook, and Instagram campaigns.
 
 ## Description
-This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links. 
-Useful if you need to set up a Checkout URL for Facebook.
+
+Link Wizard for WooCommerce turns products into shareable call-to-action URLs without requiring you to build WooCommerce query strings manually.
+
+Use generated links in Facebook and Instagram shopping campaigns, social posts, ads, email marketing, newsletters, landing pages, QR codes, and support messages.
+
+### Add-to-cart links
+
+Send customers to your store with selected products and quantities already in their cart. Link Wizard supports variations, grouped products, multiple quantities, and optional redirect destinations.
+
+### Direct checkout links and coupons
+
+Send customers directly to WooCommerce checkout with products and quantities prefilled. Add an optional WooCommerce coupon code to the custom checkout URL for email offers and social promotions.
+
+Link Wizard generates campaign destination URLs. It does not provide Facebook or Instagram catalog synchronization or claim an official Meta platform integration.
 
 
 ## Installation 
