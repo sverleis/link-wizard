@@ -219,6 +219,20 @@ div[style*="display: flex"][style*="flexDirection: column"][style*="gap: 4px"] .
     .dynamic-link-container {
         padding: 15px;
     }
+
+    .dynamic-link-title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        line-height: 1.3;
+    }
+
+    .dynamic-link-status-badge {
+        display: inline-flex;
+        width: max-content;
+        margin-left: 0;
+    }
     
     .dynamic-link-container input[type="text"] {
         min-width: 100% !important;
