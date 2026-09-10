@@ -65,6 +65,7 @@ jobs:
             --exclude=".eslintrc*" \
             --exclude=".prettier*" \
             --exclude="phpcs.xml" \
+            --exclude="validation-examples.php" \
             --exclude="BUILDING-BLOCK-REFACTOR.md" \
             --exclude="DEVDOC.MD" \
             --exclude="EXTENSIONS.md" \
