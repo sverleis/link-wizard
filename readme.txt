@@ -7,34 +7,51 @@ Stable tag: 2.0.0-beta1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
-Create WooCommerce add-to-cart and checkout links for email, Facebook and Instagram campaigns, with quantities and optional checkout coupons.
+Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
 
 == Description ==
 
-Link Wizard for WooCommerce turns products into shareable call-to-action URLs. Create WooCommerce add-to-cart links and direct checkout links from the WordPress admin without manually building query strings.
+Link Wizard for WooCommerce is a checkout link generator and add-to-cart URL builder for store owners, marketers, and agencies. Turn WooCommerce products into shareable calls to action without manually constructing query strings or asking customers to search for the product again.
 
-Use Link Wizard URLs in:
+= Facebook checkout links for WooCommerce =
 
-* Facebook and Instagram shopping campaigns, social posts, ads, and profile links.
-* Email marketing campaigns, newsletters, and promotional email buttons.
-* Landing pages, QR codes, support messages, and other product calls to action.
+Build Facebook checkout links that send shoppers from a Facebook post, ad, group, Page, Messenger conversation, or campaign button to a prefilled checkout on your WooCommerce store. Select the products and quantities in WordPress, copy the generated URL, and use it as the destination for your Facebook call to action.
 
-= Add-to-cart links =
+The customer completes payment through your own WooCommerce checkout. Link Wizard does not replace Meta catalog tools or provide native checkout inside Facebook.
 
-Send customers to your store with selected products and quantities already added to their cart. Add-to-cart links can include product variations, grouped products, multiple quantities, and an optional redirect destination.
+= Instagram shopping and checkout links =
 
-= Direct checkout links with coupons =
+Create WooCommerce destination links for Instagram bios, Stories, ads, direct messages, and shopping campaigns. A direct checkout link reduces the number of steps between discovering a product on Instagram and reaching the store checkout.
 
-Reduce the steps between a promotion and purchase by sending customers directly to WooCommerce checkout with products and quantities prefilled. Checkout links can include an optional WooCommerce coupon code in the custom URL, making them useful for email offers and social campaigns.
+= Add-to-cart links for email marketing =
 
-= WooCommerce product support =
+Create email add-to-cart links that place selected WooCommerce products and quantities into the recipient's cart. Use the URL behind a Buy Now, Shop Now, Add to Cart, Complete Your Order, or limited-time offer button in:
+
+* Marketing emails and newsletters.
+* Abandoned-cart and follow-up sequences.
+* Product launches and customer announcements.
+* CRM campaigns and one-to-one sales emails.
+
+Add-to-cart links can include product variations, grouped products, multiple quantities, and an optional redirect destination.
+
+= Checkout links with coupon codes =
+
+Generate direct WooCommerce checkout links with products and quantities already selected. You can also include a valid WooCommerce coupon code in the custom checkout URL. This makes it easy to create campaign-specific links for discounts, customer rewards, flash sales, email offers, and social promotions.
+
+Customers follow one call to action and arrive at checkout with the supported product configuration ready and the selected coupon available to apply.
+
+= More ways to share WooCommerce product links =
+
+Link Wizard URLs can also be used in landing pages, SMS messages, QR codes, support conversations, affiliate resources, digital documents, and other places where a direct product call to action is useful.
+
+= Supported WooCommerce products =
 
 Link Wizard supports simple, variable, grouped, and eligible subscription products. Public add-ons provide integration with WooCommerce Product Bundles and WooCommerce Composite Products:
 
 * Link Wizard for Bundles: https://github.com/sverleis/link-wizard-bundles/releases
 * Link Wizard for Composites: https://github.com/sverleis/link-wizard-composite/releases
 
-Link Wizard generates destination URLs for use in campaigns. It does not connect to, synchronize with, or replace the catalog tools provided by Facebook or Instagram.
+Link Wizard generates campaign destination URLs for your WooCommerce store. It does not connect to, synchronize with, or claim an official integration with Facebook, Instagram, or Meta.
 
 == Installation ==
 1. Upload the plugin files to the `/wp-content/plugins/link-wizard-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
@@ -43,17 +60,21 @@ Link Wizard generates destination URLs for use in campaigns. It does not connect
 
 == Frequently Asked Questions ==
 
-= Can I use Link Wizard URLs on Facebook and Instagram? =
+= How do I create a Facebook checkout link for WooCommerce? =
 
-Yes. The generated URLs can be used as product calls to action in Facebook and Instagram shopping campaigns, posts, ads, profiles, and messages. Link Wizard does not provide catalog synchronization or an official Meta platform integration.
+Choose Checkout-Link in Link Wizard, select the WooCommerce products and quantities, optionally select a coupon, and copy the generated URL. Use that URL as the destination for a Facebook post, ad, Page button, group post, or Messenger call to action. The shopper is sent to the checkout on your WooCommerce store.
 
-= Can I use the links in email campaigns and newsletters? =
+= Can I use the same links on Instagram? =
 
-Yes. Add-to-cart and checkout links work well behind buttons and product calls to action in promotional emails, newsletters, and automated email sequences.
+Yes. Use generated WooCommerce links in Instagram bios, Stories, ads, direct messages, and shopping campaigns. Link Wizard does not provide catalog synchronization or an official Meta platform integration.
 
-= Can a checkout link apply a coupon? =
+= Can an email button add products directly to the WooCommerce cart? =
 
-Yes. Select a valid WooCommerce coupon while creating the checkout link. Link Wizard includes the coupon code in the custom URL so it can be applied as the customer reaches checkout.
+Yes. Generate an add-to-cart link with the required products and quantities, then use the URL behind a call-to-action button in an email, newsletter, CRM campaign, or automated sequence.
+
+= Can a checkout link contain a WooCommerce coupon? =
+
+Yes. Select a valid WooCommerce coupon while creating the checkout link. Link Wizard includes the coupon code in the custom URL so the campaign can carry its promotional offer through to checkout.
 
 = Do customers need to configure the products again? =
 
