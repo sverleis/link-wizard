@@ -2,8 +2,8 @@
 Contributors: sverleis
 Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 Requires at least: 6.0
-Tested up to: 6.8
-Stable tag: 2.0.0-beta1
+Tested up to: 7.1
+Stable tag: 2.0.0-beta2
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -81,6 +81,15 @@ Yes. Select a valid WooCommerce coupon while creating the checkout link. Link Wi
 No. The generated URL carries the supported product selections and quantities. Checkout links take the customer directly to checkout, while add-to-cart links add the configured items to the cart first.
 
 == Changelog ==
+= 2.0.0-beta2 =
+* Add the Link Wizard add-on API 2.0 compatibility contract.
+* Add official GitHub distribution links for Product Bundles and Composite Products integrations.
+* Report incompatible installed add-ons and preserve native activation links.
+* Add automated, versioned GitHub release packages.
+* Expand Facebook, Instagram, email marketing, add-to-cart, checkout-link, and coupon documentation.
+* Fix the Dynamic Link step badge layout on mobile screens.
+* Confirm compatibility with WordPress 7.1 and WooCommerce 11.0.1.
+
 = 2.0.0-beta1 =
 * Introduce an extensible product-handler and add-on architecture.
 * Add grouped-product support and validation improvements.

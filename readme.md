@@ -5,9 +5,9 @@ Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 
 
 - Requires at least: 6.5
-- Tested up to: 6.8
-- WC tested up to: 10.1
-- Current beta: 2.0.0-beta1
+- Tested up to: 7.1
+- WC tested up to: 11.0.1
+- Current beta: 2.0.0-beta2
 - License: GPL-2.0+
 - License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 - Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
@@ -50,6 +50,13 @@ Official integrations are independently versioned WordPress plugins:
 Each add-on declares the Link Wizard add-on API and minimum core version it supports. Link Wizard checks this contract before offering activation and reports incompatible installed versions in the admin interface.
 
 ## Changelog 
+
+### 2.0.0-beta2
+- Add-on API 2.0 compatibility contract and official integration distribution links
+- Automated versioned GitHub release packages
+- Expanded Facebook, Instagram, email marketing, and coupon-link documentation
+- WordPress 7.1 and WooCommerce 11.0.1 compatibility testing
+- Mobile Dynamic Link status polish
 
 ### 1.0.4
 - **WooCommerce Subscriptions Support**: Added dedicated product handler for simple subscription products

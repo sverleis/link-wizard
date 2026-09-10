@@ -3,12 +3,12 @@
  * Plugin Name: Link Wizard for WooCommerce
  * Plugin URI: https://github.com/sverleis/link-wizard
  * Description: Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
- * Version: 2.0.0-beta1
+ * Version: 2.0.0-beta2
  * Requires at least: 6.0
- * Tested up to: 6.8
+ * Tested up to: 7.1
  * Requires PHP: 7.4
  * WC requires at least: 10.0
- * WC tested up to: 10.3.3
+ * WC tested up to: 11.0.1
  * Author: Mags Industries
  * Author URI: https://magsindustries.wordpress.com
  * License: GPL v2 or later
@@ -26,7 +26,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /* Current plugin version. */
-define( 'LWWC_VERSION', '2.0.0-beta1' );
+define( 'LWWC_VERSION', '2.0.0-beta2' );
 
 /* Public compatibility contract implemented by Link Wizard add-ons. */
 define( 'LWWC_ADDON_API_VERSION', '2.0' );
