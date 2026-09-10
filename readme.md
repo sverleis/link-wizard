@@ -10,21 +10,27 @@ Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 - Current beta: 2.0.0-beta1
 - License: GPL-2.0+
 - License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-- Create WooCommerce add-to-cart and direct checkout links for email, Facebook, and Instagram campaigns.
+- Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
 
 ## Description
 
-Link Wizard for WooCommerce turns products into shareable call-to-action URLs without requiring you to build WooCommerce query strings manually.
+Link Wizard for WooCommerce is a checkout link generator and add-to-cart URL builder for store owners, marketers, and agencies. Turn products into shareable calls to action without manually constructing WooCommerce query strings.
 
-Use generated links in Facebook and Instagram shopping campaigns, social posts, ads, email marketing, newsletters, landing pages, QR codes, and support messages.
+### Facebook checkout links for WooCommerce
 
-### Add-to-cart links
+Send shoppers from Facebook posts, ads, Pages, groups, Messenger conversations, and campaign buttons to a prefilled checkout on your WooCommerce store.
 
-Send customers to your store with selected products and quantities already in their cart. Link Wizard supports variations, grouped products, multiple quantities, and optional redirect destinations.
+### Instagram shopping links
 
-### Direct checkout links and coupons
+Create WooCommerce destination links for Instagram bios, Stories, ads, direct messages, and shopping campaigns. Customers complete payment through your store's checkout.
 
-Send customers directly to WooCommerce checkout with products and quantities prefilled. Add an optional WooCommerce coupon code to the custom checkout URL for email offers and social promotions.
+### Add-to-cart links for email marketing
+
+Place selected products and quantities into the recipient's WooCommerce cart from a Buy Now, Shop Now, or Add to Cart button in an email, newsletter, CRM campaign, or automated sequence.
+
+### Checkout links with coupons
+
+Send customers directly to checkout with products and quantities prefilled. Include an optional WooCommerce coupon code in the custom URL for email offers, rewards, flash sales, and social promotions.
 
 Link Wizard generates campaign destination URLs. It does not provide Facebook or Instagram catalog synchronization or claim an official Meta platform integration.
 
