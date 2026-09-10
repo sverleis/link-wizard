@@ -47,6 +47,37 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
         return selectedProducts.some(p => p.id === productId && !p.unique_id);
     };
 
+    // Helper function to enrich a search result product with its selected product data (for editing)
+    const enrichProductWithSelectedData = (product) => {
+        // If the product already has a unique_id, it's from the Edit button injection
+        // Just return it as-is since it already has all the selected product data
+        if (product.unique_id) {
+            console.log('ProductSelect: Product already enriched (has unique_id):', product.unique_id);
+            return product;
+        }
+        
+        // Otherwise, for expanded composites, try to find the selected product
+        const selectedProduct = selectedProducts.find(p => 
+            p.id === product.id && 
+            p.type === 'composite' && 
+            isProductExpanded(product.id)
+        );
+        
+        if (selectedProduct && selectedProduct.unique_id) {
+            console.log('ProductSelect: Enriching product with selected data');
+            return {
+                ...product,
+                unique_id: selectedProduct.unique_id,
+                component_selections: selectedProduct.component_selections,
+                components: selectedProduct.components,
+                calculated_price: selectedProduct.calculated_price,
+                checkout_url: selectedProduct.checkout_url
+            };
+        }
+        
+        return product;
+    };
+
     // Complex product functionality from addon
     const complexProducts = window.LWWCAddons?.complexProducts || {};
     
@@ -335,11 +366,15 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
             }
         } else {
             // Update the quantity for the product.
-            setSelectedProducts(prev => prev.map(p =>
-                p.id === productId
-                    ? { ...p, quantity: newQuantity }
-                    : p
-            ))
+            // For products with unique_id (like composite products), match by unique_id
+            // Otherwise match by id
+            setSelectedProducts(prev => prev.map(p => {
+                const matches = p.unique_id 
+                    ? p.unique_id === productId 
+                    : p.id === productId;
+                
+                return matches ? { ...p, quantity: newQuantity } : p;
+            }));
         }
     };
 
@@ -365,14 +400,30 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
     const handleAddGroupedProduct = (product) => {
         if (!hasSelectedGroupedChildren(product)) return;
 
+        // Check if this is an edit operation (product has unique_id)
+        const isEditing = !!product.unique_id;
+        
+        // Generate a unique ID for this configuration (always new, even when editing)
+        const uniqueId = `grouped_${product.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
         // Create a grouped product entry with child quantities
         const groupedProduct = {
             ...product,
-            quantity: 1, // Grouped product itself has quantity 1
+            unique_id: uniqueId,
+            quantity: product.quantity || 1, // Preserve existing quantity when editing
             child_quantities: { ...product.child_quantities }
         };
 
-        setSelectedProducts(prev => [...prev, groupedProduct]);
+        if (isEditing) {
+            // Replace the existing product with the updated one
+            console.log('Updating grouped product:', product.unique_id, '→', uniqueId);
+            setSelectedProducts(prev => 
+                prev.filter(p => p.unique_id !== product.unique_id).concat(groupedProduct)
+            );
+        } else {
+            // Add as new product
+            setSelectedProducts(prev => [...prev, groupedProduct]);
+        }
         
         // Add to adding state for visual feedback
         setAddingProducts(prev => new Set([...prev, product.id]));
@@ -1036,6 +1087,12 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         e.stopPropagation();
                                                         toggleProductExpansion(product.id);
                                                     }}
+                                                    disabled={product.type === 'bundle' && linkType !== 'addToCart'}
+                                                    title={
+                                                        product.type === 'bundle' && linkType !== 'addToCart'
+                                                            ? 'Custom bundle quantities are available for Add-to-Cart links only.'
+                                                            : undefined
+                                                    }
                                                 >
                                                     <span className="dashicons dashicons-admin-generic" />
                                                     {i18n.configure || 'Configure'}
@@ -1043,88 +1100,87 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <button
                                                     type="button"
                                                     className="lwwc-add-button"
-                                                    onClick={(e) => {
+                                                    onClick={async (e) => {
                                                         e.stopPropagation();
                                                         if (product.type === 'bundle') {
                                                             handleAddBundleProduct(product);
                                                         } else if (product.type === 'composite') {
-                                                            // For composite products with checkout_url (default configuration),
-                                                            // add them directly like simple products
-                                                            if (product.checkout_url || product.url) {
-                                                                console.log('LWWC ProductSelect: Adding composite product with default configuration');
-                                                                handleSelectProduct(product);
-                                                            } else {
-                                                                // For composite products without checkout_url, collect component selections from the DOM
-                                                                const componentSelections = [];
+                                                            console.log('LWWC ProductSelect: Default Option clicked for composite:', product.id);
+                                                            
+                                                            try {
+                                                                // Load composite product data from REST API to get default selections
+                                                                const compositeData = await apiFetch({
+                                                                    path: `/lwwc-composite/v1/product/${product.id}`
+                                                                });
                                                                 
-                                                                // Always try to collect component selections, regardless of expansion state
-                                                                console.log('LWWC ProductSelect: Looking for component elements...');
-                                                                console.log('LWWC ProductSelect: Product expanded state:', isProductExpanded(product.id));
+                                                                console.log('LWWC ProductSelect: Loaded composite data:', compositeData);
                                                                 
-                                                                // Add a small delay to ensure DOM elements are rendered
-                                                                setTimeout(() => {
-                                                                    // Look for component selection elements in the DOM
-                                                                    // The component elements are structured with IDs like component-{componentId}-select
-                                                                    const selectElements = document.querySelectorAll('select[id^="component-"][id$="-select"]');
-                                                                    console.log('LWWC ProductSelect: Found select elements:', selectElements.length);
-                                                                    
-                                                                    selectElements.forEach((selectElement, index) => {
-                                                                        console.log(`LWWC ProductSelect: Processing select element ${index}:`, selectElement.id, 'value:', selectElement.value);
-                                                                        
-                                                                        const id = selectElement.id;
-                                                                        const componentId = id.replace('component-', '').replace('-select', '');
-                                                                        const quantityElement = document.getElementById(`component-${componentId}-quantity`);
-                                                                        
-                                                                        console.log(`LWWC ProductSelect: Component ID: ${componentId}, Quantity element:`, quantityElement);
-                                                                        
-                                                                        if (selectElement.value && quantityElement) {
-                                                                            const selectedOptionId = selectElement.value;
-                                                                            const quantity = parseInt(quantityElement.value) || 1;
+                                                                // Build default selections using WooCommerce's default option for each component
+                                                                const defaultSelections = {};
+                                                                if (compositeData.components) {
+                                                                    compositeData.components.forEach(component => {
+                                                                        if (component.options && component.options.length > 0) {
+                                                                            // Find the option marked as default (is_default: true)
+                                                                            let defaultOption = component.options.find(opt => opt.is_default);
                                                                             
-                                                                            console.log(`LWWC ProductSelect: Selected option ID: ${selectedOptionId}, Quantity: ${quantity}`);
-                                                                            
-                                                                            // Try to get component data from the global addon state
-                                                                            let selectedOption = null;
-                                                                            
-                                                                            // First, try to get from the global addon state
-                                                                            if (window.lwwcAddonState && window.lwwcAddonState.components) {
-                                                                                const componentData = window.lwwcAddonState.components.find(comp => comp.id === componentId);
-                                                                                if (componentData && componentData.options) {
-                                                                                    selectedOption = componentData.options.find(opt => opt.id === selectedOptionId);
-                                                                                }
+                                                                            // Fallback to first option if no default is marked
+                                                                            if (!defaultOption) {
+                                                                                defaultOption = component.options[0];
                                                                             }
                                                                             
-                                                                            // If not found, try to get from the product data
-                                                                            if (!selectedOption && product.components) {
-                                                                                const componentData = product.components.find(comp => comp.id === componentId);
-                                                                                if (componentData && componentData.options) {
-                                                                                    selectedOption = componentData.options.find(opt => opt.id === selectedOptionId);
-                                                                                }
-                                                                            }
-                                                                            
-                                                                            // If still not found, create a basic option object
-                                                                            if (!selectedOption) {
-                                                                                selectedOption = {
-                                                                                    id: selectedOptionId,
-                                                                                    name: `Product ${selectedOptionId}`,
-                                                                                    type: 'simple'
-                                                                                };
-                                                                            }
-                                                                            
-                                                                            console.log(`LWWC ProductSelect: Found selected option:`, selectedOption);
-                                                                            componentSelections.push({
-                                                                                id: componentId,
-                                                                                selected_option: selectedOption,
-                                                                                quantity: quantity
-                                                                            });
+                                                                            defaultSelections[component.id] = {
+                                                                                product_id: defaultOption.id,
+                                                                                name: defaultOption.name,
+                                                                                quantity: component.quantity?.min || 1
+                                                                            };
                                                                         }
                                                                     });
+                                                                }
+                                                                
+                                                                console.log('LWWC ProductSelect: Default selections:', defaultSelections);
+                                                                
+                                                                // Generate checkout URL for these default selections
+                                                                const urlResponse = await apiFetch({
+                                                                    path: '/lwwc-composite/v1/generate-url',
+                                                                    method: 'POST',
+                                                                    data: {
+                                                                        product_id: product.id,
+                                                                        component_selections: defaultSelections,
+                                                                        quantity: 1
+                                                                    }
+                                                                });
+                                                                
+                                                                console.log('LWWC ProductSelect: Generated URL response:', urlResponse);
+                                                                
+                                                                if (urlResponse.checkout_url) {
+                                                                    // Create enriched product with checkout URL and component data
+                                                                    const enrichedProduct = {
+                                                                        ...product,
+                                                                        checkout_url: urlResponse.checkout_url,
+                                                                        url: urlResponse.checkout_url,
+                                                                        component_selections: defaultSelections,
+                                                                        components: compositeData.components,
+                                                                        quantity: 1
+                                                                    };
                                                                     
-                                                                    console.log('LWWC ProductSelect: Final component selections:', componentSelections);
+                                                                    // Convert to component selections format for handleAddCompositeProduct
+                                                                    const componentSelections = Object.keys(defaultSelections).map(componentId => {
+                                                                        const selection = defaultSelections[componentId];
+                                                                        const component = compositeData.components.find(c => c.id === componentId);
+                                                                        const option = component?.options?.find(o => o.id === selection.product_id);
+                                                                        
+                                                                        return {
+                                                                            id: componentId,
+                                                                            selected_option: option || { id: selection.product_id, name: selection.name },
+                                                                            quantity: selection.quantity
+                                                                        };
+                                                                    });
                                                                     
-                                                                    // Call handleAddCompositeProduct with the collected selections
-                                                                    handleAddCompositeProduct(product, componentSelections);
-                                                                }, 100); // 100ms delay
+                                                                    console.log('LWWC ProductSelect: Adding composite with default config');
+                                                                    handleAddCompositeProduct(enrichedProduct, componentSelections);
+                                                                }
+                                                            } catch (error) {
+                                                                console.error('LWWC ProductSelect: Error loading default composite configuration:', error);
                                                             }
                                                         }
                                                     }}
@@ -1144,7 +1200,7 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                         <>
                                             {window.LWWCAddons?.ComplexProductUI ? (
                                                 <window.LWWCAddons.ComplexProductUI
-                                                    product={product}
+                                                    product={enrichProductWithSelectedData(product)}
                                                     linkType={linkType}
                                                     i18n={i18n}
                                                     complexProducts={complexProducts}
@@ -1190,59 +1246,51 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                     {/* Grouped Product Children Selection. */}
                                     {product.type === 'grouped' && product.children && product.children.length > 0 && (
                                         <div className="lwwc-grouped-children-section">
-                                            {linkType === 'checkoutLink' ? (
-                                                <div className="lwwc-grouped-disabled-notice">
-                                                    <span className="lwwc-grouped-disabled-icon">⚠️</span>
-                                                    <span className="lwwc-grouped-disabled-text">
-                                                        {i18n.groupedDisabledNotice || 'Grouped products are not available for Checkout-Link URLs. Please switch to Add-to-Cart URL to use grouped products.'}
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <div className="lwwc-grouped-children-title">
-                                                        {i18n.groupedProducts || 'Grouped Products:'}
+                                            <div className="lwwc-grouped-children-title">
+                                                {i18n.groupedProducts || 'Grouped Products:'}
+                                            </div>
+                                            <div className="lwwc-grouped-children-list">
+                                                {product.children.map((child, index) => (
+                                                    <div key={child.id} className="lwwc-grouped-child-item">
+                                                        <div className="lwwc-grouped-child-info">
+                                                            <span className="lwwc-grouped-child-name">{child.name}</span>
+                                                            {child.sku && (
+                                                                <span className="lwwc-grouped-child-sku">({child.sku})</span>
+                                                            )}
+                                                            <span className="lwwc-grouped-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
+                                                        </div>
+                                                        <div className="lwwc-grouped-child-quantity">
+                                                            <label className="lwwc-grouped-child-qty-label">{i18n.qty || 'Qty'}:</label>
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                max="99"
+                                                                value={product.child_quantities?.[child.id] || 0}
+                                                                onChange={(e) => {
+                                                                    const newQuantity = parseInt(e.target.value) || 0;
+                                                                    handleGroupedChildQuantityChange(product.id, child.id, newQuantity);
+                                                                }}
+                                                                className="lwwc-grouped-child-qty-input"
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <div className="lwwc-grouped-children-list">
-                                                        {product.children.map((child, index) => (
-                                                            <div key={child.id} className="lwwc-grouped-child-item">
-                                                                <div className="lwwc-grouped-child-info">
-                                                                    <span className="lwwc-grouped-child-name">{child.name}</span>
-                                                                    {child.sku && (
-                                                                        <span className="lwwc-grouped-child-sku">({child.sku})</span>
-                                                                    )}
-                                                                    <span className="lwwc-grouped-child-price" dangerouslySetInnerHTML={{ __html: child.price }} />
-                                                                </div>
-                                                                <div className="lwwc-grouped-child-quantity">
-                                                                    <label className="lwwc-grouped-child-qty-label">{i18n.qty || 'Qty'}:</label>
-                                                                    <input
-                                                                        type="number"
-                                                                        min="0"
-                                                                        max="99"
-                                                                        value={product.child_quantities?.[child.id] || 0}
-                                                                        onChange={(e) => {
-                                                                            const newQuantity = parseInt(e.target.value) || 0;
-                                                                            handleGroupedChildQuantityChange(product.id, child.id, newQuantity);
-                                                                        }}
-                                                                        className="lwwc-grouped-child-qty-input"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    <div className="lwwc-grouped-add-button">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleAddGroupedProduct(product);
-                                                            }}
-                                                            disabled={!hasSelectedGroupedChildren(product)}
-                                                            className="lwwc-add-grouped-product-btn"
-                                                        >
-                                                            {i18n.addGroupedProduct || 'Add Grouped Product'}
-                                                        </button>
-                                                    </div>
-                                                </>
-                                            )}
+                                                ))}
+                                            </div>
+                                            <div className="lwwc-grouped-add-button">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleAddGroupedProduct(product);
+                                                    }}
+                                                    disabled={!hasSelectedGroupedChildren(product)}
+                                                    className="lwwc-add-grouped-product-btn"
+                                                >
+                                                    {product.unique_id 
+                                                        ? (i18n.updateGroupedProduct || 'Update Grouped Product')
+                                                        : (i18n.addGroupedProduct || 'Add Grouped Product')
+                                                    }
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
 
@@ -1362,6 +1410,28 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                         })}
                                                     </div>
                                                 )}
+                                                {/* Show child selections for grouped products as pills */}
+                                                {product.type === 'grouped' && product.child_quantities && (
+                                                    <div className="lwwc-grouped-selections-pills">
+                                                        {Object.entries(product.child_quantities).map(([childId, quantity]) => {
+                                                            if (quantity > 0) {
+                                                                // Find the child product name from product.children
+                                                                const child = product.children?.find(c => c.id === parseInt(childId));
+                                                                const childName = child ? child.name : `Product ${childId}`;
+                                                                
+                                                                return (
+                                                                    <span key={childId} className="lwwc-grouped-selection-pill">
+                                                                        {childName}
+                                                                        {quantity > 1 && (
+                                                                            <span className="lwwc-grouped-pill-qty"> × {quantity}</span>
+                                                                        )}
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="lwwc-selected-product-controls">
@@ -1378,13 +1448,11 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                     handleQuantityChange(product.unique_id || product.id, finalQuantity);
                                                 }}
                                                 className="lwwc-selected-product-qty-input"
-                                                disabled={product.sold_individually || product.type === 'composite'}
+                                                disabled={product.sold_individually}
                                                 title={
-                                                    product.type === 'composite' 
-                                                        ? (i18n.compositeQuantityFixed || 'Composite products have fixed quantity of 1') 
-                                                        : product.sold_individually 
-                                                            ? (i18n.soldIndividually || 'This product is sold individually') 
-                                                            : ''
+                                                    product.sold_individually 
+                                                        ? (i18n.soldIndividually || 'This product is sold individually') 
+                                                        : ''
                                                 }
                                             />
                                             {product.sold_individually && (
@@ -1396,6 +1464,59 @@ const ProductSelect = ({ linkType, selectedProducts, setSelectedProducts, setLin
                                                 <button
                                                     onClick={() => {
                                                         // Open configuration panel for this composite
+                                                        // CRITICAL: Inject the selected product into search results first
+                                                        // so the config component receives the full product with unique_id
+                                                        console.log('Edit clicked for product:', product);
+                                                        
+                                                        // Check if product is already in search results
+                                                        const existingIndex = results.findIndex(r => r.id === product.id);
+                                                        if (existingIndex === -1) {
+                                                            // Product not in search results - add it
+                                                            console.log('Adding selected product to search results for editing');
+                                                            setResults(prev => [product, ...prev]);
+                                                        } else {
+                                                            // Product is in search results - replace with selected version
+                                                            console.log('Replacing search result with selected product for editing');
+                                                            setResults(prev => {
+                                                                const newResults = [...prev];
+                                                                newResults[existingIndex] = product;
+                                                                return newResults;
+                                                            });
+                                                        }
+                                                        
+                                                        // Now toggle expansion - the product will have unique_id
+                                                        toggleProductExpansion(product.id);
+                                                    }}
+                                                    className="lwwc-selected-product-edit-button"
+                                                    title={i18n.editConfiguration || 'Edit configuration'}
+                                                >
+                                                    {i18n.edit || 'Edit'}
+                                                </button>
+                                            )}
+                                            {product.type === 'grouped' && (
+                                                <button
+                                                    onClick={() => {
+                                                        // Open configuration panel for this grouped product
+                                                        // Inject the selected product into search results first
+                                                        console.log('Edit clicked for grouped product:', product);
+                                                        
+                                                        // Check if product is already in search results
+                                                        const existingIndex = results.findIndex(r => r.id === product.id);
+                                                        if (existingIndex === -1) {
+                                                            // Product not in search results - add it
+                                                            console.log('Adding selected grouped product to search results for editing');
+                                                            setResults(prev => [product, ...prev]);
+                                                        } else {
+                                                            // Product is in search results - replace with selected version
+                                                            console.log('Replacing search result with selected grouped product for editing');
+                                                            setResults(prev => {
+                                                                const newResults = [...prev];
+                                                                newResults[existingIndex] = product;
+                                                                return newResults;
+                                                            });
+                                                        }
+                                                        
+                                                        // Now toggle expansion - the product will have unique_id
                                                         toggleProductExpansion(product.id);
                                                     }}
                                                     className="lwwc-selected-product-edit-button"

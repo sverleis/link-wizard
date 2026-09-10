@@ -62,19 +62,19 @@ const DynamicLink = ({
                                 }
                             });
                         } else if (product.type === 'bundle' && product.child_quantities) {
-                            // Handle bundle products with child quantities
+                            // Product Bundles keys configuration by bundled-item ID.
                             params.append('add-to-cart', product.id);
-                            // Add bundle quantities in the format: bundle_quantity_1, bundle_quantity_2, etc.
-                            let quantityIndex = 1;
                             Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
-                                if (quantity > 0) {
-                                    params.append(`bundle_quantity_${quantityIndex}`, quantity);
-                                    quantityIndex++;
+                                params.append(`bundle_quantity_${childId}`, quantity);
+
+                                const bundledItem = product.bundled_items?.find(
+                                    item => String(item.bundled_item_id) === String(childId)
+                                );
+                                if (bundledItem?.optional && Number(quantity) > 0) {
+                                    params.append(`bundle_selected_optional_${childId}`, 'yes');
                                 }
                             });
-                            // Add main product quantity
-                            const bundleQuantity = product.quantity || 1;
-                            params.append('quantity', bundleQuantity.toString());
+                            params.append('quantity', String(product.quantity || 1));
                         } else if (product.type === 'composite' && product.url) {
                             // Handle composite products - use the pre-generated URL directly
                             // Don't add to params since we'll use the composite URL directly
@@ -161,17 +161,37 @@ const DynamicLink = ({
                         
                         if (compositeProducts.length > 0 && compositeProducts.every(p => p.checkout_url)) {
                             // All composite products have checkout URLs
-                            // Extract the products parameter from each checkout URL
+                            // Extract the products parameter from each checkout URL and update quantity
                             const productsParams = compositeProducts.map(product => {
                                 const compositeUrl = new URL(product.checkout_url);
-                                const productsParam = compositeUrl.searchParams.get('products');
-                                return productsParam; // e.g., "cp139_HASH:1"
+                                let productsParam = compositeUrl.searchParams.get('products'); // e.g., "cp139_HASH:1"
+                                
+                                // Replace the quantity in the URL with the actual product quantity
+                                // Format: cp139_HASH:1 → cp139_HASH:6 (if quantity is 6)
+                                // Match any number after the last colon and replace it
+                                if (productsParam && product.quantity) {
+                                    productsParam = productsParam.replace(/:(\d+)$/, `:${product.quantity}`);
+                                }
+                                
+                                return productsParam;
                             }).filter(Boolean);
                             
-                            // Combine with any simple products
-                            const simpleProducts = selectedProducts
+                            // Combine with any simple products (and expand grouped products)
+                            const simpleProducts = [];
+                            selectedProducts
                                 .filter(p => p.type !== 'composite')
-                                .map(p => `${p.id}:${p.quantity || 1}`);
+                                .forEach(p => {
+                                    if (p.type === 'grouped' && p.child_quantities) {
+                                        // Expand grouped products into their child products
+                                        Object.entries(p.child_quantities).forEach(([childId, quantity]) => {
+                                            if (quantity > 0) {
+                                                simpleProducts.push(`${childId}:${quantity}`);
+                                            }
+                                        });
+                                    } else {
+                                        simpleProducts.push(`${p.id}:${p.quantity || 1}`);
+                                    }
+                                });
                             
                             const allProducts = [...productsParams, ...simpleProducts];
                             
@@ -216,6 +236,13 @@ const DynamicLink = ({
                                 if (bundleProducts) {
                                     products.push(bundleProducts);
                                 }
+                            } else if (product.type === 'grouped' && product.child_quantities) {
+                                // For grouped products, expand to individual child products
+                                Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                                    if (quantity > 0) {
+                                        products.push(`${childId}:${quantity}`);
+                                    }
+                                });
                             } else {
                                 // Regular products (simple, variable, etc.)
                                 products.push(`${product.id}:${product.quantity || 1}`);
@@ -442,20 +469,39 @@ const DynamicLink = ({
                 );
                 
                 // Add products parameter with highlighting.
-                // For composite products, extract the mapped ID from checkout_url
-                let productsParam = selectedProducts.map(product => {
+                // For composite products, extract the mapped ID from checkout_url and update quantity
+                // For grouped products, expand to child products
+                const productsArray = [];
+                selectedProducts.forEach(product => {
                     if (product.type === 'composite' && product.checkout_url) {
                         // Extract the products parameter from the checkout URL (e.g., "cp139_HASH:1")
                         try {
                             const url = new URL(product.checkout_url);
-                            const productsFromUrl = url.searchParams.get('products');
-                            return productsFromUrl || `${product.id}:${product.quantity || 1}`;
+                            let productsFromUrl = url.searchParams.get('products');
+                            
+                            if (productsFromUrl && product.quantity) {
+                                // Replace the quantity in the URL with the actual product quantity
+                                // Format: cp139_HASH:1 → cp139_HASH:6 (if quantity is 6)
+                                productsFromUrl = productsFromUrl.replace(/:(\d+)$/, `:${product.quantity}`);
+                            }
+                            
+                            productsArray.push(productsFromUrl || `${product.id}:${product.quantity || 1}`);
                         } catch (e) {
-                            return `${product.id}:${product.quantity || 1}`;
+                            productsArray.push(`${product.id}:${product.quantity || 1}`);
                         }
+                    } else if (product.type === 'grouped' && product.child_quantities) {
+                        // For grouped products, expand to child products
+                        Object.entries(product.child_quantities).forEach(([childId, quantity]) => {
+                            if (quantity > 0) {
+                                productsArray.push(`${childId}:${quantity}`);
+                            }
+                        });
+                    } else {
+                        productsArray.push(`${product.id}:${product.quantity || 1}`);
                     }
-                    return `${product.id}:${product.quantity || 1}`;
-                }).join(',');
+                });
+                
+                let productsParam = productsArray.join(',');
                 
                 // Apply URL encoding based on user preference for display.
                 if (urlEncoding === 'encoded') {
@@ -609,47 +655,55 @@ const DynamicLink = ({
                 </div>
                 <div className="lwwc-dynamic-link-status-buttons">
                     <button
+                        type="button"
                         onClick={() => onNavigateToStep && onNavigateToStep(1)}
                         className={`lwwc-dynamic-link-status-button ${currentStep === 1 ? 'active' : ''}`}
                         title="Click to edit Link Type"
                     >
                         <span className="lwwc-dynamic-link-status-step-number">1</span>
-                        <strong>{i18n.linkType || 'Type'}:</strong> {linkType === 'addToCart' ? 'Add to Cart' : 'Checkout'}
+                        <span className="lwwc-dynamic-link-status-label">{i18n.linkType || 'Type'}</span>
+                        <span className="lwwc-dynamic-link-status-value">{linkType === 'addToCart' ? 'Add to Cart' : 'Checkout'}</span>
                     </button>
                     
                     <button
+                        type="button"
                         onClick={() => onNavigateToStep && onNavigateToStep(2)}
                         className={`lwwc-dynamic-link-status-button ${currentStep === 2 ? 'active' : ''}`}
                         title="Click to edit Products"
                     >
                         <span className="lwwc-dynamic-link-status-step-number">2</span>
-                        <strong>{i18n.products || 'Products'}:</strong> {selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}
+                        <span className="lwwc-dynamic-link-status-label">{i18n.products || 'Products'}</span>
+                        <span className="lwwc-dynamic-link-status-value">{selectedProducts ? selectedProducts.length : 0} {selectedProducts && selectedProducts.length === 1 ? 'product' : 'products'}</span>
                     </button>
                     
                     {linkType === 'checkoutLink' && (
                         <button
+                            type="button"
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
                             className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Coupon"
                         >
                             <span className="lwwc-dynamic-link-status-step-number">3</span>
-                            <strong>{i18n.coupon || 'Coupon'}:</strong> {selectedCoupon ? selectedCoupon.code : 'None'}
+                            <span className="lwwc-dynamic-link-status-label">{i18n.coupon || 'Coupon'}</span>
+                            <span className="lwwc-dynamic-link-status-value">{selectedCoupon ? selectedCoupon.code : 'None'}</span>
                         </button>
                     )}
                     
                     {linkType === 'addToCart' && redirectOption && (
                         <button
+                            type="button"
                             onClick={() => onNavigateToStep && onNavigateToStep(3)}
                             className={`lwwc-dynamic-link-status-button ${currentStep === 3 ? 'active' : ''}`}
                             title="Click to edit Redirect"
                         >
                             <span className="lwwc-dynamic-link-status-step-number">3</span>
-                            <strong>{i18n.redirect || 'Redirect'}:</strong> {
+                            <span className="lwwc-dynamic-link-status-label">{i18n.redirect || 'Redirect'}</span>
+                            <span className="lwwc-dynamic-link-status-value">{
                                 redirectOption === 'cart' ? 'Cart Page' :
                                 redirectOption === 'checkout' ? 'Checkout Page' :
                                 redirectOption === 'product' ? 'Product Page' :
                                 redirectOption === 'page' && selectedRedirectPage ? selectedRedirectPage.post_title : 'None'
-                            }
+                            }</span>
                         </button>
                     )}
                 </div>

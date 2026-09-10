@@ -1,24 +1,95 @@
 === Link Wizard for WooCommerce ===
-Contributors: magsindustries
-Tags: woocommerce, products
+Contributors: sverleis
+Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.0.4
+Stable tag: 2.0.0-beta1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
-Generate add-to-cart or checkout-links within the WP Admin interface.
+Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
 
 == Description ==
 
-This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links.
+Link Wizard for WooCommerce is a checkout link generator and add-to-cart URL builder for store owners, marketers, and agencies. Turn WooCommerce products into shareable calls to action without manually constructing query strings or asking customers to search for the product again.
+
+= Facebook checkout links for WooCommerce =
+
+Build Facebook checkout links that send shoppers from a Facebook post, ad, group, Page, Messenger conversation, or campaign button to a prefilled checkout on your WooCommerce store. Select the products and quantities in WordPress, copy the generated URL, and use it as the destination for your Facebook call to action.
+
+The customer completes payment through your own WooCommerce checkout. Link Wizard does not replace Meta catalog tools or provide native checkout inside Facebook.
+
+= Instagram shopping and checkout links =
+
+Create WooCommerce destination links for Instagram bios, Stories, ads, direct messages, and shopping campaigns. A direct checkout link reduces the number of steps between discovering a product on Instagram and reaching the store checkout.
+
+= Add-to-cart links for email marketing =
+
+Create email add-to-cart links that place selected WooCommerce products and quantities into the recipient's cart. Use the URL behind a Buy Now, Shop Now, Add to Cart, Complete Your Order, or limited-time offer button in:
+
+* Marketing emails and newsletters.
+* Abandoned-cart and follow-up sequences.
+* Product launches and customer announcements.
+* CRM campaigns and one-to-one sales emails.
+
+Add-to-cart links can include product variations, grouped products, multiple quantities, and an optional redirect destination.
+
+= Checkout links with coupon codes =
+
+Generate direct WooCommerce checkout links with products and quantities already selected. You can also include a valid WooCommerce coupon code in the custom checkout URL. This makes it easy to create campaign-specific links for discounts, customer rewards, flash sales, email offers, and social promotions.
+
+Customers follow one call to action and arrive at checkout with the supported product configuration ready and the selected coupon available to apply.
+
+= More ways to share WooCommerce product links =
+
+Link Wizard URLs can also be used in landing pages, SMS messages, QR codes, support conversations, affiliate resources, digital documents, and other places where a direct product call to action is useful.
+
+= Supported WooCommerce products =
+
+Link Wizard supports simple, variable, grouped, and eligible subscription products. Public add-ons provide integration with WooCommerce Product Bundles and WooCommerce Composite Products:
+
+* Link Wizard for Bundles: https://github.com/sverleis/link-wizard-bundles/releases
+* Link Wizard for Composites: https://github.com/sverleis/link-wizard-composite/releases
+
+Link Wizard generates campaign destination URLs for your WooCommerce store. It does not connect to, synchronize with, or claim an official integration with Facebook, Instagram, or Meta.
 
 == Installation ==
 1. Upload the plugin files to the `/wp-content/plugins/link-wizard-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to WP Admin > Products > Link Wizard to generate your link(s).
 
+== Frequently Asked Questions ==
+
+= How do I create a Facebook checkout link for WooCommerce? =
+
+Choose Checkout-Link in Link Wizard, select the WooCommerce products and quantities, optionally select a coupon, and copy the generated URL. Use that URL as the destination for a Facebook post, ad, Page button, group post, or Messenger call to action. The shopper is sent to the checkout on your WooCommerce store.
+
+= Can I use the same links on Instagram? =
+
+Yes. Use generated WooCommerce links in Instagram bios, Stories, ads, direct messages, and shopping campaigns. Link Wizard does not provide catalog synchronization or an official Meta platform integration.
+
+= Can an email button add products directly to the WooCommerce cart? =
+
+Yes. Generate an add-to-cart link with the required products and quantities, then use the URL behind a call-to-action button in an email, newsletter, CRM campaign, or automated sequence.
+
+= Can a checkout link contain a WooCommerce coupon? =
+
+Yes. Select a valid WooCommerce coupon while creating the checkout link. Link Wizard includes the coupon code in the custom URL so the campaign can carry its promotional offer through to checkout.
+
+= Do customers need to configure the products again? =
+
+No. The generated URL carries the supported product selections and quantities. Checkout links take the customer directly to checkout, while add-to-cart links add the configured items to the cart first.
+
 == Changelog ==
+= 2.0.0-beta1 =
+* Introduce an extensible product-handler and add-on architecture.
+* Add grouped-product support and validation improvements.
+* Add discovery and activation states for Product Bundles and Composite Products integrations.
+* Add independent missing-integration notices for supported WooCommerce extensions.
+* Refresh the Link Wizard admin interface with WordPress admin color-scheme support.
+* Improve link-status controls, responsive behavior, and accessibility.
+* Prepare coordinated integrations with Link Wizard for Bundles 1.0.0-beta1 and Link Wizard for Composites 1.0.0-beta1.
+
 = 1.0.3 =
 * Enhanced UX with streamlined variation error display
 * Added modal for invalid variations with scrollable content

@@ -1,26 +1,53 @@
 # Link Wizard for WooCommerce
 Contributors: sverleis
 
-Tags: woocommerce, products
+Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 
 
 - Requires at least: 6.5
 - Tested up to: 6.8
 - WC tested up to: 10.1
-- Stable tag: 1.0.4
+- Current beta: 2.0.0-beta1
 - License: GPL-2.0+
 - License URI: http://www.gnu.org/licenses/gpl-2.0.txt
-- Generate add-to-cart or checkout-links within the WP Admin interface.
+- Build Facebook checkout links for WooCommerce, plus Instagram, email and add-to-cart URLs with products, quantities and optional coupons.
 
 ## Description
-This plugin adds a feature to the product menu, where an admin or store manager can generate add-to-cart or checkout-links. 
-Useful if you need to set up a Checkout URL for Facebook.
+
+Link Wizard for WooCommerce is a checkout link generator and add-to-cart URL builder for store owners, marketers, and agencies. Turn products into shareable calls to action without manually constructing WooCommerce query strings.
+
+### Facebook checkout links for WooCommerce
+
+Send shoppers from Facebook posts, ads, Pages, groups, Messenger conversations, and campaign buttons to a prefilled checkout on your WooCommerce store.
+
+### Instagram shopping links
+
+Create WooCommerce destination links for Instagram bios, Stories, ads, direct messages, and shopping campaigns. Customers complete payment through your store's checkout.
+
+### Add-to-cart links for email marketing
+
+Place selected products and quantities into the recipient's WooCommerce cart from a Buy Now, Shop Now, or Add to Cart button in an email, newsletter, CRM campaign, or automated sequence.
+
+### Checkout links with coupons
+
+Send customers directly to checkout with products and quantities prefilled. Include an optional WooCommerce coupon code in the custom URL for email offers, rewards, flash sales, and social promotions.
+
+Link Wizard generates campaign destination URLs. It does not provide Facebook or Instagram catalog synchronization or claim an official Meta platform integration.
 
 
 ## Installation 
-1. Upload the plugin files to the `/wp-content/plugins/link-wizard-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to **WP Admin > Products > Link Wizard** to generate your link(s).
+1. Download an installable ZIP from [GitHub Releases](https://github.com/sverleis/link-wizard/releases).
+2. Upload and activate it through **Plugins > Add New > Upload Plugin**.
+3. Go to **Products > Link Wizard** to generate links.
+
+## Official add-ons
+
+Official integrations are independently versioned WordPress plugins:
+
+- [Link Wizard for Bundles](https://github.com/sverleis/link-wizard-bundles/releases) — WooCommerce Product Bundles support.
+- [Link Wizard for Composites](https://github.com/sverleis/link-wizard-composite/releases) — WooCommerce Composite Products support.
+
+Each add-on declares the Link Wizard add-on API and minimum core version it supports. Link Wizard checks this contract before offering activation and reports incompatible installed versions in the admin interface.
 
 ## Changelog 
 

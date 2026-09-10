@@ -93,6 +93,13 @@ class LWWC_Addon_Manager {
 			}
 		}
 		
+		// Register installed but inactive Link Wizard addons for action messaging.
+		foreach ( array_keys( get_plugins() ) as $plugin_file ) {
+			if ( ! in_array( $plugin_file, $active_plugins, true ) && self::is_link_wizard_addon( $plugin_file ) ) {
+				self::register_addon( $plugin_file );
+			}
+		}
+
 		// Also check for installed but inactive WooCommerce extensions
 		foreach ( $woocommerce_extensions as $plugin_file ) {
 			if ( ! in_array( $plugin_file, $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
@@ -113,6 +120,32 @@ class LWWC_Addon_Manager {
 			'woocommerce-subscriptions/woocommerce-subscriptions.php',
 			'woocommerce-product-bundles/woocommerce-product-bundles.php',
 			'woocommerce-composite-products/woocommerce-composite-products.php',
+		);
+	}
+
+	/**
+	 * Get the official public add-on catalog.
+	 *
+	 * The catalog contains distribution links only. Installed versions always
+	 * come from each add-on's plugin header.
+	 *
+	 * @since 2.0.0
+	 * @return array Official add-ons keyed by plugin directory slug.
+	 */
+	private static function get_official_addons() {
+		return array(
+			'link-wizard-bundles'   => array(
+				'name'         => 'Link Wizard for Bundles',
+				'product_type' => 'bundle',
+				'extension'    => 'woocommerce-product-bundles',
+				'release_url'  => 'https://github.com/sverleis/link-wizard-bundles/releases',
+			),
+			'link-wizard-composite' => array(
+				'name'         => 'Link Wizard for Composites',
+				'product_type' => 'composite',
+				'extension'    => 'woocommerce-composite-products',
+				'release_url'  => 'https://github.com/sverleis/link-wizard-composite/releases',
+			),
 		);
 	}
 
@@ -167,34 +200,109 @@ class LWWC_Addon_Manager {
 	 * @param string $plugin_file The plugin file path.
 	 */
 	private static function register_addon( $plugin_file ) {
-		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
-		$plugin_slug = dirname( $plugin_file );
-		
-		// Check if plugin is active.
-		$is_active = is_plugin_active( $plugin_file );
-		
-		
-		// Extract addon info from plugin data.
+		$plugin_path   = WP_PLUGIN_DIR . '/' . $plugin_file;
+		$plugin_data   = get_plugin_data( $plugin_path );
+		$plugin_slug   = dirname( $plugin_file );
+		$is_active     = is_plugin_active( $plugin_file );
+		$activate_url  = '';
+		$catalog       = self::get_official_addons();
+		$compatibility = self::get_addon_compatibility( $plugin_path );
+		$distribution  = $catalog[ $plugin_slug ]['release_url'] ?? $plugin_data['PluginURI'] ?? '';
+
+		if ( ! $is_active && $compatibility['is_compatible'] && current_user_can( 'activate_plugins' ) ) {
+			$activate_url = html_entity_decode(
+				wp_nonce_url(
+					add_query_arg(
+						array(
+							'action' => 'activate',
+							'plugin' => $plugin_file,
+						),
+						self_admin_url( 'plugins.php' )
+					),
+					'activate-plugin_' . $plugin_file
+				),
+				ENT_QUOTES,
+				get_bloginfo( 'charset' )
+			);
+		}
+
 		$addon_info = array(
-			'plugin_file'    => $plugin_file,
-			'plugin_slug'    => $plugin_slug,
-			'name'           => $plugin_data['Name'] ?? 'Unknown Addon',
-			'description'    => $plugin_data['Description'] ?? '',
-			'version'        => $plugin_data['Version'] ?? '1.0.0',
-			'author'         => $plugin_data['Author'] ?? '',
-			'plugin_uri'     => $plugin_data['PluginURI'] ?? '',
-			'text_domain'    => $plugin_data['TextDomain'] ?? '',
-			'is_active'      => $is_active,
-			'admin_url'      => self::get_addon_admin_url( $plugin_slug ),
-			'capabilities'   => self::get_addon_capabilities( $plugin_slug ),
-			'icon'           => self::get_addon_icon( $plugin_slug ),
-			'type'           => 'link_wizard_addon',
+			'plugin_file'      => $plugin_file,
+			'plugin_slug'      => $plugin_slug,
+			'name'             => $plugin_data['Name'] ?? 'Unknown Addon',
+			'description'      => $plugin_data['Description'] ?? '',
+			'version'          => $plugin_data['Version'] ?? '',
+			'author'           => $plugin_data['Author'] ?? '',
+			'plugin_uri'       => $plugin_data['PluginURI'] ?? '',
+			'distribution_url' => $distribution,
+			'text_domain'      => $plugin_data['TextDomain'] ?? '',
+			'is_active'        => $is_active,
+			'activate_url'     => $activate_url,
+			'admin_url'        => self::get_addon_admin_url( $plugin_slug ),
+			'capabilities'     => self::get_addon_capabilities( $plugin_slug ),
+			'icon'             => self::get_addon_icon( $plugin_slug ),
+			'compatibility'    => $compatibility,
+			'type'             => 'link_wizard_addon',
 		);
-		
-		// Allow addons to modify their registration info.
+
 		$addon_info = apply_filters( 'lwwc_addon_registration_info', $addon_info, $plugin_slug );
-		
 		self::$registered_addons[ $plugin_slug ] = $addon_info;
+	}
+
+	/**
+	 * Read and evaluate an add-on's Link Wizard compatibility headers.
+	 *
+	 * @since 2.0.0
+	 * @param string $plugin_path Absolute path to the add-on bootstrap file.
+	 * @return array Compatibility status and declared requirements.
+	 */
+	private static function get_addon_compatibility( $plugin_path ) {
+		$headers = get_file_data(
+			$plugin_path,
+			array(
+				'addon_api'          => 'Link Wizard Add-on API',
+				'requires_core'      => 'Requires Link Wizard',
+				'tested_core'        => 'Tested Link Wizard',
+				'requires_extension' => 'Requires WooCommerce Extension',
+			)
+		);
+		$issues = array();
+
+		$api_major          = absint( LWWC_ADDON_API_VERSION );
+		$declared_api_major = absint( $headers['addon_api'] );
+		if ( ! $declared_api_major || $api_major !== $declared_api_major ) {
+			$issues[] = sprintf(
+				/* translators: %s: required add-on API major version. */
+				__( 'Requires Link Wizard add-on API %s.x.', 'link-wizard-for-woocommerce' ),
+				(string) $api_major
+			);
+		}
+
+		if ( ! empty( $headers['requires_core'] ) && version_compare( LWWC_VERSION, $headers['requires_core'], '<' ) ) {
+			$issues[] = sprintf(
+				/* translators: %s: minimum Link Wizard version. */
+				__( 'Requires Link Wizard %s or newer.', 'link-wizard-for-woocommerce' ),
+				$headers['requires_core']
+			);
+		}
+
+		$extension_files = array(
+			'woocommerce-product-bundles'    => 'woocommerce-product-bundles/woocommerce-product-bundles.php',
+			'woocommerce-composite-products' => 'woocommerce-composite-products/woocommerce-composite-products.php',
+		);
+		$required_extension = $headers['requires_extension'];
+		if ( $required_extension && isset( $extension_files[ $required_extension ] ) && ! is_plugin_active( $extension_files[ $required_extension ] ) ) {
+			$issues[] = __( 'Its required WooCommerce extension is not active.', 'link-wizard-for-woocommerce' );
+		}
+
+		return array(
+			'is_compatible'      => empty( $issues ),
+			'issues'             => $issues,
+			'addon_api'          => $headers['addon_api'],
+			'requires_core'      => $headers['requires_core'],
+			'tested_core'        => $headers['tested_core'],
+			'requires_extension' => $required_extension,
+		);
 	}
 
 	/**
@@ -350,9 +458,11 @@ class LWWC_Addon_Manager {
 			'link-wizard-for-woocommerce', 
 			'lwwcAddons', 
 			array(
-				'addons' => $addon_data,
+				'addons'   => $addon_data,
+				'catalog'  => self::get_official_addons(),
+				'api'      => LWWC_ADDON_API_VERSION,
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce' => wp_create_nonce( 'lwwc_addon_actions' ),
+				'nonce'    => wp_create_nonce( 'lwwc_addon_actions' ),
 			)
 		);
 		
