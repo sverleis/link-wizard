@@ -1,5 +1,5 @@
 === Link Wizard for WooCommerce ===
-Contributors: magsindustries
+Contributors: sverleis
 Tags: woocommerce, checkout links, add to cart, email marketing, social commerce
 Requires at least: 6.0
 Tested up to: 6.8
