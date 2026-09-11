@@ -1,0 +1,210 @@
+.lwwc-quick-links {
+	--lwwc-accent: var(--wp-admin-theme-color, #2271b1);
+	--lwwc-accent-hover: var(--wp-admin-theme-color-darker-10, #135e96);
+	box-sizing: border-box;
+	color: #1d2327;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	letter-spacing: normal;
+	line-height: 1.5;
+}
+
+.lwwc-quick-links *,
+.lwwc-quick-links *::before,
+.lwwc-quick-links *::after {
+	box-sizing: border-box;
+}
+
+.lwwc-quick-links__field {
+	margin: 0 0 12px;
+}
+
+.lwwc-quick-links__label {
+	display: block;
+	font-weight: 600;
+	margin: 0 0 5px;
+}
+
+.lwwc-quick-links select,
+.lwwc-quick-links input[type="number"],
+.lwwc-quick-links input[type="url"] {
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-radius: 2px;
+	box-shadow: 0 0 0 transparent;
+	color: #2c3338;
+	font: inherit;
+	line-height: 2;
+	max-width: 100%;
+	min-height: 30px;
+}
+
+.lwwc-quick-links select:focus,
+.lwwc-quick-links input:focus,
+.lwwc-quick-links button:focus,
+.lwwc-quick-links a:focus {
+	border-color: var(--lwwc-accent);
+	box-shadow: 0 0 0 1px var(--lwwc-accent);
+	outline: 2px solid transparent;
+}
+
+.lwwc-quick-links select.widefat {
+	width: 100%;
+}
+
+.lwwc-quick-links input.small-text {
+	width: 72px;
+}
+
+.lwwc-quick-links__output {
+	display: flex;
+	gap: 6px;
+}
+
+.lwwc-quick-links__url {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 0 8px;
+	width: 100%;
+}
+
+.lwwc-quick-links .button {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px solid #2271b1;
+	border-radius: 3px;
+	color: #2271b1;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	font-weight: 500;
+	justify-content: center;
+	line-height: 2.15384615;
+	min-height: 30px;
+	padding: 0 10px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.lwwc-quick-links .button-primary {
+	background: var(--lwwc-accent);
+	border-color: var(--lwwc-accent);
+	color: #fff;
+}
+
+.lwwc-quick-links .button-primary:hover {
+	background: var(--lwwc-accent-hover);
+	border-color: var(--lwwc-accent-hover);
+	color: #fff;
+}
+
+.lwwc-quick-links .button:disabled {
+	background: #f6f7f7;
+	border-color: #dcdcde;
+	color: #a7aaad;
+	cursor: default;
+}
+
+.lwwc-quick-links__copy {
+	flex: 0 0 auto;
+}
+
+.lwwc-quick-links .description,
+.lwwc-quick-links__summary {
+	color: #50575e;
+	margin: 0 0 10px;
+}
+
+.lwwc-quick-links__builder {
+	color: var(--lwwc-accent);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.lwwc-quick-links__builder:hover {
+	color: var(--lwwc-accent-hover);
+	text-decoration: underline;
+}
+
+.lwwc-quick-links__notice {
+	background: #fff;
+	border-left: 4px solid #dba617;
+	box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+	margin: 0 0 12px;
+	padding: 1px 12px;
+}
+
+.lwwc-quick-links__notice p {
+	margin: 8px 0;
+}
+
+.lwwc-quick-links--overlay {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	box-shadow: 0 4px 18px rgb(0 0 0 / 18%);
+	max-height: calc(100vh - 56px);
+	overflow: auto;
+	padding: 16px;
+	position: fixed;
+	right: 16px;
+	top: 40px;
+	width: min(380px, calc(100vw - 32px));
+	z-index: 100000;
+}
+
+.lwwc-quick-links--overlay[hidden] {
+	display: none;
+}
+
+.lwwc-quick-links__header {
+	align-items: center;
+	border-bottom: 1px solid #dcdcde;
+	display: flex;
+	font-size: 14px;
+	justify-content: space-between;
+	margin: -4px 0 14px;
+	padding: 0 0 10px;
+}
+
+.lwwc-quick-links__close {
+	background: transparent;
+	border: 0;
+	color: #50575e;
+	cursor: pointer;
+	font-size: 24px;
+	line-height: 1;
+	padding: 2px 5px;
+}
+
+.lwwc-quick-links__close:hover {
+	color: #1d2327;
+}
+
+@media screen and (max-width: 782px) {
+	.lwwc-quick-links--overlay {
+		left: 8px;
+		max-height: calc(100vh - 62px);
+		right: 8px;
+		top: 54px;
+		width: auto;
+	}
+
+	.lwwc-quick-links__output {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.lwwc-quick-links__copy {
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lwwc-quick-links *,
+	.lwwc-quick-links *::before,
+	.lwwc-quick-links *::after {
+		scroll-behavior: auto !important;
+		transition: none !important;
+	}
+}

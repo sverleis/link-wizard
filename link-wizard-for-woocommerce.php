@@ -34,6 +34,9 @@ define( 'LWWC_ADDON_API_VERSION', '2.0' );
 /* The absolute path to the plugin directory. */
 define( 'LWWC_PATH', plugin_dir_path( __FILE__ ) );
 
+/* The public URL to the plugin directory. */
+define( 'LWWC_URL', plugin_dir_url( __FILE__ ) );
+
 /**
  * Run during plugin activation.
  */

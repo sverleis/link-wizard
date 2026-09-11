@@ -109,6 +109,11 @@ class LWWC_Link_Wizard {
 		require_once LWWC_PATH . 'includes/class-lwwc-addon-manager.php';
 
 		/**
+		 * Contextual quick links for product and checkout screens.
+		 */
+		require_once LWWC_PATH . 'includes/class-lwwc-quick-links.php';
+
+		/**
 		 *  The class responsible for handling the search functionality.
 		 */
 		require_once LWWC_PATH . 'includes/class-lwwc-link-wizard-search.php';
@@ -155,10 +160,17 @@ class LWWC_Link_Wizard {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new LWWC_Link_Wizard_Admin( $this->get_plugin_name(), $this->get_version() );
+		$quick_links = new LWWC_Quick_Links( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'add_meta_boxes_product', $quick_links, 'add_product_meta_box' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $quick_links, 'enqueue_admin_assets' );
+		$this->loader->add_action( 'admin_bar_menu', $quick_links, 'add_admin_bar_node', 90 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $quick_links, 'enqueue_frontend_assets' );
+		$this->loader->add_action( 'wp_footer', $quick_links, 'render_frontend_panel', 100 );
 
 		// Hook the search functionality to register REST API routes.
 		$this->loader->add_action( 'rest_api_init', $this->get_search(), 'register_routes' );
