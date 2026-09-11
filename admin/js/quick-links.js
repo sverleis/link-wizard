@@ -73,17 +73,24 @@
 		return url.toString();
 	}
 
-	function productUrl( type, id, quantity ) {
-		if ( ! id ) {
+	function productUrl( type, parentId, selectedVariation, quantity ) {
+		var productId = selectedVariation ? selectedVariation.id : parentId;
+		if ( ! productId ) {
 			return '';
 		}
 		if ( type === 'checkout' ) {
 			var products = {};
-			products[ id ] = quantity;
+			products[ productId ] = quantity;
 			return checkoutUrl( products, '' );
 		}
 		var url = new URL( settings.urls.home );
-		url.searchParams.set( 'add-to-cart', id );
+		url.searchParams.set( 'add-to-cart', parentId );
+		if ( selectedVariation ) {
+			url.searchParams.set( 'variation_id', selectedVariation.id );
+			Object.keys( selectedVariation.attributes ).forEach( function ( name ) {
+				url.searchParams.set( name, selectedVariation.attributes[ name ] );
+			} );
+		}
 		if ( quantity > 1 ) {
 			url.searchParams.set( 'quantity', quantity );
 		}
@@ -166,9 +173,17 @@
 		root.appendChild( field( strings.quantity, quantity ) );
 
 		var update = renderOutput( root, function () {
-			var productId = variation ? parseInt( variation.value, 10 ) : data.id;
-			var productQuantity = data.soldIndividually ? 1 : Math.max( 1, parseInt( quantity.value, 10 ) || 1 );
-			return productUrl( type.value, productId, productQuantity );
+			var variationId = variation ? parseInt( variation.value, 10 ) : 0;
+			var selectedVariation = variationId ? data.variations.find( function ( item ) {
+				return item.id === variationId;
+			} ) : null;
+			var soldIndividually = data.soldIndividually || ( selectedVariation && selectedVariation.soldIndividually );
+			quantity.disabled = !! soldIndividually;
+			if ( soldIndividually ) {
+				quantity.value = '1';
+			}
+			var productQuantity = soldIndividually ? 1 : Math.max( 1, parseInt( quantity.value, 10 ) || 1 );
+			return productUrl( type.value, data.id, selectedVariation, productQuantity );
 		} );
 		[ type, quantity, variation ].forEach( function ( control ) {
 			if ( control ) {
@@ -237,7 +252,10 @@
 			event.preventDefault();
 			panel.hidden ? show() : hide();
 		} );
-		close.addEventListener( 'click', hide );
+		close.addEventListener( 'click', function () {
+			hide();
+			toolbarLink.focus();
+		} );
 		document.addEventListener( 'keydown', function ( event ) {
 			if ( event.key === 'Escape' && ! panel.hidden ) {
 				hide();

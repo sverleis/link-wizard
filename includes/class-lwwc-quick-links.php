@@ -235,13 +235,30 @@ class LWWC_Quick_Links {
 		}
 
 		if ( $product->is_type( 'variable' ) ) {
+			$required_attributes = array_map( 'sanitize_title', array_keys( $product->get_variation_attributes() ) );
 			foreach ( $product->get_children() as $variation_id ) {
 				$variation = wc_get_product( $variation_id );
 				if ( ! $variation || ! $variation->is_purchasable() || ! $variation->is_in_stock() ) {
 					continue;
 				}
-				$labels = array();
+
+				$variation_attributes = array();
 				foreach ( $variation->get_attributes() as $attribute_name => $attribute_value ) {
+					$variation_attributes[ sanitize_title( $attribute_name ) ] = $attribute_value;
+				}
+				$missing_attributes = array_filter(
+					$required_attributes,
+					function ( $attribute_name ) use ( $variation_attributes ) {
+						return empty( $variation_attributes[ $attribute_name ] );
+					}
+				);
+				if ( ! empty( $missing_attributes ) ) {
+					continue;
+				}
+
+				$labels     = array();
+				$attributes = array();
+				foreach ( $variation_attributes as $attribute_name => $attribute_value ) {
 					$taxonomy = str_replace( 'attribute_', '', $attribute_name );
 					$name     = taxonomy_exists( $taxonomy ) ? wc_attribute_label( $taxonomy ) : wc_attribute_label( $attribute_name );
 					$name     = ucfirst( $name );
@@ -250,13 +267,16 @@ class LWWC_Quick_Links {
 						$term = get_term_by( 'slug', $attribute_value, $taxonomy );
 						$value = $term && ! is_wp_error( $term ) ? $term->name : $attribute_value;
 					}
-					$labels[] = sprintf( '%1$s: %2$s', $name, $value );
+					$labels[]                                  = sprintf( '%1$s: %2$s', $name, $value );
+					$attributes[ 'attribute_' . $attribute_name ] = $attribute_value;
 				}
 				/* translators: %d: WooCommerce variation ID. */
-				$fallback_label      = sprintf( __( 'Variation #%d', 'link-wizard-for-woocommerce' ), $variation->get_id() );
+				$fallback_label       = sprintf( __( 'Variation #%d', 'link-wizard-for-woocommerce' ), $variation->get_id() );
 				$data['variations'][] = array(
-					'id'    => $variation->get_id(),
-					'label' => ! empty( $labels ) ? implode( ', ', $labels ) : $fallback_label,
+					'id'               => $variation->get_id(),
+					'label'            => ! empty( $labels ) ? implode( ', ', $labels ) : $fallback_label,
+					'attributes'       => $attributes,
+					'soldIndividually' => $variation->is_sold_individually(),
 				);
 			}
 
@@ -288,11 +308,31 @@ class LWWC_Quick_Links {
 				);
 			}
 
+			$standard_keys = array(
+				'key', 'product_id', 'variation_id', 'variation', 'quantity', 'data', 'data_hash',
+				'line_tax_data', 'line_subtotal', 'line_subtotal_tax', 'line_total', 'line_tax',
+			);
+			if ( ! empty( array_diff( array_keys( $item ), $standard_keys ) ) ) {
+				return array(
+					'available' => false,
+					'reason'    => __( 'This checkout contains custom product configuration that WooCommerce checkout links cannot reproduce. Use the full Link Wizard or share the cart instead.', 'link-wizard-for-woocommerce' ),
+				);
+			}
+
+			$product  = $item['data'] ?? null;
+			$quantity = max( 1, absint( $item['quantity'] ?? 1 ) );
+			if ( ! $product || ! is_a( $product, 'WC_Product' ) || ! $product->is_purchasable() || ! $product->is_in_stock() || ! $product->has_enough_stock( $quantity ) ) {
+				return array(
+					'available' => false,
+					'reason'    => __( 'A product in this checkout is no longer available in the captured quantity. Update the cart before creating a link.', 'link-wizard-for-woocommerce' ),
+				);
+			}
+
 			$id = ! empty( $item['variation_id'] ) ? absint( $item['variation_id'] ) : absint( $item['product_id'] );
 			if ( ! $id ) {
 				continue;
 			}
-			$products[ $id ] = ( $products[ $id ] ?? 0 ) + max( 1, absint( $item['quantity'] ) );
+			$products[ $id ] = ( $products[ $id ] ?? 0 ) + $quantity;
 		}
 
 		$coupons = array_values( WC()->cart->get_applied_coupons() );
