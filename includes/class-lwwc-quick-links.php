@@ -249,7 +249,7 @@ class LWWC_Quick_Links {
 				$missing_attributes = array_filter(
 					$required_attributes,
 					function ( $attribute_name ) use ( $variation_attributes ) {
-						return empty( $variation_attributes[ $attribute_name ] );
+						return ! array_key_exists( $attribute_name, $variation_attributes ) || '' === (string) $variation_attributes[ $attribute_name ];
 					}
 				);
 				if ( ! empty( $missing_attributes ) ) {
